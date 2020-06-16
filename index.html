@@ -9,16 +9,35 @@ canvas { display: block; width:100%;height:100%;}
   </head>
   <body>
     <canvas id="c"></canvas>
-    <script src="js/jq.js"></script>
+    <script src="js/jq2.js"></script>
     <script src="js/1pc.js"></script>
     <script type="module">
 
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
 import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
-var canvas,renderer,scene,camera;
+var canvas,renderer,scene,camera,raycaster;
 
 
-init()
+canvas=document.querySelector('#c');
+renderer= new THREE.WebGLRenderer({
+  canvas
+});
+
+scene = new THREE.Scene();
+scene.background = new THREE.Color('lightblue');
+scene.fog= new THREE.Fog(new THREE.Color('lightblue'),0.0025, 100)
+
+camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+camera.rotation.order="YXZ"
+camera.position.set(25,25,25)
+FirstPersonControls(canvas,camera,0.07)
+
+
+var ambientLight = new THREE.AmbientLight( 0xcccccc );
+scene.add( ambientLight );
+raycaster = new THREE.Raycaster();
+var mouse = {x:0,y:0};
+
 animate()
 
 class Terrain{
@@ -29,6 +48,13 @@ class Terrain{
     this.cellSize=options.cellSize;
     this.cells={};
     this.cells_meshes={};
+    this.neighbours=[
+      [-1,0,0],
+      [1,0,0],
+      [0,-1,0],
+      [0,1,0],
+      [0,0,-1],
+      [0,0,1]]
   }
   parseVec(x,y,z){
     return `${x}:${y}:${z}`;
@@ -47,6 +73,13 @@ class Terrain{
     const cellZ = Math.floor(z / cellSize);
     return `${cellX}:${cellY}:${cellZ}`
   }
+  getCellId(x,y,z){
+    const {cellSize} = this;
+    const cellX = Math.floor(x / cellSize);
+    const cellY = Math.floor(y / cellSize);
+    const cellZ = Math.floor(z / cellSize);
+    return [cellX,cellY,cellZ]
+  }
   getCellForVoxel(x,y,z){
     return this.cells[this.computeCellId(x, y, z)];
   }
@@ -60,6 +93,11 @@ class Terrain{
       this.cells[cellId][this.parseVec(...voxel)]=v;
     }
     this.cells[cellId].needsUpdate=true;
+    for(var i=0;i<this.neighbours;i++){
+      var neigh=this.neighbours[i];
+      cellIdX=this.computeCellId(x+neigh[0],y+neigh[1],z+neigh[2]);
+      this.cells[cellIdX].needsUpdate=true;
+    }
   }
   getVoxel(x,y,z){
     var voxel=this.computeVoxelOffset(x,y,z);
@@ -74,7 +112,6 @@ class Terrain{
     }else{
       return 0;
     }
-    
   }
   updateCellGeometry(x,y,z){
     const {textureAtlas}=this;
@@ -96,7 +133,6 @@ class Terrain{
       }catch(e){}
       
     }
-    
   }
   generateCellGeometry(x,y,z){
     const {textureAtlas,cellSize}=this;
@@ -110,7 +146,6 @@ class Terrain{
           for(var l=0;l<voxelGeometries.length;l++){
             geometries.push(voxelGeometries[l]);
           }
-          
         }
       }
     }
@@ -121,8 +156,6 @@ class Terrain{
     }else{
       var geometry=null;
     }
-    
-    
     return geometry;
   }
   generateVoxelGeometry(x,y,z){
@@ -156,12 +189,6 @@ class Terrain{
         var pzGeometry=this.generateFace("pz");
         geometries.push( pzGeometry.applyMatrix4( matrix ) )
       } 
-      // geometries.push( nxGeometry.applyMatrix4( matrix ) )
-      // geometries.push( pxGeometry.applyMatrix4( matrix ) )
-      // geometries.push( nyGeometry.applyMatrix4( matrix ) )
-      // geometries.push( pyGeometry.applyMatrix4( matrix ) )
-      // geometries.push( nzGeometry.applyMatrix4( matrix ) )
-      // geometries.push( pzGeometry.applyMatrix4( matrix ) )
       return geometries;
     }else{
       return []
@@ -227,7 +254,78 @@ class Terrain{
       geometry.attributes.uv.array[ 3 ] = textureSizeY+textureSizeY*y;
     }
   }
+  
 }
+function precision(number){
+  var precision = (number + "").split(".")[1].length;
+  return precision;
+}
+var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var cube = new THREE.Mesh( geometry, material );
+// cube.material.visible=false;
+scene.add( cube );
+function raycast(){
+  raycaster.setFromCamera( mouse, camera );
+  // calculate objects intersecting the picking ray
+  var intersects = raycaster.intersectObjects( scene.children );
+  var miniDist=-1
+  var mini=null;
+  for ( var i = 0; i < intersects.length; i++ ) {
+    var ter=intersects[i]
+    if(ter.object.uuid!=cube.uuid){
+      if(miniDist==-1){
+        miniDist=ter.distance
+        mini=ter
+      }else if(miniDist>ter.distance){
+        miniDist=ter.distance
+        mini=ter;
+      }
+    }
+    
+  }
+  if(mini!=null){
+    var xd=Math.round(mini.point.x)
+    var yd=Math.round(mini.point.y)
+    var zd=Math.round(mini.point.z)
+    if(precision(mini.point.x)==1){
+      console.log("x")
+      var x1=Math.ceil(mini.point.x);
+      var x2=Math.floor(mini.point.x);
+      if(!world.getVoxel(x1,yd,zd)){
+        cube.position.set(x1,yd,zd)
+      }else if(!world.getVoxel(x2,yd,zd)){
+        cube.position.set(x2,yd,zd)
+      }
+    }
+    if(precision(mini.point.y)==1){
+      console.log("y")
+      var y1=Math.ceil(mini.point.y);
+      var y2=Math.floor(mini.point.y);
+      if(!world.getVoxel(xd,y1,zd)){
+        cube.position.set(xd,y1,zd)
+      }else if(!world.getVoxel(xd,y2,zd)){
+        cube.position.set(xd,y2,zd)
+      }
+    }
+    if(precision(mini.point.z)==1){
+      console.log("z")
+      var z1=Math.ceil(mini.point.z);
+      var z2=Math.floor(mini.point.z);
+      if(!world.getVoxel(xd,yd,z1)){
+        cube.position.set(xd,yd,z1)
+      }else if(!world.getVoxel(xd,yd,z2)){
+        cube.position.set(xd,yd,z2)
+      }
+    }
+    // console.log(mini.point)
+  }
+  
+}
+
+setInterval(function (){
+  raycast()
+})
 
 
 var texture = new THREE.TextureLoader().load( 'atla.png' );
@@ -238,10 +336,9 @@ var world=new Terrain({
   textureCols:16,
   cellSize:16,
 })
-
 var vari=50
 for (let y = 0; y < vari; ++y) {
-  for (let z = 0; z < vari; ++z) {
+  for (let z = 0; z < vari*4; ++z) {
     for (let x = 0; x < vari; ++x) {
       const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
       if (y < height) {
@@ -251,34 +348,14 @@ for (let y = 0; y < vari; ++y) {
   }
 }
 // console.log(world.cells["0:0:0"])
-for(var i=0;i<5;i++){
-  for(var j=0;j<5;j++){
-    for(var k=0;k<5;k++){
-      world.updateCellGeometry(i,j,k);
+for(var i=0;i<10;i++){
+  for(var j=0;j<10;j++){
+    for(var k=0;k<10;k++){
+      world.updateCellGeometry(i,j,k);  
     }
   }
 }
 
-// world.generateMeshForCell(0,0,1);
-
-function init(){
-  canvas=document.querySelector('#c');
-  renderer= new THREE.WebGLRenderer({
-    canvas
-  });
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color('lightblue');
-
-  camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
-  camera.rotation.order="YXZ"
-  camera.position.set(25,25,25)
-  FirstPersonControls(canvas,camera,0.04)
-
-
-  var ambientLight = new THREE.AmbientLight( 0xcccccc );
-  scene.add( ambientLight );
-}
 
 
 function animate() {
@@ -305,6 +382,7 @@ function render() {
   }
   renderer.render(scene, camera);
 }
+
 
 
 
