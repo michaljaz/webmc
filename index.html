@@ -15,30 +15,9 @@ canvas { display: block; width:100%;height:100%;}
 
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
 import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
-var canvas,renderer,scene,camera,raycaster;
+import { EffectComposer } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/postprocessing/EffectComposer.js';
+      import { SSAOPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/postprocessing/SSAOPass.js';
 
-
-canvas=document.querySelector('#c');
-renderer= new THREE.WebGLRenderer({
-  canvas
-});
-
-scene = new THREE.Scene();
-scene.background = new THREE.Color('lightblue');
-scene.fog= new THREE.Fog(new THREE.Color('lightblue'),0.0025, 100)
-
-camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
-camera.rotation.order="YXZ"
-camera.position.set(25,25,25)
-FirstPersonControls(canvas,camera,0.07)
-
-
-var ambientLight = new THREE.AmbientLight( 0xcccccc );
-scene.add( ambientLight );
-raycaster = new THREE.Raycaster();
-var mouse = {x:0,y:0};
-
-animate()
 
 class Terrain{
   constructor(options){
@@ -54,7 +33,25 @@ class Terrain{
       [0,-1,0],
       [0,1,0],
       [0,0,-1],
-      [0,0,1]]
+      [0,0,1]],
+    this.blocks={
+      1:{
+        nx:[3,15],
+        ny:[2,15],
+        nz:[3,15],
+        px:[3,15],
+        py:[0,15],
+        pz:[3,15]
+      },
+      2:{
+        nx:[1,15],
+        ny:[1,15],
+        nz:[1,15],
+        px:[1,15],
+        py:[1,15],
+        pz:[1,15]
+      }
+    }
   }
   parseVec(x,y,z){
     return `${x}:${y}:${z}`;
@@ -73,13 +70,6 @@ class Terrain{
     const cellZ = Math.floor(z / cellSize);
     return `${cellX}:${cellY}:${cellZ}`
   }
-  getCellId(x,y,z){
-    const {cellSize} = this;
-    const cellX = Math.floor(x / cellSize);
-    const cellY = Math.floor(y / cellSize);
-    const cellZ = Math.floor(z / cellSize);
-    return [cellX,cellY,cellZ]
-  }
   getCellForVoxel(x,y,z){
     return this.cells[this.computeCellId(x, y, z)];
   }
@@ -93,10 +83,14 @@ class Terrain{
       this.cells[cellId][this.parseVec(...voxel)]=v;
     }
     this.cells[cellId].needsUpdate=true;
-    for(var i=0;i<this.neighbours;i++){
+    // console.log(this.neighbours)
+    for(var i=0;i<this.neighbours.length;i++){
       var neigh=this.neighbours[i];
-      cellIdX=this.computeCellId(x+neigh[0],y+neigh[1],z+neigh[2]);
-      this.cells[cellIdX].needsUpdate=true;
+      var cellIdX=this.computeCellId(x+neigh[0],y+neigh[1],z+neigh[2]);
+      try{
+        this.cells[cellIdX].needsUpdate=true;
+      }catch(e){}
+      
     }
   }
   getVoxel(x,y,z){
@@ -113,6 +107,14 @@ class Terrain{
       return 0;
     }
   }
+  updateCells(){
+    const{cells}=this;
+    Object.keys(cells).forEach(function (id){
+      if(cells[id].needsUpdate){
+        world.updateCellGeometry(...id.split(":"))
+      }
+    })
+  }
   updateCellGeometry(x,y,z){
     const {textureAtlas}=this;
     if(this.cells[this.parseVec(x,y,z)]==undefined || this.cells[this.parseVec(x,y,z)].needsUpdate){
@@ -124,6 +126,7 @@ class Terrain{
         }else{
           var geometry=geometry;
           var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { map: textureAtlas, side: 0 } ) );
+          // mesh.computeAngleVertexNormals(Math.PI/2);
           scene.add(mesh)
           this.cells_meshes[this.parseVec(x,y,z)]=mesh;
         }
@@ -163,30 +166,30 @@ class Terrain{
     var voxel=this.getVoxel(x,y,z);
     var matrix = new THREE.Matrix4();
     matrix.makeTranslation(x,y,z);
-    if(voxel==1){
+    if(this.blocks[voxel]!=undefined){
       var geometries=[];
       if(this.getVoxel(x-1,y,z)==0){
-        var nxGeometry=this.generateFace("nx");
+        var nxGeometry=this.generateFace("nx",voxel);
         geometries.push( nxGeometry.applyMatrix4( matrix ) )
       }
       if(this.getVoxel(x+1,y,z)==0){
-        var pxGeometry=this.generateFace("px");
+        var pxGeometry=this.generateFace("px",voxel);
         geometries.push( pxGeometry.applyMatrix4( matrix ) )
       }
       if(this.getVoxel(x,y-1,z)==0){
-        var nyGeometry=this.generateFace("ny");
+        var nyGeometry=this.generateFace("ny",voxel);
         geometries.push( nyGeometry.applyMatrix4( matrix ) )
       }
       if(this.getVoxel(x,y+1,z)==0){
-        var pyGeometry=this.generateFace("py");
+        var pyGeometry=this.generateFace("py",voxel);
         geometries.push( pyGeometry.applyMatrix4( matrix ) )
       }
       if(this.getVoxel(x,y,z-1)==0){
-        var nzGeometry=this.generateFace("nz");
+        var nzGeometry=this.generateFace("nz",voxel);
         geometries.push( nzGeometry.applyMatrix4( matrix ) )
       }
       if(this.getVoxel(x,y,z+1)==0){
-        var pzGeometry=this.generateFace("pz");
+        var pzGeometry=this.generateFace("pz",voxel);
         geometries.push( pzGeometry.applyMatrix4( matrix ) )
       } 
       return geometries;
@@ -194,7 +197,7 @@ class Terrain{
       return []
     }
   }
-  generateFace(type){
+  generateFace(type,voxel){
     var geometry = new THREE.PlaneBufferGeometry(1, 1);
     if(type=="px"){
       geometry.rotateY( Math.PI / 2 );
@@ -219,9 +222,9 @@ class Terrain{
       geometry.rotateY( Math.PI );
       geometry.translate( 0, 0, -0.5 );
     }
-    var rx=Math.floor(Math.random()*4)
-    var ry=15
-    this.setUv(geometry,rx,ry,180)
+    var uv=this.blocks[voxel][type]
+    this.setUv(geometry,uv[0],uv[1],180)
+    
     return geometry;
   }
   setUv(geometry,x,y,rotation=0){
@@ -256,13 +259,52 @@ class Terrain{
   }
   
 }
+var canvas,renderer,scene,camera,raycaster;
+
+
+canvas=document.querySelector('#c');
+renderer= new THREE.WebGLRenderer({
+  canvas
+});
+
+scene = new THREE.Scene();
+scene.background = new THREE.Color('lightblue');
+scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
+
+camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+camera.rotation.order="YXZ"
+camera.position.set(50,50,50)
+FirstPersonControls(canvas,camera,0.07)
+
+
+var ambientLight = new THREE.AmbientLight( 0xcccccc );
+scene.add( ambientLight );
+raycaster = new THREE.Raycaster();
+var mouse = {x:0,y:0};
+
+var composer = new EffectComposer( renderer );
+var ssaoPass = new SSAOPass( scene, camera, window.innerWidth, window.innerHeight );
+        ssaoPass.kernelRadius = 8;
+        ssaoPass.minDistance = 0.001;
+        ssaoPass.maxDistance=0.3
+        composer.addPass( ssaoPass );
+
+animate()
+
 function precision(number){
-  var precision = (number + "").split(".")[1].length;
+  try{
+    var precision = (number + "").split(".")[1].length;
+  }catch(e){
+    precision=0;
+  }
+  
   return precision;
 }
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-var cube = new THREE.Mesh( geometry, material );
+// var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var edges = new THREE.EdgesGeometry( geometry );
+var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:1 } ) );
+var positionQ=[]
 // cube.material.visible=false;
 scene.add( cube );
 function raycast(){
@@ -285,46 +327,75 @@ function raycast(){
     
   }
   if(mini!=null){
+    cube.visible=true;
     var xd=Math.round(mini.point.x)
     var yd=Math.round(mini.point.y)
     var zd=Math.round(mini.point.z)
     if(precision(mini.point.x)==1){
-      console.log("x")
       var x1=Math.ceil(mini.point.x);
       var x2=Math.floor(mini.point.x);
-      if(!world.getVoxel(x1,yd,zd)){
+      if(world.getVoxel(x1,yd,zd)){
         cube.position.set(x1,yd,zd)
-      }else if(!world.getVoxel(x2,yd,zd)){
+      }else if(world.getVoxel(x2,yd,zd)){
         cube.position.set(x2,yd,zd)
+      }
+      if(!world.getVoxel(x1,yd,zd)){
+        positionQ=[x1,yd,zd]
+      }else if(!world.getVoxel(x2,yd,zd)){
+        positionQ=[x2,yd,zd]
       }
     }
     if(precision(mini.point.y)==1){
-      console.log("y")
       var y1=Math.ceil(mini.point.y);
       var y2=Math.floor(mini.point.y);
-      if(!world.getVoxel(xd,y1,zd)){
+      if(world.getVoxel(xd,y1,zd)){
         cube.position.set(xd,y1,zd)
-      }else if(!world.getVoxel(xd,y2,zd)){
+      }else if(world.getVoxel(xd,y2,zd)){
         cube.position.set(xd,y2,zd)
+      }
+      if(!world.getVoxel(xd,y1,zd)){
+        positionQ=[xd,y1,zd]
+      }else if(!world.getVoxel(xd,y2,zd)){
+        positionQ=[xd,y2,zd]
       }
     }
     if(precision(mini.point.z)==1){
-      console.log("z")
       var z1=Math.ceil(mini.point.z);
       var z2=Math.floor(mini.point.z);
-      if(!world.getVoxel(xd,yd,z1)){
+      if(world.getVoxel(xd,yd,z1)){
         cube.position.set(xd,yd,z1)
-      }else if(!world.getVoxel(xd,yd,z2)){
+      }else if(world.getVoxel(xd,yd,z2)){
         cube.position.set(xd,yd,z2)
+      }
+      if(!world.getVoxel(xd,yd,z1)){
+        positionQ=[xd,yd,z1]
+      }else if(!world.getVoxel(xd,yd,z2)){
+        positionQ=[xd,yd,z2]
       }
     }
     // console.log(mini.point)
+  }else{
+    cube.visible=false;
   }
   
 }
 
 setInterval(function (){
   raycast()
+})
+setInterval(function (){
+  world.updateCells()
+},100)
+$(document).click(function (e){
+  // console.log(positionQ)
+  // console.log(cube.position)
+  if(e.which==1){
+    world.setVoxel(cube.position.x,cube.position.y,cube.position.z,0)
+  }else{
+    
+    world.setVoxel(positionQ[0],positionQ[1],positionQ[2],1)
+  }
+  
 })
 
 
@@ -334,28 +405,28 @@ var world=new Terrain({
   textureAtlas:texture,
   textureRows:16,
   textureCols:16,
-  cellSize:16,
+  cellSize:24,
 })
-var vari=50
+var vari=100
 for (let y = 0; y < vari; ++y) {
-  for (let z = 0; z < vari*4; ++z) {
+  for (let z = 0; z < vari; ++z) {
     for (let x = 0; x < vari; ++x) {
       const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
       if (y < height) {
-          world.setVoxel(x, y, z, 1);
+          world.setVoxel(x, y, z, 2);
       }
     }
   }
 }
-// console.log(world.cells["0:0:0"])
-for(var i=0;i<10;i++){
-  for(var j=0;j<10;j++){
-    for(var k=0;k<10;k++){
-      world.updateCellGeometry(i,j,k);  
-    }
-  }
-}
-
+// // console.log(world.cells["0:0:0"])
+// for(var i=0;i<5;i++){
+//   for(var j=0;j<5;j++){
+//     for(var k=0;k<5;k++){
+//       world.updateCellGeometry(i,j,k);  
+//     }
+//   }
+// }
+world.updateCells()
 
 
 function animate() {
@@ -370,6 +441,7 @@ function resizeRendererToDisplaySize(renderer) {
   const needResize = canvas.width !== width || canvas.height !== height;
   if (needResize) {
     renderer.setSize(width, height, false);
+    // composer.setSize(width,height);
   }
   return needResize;
 }
@@ -381,6 +453,8 @@ function render() {
     camera.updateProjectionMatrix();
   }
   renderer.render(scene, camera);
+  
+  // composer.render();
 }
 
 
