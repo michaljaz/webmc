@@ -4,16 +4,57 @@
     <title>Minecraft Renderer</title>
     <style>
 body { margin: 0; }
-canvas { display: block; width:100%;height:100%;}
+canvas { 
+  display: block; 
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0px;
+  left:0px
+}
+.inventoryBar{
+  position:fixed;
+  bottom:0px;
+  left:50%;
+  width:378px;
+  background:black;
+  margin-left:-189px;
+  height:40px;
+}
+.icell{
+  margin:1px;
+  padding:0px;
+  border:0px;
+  width:40px;
+  height:40px;
+}
+.cross{
+  z-index:999999999;
+  position:fixed;
+  top:50%;
+  left:50%;
+  margin-top:-15px;
+  margin-left:-15px;
+}
 
     </style>
   </head>
   <body>
     <canvas id="c"></canvas>
-    <script src="js/jq2.js"></script>
-    <script src="js/firstPersonControls.js?xd"></script>
+    <div class="gui">
+      <div class="inventoryBar">
+        <img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell">
+      </div>
+      <div class="cross">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <line x1="15" y1="0" x2="15" y2="30" stroke="black" stroke-width="1" />
+          <line x1="0" y1="15" x2="30" y2="15" stroke="black" stroke-width="1" />
+        </svg>
+      </div>
+    </div>
+    <script src="js/jq.js?10210281028012"></script>
+    <script src="js/firstPersonControls.js?912912"></script>
     <script type="module">
-
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
 import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
 
@@ -78,8 +119,9 @@ class Terrain{
     if(this.cells[cellId]!=undefined){
       this.cells[cellId][this.parseVec(...voxel)]=v;
     }else{
-      this.cells[cellId]={};
-      this.cells[cellId][this.parseVec(...voxel)]=v;
+      this.cells[cellId]={
+        [this.parseVec(...voxel)]:v
+      };
     }
     this.cells[cellId].needsUpdate=true;
     // console.log(this.neighbours)
@@ -115,9 +157,9 @@ class Terrain{
     })
   }
   updateCellGeometry(x,y,z){
-    console.log(`updating Chunk: ${x}:${y}:${z}`)
+    console.warn(`updating Chunk: ${x}:${y}:${z}`)
     const {textureAtlas}=this;
-    if(this.cells[this.parseVec(x,y,z)]==undefined || this.cells[this.parseVec(x,y,z)].needsUpdate){
+    if( this.cells[this.parseVec(x,y,z)].needsUpdate){
       var mesh=this.cells_meshes[this.parseVec(x,y,z)];
       var geometry=this.generateCellGeometry(x,y,z);
       if(geometry!=null){
@@ -134,7 +176,7 @@ class Terrain{
       }else{
         scene.remove(this.cells_meshes[this.parseVec(x,y,z)])
         delete this.cells_meshes[this.parseVec(x,y,z)]
-        delete this.cells[this.parseVec(x,y,z)]
+        // delete this.cells[this.parseVec(x,y,z)]
       }
       try{
         this.cells[this.parseVec(x,y,z)].needsUpdate=false;
@@ -264,6 +306,12 @@ class Terrain{
   }
   
 }
+class Inventory{
+  constructor(options){
+    this.cellSize=options.cellSize;
+    this.windows=options.windows;
+  }
+}
 var canvas,renderer,scene,camera,raycaster;
 
 
@@ -279,7 +327,7 @@ scene.background = new THREE.Color('lightblue');
 camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
 camera.rotation.order="YXZ"
 camera.position.set(25,25,25)
-FirstPersonControls(canvas,camera,0.07)
+FirstPersonControls(document.getElementById("cross"),camera,0.07)
 
 
 var ambientLight = new THREE.AmbientLight( 0xcccccc );
@@ -295,7 +343,18 @@ var world=new Terrain({
   textureCols:16,
   cellSize:16,
 })
-var vari=50
+var vari=100
+// for(var i=0;i<vari;i++){
+//   for(var j=0;j<vari;j++){
+//     for(var k=0;k<vari;k++){
+//       world.setVoxel(i,j,k,2)
+//     }
+//   }
+// }
+// console.log(world.cells["1:1:1"])
+// setTimeout(function (){
+//   console.log(world.cells["1:1:1"])
+// },2000)
 for (let y = 0; y < vari; ++y) {
   for (let z = 0; z < vari; ++z) {
     for (let x = 0; x < vari; ++x) {
@@ -322,12 +381,16 @@ function precision(number){
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
 // var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 var edges = new THREE.EdgesGeometry( geometry );
-var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:1 } ) );
+var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:0.5 } ) );
+// var cube=new THREE.Mesh()
+
 var positionQ=[]
 // cube.material.visible=false;
+var selected=false;
 scene.add( cube );
 function raycast(){
   raycaster.setFromCamera( mouse, camera );
+  raycaster.far=10
   // calculate objects intersecting the picking ray
   var intersects = raycaster.intersectObjects( scene.children );
   var miniDist=-1
@@ -346,6 +409,7 @@ function raycast(){
     
   }
   if(mini!=null){
+    selected=true;
     cube.visible=true;
     var xd=Math.round(mini.point.x)
     var yd=Math.round(mini.point.y)
@@ -394,6 +458,7 @@ function raycast(){
     }
     // console.log(mini.point)
   }else{
+    selected=false;
     cube.visible=false;
   }
   
@@ -405,12 +470,17 @@ setInterval(function (){
 $(document).click(function (e){
   // console.log(positionQ)
   // console.log(cube.position)
-  if(e.which==1){
-    world.setVoxel(cube.position.x,cube.position.y,cube.position.z,0)
+  if(selected){
+    if(e.which==1){
+      world.setVoxel(cube.position.x,cube.position.y,cube.position.z,0)
+    }else{
+      world.setVoxel(positionQ[0],positionQ[1],positionQ[2],1)
+      // console.log(world.cells[world.computeCellId(...positionQ)])
+    }
   }else{
-    
-    world.setVoxel(positionQ[0],positionQ[1],positionQ[2],1)
+    console.error("Jesteś za daleko!")
   }
+  
   
 })
 

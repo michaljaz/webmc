@@ -74,20 +74,4 @@ function FirstPersonControls(_canvas,_camera,_micromove){
   $(document).keyup(function (z){
     delete keys[z.keyCode];
   })
-  $('body').append("<canvas id='xxdd'></canvas>")
-  var p=document.getElementById("xxdd");
-  var ctx=p.getContext("2d");
-  $("#xxdd").attr("style","position:fixed;top:0px;left:0px")
-  p.width=window.innerWidth
-  p.height=window.innerHeight
-  var cw=15;
-  ctx.lineWidth=1
-  ctx.beginPath();
-  ctx.moveTo(window.innerWidth/2-cw,window.innerHeight/2);
-  ctx.lineTo(window.innerWidth/2+cw,window.innerHeight/2);
-  ctx.stroke();
-  ctx.beginPath();
-  ctx.moveTo(window.innerWidth/2,window.innerHeight/2-cw);
-  ctx.lineTo(window.innerWidth/2,window.innerHeight/2+cw);
-  ctx.stroke()
 }
