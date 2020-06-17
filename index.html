@@ -1,3 +1,4 @@
+
 <html>
   <head>
     <title>Minecraft Renderer</title>
@@ -10,13 +11,11 @@ canvas { display: block; width:100%;height:100%;}
   <body>
     <canvas id="c"></canvas>
     <script src="js/jq2.js"></script>
-    <script src="js/1pc.js"></script>
+    <script src="js/firstPersonControls.js?xd"></script>
     <script type="module">
 
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
 import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
-import { EffectComposer } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/postprocessing/EffectComposer.js';
-      import { SSAOPass } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/postprocessing/SSAOPass.js';
 
 
 class Terrain{
@@ -116,11 +115,13 @@ class Terrain{
     })
   }
   updateCellGeometry(x,y,z){
+    console.log(`updating Chunk: ${x}:${y}:${z}`)
     const {textureAtlas}=this;
     if(this.cells[this.parseVec(x,y,z)]==undefined || this.cells[this.parseVec(x,y,z)].needsUpdate){
       var mesh=this.cells_meshes[this.parseVec(x,y,z)];
       var geometry=this.generateCellGeometry(x,y,z);
       if(geometry!=null){
+        geometry.dynamic = false;
         if(mesh!=undefined){
           mesh.geometry=geometry;
         }else{
@@ -130,6 +131,10 @@ class Terrain{
           scene.add(mesh)
           this.cells_meshes[this.parseVec(x,y,z)]=mesh;
         }
+      }else{
+        scene.remove(this.cells_meshes[this.parseVec(x,y,z)])
+        delete this.cells_meshes[this.parseVec(x,y,z)]
+        delete this.cells[this.parseVec(x,y,z)]
       }
       try{
         this.cells[this.parseVec(x,y,z)].needsUpdate=false;
@@ -269,11 +274,11 @@ renderer= new THREE.WebGLRenderer({
 
 scene = new THREE.Scene();
 scene.background = new THREE.Color('lightblue');
-scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
+// scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
 
 camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
 camera.rotation.order="YXZ"
-camera.position.set(50,50,50)
+camera.position.set(25,25,25)
 FirstPersonControls(canvas,camera,0.07)
 
 
@@ -282,14 +287,28 @@ scene.add( ambientLight );
 raycaster = new THREE.Raycaster();
 var mouse = {x:0,y:0};
 
-var composer = new EffectComposer( renderer );
-var ssaoPass = new SSAOPass( scene, camera, window.innerWidth, window.innerHeight );
-        ssaoPass.kernelRadius = 8;
-        ssaoPass.minDistance = 0.001;
-        ssaoPass.maxDistance=0.3
-        composer.addPass( ssaoPass );
+var texture = new THREE.TextureLoader().load( 'atla.png' );
+texture.magFilter = THREE.NearestFilter;
+var world=new Terrain({
+  textureAtlas:texture,
+  textureRows:16,
+  textureCols:16,
+  cellSize:16,
+})
+var vari=50
+for (let y = 0; y < vari; ++y) {
+  for (let z = 0; z < vari; ++z) {
+    for (let x = 0; x < vari; ++x) {
+      const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
+      if (y < height) {
+          world.setVoxel(x, y, z, 2);
+      }
+    }
+  }
+}
 
-animate()
+
+
 
 function precision(number){
   try{
@@ -383,9 +402,6 @@ function raycast(){
 setInterval(function (){
   raycast()
 })
-setInterval(function (){
-  world.updateCells()
-},100)
 $(document).click(function (e){
   // console.log(positionQ)
   // console.log(cube.position)
@@ -398,35 +414,7 @@ $(document).click(function (e){
   
 })
 
-
-var texture = new THREE.TextureLoader().load( 'atla.png' );
-texture.magFilter = THREE.NearestFilter;
-var world=new Terrain({
-  textureAtlas:texture,
-  textureRows:16,
-  textureCols:16,
-  cellSize:16,
-})
-var vari=100
-for (let y = 0; y < vari; ++y) {
-  for (let z = 0; z < vari; ++z) {
-    for (let x = 0; x < vari; ++x) {
-      const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
-      if (y < height) {
-          world.setVoxel(x, y, z, 2);
-      }
-    }
-  }
-}
-// // console.log(world.cells["0:0:0"])
-// for(var i=0;i<5;i++){
-//   for(var j=0;j<5;j++){
-//     for(var k=0;k<5;k++){
-//       world.updateCellGeometry(i,j,k);  
-//     }
-//   }
-// }
-world.updateCells()
+animate()
 
 
 function animate() {
@@ -453,6 +441,7 @@ function render() {
     camera.updateProjectionMatrix();
   }
   renderer.render(scene, camera);
+  world.updateCells()
   
   // composer.render();
 }

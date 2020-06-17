@@ -80,8 +80,8 @@ function FirstPersonControls(_canvas,_camera,_micromove){
   $("#xxdd").attr("style","position:fixed;top:0px;left:0px")
   p.width=window.innerWidth
   p.height=window.innerHeight
-  var cw=25;
-  ctx.lineWidth=3
+  var cw=15;
+  ctx.lineWidth=1
   ctx.beginPath();
   ctx.moveTo(window.innerWidth/2-cw,window.innerHeight/2);
   ctx.lineTo(window.innerWidth/2+cw,window.innerHeight/2);
