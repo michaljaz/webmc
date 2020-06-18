@@ -57,7 +57,7 @@ canvas {
     <script type="module">
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
 import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
-
+import Stats from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/libs/stats.module.js';
 
 class Terrain{
   constructor(options){
@@ -330,6 +330,10 @@ camera.position.set(26,26,26)
 FirstPersonControls(document.getElementById("cross"),camera,0.07)
 
 
+var stats = new Stats();
+stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+document.body.appendChild( stats.dom );
+
 var ambientLight = new THREE.AmbientLight( 0xcccccc );
 scene.add( ambientLight );
 var directionalLight = new THREE.DirectionalLight( 0x666666, 2 );
@@ -491,7 +495,9 @@ animate()
 
 
 function animate() {
+  stats.begin();
   render()
+  stats.end();
   requestAnimationFrame(animate)
 }
 
