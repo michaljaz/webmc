@@ -326,13 +326,13 @@ scene.background = new THREE.Color('lightblue');
 
 camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
 camera.rotation.order="YXZ"
-camera.position.set(50,50,50)
+camera.position.set(26,26,26)
 FirstPersonControls(document.getElementById("cross"),camera,0.07)
 
 
 var ambientLight = new THREE.AmbientLight( 0xcccccc );
 scene.add( ambientLight );
-var directionalLight = new THREE.DirectionalLight( 0x777777, 2 );
+var directionalLight = new THREE.DirectionalLight( 0x666666, 2 );
         directionalLight.position.set( 1, 1, 0.5 ).normalize();
         scene.add( directionalLight );
         scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
@@ -347,7 +347,7 @@ var world=new Terrain({
   textureCols:16,
   cellSize:16,
 })
-var vari=100
+var vari=50
 // for(var i=0;i<vari;i++){
 //   for(var j=0;j<vari;j++){
 //     for(var k=0;k<vari;k++){
@@ -383,10 +383,10 @@ function precision(number){
   return precision;
 }
 var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-// var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
 var edges = new THREE.EdgesGeometry( geometry );
 var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:0.5 } ) );
-// var cube=new THREE.Mesh()
+// var cube=new THREE.Mesh(geometry,material)
 
 var positionQ=[]
 // cube.material.visible=false;
@@ -409,8 +409,7 @@ function raycast(){
         miniDist=ter.distance
         mini=ter;
       }
-    }
-    
+    } 
   }
   if(mini!=null){
     selected=true;
@@ -431,8 +430,7 @@ function raycast(){
       }else if(!world.getVoxel(x2,yd,zd)){
         positionQ=[x2,yd,zd]
       }
-    }
-    if(precision(mini.point.y)==1){
+    }else if(precision(mini.point.y)==1){
       var y1=Math.ceil(mini.point.y);
       var y2=Math.floor(mini.point.y);
       if(world.getVoxel(xd,y1,zd)){
@@ -445,8 +443,7 @@ function raycast(){
       }else if(!world.getVoxel(xd,y2,zd)){
         positionQ=[xd,y2,zd]
       }
-    }
-    if(precision(mini.point.z)==1){
+    }else if(precision(mini.point.z)==1){
       var z1=Math.ceil(mini.point.z);
       var z2=Math.floor(mini.point.z);
       if(world.getVoxel(xd,yd,z1)){
@@ -459,6 +456,8 @@ function raycast(){
       }else if(!world.getVoxel(xd,yd,z2)){
         positionQ=[xd,yd,z2]
       }
+    }else{
+      
     }
     // console.log(mini.point)
   }else{
