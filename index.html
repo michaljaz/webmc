@@ -2,6 +2,22 @@
 <html>
   <head>
     <title>Minecraft Renderer</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
     <style>
 body { margin: 0; }
 canvas { 
@@ -12,29 +28,26 @@ canvas {
   top:0px;
   left:0px
 }
-.inventoryBar{
-  position:fixed;
-  bottom:0px;
-  left:50%;
-  width:378px;
-  background:black;
-  margin-left:-189px;
-  height:40px;
-}
-.icell{
-  margin:1px;
-  padding:0px;
-  border:0px;
-  width:40px;
-  height:40px;
-}
 .cross{
-  z-index:999999999;
+  z-index:9;
   position:fixed;
   top:50%;
   left:50%;
   margin-top:-15px;
   margin-left:-15px;
+}
+.gameMenu{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width:800px;
+  height:400px;
+  background:#303030;
+  z-index:99999;
+  color:white;
 }
 
     </style>
@@ -42,8 +55,44 @@ canvas {
   <body>
     <canvas id="c"></canvas>
     <div class="gui">
-      <div class="inventoryBar">
-        <img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell"><img class="icell">
+      <div class="inventoryBar"></div>
+      <div class="gameMenu">
+        <div class="row">
+          <div class="col-4 pl-5 pt-4">
+            Web-minecraft v.1.0
+          </div>
+          <div class="col-4 text-center p-3">
+            <h3>Gra zatrzymana</h3>
+            <button class="gameOn btn btn-dark w-100">
+              Graj
+            </button>
+            <button class="btn btn-dark w-100" onclick="document.location.reload()">
+             Restart
+            </button>
+          </div>
+          <div class="col-4 p-3">
+            Kontrolki
+            <li>
+              W: do przodu
+            </li>
+            <li>
+              S: do tyłu
+            </li>
+            <li>
+              A: w lewo
+            </li>
+            <li>
+              D: w prawo
+            </li>
+            <li>
+              Spacja: do góry
+            </li>
+            <li>
+              Left Shift: do dołu
+            </li>
+
+          </div>
+        </div>
       </div>
       <div class="cross">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
@@ -53,11 +102,12 @@ canvas {
       </div>
     </div>
     <script src="js/jq.js?10210281028012"></script>
-    <script src="js/firstPersonControls.js?912912"></script>
     <script type="module">
 import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
 import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
 import Stats from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/libs/stats.module.js';
+
+
 
 class Terrain{
   constructor(options){
@@ -90,7 +140,7 @@ class Terrain{
         px:[1,15],
         py:[1,15],
         pz:[1,15]
-      }
+      },
     }
   }
   parseVec(x,y,z){
@@ -306,75 +356,225 @@ class Terrain{
   }
   
 }
-class Inventory{
+class InventoryBar{
   constructor(options){
-    this.cellSize=options.cellSize;
-    this.windows=options.windows;
+    this.boxSize=options.boxSize;
+    this.div=options.div;
+    this.padding=options.padding;
+    this.boxes=options.boxes;
+    this.setup()
   }
-}
-var canvas,renderer,scene,camera,raycaster;
-
-
-canvas=document.querySelector('#c');
-renderer= new THREE.WebGLRenderer({
-  canvas
-});
-
-scene = new THREE.Scene();
-scene.background = new THREE.Color('lightblue');
-// scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
-
-camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
-camera.rotation.order="YXZ"
-camera.position.set(26,26,26)
-FirstPersonControls(document.getElementById("cross"),camera,0.07)
-
-
-var stats = new Stats();
-stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
-document.body.appendChild( stats.dom );
-
-var ambientLight = new THREE.AmbientLight( 0xcccccc );
-scene.add( ambientLight );
-var directionalLight = new THREE.DirectionalLight( 0x666666, 2 );
-        directionalLight.position.set( 1, 1, 0.5 ).normalize();
-        scene.add( directionalLight );
-        scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
-raycaster = new THREE.Raycaster();
-var mouse = {x:0,y:0};
-
-var texture = new THREE.TextureLoader().load( 'atla.png' );
-texture.magFilter = THREE.NearestFilter;
-var world=new Terrain({
-  textureAtlas:texture,
-  textureRows:16,
-  textureCols:16,
-  cellSize:16,
-})
-var vari=50
-// for(var i=0;i<vari;i++){
-//   for(var j=0;j<vari;j++){
-//     for(var k=0;k<vari;k++){
-//       world.setVoxel(i,j,k,2)
-//     }
-//   }
-// }
-// console.log(world.cells["1:1:1"])
-// setTimeout(function (){
-//   console.log(world.cells["1:1:1"])
-// },2000)
-for (let y = 0; y < vari; ++y) {
-  for (let z = 0; z < vari; ++z) {
-    for (let x = 0; x < vari; ++x) {
-      const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
-      if (y < height) {
-          world.setVoxel(x, y, z, 2);
-      }
+  setup(){
+    const {boxes,boxSize,padding}=this;
+    console.warn("InventoryBar created!")
+    var result=``;
+    for(var i=0;i<boxes;i++){
+      result+=`<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" width=${boxSize} height=${boxSize} style="border:1px solid black" alt="">`
+      
+      
+    }
+    $(this.div).html(result);
+    $(this.div).attr(`style`,`position:fixed;bottom:3px;left:50%;width:${(boxSize+2)*boxes}px;margin-left:-${boxSize*boxes/2}px;height:${boxSize}px;`)
+  }
+  setBox(number,imageSrc){
+    $(`${this.div} img`).eq(number-1).attr("src",imageSrc)
+  }
+  setFocus(number,state){
+    if(state){
+      $(`${this.div} img`).eq(number-1).css("background","rgba(0,0,0,0.7)")
+      $(`${this.div} img`).eq(number-1).css("border","1px solid black")
+    }else{
+      $(`${this.div} img`).eq(number-1).css("background","rgba(54,54,54,0.5)")
+      $(`${this.div} img`).eq(number-1).css("border","1px solid #363636")
+    }
+  }
+  setFocusOnly(number){
+    const {boxes}=this;
+    for(var i=1;i<=boxes;i++){
+      this.setFocus(i,i==number)
     }
   }
 }
 
+class FirstPersonControls{
+  constructor(options){
+    this.kc={"w":87,"s":83,"a":65,"d":68,"space":32,"shift":16};
+    this.keys={}
+    this.canvas=options.canvas
+    this.camera=options.camera;
+    this.micromove=options.micromove
+  }
+  ac(qx,qy,qa,qf){
+    var m_x=-Math.sin(qa)*qf;
+    var m_y=-Math.cos(qa)*qf;
+    var r_x=qx-m_x;
+    var r_y=qy-m_y;
+    return {x:r_x,y:r_y};
+  }
+  degtorad(deg){
+    return deg*Math.PI/180;
+  }
+  radtodeg(rad){
+    return rad*180/Math.PI;
+  }
+  camMicroMove(){
+    // console.log(this.micromove)
+    if(this.keys[this.kc["w"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(180),this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(180),this.micromove).y;
+    }
+    if(this.keys[this.kc["s"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y,this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y,this.micromove).y;
+    }
+    if(this.keys[this.kc["a"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y-this.degtorad(90),this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y-this.degtorad(90),this.micromove).y;
+    }
+    if(this.keys[this.kc["d"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(90),this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(90),this.micromove).y;
+    }
+    if(this.keys[this.kc["space"]]){
+      this.camera.position.y+=this.micromove;
+    }
+    if(this.keys[this.kc["shift"]]){
+      this.camera.position.y-=this.micromove;
+    }
+  }
+  lockPointer(){
+    this.canvas.requestPointerLock()
+  }
+}
 
+var inv_bar=new InventoryBar({
+  boxSize:60,
+  boxes:9,
+  padding:4,
+  div:".inventoryBar"
+})
+inv_bar.setFocusOnly(1)
+inv_bar.setBox(1,"https://data4.cupsell.pl/upload/generator/46354/640x420/4510863_print_1.png?resize=max_sizes&key=55f9a22768eed085006592c1174c0235")
+//Renderer
+  var canvas=document.querySelector('#c');
+  var renderer= new THREE.WebGLRenderer({
+    canvas
+  });
+
+//Scene
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color('lightblue');
+  // scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
+  scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
+
+
+//Camera
+  var camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+  camera.rotation.order="YXZ"
+  camera.position.set(26,26,26)
+  
+//Setup First Person Controls
+  var FPC=new FirstPersonControls({
+    canvas:document.getElementById("c"),
+    camera,
+    micromove:0.1
+  })
+  function updatePosition(e) {
+    FPC.camera.rotation.x-=FPC.degtorad(e.movementY/10)
+    FPC.camera.rotation.y-=FPC.degtorad(e.movementX/10)
+    if(FPC.radtodeg(FPC.camera.rotation.x)<-90){
+      FPC.camera.rotation.x=FPC.degtorad(-90)
+    }
+    if(FPC.radtodeg(FPC.camera.rotation.x)>90){
+      FPC.camera.rotation.x=FPC.degtorad(90)
+    }
+  }
+  function lockChangeAlert() {
+    if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
+      document.addEventListener("mousemove", updatePosition, false);
+      $(".gameMenu").css("display","none")
+    }else{
+      document.removeEventListener("mousemove", updatePosition, false);
+      $(".gameMenu").css("display","block")
+    }
+  }
+  document.addEventListener('pointerlockchange', lockChangeAlert, false);
+  document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
+  $(document).keydown(function (z){
+    FPC.keys[z.keyCode]=true;
+  })
+  $(document).keyup(function (z){
+    delete FPC.keys[z.keyCode];
+  })
+  setInterval(function (){
+    FPC.camMicroMove()
+  },1)
+  $(".gameOn").click(function (){
+    FPC.lockPointer()
+  })
+
+
+//Stats
+  var stats = new Stats();
+  stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild( stats.dom );
+
+
+//Lights,shadows,fogs
+  var ambientLight = new THREE.AmbientLight( 0xcccccc );
+  scene.add( ambientLight );
+  var directionalLight = new THREE.DirectionalLight( 0x666666, 2 );
+  directionalLight.position.set( 1, 1, 0.5 ).normalize();
+  scene.add( directionalLight );
+ 
+
+//Raycaster
+  var raycaster = new THREE.Raycaster();
+  var mouse = {x:0,y:0};
+
+
+//Textures
+  var texture = new THREE.TextureLoader().load( 'atla.png' );
+  texture.magFilter = THREE.NearestFilter;
+
+
+//Terrain
+  var world=new Terrain({
+    textureAtlas:texture,
+    textureRows:16,
+    textureCols:16,
+    cellSize:16,
+  })
+  var vari=50
+  // for(var i=0;i<vari;i++){
+  //   for(var j=0;j<vari;j++){
+  //     for(var k=0;k<vari;k++){
+  //       world.setVoxel(i,j,k,2)
+  //     }
+  //   }
+  // }
+  for (let y = 0; y < vari; ++y) {
+    for (let z = 0; z < vari; ++z) {
+      for (let x = 0; x < vari; ++x) {
+        const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
+        if (y < height) {
+            world.setVoxel(x, y, z, 2);
+        }
+      }
+    }
+  }
+
+
+//Raycast cube
+  var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+  var edges = new THREE.EdgesGeometry( geometry );
+  var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:0.5 } ) );
+  // var cube=new THREE.Mesh(geometry,material)
+  var positionQ=[]
+  // cube.material.visible=false;
+  var selected=false;
+  scene.add( cube );
 
 
 function precision(number){
@@ -386,16 +586,9 @@ function precision(number){
   
   return precision;
 }
-var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
-var edges = new THREE.EdgesGeometry( geometry );
-var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:0.5 } ) );
-// var cube=new THREE.Mesh(geometry,material)
 
-var positionQ=[]
-// cube.material.visible=false;
-var selected=false;
-scene.add( cube );
+
+
 function raycast(){
   raycaster.setFromCamera( mouse, camera );
   raycaster.far=10
@@ -510,6 +703,7 @@ function resizeRendererToDisplaySize(renderer) {
     renderer.setSize(width, height, false);
     // composer.setSize(width,height);
   }
+
   return needResize;
 }
 
@@ -519,10 +713,9 @@ function render() {
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
   }
+
   renderer.render(scene, camera);
   world.updateCells()
-  
-  // composer.render();
 }
 
 

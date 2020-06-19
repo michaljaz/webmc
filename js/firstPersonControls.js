@@ -1,4 +1,4 @@
-function FirstPersonControls(_canvas,_camera,_micromove){
+function FirstPersonControls(_canvas,_camera,_micromove,onp,offp){
   var canvas=_canvas;
   var camera=_camera;
   var micromove=_micromove
@@ -19,8 +19,10 @@ function FirstPersonControls(_canvas,_camera,_micromove){
   function lockChangeAlert() {
     if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
       document.addEventListener("mousemove", updatePosition, false);
+      onp()
     }else{
       document.removeEventListener("mousemove", updatePosition, false);
+      offp()
     }
   }
   function updatePosition(e) {
