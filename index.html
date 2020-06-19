@@ -1,11 +1,766 @@
-<button onclick="popup()" style="position:fixed;top:0px;left:0px;width:100%;height:100%;">
-	<h1>Kliknij aby uruchomić grę</h1>
-</button>
-<script>
-function popup(){
-	let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
-	width=0,height=0,left=0,top=0,width=`+screen.availWidth+`,height=`+screen.availHeight;
-	window.open('minecraft.html', 'test', params);
+
+<html>
+  <head>
+    <title>Minecraft</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Material Design Bootstrap -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
+    <style>
+body { margin: 0; }
+canvas { 
+  display: block; 
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0px;
+  left:0px
+}
+.cross{
+  z-index:9;
+  position:fixed;
+  top:50%;
+  left:50%;
+  margin-top:-15px;
+  margin-left:-15px;
+}
+.gameMenu{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width:800px;
+  height:400px;
+  background:#303030;
+  z-index:99999;
+  color:white;
 }
 
-	</script>
+    </style>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <div class="gui">
+      <div class="inventoryBar"></div>
+      <div class="gameMenu">
+        <div class="row">
+          <div class="col-4 pl-5 pt-4">
+            Web-minecraft v.1.0
+          </div>
+          <div class="col-4 text-center p-3">
+            <h3>Gra zatrzymana</h3>
+            <button class="gameOn btn btn-dark w-100">
+              Graj
+            </button>
+            <button class="btn btn-dark w-100" onclick="document.location.reload()">
+             Restart
+            </button>
+          </div>
+          <div class="col-4 p-3">
+            Kontrolki
+            <li>
+              W: do przodu
+            </li>
+            <li>
+              S: do tyłu
+            </li>
+            <li>
+              A: w lewo
+            </li>
+            <li>
+              D: w prawo
+            </li>
+            <li>
+              Spacja: do góry
+            </li>
+            <li>
+              Left Shift: do dołu
+            </li>
+
+          </div>
+        </div>
+      </div>
+      <div class="cross">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <line x1="15" y1="0" x2="15" y2="30" stroke="black" stroke-width="1" />
+          <line x1="0" y1="15" x2="30" y2="15" stroke="black" stroke-width="1" />
+        </svg>
+      </div>
+    </div>
+    <script src="js/jq.js?10210281028012"></script>
+    <script type="module">
+import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
+import { BufferGeometryUtils } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
+import Stats from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/libs/stats.module.js';
+
+
+
+class Terrain{
+  constructor(options){
+    this.textureAtlas=options.textureAtlas;
+    this.textureRows=options.textureRows;
+    this.textureCols=options.textureCols;
+    this.cellSize=options.cellSize;
+    this.cells={};
+    this.cells_meshes={};
+    this.neighbours=[
+      [-1,0,0],
+      [1,0,0],
+      [0,-1,0],
+      [0,1,0],
+      [0,0,-1],
+      [0,0,1]],
+    this.blocks={
+      1:{
+        nx:[3,15],
+        ny:[2,15],
+        nz:[3,15],
+        px:[3,15],
+        py:[0,15],
+        pz:[3,15]
+      },
+      2:{
+        nx:[1,15],
+        ny:[1,15],
+        nz:[1,15],
+        px:[1,15],
+        py:[1,15],
+        pz:[1,15]
+      },
+    }
+  }
+  parseVec(x,y,z){
+    return `${x}:${y}:${z}`;
+  }
+  computeVoxelOffset(x,y,z){
+    const {cellSize} = this;
+    x = THREE.MathUtils.euclideanModulo(x, cellSize) | 0;
+    y = THREE.MathUtils.euclideanModulo(y, cellSize) | 0;
+    z = THREE.MathUtils.euclideanModulo(z, cellSize) | 0;
+    return [x,y,z]
+  }
+  computeCellId(x,y,z){
+    const {cellSize} = this;
+    const cellX = Math.floor(x / cellSize);
+    const cellY = Math.floor(y / cellSize);
+    const cellZ = Math.floor(z / cellSize);
+    return `${cellX}:${cellY}:${cellZ}`
+  }
+  getCellForVoxel(x,y,z){
+    return this.cells[this.computeCellId(x, y, z)];
+  }
+  setVoxel(x,y,z,v){
+    var voxel=this.computeVoxelOffset(x,y,z);
+    var cellId=this.computeCellId(x,y,z);
+    if(this.cells[cellId]!=undefined){
+      this.cells[cellId][this.parseVec(...voxel)]=v;
+    }else{
+      this.cells[cellId]={
+        [this.parseVec(...voxel)]:v
+      };
+    }
+    this.cells[cellId].needsUpdate=true;
+    // console.log(this.neighbours)
+    for(var i=0;i<this.neighbours.length;i++){
+      var neigh=this.neighbours[i];
+      var cellIdX=this.computeCellId(x+neigh[0],y+neigh[1],z+neigh[2]);
+      try{
+        this.cells[cellIdX].needsUpdate=true;
+      }catch(e){}
+      
+    }
+  }
+  getVoxel(x,y,z){
+    var voxel=this.computeVoxelOffset(x,y,z);
+    var cellId=this.computeCellId(x,y,z);
+    if(this.cells[cellId]!=undefined){
+      var val=this.cells[cellId][this.parseVec(...voxel)];
+      if(val!=undefined){
+        return val;
+      }else{
+        return 0;
+      }
+    }else{
+      return 0;
+    }
+  }
+  updateCells(){
+    const{cells}=this;
+    Object.keys(cells).forEach(function (id){
+      if(cells[id].needsUpdate){
+        world.updateCellGeometry(...id.split(":"))
+      }
+    })
+  }
+  updateCellGeometry(x,y,z){
+    console.warn(`updating Chunk: ${x}:${y}:${z}`)
+    const {textureAtlas}=this;
+    if( this.cells[this.parseVec(x,y,z)].needsUpdate){
+      var mesh=this.cells_meshes[this.parseVec(x,y,z)];
+      var geometry=this.generateCellGeometry(x,y,z);
+      if(geometry!=null){
+        geometry.dynamic = false;
+        if(mesh!=undefined){
+          mesh.geometry=geometry;
+        }else{
+          var geometry=geometry;
+          var mesh = new THREE.Mesh( geometry, new THREE.MeshLambertMaterial( { map: textureAtlas, side: 0 } ) );
+          // mesh.computeAngleVertexNormals(Math.PI/2);
+          scene.add(mesh)
+          this.cells_meshes[this.parseVec(x,y,z)]=mesh;
+        }
+      }else{
+        scene.remove(this.cells_meshes[this.parseVec(x,y,z)])
+        delete this.cells_meshes[this.parseVec(x,y,z)]
+        // delete this.cells[this.parseVec(x,y,z)]
+      }
+      try{
+        this.cells[this.parseVec(x,y,z)].needsUpdate=false;
+      }catch(e){}
+      
+    }
+  }
+  generateCellGeometry(x,y,z){
+    const {textureAtlas,cellSize}=this;
+    var geometries=[];
+    // Object.forEach(this.cells)
+    for(var i=0;i<cellSize;i++){
+      for(var j=0;j<cellSize;j++){
+        for(var k=0;k<cellSize;k++){
+          var voxelGeometries=this.generateVoxelGeometry(x*cellSize+i,y*cellSize+j,z*cellSize+k);
+          // console.log(voxelGeometries)
+          for(var l=0;l<voxelGeometries.length;l++){
+            geometries.push(voxelGeometries[l]);
+          }
+        }
+      }
+    }
+    // console.log(geometries)
+    if(geometries.length!=0){
+      var geometry = BufferGeometryUtils.mergeBufferGeometries( geometries );
+      geometry.computeBoundingSphere();
+    }else{
+      var geometry=null;
+    }
+    return geometry;
+  }
+  generateVoxelGeometry(x,y,z){
+    // console.log(x,y,z)
+    var voxel=this.getVoxel(x,y,z);
+    var matrix = new THREE.Matrix4();
+    matrix.makeTranslation(x,y,z);
+    if(this.blocks[voxel]!=undefined){
+      var geometries=[];
+      if(this.getVoxel(x-1,y,z)==0){
+        var nxGeometry=this.generateFace("nx",voxel);
+        geometries.push( nxGeometry.applyMatrix4( matrix ) )
+      }
+      if(this.getVoxel(x+1,y,z)==0){
+        var pxGeometry=this.generateFace("px",voxel);
+        geometries.push( pxGeometry.applyMatrix4( matrix ) )
+      }
+      if(this.getVoxel(x,y-1,z)==0){
+        var nyGeometry=this.generateFace("ny",voxel);
+        geometries.push( nyGeometry.applyMatrix4( matrix ) )
+      }
+      if(this.getVoxel(x,y+1,z)==0){
+        var pyGeometry=this.generateFace("py",voxel);
+        geometries.push( pyGeometry.applyMatrix4( matrix ) )
+      }
+      if(this.getVoxel(x,y,z-1)==0){
+        var nzGeometry=this.generateFace("nz",voxel);
+        geometries.push( nzGeometry.applyMatrix4( matrix ) )
+      }
+      if(this.getVoxel(x,y,z+1)==0){
+        var pzGeometry=this.generateFace("pz",voxel);
+        geometries.push( pzGeometry.applyMatrix4( matrix ) )
+      } 
+      return geometries;
+    }else{
+      return []
+    }
+  }
+  generateFace(type,voxel){
+    var geometry = new THREE.PlaneBufferGeometry(1, 1);
+    if(type=="px"){
+      geometry.rotateY( Math.PI / 2 );
+      geometry.translate( 0.5, 0, 0 );
+    }
+    if(type=="nx"){
+      geometry.rotateY( - Math.PI / 2 );
+      geometry.translate( - 0.5, 0, 0 );
+    }
+    if(type=="py"){
+      geometry.rotateX( - Math.PI / 2 );
+      geometry.translate( 0, 0.5, 0 );
+    }
+    if(type=="ny"){
+      geometry.rotateX( Math.PI / 2 );
+      geometry.translate( 0, -0.5, 0 );
+    }
+    if(type=="pz"){
+      geometry.translate( 0, 0, 0.5 );
+    }
+    if(type=="nz"){
+      geometry.rotateY( Math.PI );
+      geometry.translate( 0, 0, -0.5 );
+    }
+    var uv=this.blocks[voxel][type]
+    this.setUv(geometry,uv[0],uv[1],180)
+    
+    return geometry;
+  }
+  setUv(geometry,x,y,rotation=0){
+    const {textureRows,textureCols}=this;
+    var textureSizeX=1/textureRows;
+    var textureSizeY=1/textureCols;
+    if(rotation==0){
+      geometry.attributes.uv.array[ 0 ] = textureSizeX*x;
+      geometry.attributes.uv.array[ 1 ] = textureSizeY*y;
+
+      geometry.attributes.uv.array[ 2 ] = textureSizeX+textureSizeX*x;
+      geometry.attributes.uv.array[ 3 ] = 0+textureSizeY*y;
+
+      geometry.attributes.uv.array[ 4 ] = 0+textureSizeX*x;
+      geometry.attributes.uv.array[ 5 ] = textureSizeY+textureSizeY*y;
+
+      geometry.attributes.uv.array[ 6 ] = textureSizeX+textureSizeX*x;
+      geometry.attributes.uv.array[ 7 ] = textureSizeY+textureSizeY*y;
+    }else if(rotation==180){
+      geometry.attributes.uv.array[ 4 ] = textureSizeX*x;
+      geometry.attributes.uv.array[ 5 ] = textureSizeY*y;
+
+      geometry.attributes.uv.array[ 6 ] = textureSizeX+textureSizeX*x;
+      geometry.attributes.uv.array[ 7 ] = 0+textureSizeY*y;
+
+      geometry.attributes.uv.array[ 0 ] = 0+textureSizeX*x;
+      geometry.attributes.uv.array[ 1 ] = textureSizeY+textureSizeY*y;
+
+      geometry.attributes.uv.array[ 2 ] = textureSizeX+textureSizeX*x;
+      geometry.attributes.uv.array[ 3 ] = textureSizeY+textureSizeY*y;
+    }
+  }
+  
+}
+class InventoryBar{
+  constructor(options){
+    this.boxSize=options.boxSize;
+    this.div=options.div;
+    this.padding=options.padding;
+    this.boxes=options.boxes;
+    this.setup()
+    this.activeBox=options.activeBox
+  }
+  setup(){
+    const {boxes,boxSize,padding}=this;
+    console.warn("InventoryBar created!")
+    var result=``;
+    for(var i=0;i<boxes;i++){
+      result+=`<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" width=${boxSize} height=${boxSize} style="border:1px solid black" alt="">`
+    }
+    $(this.div).html(result);
+    $(this.div).attr(`style`,`position:fixed;bottom:3px;left:50%;width:${(boxSize+2)*boxes}px;margin-left:-${boxSize*boxes/2}px;height:${boxSize}px;`)
+  }
+  setBox(number,imageSrc){
+    if(imageSrc==null){
+      imageSrc="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+    }
+    $(`${this.div} img`).eq(number-1).attr("src",imageSrc)
+  }
+  setFocus(number,state){
+    if(state){
+      $(`${this.div} img`).eq(number-1).css("background","rgba(0,0,0,0.7)")
+      $(`${this.div} img`).eq(number-1).css("border","1px solid black")
+    }else{
+      $(`${this.div} img`).eq(number-1).css("background","rgba(54,54,54,0.5)")
+      $(`${this.div} img`).eq(number-1).css("border","1px solid #363636")
+    }
+  }
+  setFocusOnly(number){
+    const {boxes}=this;
+    for(var i=1;i<=boxes;i++){
+      this.setFocus(i,i==number)
+    }
+    this.activeBox=number
+  }
+  moveBoxMinus(){
+    if(this.activeBox+1>this.boxes){
+      this.setFocusOnly(1);
+    }else{
+      this.setFocusOnly(this.activeBox+1);
+    }
+  }
+  moveBoxPlus(){
+    if(this.activeBox-1==0){
+      this.setFocusOnly(this.boxes);
+    }else{
+      this.setFocusOnly(this.activeBox-1);
+    }
+  }
+  directBoxChange(event){
+    var code=event.keyCode
+    if(code>=49 && code<=49+this.boxes){
+      this.setFocusOnly(code-48)
+    }
+  }
+}
+
+
+class FirstPersonControls{
+  constructor(options){
+    this.kc={"w":87,"s":83,"a":65,"d":68,"space":32,"shift":16};
+    this.keys={}
+    this.canvas=options.canvas
+    this.camera=options.camera;
+    this.micromove=options.micromove
+  }
+  ac(qx,qy,qa,qf){
+    var m_x=-Math.sin(qa)*qf;
+    var m_y=-Math.cos(qa)*qf;
+    var r_x=qx-m_x;
+    var r_y=qy-m_y;
+    return {x:r_x,y:r_y};
+  }
+  degtorad(deg){
+    return deg*Math.PI/180;
+  }
+  radtodeg(rad){
+    return rad*180/Math.PI;
+  }
+  camMicroMove(){
+    // console.log(this.micromove)
+    if(this.keys[this.kc["w"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(180),this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(180),this.micromove).y;
+    }
+    if(this.keys[this.kc["s"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y,this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y,this.micromove).y;
+    }
+    if(this.keys[this.kc["a"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y-this.degtorad(90),this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y-this.degtorad(90),this.micromove).y;
+    }
+    if(this.keys[this.kc["d"]]){
+      this.camera.position.x=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(90),this.micromove).x;
+      this.camera.position.z=this.ac(this.camera.position.x,this.camera.position.z,this.camera.rotation.y+this.degtorad(90),this.micromove).y;
+    }
+    if(this.keys[this.kc["space"]]){
+      this.camera.position.y+=this.micromove;
+    }
+    if(this.keys[this.kc["shift"]]){
+      this.camera.position.y-=this.micromove;
+    }
+  }
+  lockPointer(){
+    this.canvas.requestPointerLock()
+  }
+}
+
+var inv_bar=new InventoryBar({
+  boxSize:60,
+  boxes:9,
+  padding:4,
+  div:".inventoryBar",
+  activeBox:1
+})
+
+inv_bar.setBox(1,"https://data4.cupsell.pl/upload/generator/46354/640x420/4510863_print_1.png?resize=max_sizes&key=55f9a22768eed085006592c1174c0235")
+inv_bar.setFocusOnly(1)
+
+$(window).on('wheel', function(event){
+  if(event.originalEvent.deltaY < 0){
+    inv_bar.moveBoxPlus()
+  }
+  else {
+    inv_bar.moveBoxMinus()
+  }
+})
+
+
+//Renderer
+  var canvas=document.querySelector('#c');
+  var renderer= new THREE.WebGLRenderer({
+    canvas
+  });
+
+//Scene
+  var scene = new THREE.Scene();
+  scene.background = new THREE.Color('lightblue');
+  // scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
+  scene.fog = new THREE.FogExp2( 0xffffff, 0.00015 );
+
+
+//Camera
+  var camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+  camera.rotation.order="YXZ"
+  camera.position.set(26,26,26)
+  
+//Setup First Person Controls
+  var FPC=new FirstPersonControls({
+    canvas:document.getElementById("c"),
+    camera,
+    micromove:0.1
+  })
+  var gameFocus=false;
+  function updatePosition(e) {
+    FPC.camera.rotation.x-=FPC.degtorad(e.movementY/10)
+    FPC.camera.rotation.y-=FPC.degtorad(e.movementX/10)
+    if(FPC.radtodeg(FPC.camera.rotation.x)<-90){
+      FPC.camera.rotation.x=FPC.degtorad(-90)
+    }
+    if(FPC.radtodeg(FPC.camera.rotation.x)>90){
+      FPC.camera.rotation.x=FPC.degtorad(90)
+    }
+  }
+  function lockChangeAlert() {
+    if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
+      document.addEventListener("mousemove", updatePosition, false);
+      $(".gameMenu").css("display","none")
+      gameFocus=true;
+    }else{
+      document.removeEventListener("mousemove", updatePosition, false);
+      $(".gameMenu").css("display","block")
+      gameFocus=false;
+    }
+  }
+  document.addEventListener('pointerlockchange', lockChangeAlert, false);
+  document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
+  $(document).keydown(function (z){
+    FPC.keys[z.keyCode]=true;
+    inv_bar.directBoxChange(z)
+  })
+  $(document).keyup(function (z){
+    delete FPC.keys[z.keyCode];
+  })
+  setInterval(function (){
+    if(gameFocus){
+      FPC.camMicroMove()
+    }
+    
+  },1)
+  $(".gameOn").click(function (){
+    FPC.lockPointer()
+  })
+
+
+//Stats
+  var stats = new Stats();
+  stats.showPanel( 0 ); // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild( stats.dom );
+
+
+//Lights,shadows,fogs
+  var ambientLight = new THREE.AmbientLight( 0xcccccc );
+  scene.add( ambientLight );
+  var directionalLight = new THREE.DirectionalLight( 0x666666, 2 );
+  directionalLight.position.set( 1, 1, 0.5 ).normalize();
+  scene.add( directionalLight );
+ 
+
+//Raycaster
+  var raycaster = new THREE.Raycaster();
+  var mouse = {x:0,y:0};
+
+
+//Textures
+  var texture = new THREE.TextureLoader().load( 'atla.png' );
+  texture.magFilter = THREE.NearestFilter;
+
+
+//Terrain
+  var world=new Terrain({
+    textureAtlas:texture,
+    textureRows:16,
+    textureCols:16,
+    cellSize:16,
+  })
+  var vari=50
+  // for(var i=0;i<vari;i++){
+  //   for(var j=0;j<vari;j++){
+  //     for(var k=0;k<vari;k++){
+  //       world.setVoxel(i,j,k,2)
+  //     }
+  //   }
+  // }
+  for (let y = 0; y < vari; ++y) {
+    for (let z = 0; z < vari; ++z) {
+      for (let x = 0; x < vari; ++x) {
+        const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
+        if (y < height) {
+            world.setVoxel(x, y, z, 2);
+        }
+      }
+    }
+  }
+
+
+//Raycast cube
+  var geometry = new THREE.BoxGeometry( 1, 1, 1 );
+  var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+  var edges = new THREE.EdgesGeometry( geometry );
+  var cube = new THREE.LineSegments( edges, new THREE.LineBasicMaterial( { color: 0x000000,linewidth:0.5 } ) );
+  // var cube=new THREE.Mesh(geometry,material)
+  var positionQ=[]
+  // cube.material.visible=false;
+  var selected=false;
+  scene.add( cube );
+
+
+function precision(number){
+  try{
+    var precision = (number + "").split(".")[1].length;
+  }catch(e){
+    precision=0;
+  }
+  
+  return precision;
+}
+
+
+
+function raycast(){
+  raycaster.setFromCamera( mouse, camera );
+  raycaster.far=10
+  // calculate objects intersecting the picking ray
+  var intersects = raycaster.intersectObjects( scene.children );
+  var miniDist=-1
+  var mini=null;
+  for ( var i = 0; i < intersects.length; i++ ) {
+    var ter=intersects[i]
+    if(ter.object.uuid!=cube.uuid){
+      if(miniDist==-1){
+        miniDist=ter.distance
+        mini=ter
+      }else if(miniDist>ter.distance){
+        miniDist=ter.distance
+        mini=ter;
+      }
+    } 
+  }
+  if(mini!=null){
+    selected=true;
+    cube.visible=true;
+    var xd=Math.round(mini.point.x)
+    var yd=Math.round(mini.point.y)
+    var zd=Math.round(mini.point.z)
+    if(precision(mini.point.x)==1){
+      var x1=Math.ceil(mini.point.x);
+      var x2=Math.floor(mini.point.x);
+      if(world.getVoxel(x1,yd,zd)){
+        cube.position.set(x1,yd,zd)
+      }else if(world.getVoxel(x2,yd,zd)){
+        cube.position.set(x2,yd,zd)
+      }
+      if(!world.getVoxel(x1,yd,zd)){
+        positionQ=[x1,yd,zd]
+      }else if(!world.getVoxel(x2,yd,zd)){
+        positionQ=[x2,yd,zd]
+      }
+    }else if(precision(mini.point.y)==1){
+      var y1=Math.ceil(mini.point.y);
+      var y2=Math.floor(mini.point.y);
+      if(world.getVoxel(xd,y1,zd)){
+        cube.position.set(xd,y1,zd)
+      }else if(world.getVoxel(xd,y2,zd)){
+        cube.position.set(xd,y2,zd)
+      }
+      if(!world.getVoxel(xd,y1,zd)){
+        positionQ=[xd,y1,zd]
+      }else if(!world.getVoxel(xd,y2,zd)){
+        positionQ=[xd,y2,zd]
+      }
+    }else if(precision(mini.point.z)==1){
+      var z1=Math.ceil(mini.point.z);
+      var z2=Math.floor(mini.point.z);
+      if(world.getVoxel(xd,yd,z1)){
+        cube.position.set(xd,yd,z1)
+      }else if(world.getVoxel(xd,yd,z2)){
+        cube.position.set(xd,yd,z2)
+      }
+      if(!world.getVoxel(xd,yd,z1)){
+        positionQ=[xd,yd,z1]
+      }else if(!world.getVoxel(xd,yd,z2)){
+        positionQ=[xd,yd,z2]
+      }
+    }else{
+      
+    }
+    // console.log(mini.point)
+  }else{
+    selected=false;
+    cube.visible=false;
+  }
+  
+}
+
+setInterval(function (){
+  raycast()
+})
+$(document).click(function (e){
+  // console.log(positionQ)
+  // console.log(cube.position)
+  if(selected){
+    if(e.which==1){
+      world.setVoxel(cube.position.x,cube.position.y,cube.position.z,0)
+    }else{
+      world.setVoxel(positionQ[0],positionQ[1],positionQ[2],1)
+      // console.log(world.cells[world.computeCellId(...positionQ)])
+    }
+  }else{
+    console.error("Jesteś za daleko!")
+  }
+  
+  
+})
+
+animate()
+
+
+function animate() {
+  stats.begin();
+  render()
+  stats.end();
+  requestAnimationFrame(animate)
+}
+
+function resizeRendererToDisplaySize(renderer) {
+  const canvas = renderer.domElement;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
+    // composer.setSize(width,height);
+  }
+
+  return needResize;
+}
+
+function render() {
+  if (resizeRendererToDisplaySize(renderer)) {
+    const canvas = renderer.domElement;
+    camera.aspect = canvas.clientWidth / canvas.clientHeight;
+    camera.updateProjectionMatrix();
+  }
+
+  renderer.render(scene, camera);
+  world.updateCells()
+}
+    </script>
+  </body>
+</html>
