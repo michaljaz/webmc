@@ -110,7 +110,7 @@ import {
 import Stats from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/libs/stats.module.js';
 
 import {FirstPersonControls} from './js/fpc.module.js?123';
-
+import { FBXLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/loaders/FBXLoader.js';
 
 //Renderer
 var canvas = document.querySelector('#c');
@@ -123,6 +123,17 @@ var scene = new THREE.Scene();
 scene.background = new THREE.Color('lightblue');
 // scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
 scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
+
+//clouds
+var loader = new FBXLoader();
+loader.load( 'clouds.fbx', function ( object ) {
+  object.scale.x=0.1
+  object.scale.y=0.1
+  object.scale.z=0.1
+  object.position.y=100
+  scene.add( object );
+
+} );
 
 
 //Camera
