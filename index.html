@@ -126,15 +126,13 @@ scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
 
 //clouds
 var loader = new FBXLoader();
-loader.load( 'clouds.fbx', function ( object ) {
+loader.load( 'objects/clouds.fbx', function ( object ) {
   object.scale.x=0.1
   object.scale.y=0.1
   object.scale.z=0.1
   object.position.y=100
   scene.add( object );
-
 } );
-
 
 //Camera
 var camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
@@ -714,7 +712,7 @@ function raycast() {
 setInterval(function () {
   raycast()
 })
-$(document).click(function (e) {
+$(document).mousedown(function (e) {
   // console.log(positionQ)
   // console.log(cube.position)
   if (selected && gameState=="game") {
