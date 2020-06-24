@@ -106,14 +106,14 @@ canvas {
     </div>
     <script src="js/jq.js?10210281028012"></script>
     <script type="module">
-import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/build/three.module.js';
+import * as THREE from 'https://threejs.org/build/three.module.js';
 import {
   BufferGeometryUtils
-} from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/utils/BufferGeometryUtils.js';
-import Stats from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/libs/stats.module.js';
+} from 'https://threejs.org/examples/jsm/utils/BufferGeometryUtils.js';
+import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js';
 
 import {FirstPersonControls} from './js/fpc.module.js?123';
-import { FBXLoader } from 'https://threejsfundamentals.org/threejs/resources/threejs/r115/examples/jsm/loaders/FBXLoader.js';
+import { FBXLoader } from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js';
 
 //Renderer
 var canvas = document.querySelector('#c');
@@ -127,15 +127,8 @@ scene.background = new THREE.Color('lightblue');
 // scene.fog= new THREE.Fog(new THREE.Color('lightblue'),50, 64)
 scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
 
-//clouds
-var loader = new FBXLoader();
-loader.load( 'objects/clouds.fbx', function ( object ) {
-  object.scale.x=0.1
-  object.scale.y=0.1
-  object.scale.z=0.1
-  object.position.y=100
-  scene.add( object );
-} );
+
+
 
 //Camera
 var camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
@@ -166,10 +159,38 @@ var mouse = {
 
 
 //Textures
-var texture = new THREE.TextureLoader().load('Terrain.png');
+var texture = new THREE.TextureLoader().load('atla.png');
 texture.magFilter = THREE.NearestFilter;
 
 var gameState="menu";
+
+
+//clouds
+var loader = new FBXLoader();
+loader.load( 'assets/models/clouds.fbx', function ( object ) {
+  object.scale.x=0.1
+  object.scale.y=0.1
+  object.scale.z=0.1
+  object.position.y=100
+  scene.add( object );
+} );
+
+var stairsGeometry;
+loader.load( 'assets/models/stairso.fbx', function ( object ) {
+  stairsGeometry=object.children[0].geometry
+  stairsGeometry.scale(10,10,10)
+  // object.scale.set(0.01,0.01,0.01)
+  // object.children[0].material=new THREE.MeshLambertMaterial({
+  //   map: texture,
+  //   side: 2
+  // })
+  // // var mesh=new THREE.Mesh(object.geometry,object.material);
+  // object.children[0].index=null
+
+
+  // scene.add(object)
+  // object.position.set(26,26,26)
+});
 
 
 class Terrain {
@@ -330,14 +351,23 @@ class Terrain {
           var voxelGeometries = this.generateVoxelGeometry(x * cellSize + i, y * cellSize + j, z * cellSize + k);
           // console.log(voxelGeometries)
           for (var l = 0; l < voxelGeometries.length; l++) {
+            if(voxelGeometries[l].index!=null){
+              voxelGeometries[l]=voxelGeometries[l].toNonIndexed()
+            }else{
+              console.log("NON INDEXED")
+            }
             geometries.push(voxelGeometries[l]);
+
           }
         }
       }
     }
     // console.log(geometries)
     if (geometries.length != 0) {
+      // console.log(geometries)
+      console.log(geometries)
       var geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
+      // console.log(geometry)
       geometry.computeBoundingSphere();
     } else {
       var geometry = null;
@@ -349,36 +379,49 @@ class Terrain {
     var voxel = this.getVoxel(x, y, z);
     var matrix = new THREE.Matrix4();
     matrix.makeTranslation(x, y, z);
-    if (this.blocks[voxel] != undefined) {
-      var geometries = [];
-      if (this.getVoxel(x - 1, y, z) == 0) {
-        var nxGeometry = this.generateFace("nx", voxel);
-        geometries.push(nxGeometry.applyMatrix4(matrix))
+    if(voxel==4){
+      // console.log(stairsGeometry)
+      var geo=stairsGeometry.clone()
+      geo=geo.applyMatrix4(matrix)
+      geo.translate(0,-0.25,0)
+      console.log(geo)
+      return [geo]
+
+
+      
+    }else{
+      if (this.blocks[voxel] != undefined) {
+        var geometries = [];
+        if (this.getVoxel(x - 1, y, z) == 0) {
+          var nxGeometry = this.generateFace("nx", voxel);
+          geometries.push(nxGeometry.applyMatrix4(matrix))
+        }
+        if (this.getVoxel(x + 1, y, z) == 0) {
+          var pxGeometry = this.generateFace("px", voxel);
+          geometries.push(pxGeometry.applyMatrix4(matrix))
+        }
+        if (this.getVoxel(x, y - 1, z) == 0) {
+          var nyGeometry = this.generateFace("ny", voxel);
+          geometries.push(nyGeometry.applyMatrix4(matrix))
+        }
+        if (this.getVoxel(x, y + 1, z) == 0) {
+          var pyGeometry = this.generateFace("py", voxel);
+          geometries.push(pyGeometry.applyMatrix4(matrix))
+        }
+        if (this.getVoxel(x, y, z - 1) == 0) {
+          var nzGeometry = this.generateFace("nz", voxel);
+          geometries.push(nzGeometry.applyMatrix4(matrix))
+        }
+        if (this.getVoxel(x, y, z + 1) == 0) {
+          var pzGeometry = this.generateFace("pz", voxel);
+          geometries.push(pzGeometry.applyMatrix4(matrix))
+        }
+        return geometries; 
+      } else {
+        return []
       }
-      if (this.getVoxel(x + 1, y, z) == 0) {
-        var pxGeometry = this.generateFace("px", voxel);
-        geometries.push(pxGeometry.applyMatrix4(matrix))
-      }
-      if (this.getVoxel(x, y - 1, z) == 0) {
-        var nyGeometry = this.generateFace("ny", voxel);
-        geometries.push(nyGeometry.applyMatrix4(matrix))
-      }
-      if (this.getVoxel(x, y + 1, z) == 0) {
-        var pyGeometry = this.generateFace("py", voxel);
-        geometries.push(pyGeometry.applyMatrix4(matrix))
-      }
-      if (this.getVoxel(x, y, z - 1) == 0) {
-        var nzGeometry = this.generateFace("nz", voxel);
-        geometries.push(nzGeometry.applyMatrix4(matrix))
-      }
-      if (this.getVoxel(x, y, z + 1) == 0) {
-        var pzGeometry = this.generateFace("pz", voxel);
-        geometries.push(pzGeometry.applyMatrix4(matrix))
-      }
-      return geometries;
-    } else {
-      return []
     }
+    
   }
   generateFace(type, voxel) {
     var geometry = new THREE.PlaneBufferGeometry(1, 1);
@@ -546,7 +589,7 @@ class InventoryBar {
 //Setup inventory bar
 var inv_bar = new InventoryBar({
   boxSize: 60,
-  boxes: 3,
+  boxes: 4,
   padding: 4,
   div: ".inventoryBar",
   activeBox: 1
@@ -724,6 +767,7 @@ $(document).mousedown(function (e) {
     } else {
       //Budowanie
       world.setVoxel(positionQ[0], positionQ[1], positionQ[2], inv_bar.activeBox)
+      // console.log(inv_bar.activeBox)
       // console.log(world.cells[world.computeCellId(...positionQ)])
     }
   }
@@ -737,6 +781,7 @@ animate()
 function animate() {
   stats.begin();
   render()
+  // console.log(renderer.info.render.calls)
   stats.end();
   requestAnimationFrame(animate)
 }
