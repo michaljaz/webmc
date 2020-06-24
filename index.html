@@ -130,6 +130,9 @@ class Terrain {
       [0, 0, 1]
     ],
     this.blocks = {
+      0: {
+        isSolid:false
+      },
       1: {
         name:"grass",
         isSolid:true,
@@ -327,29 +330,29 @@ class Terrain {
 
       
     }else{
-      if (this.blocks[voxel] != undefined) {
+      if (voxel!=0 && voxel!=4) {
         var geometries = [];
-        if (this.getVoxel(x - 1, y, z) == 0) {
+        if (!this.blocks[this.getVoxel(x - 1, y, z)].isSolid) {
           var nxGeometry = this.generateFace("nx", voxel);
           geometries.push(nxGeometry.applyMatrix4(matrix))
         }
-        if (this.getVoxel(x + 1, y, z) == 0) {
+        if (!this.blocks[this.getVoxel(x + 1, y, z)].isSolid) {
           var pxGeometry = this.generateFace("px", voxel);
           geometries.push(pxGeometry.applyMatrix4(matrix))
         }
-        if (this.getVoxel(x, y - 1, z) == 0) {
+        if (!this.blocks[this.getVoxel(x, y - 1, z)].isSolid) {
           var nyGeometry = this.generateFace("ny", voxel);
           geometries.push(nyGeometry.applyMatrix4(matrix))
         }
-        if (this.getVoxel(x, y + 1, z) == 0) {
+        if (!this.blocks[this.getVoxel(x, y + 1, z)].isSolid) {
           var pyGeometry = this.generateFace("py", voxel);
           geometries.push(pyGeometry.applyMatrix4(matrix))
         }
-        if (this.getVoxel(x, y, z - 1) == 0) {
+        if (!this.blocks[this.getVoxel(x, y, z - 1)].isSolid) {
           var nzGeometry = this.generateFace("nz", voxel);
           geometries.push(nzGeometry.applyMatrix4(matrix))
         }
-        if (this.getVoxel(x, y, z + 1) == 0) {
+        if (!this.blocks[this.getVoxel(x, y, z + 1)].isSolid) {
           var pzGeometry = this.generateFace("pz", voxel);
           geometries.push(pzGeometry.applyMatrix4(matrix))
         }
