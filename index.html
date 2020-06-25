@@ -110,8 +110,6 @@ import * as THREE from 'https://threejs.org/build/three.module.js';
 import {BufferGeometryUtils} from 'https://threejs.org/examples/jsm/utils/BufferGeometryUtils.js';
 import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js';
 import {FBXLoader} from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js';
-import {FirstPersonControls} from './js/fpc.module.js?123';
-
 
 class Terrain {
   constructor(options) {
@@ -498,6 +496,67 @@ class InventoryBar {
   }
 }
 
+class FirstPersonControls {
+  constructor(options) {
+    this.kc = {
+      "w": 87,
+      "s": 83,
+      "a": 65,
+      "d": 68,
+      "space": 32,
+      "shift": 16
+    };
+    this.keys = {}
+    this.canvas = options.canvas
+    this.camera = options.camera;
+    this.micromove = options.micromove
+  }
+  ac(qx, qy, qa, qf) {
+    var m_x = -Math.sin(qa) * qf;
+    var m_y = -Math.cos(qa) * qf;
+    var r_x = qx - m_x;
+    var r_y = qy - m_y;
+    return {
+      x: r_x,
+      y: r_y
+    };
+  }
+  degtorad(deg) {
+    return deg * Math.PI / 180;
+  }
+  radtodeg(rad) {
+    return rad * 180 / Math.PI;
+  }
+  camMicroMove() {
+    // console.log(this.micromove)
+    if (this.keys[this.kc["w"]]) {
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(180), this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(180), this.micromove).y;
+    }
+    if (this.keys[this.kc["s"]]) {
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y, this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y, this.micromove).y;
+    }
+    if (this.keys[this.kc["a"]]) {
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - this.degtorad(90), this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - this.degtorad(90), this.micromove).y;
+    }
+    if (this.keys[this.kc["d"]]) {
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(90), this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(90), this.micromove).y;
+    }
+    if (this.keys[this.kc["space"]]) {
+      this.camera.position.y += this.micromove;
+    }
+    if (this.keys[this.kc["shift"]]) {
+      this.camera.position.y -= this.micromove;
+    }
+  }
+  lockPointer() {
+    this.canvas.requestPointerLock()
+  }
+}
+
 
 var canvas,renderer,scene,camera,stats,raycaster,
   gameState,stairsGeometry,world,selected,positionQ,cube,FPC;
@@ -524,13 +583,13 @@ function init(){
 
   var ambientLight = new THREE.AmbientLight(0xcccccc);
   scene.add(ambientLight);
-  var directionalLight = new THREE.DirectionalLight(0x666666, 2);
+  var directionalLight = new THREE.DirectionalLight(0x333333, 2);
   directionalLight.position.set(1, 1, 0.5).normalize();
   scene.add(directionalLight);
 
   raycaster = new THREE.Raycaster();
 
-  var texture = new THREE.TextureLoader().load('atla.png');
+  var texture = new THREE.TextureLoader().load('assets/textures/atla.png');
   texture.magFilter = THREE.NearestFilter;
 
   gameState="menu";
@@ -654,7 +713,6 @@ function init(){
   })
 }
 
-
 function precision(number) {
   try {
     var precision = (number + "").split(".")[1].length;
@@ -664,7 +722,6 @@ function precision(number) {
 
   return precision;
 }
-
 
 function raycast() {
   raycaster.setFromCamera({x:0,y:0}, camera);
@@ -734,7 +791,6 @@ function raycast() {
     cube.visible = false;
   }
 }
-
 
 function animate() {
   stats.begin();
