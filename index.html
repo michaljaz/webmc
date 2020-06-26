@@ -133,12 +133,12 @@ class Terrain {
         name:"grass",
         isSolid:true,
         faces: {
-          nx: [2, 15],
+          nx: [3, 15],
           ny: [2, 15],
-          nz: [2, 15],
-          px: [2, 15],
-          py: [2, 15],
-          pz: [2, 15]
+          nz: [3, 15],
+          px: [3, 15],
+          py: [0, 15],
+          pz: [3, 15]
         }
       },
       2: {
@@ -169,6 +169,11 @@ class Terrain {
         name:"stairs",
         isSolid:false,
         model:"assets/models/stairs.fbx"
+      },
+      5: {
+        name:"stairs",
+        isSolid:false,
+        model:"assets/models/anvil.fbx"
       }
     }
   }
@@ -308,6 +313,11 @@ class Terrain {
     matrix.makeTranslation(x, y, z);
     if(voxel==4){
       var geo=stairsGeometry.clone()
+      geo=geo.applyMatrix4(matrix)
+      geo.translate(0,-0.25,0)
+      return [geo]
+    }if(voxel==5){
+      var geo=anvilGeometry.clone()
       geo=geo.applyMatrix4(matrix)
       geo.translate(0,-0.25,0)
       return [geo]
@@ -625,7 +635,7 @@ class FirstPersonControls {
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,stairsGeometry,world,cube,FPC;
+  gameState,stairsGeometry,world,cube,FPC,anvilGeometry;
 
 init()
 animate()
@@ -655,7 +665,7 @@ function init(){
 
   raycaster = new THREE.Raycaster();
 
-  var texture = new THREE.TextureLoader().load('assets/textures/atla.png');
+  var texture = new THREE.TextureLoader().load('assets/textures/mcatlas.png');
   texture.magFilter = THREE.NearestFilter;
 
   gameState="menu";
@@ -671,6 +681,12 @@ function init(){
   loader.load( 'assets/models/stairso.fbx', function ( object ) {
     stairsGeometry=object.children[0].geometry
     stairsGeometry.scale(10,10,10)
+  });
+  loader.load( 'assets/models/anvil.fbx', function ( object ) {
+    anvilGeometry=object.children[0].geometry
+    anvilGeometry.scale(1,1,1)
+    anvilGeometry.rotateX(-Math.PI/2)
+    anvilGeometry.translate(0,0.17,0)
   });
 
   world = new Terrain({
@@ -692,15 +708,16 @@ function init(){
   }
   var inv_bar = new InventoryBar({
     boxSize: 60,
-    boxes: 4,
+    boxes: 5,
     padding: 4,
     div: ".inventoryBar",
     activeBox: 1
   })
-  inv_bar.setBox(1,"https://gamepedia.cursecdn.com/minecraft_gamepedia/6/62/Dirt_JE2_BE1.png")
+  inv_bar.setBox(1,"https://gamepedia.cursecdn.com/minecraft_gamepedia/6/6a/Grass_Block_JE6_BE5.png")
   inv_bar.setBox(2,"https://gamepedia.cursecdn.com/minecraft_gamepedia/2/29/Stone_JE4_BE2.png")
   inv_bar.setBox(3,"https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Oak_Planks_JE6_BE3.png")
   inv_bar.setBox(4,"https://gamepedia.cursecdn.com/minecraft_gamepedia/archive/e/e0/20200317210502%21Stone_Brick_Stairs_JE3_BE2.png?version=29cb53ead07bbd3a08d158397d1078d5")
+  inv_bar.setBox(5,"https://vignette.wikia.nocookie.net/minecraft/images/4/4e/AnvilNew.png/revision/latest?cb=20200226224259")
   inv_bar.setFocusOnly(1)
 
   $(window).on('wheel', function (event) {
