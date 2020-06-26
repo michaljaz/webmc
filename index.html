@@ -2,55 +2,53 @@
 <html>
   <head>
     <title>Minecraft</title>
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-    <!-- Google Fonts -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-    <!-- Bootstrap core CSS -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Material Design Bootstrap -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
-    <!-- JQuery -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- Bootstrap tooltips -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-    <!-- Bootstrap core JavaScript -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-    <!-- MDB core JavaScript -->
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
-    <style>
-body { margin: 0; }
-canvas { 
-  display: block; 
-  width:100%;
-  height:100%;
-  position:fixed;
-  top:0px;
-  left:0px
-}
-.cross{
-  z-index:9;
-  position:fixed;
-  top:50%;
-  left:50%;
-  margin-top:-15px;
-  margin-left:-15px;
-}
-.gameMenu{
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width:800px;
-  height:400px;
-  background:#303030;
-  z-index:99999;
-  color:white;
-}
 
-    </style>
+    <div css>
+      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
+      <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
+      <style>
+        body { margin: 0; }
+        canvas { 
+          display: block; 
+          width:100%;
+          height:100%;
+          position:fixed;
+          top:0px;
+          left:0px
+        }
+        .cross{
+          z-index:9;
+          position:fixed;
+          top:50%;
+          left:50%;
+          margin-top:-15px;
+          margin-left:-15px;
+        }
+        .gameMenu{
+          margin: 0;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          -ms-transform: translate(-50%, -50%);
+          transform: translate(-50%, -50%);
+          width:800px;
+          height:400px;
+          background:#303030;
+          z-index:99999;
+          color:white;
+        }
+      </style>
+    </div>
+
+    <div js>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
+    </div>
+
   </head>
   <body>
     <canvas id="c"></canvas>
@@ -282,17 +280,13 @@ class Terrain {
       cellSize
     } = this;
     var geometries = [];
-    // Object.forEach(this.cells)
     for (var i = 0; i < cellSize; i++) {
       for (var j = 0; j < cellSize; j++) {
         for (var k = 0; k < cellSize; k++) {
           var voxelGeometries = this.generateVoxelGeometry(x * cellSize + i, y * cellSize + j, z * cellSize + k);
-          // console.log(voxelGeometries)
           for (var l = 0; l < voxelGeometries.length; l++) {
             if(voxelGeometries[l].index!=null){
               voxelGeometries[l]=voxelGeometries[l].toNonIndexed()
-            }else{
-              // console.log("NON INDEXED")
             }
             geometries.push(voxelGeometries[l]);
 
@@ -300,12 +294,8 @@ class Terrain {
         }
       }
     }
-    // console.log(geometries)
     if (geometries.length != 0) {
-      // console.log(geometries)
-      // console.log(geometries)
       var geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
-      // console.log(geometry)
       geometry.computeBoundingSphere();
     } else {
       var geometry = null;
@@ -313,20 +303,14 @@ class Terrain {
     return geometry;
   }
   generateVoxelGeometry(x, y, z) {
-    // console.log(x,y,z)
     var voxel = this.getVoxel(x, y, z);
     var matrix = new THREE.Matrix4();
     matrix.makeTranslation(x, y, z);
     if(voxel==4){
-      // console.log(stairsGeometry)
       var geo=stairsGeometry.clone()
       geo=geo.applyMatrix4(matrix)
       geo.translate(0,-0.25,0)
-      console.log(geo)
       return [geo]
-
-
-      
     }else{
       if (voxel!=0 && voxel!=4) {
         var geometries = [];
@@ -424,6 +408,89 @@ class Terrain {
       geometry.attributes.uv.array[2] = textureSizeX + textureSizeX * x;
       geometry.attributes.uv.array[3] = textureSizeY + textureSizeY * y;
     }
+  }
+  intersectsRay(start,end){
+    start.x+=0.5;
+    start.y+=0.5;
+    start.z+=0.5;
+    end.x+=0.5;
+    end.y+=0.5
+    end.z+=0.5
+    let dx = end.x - start.x;
+    let dy = end.y - start.y;
+    let dz = end.z - start.z;
+    const lenSq = dx * dx + dy * dy + dz * dz;
+    const len = Math.sqrt(lenSq);
+
+    dx /= len;
+    dy /= len;
+    dz /= len;
+
+    let t = 0.0;
+    let ix = Math.floor(start.x);
+    let iy = Math.floor(start.y);
+    let iz = Math.floor(start.z);
+    const stepX = (dx > 0) ? 1 : -1;
+    const stepY = (dy > 0) ? 1 : -1;
+    const stepZ = (dz > 0) ? 1 : -1;
+
+    const txDelta = Math.abs(1 / dx);
+    const tyDelta = Math.abs(1 / dy);
+    const tzDelta = Math.abs(1 / dz);
+
+    const xDist = (stepX > 0) ? (ix + 1 - start.x) : (start.x - ix);
+    const yDist = (stepY > 0) ? (iy + 1 - start.y) : (start.y - iy);
+    const zDist = (stepZ > 0) ? (iz + 1 - start.z) : (start.z - iz);
+
+    let txMax = (txDelta < Infinity) ? txDelta * xDist : Infinity;
+    let tyMax = (tyDelta < Infinity) ? tyDelta * yDist : Infinity;
+    let tzMax = (tzDelta < Infinity) ? tzDelta * zDist : Infinity;
+
+    let steppedIndex = -1;
+    while (t <= len) {
+      const voxel = this.getVoxel(ix, iy, iz);
+      if (voxel) {
+        return {
+          position: [
+            start.x + t * dx,
+            start.y + t * dy,
+            start.z + t * dz,
+          ],
+          normal: [
+            steppedIndex === 0 ? -stepX : 0,
+            steppedIndex === 1 ? -stepY : 0,
+            steppedIndex === 2 ? -stepZ : 0,
+          ],
+          voxel,
+        };
+      }
+      if (txMax < tyMax) {
+        if (txMax < tzMax) {
+          ix += stepX;
+          t = txMax;
+          txMax += txDelta;
+          steppedIndex = 0;
+        } else {
+          iz += stepZ;
+          t = tzMax;
+          tzMax += tzDelta;
+          steppedIndex = 2;
+        }
+      } else {
+        if (tyMax < tzMax) {
+          iy += stepY;
+          t = tyMax;
+          tyMax += tyDelta;
+          steppedIndex = 1;
+        } else {
+          iz += stepZ;
+          t = tzMax;
+          tzMax += tzDelta;
+          steppedIndex = 2;
+        }
+      }
+    }
+    return null;
   }
 }
 
@@ -528,7 +595,6 @@ class FirstPersonControls {
     return rad * 180 / Math.PI;
   }
   camMicroMove() {
-    // console.log(this.micromove)
     if (this.keys[this.kc["w"]]) {
       this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(180), this.micromove).x;
       this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(180), this.micromove).y;
@@ -559,7 +625,7 @@ class FirstPersonControls {
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,stairsGeometry,world,selected,positionQ,cube,FPC;
+  gameState,stairsGeometry,world,cube,FPC;
 
 init()
 animate()
@@ -624,7 +690,6 @@ function init(){
       }
     }
   }
-
   var inv_bar = new InventoryBar({
     boxSize: 60,
     boxes: 4,
@@ -686,7 +751,6 @@ function init(){
     FPC.lockPointer()
   })
 
-  //Raycast cube
   var geometry = new THREE.BoxGeometry(1, 1, 1);
   var material = new THREE.MeshBasicMaterial({
     color: 0x00ff00
@@ -696,101 +760,45 @@ function init(){
     color: 0x000000,
     linewidth: 0.5
   }));
-  positionQ = []
-  selected = false;
   scene.add(cube);
-  setInterval(function () {
-    raycast()
-  })
   $(document).mousedown(function (e) {
-    if (selected && gameState=="game") {
+    if (gameState=="game") {
+      const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
+      const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
+      const intersection = world.intersectsRay(start, end);
       if (e.which == 1) {
-        world.setVoxel(cube.position.x, cube.position.y, cube.position.z, 0)
+        var voxelId=0;
       } else {
-        world.setVoxel(positionQ[0], positionQ[1], positionQ[2], inv_bar.activeBox)
+        var voxelId=inv_bar.activeBox;
+      }
+      if(intersection){
+        const pos = intersection.position.map((v, ndx) => {
+          return v + intersection.normal[ndx] * (voxelId > 0 ? 0.5 : -0.5);
+        });
+        world.setVoxel(...pos, voxelId);
       }
     }
   })
 }
-
-function precision(number) {
-  try {
-    var precision = (number + "").split(".")[1].length;
-  } catch (e) {
-    precision = 0;
-  }
-
-  return precision;
-}
-
-function raycast() {
-  raycaster.setFromCamera({x:0,y:0}, camera);
-  var intersects = raycaster.intersectObjects(scene.children);
-  var miniDist = -1
-  var mini = null;
-  for (var i = 0; i < intersects.length; i++) {
-    var ter = intersects[i]
-    if (ter.object.uuid != cube.uuid) {
-      if (miniDist == -1) {
-        miniDist = ter.distance
-        mini = ter
-      } else if (miniDist > ter.distance) {
-        miniDist = ter.distance
-        mini = ter;
-      }
-    }
-  }
-  if (mini != null) {
-    selected = true;
-    cube.visible = true;
-    var xd = Math.round(mini.point.x)
-    var yd = Math.round(mini.point.y)
-    var zd = Math.round(mini.point.z)
-    if (precision(mini.point.x) == 1) {
-      var x1 = Math.ceil(mini.point.x);
-      var x2 = Math.floor(mini.point.x);
-      if (world.getVoxel(x1, yd, zd)) {
-        cube.position.set(x1, yd, zd)
-      } else if (world.getVoxel(x2, yd, zd)) {
-        cube.position.set(x2, yd, zd)
-      }
-      if (!world.getVoxel(x1, yd, zd)) {
-        positionQ = [x1, yd, zd]
-      } else if (!world.getVoxel(x2, yd, zd)) {
-        positionQ = [x2, yd, zd]
-      }
-    } else if (precision(mini.point.y) == 1) {
-      var y1 = Math.ceil(mini.point.y);
-      var y2 = Math.floor(mini.point.y);
-      if (world.getVoxel(xd, y1, zd)) {
-        cube.position.set(xd, y1, zd)
-      } else if (world.getVoxel(xd, y2, zd)) {
-        cube.position.set(xd, y2, zd)
-      }
-      if (!world.getVoxel(xd, y1, zd)) {
-        positionQ = [xd, y1, zd]
-      } else if (!world.getVoxel(xd, y2, zd)) {
-        positionQ = [xd, y2, zd]
-      }
-    } else if (precision(mini.point.z) == 1) {
-      var z1 = Math.ceil(mini.point.z);
-      var z2 = Math.floor(mini.point.z);
-      if (world.getVoxel(xd, yd, z1)) {
-        cube.position.set(xd, yd, z1)
-      } else if (world.getVoxel(xd, yd, z2)) {
-        cube.position.set(xd, yd, z2)
-      }
-      if (!world.getVoxel(xd, yd, z1)) {
-        positionQ = [xd, yd, z1]
-      } else if (!world.getVoxel(xd, yd, z2)) {
-        positionQ = [xd, yd, z2]
-      }
-    }
-  } else {
-    selected = false;
-    cube.visible = false;
+function updateCursor(){
+  const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
+  const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
+  const intersection = world.intersectsRay(start, end);
+  if(intersection){
+    const pos = intersection.position.map((v, ndx) => {
+      return v + intersection.normal[ndx] * -0.5;
+    });
+    pos[0]=Math.floor(pos[0])
+    pos[1]=Math.floor(pos[1])
+    pos[2]=Math.floor(pos[2])
+    cube.position.set(...pos)
+    // console.log(pos)
+    cube.visible=true;
+  }else{
+    cube.visible=false;
   }
 }
+
 
 function animate() {
   stats.begin();
@@ -821,6 +829,7 @@ function render() {
   }
   renderer.render(scene, camera);
   world.updateCells()
+  updateCursor()
 }
     </script>
   </body>
