@@ -1,7 +1,7 @@
 # web-minecraft
 Render minecrafta w przeglądarce
 <br><br>
-<img src="screenshot.png"
+<img src="screenshotx.png"
      alt="Screenshot"
      style="float: left; margin-right: 10px;" />
      <br><br>
