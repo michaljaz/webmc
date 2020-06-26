@@ -687,6 +687,20 @@ function init(){
     anvilGeometry.rotateX(-Math.PI/2)
     anvilGeometry.translate(0,0.17,0)
   });
+  loader.load( 'assets/models/villager.fbx', function ( object ) {
+    // object.scale.set(0.01,0.01,0.01)
+    // console.log(object)
+    var texturex = new THREE.TextureLoader().load('assets/textures/villager.png');
+    texturex.magFilter = THREE.NearestFilter;
+
+    object.children[1].scale.set(1,1,1)
+    object.children[1].position.set(26,26,26)
+    object.children[0].material.map=texturex
+    object.children[0].material.color=new THREE.Color( 0xffffff );
+    object.children[1].children[0].children[1].children[2].rotation.x=Math.PI/4
+    console.log(object.children[1])
+    scene.add(object)
+  });
 
   world = new Terrain({
     textureAtlas: texture,
