@@ -168,12 +168,58 @@ class Terrain {
       4: {
         name:"stairs",
         isSolid:false,
-        model:"assets/models/stairs.fbx"
       },
       5: {
         name:"stairs",
         isSolid:false,
-        model:"assets/models/anvil.fbx"
+      },
+      6: {
+        name:"brick",
+        isSolid:true,
+        faces: {
+          nx: [7, 15],
+          ny: [7, 15],
+          nz: [7, 15],
+          px: [7, 15],
+          py: [7, 15],
+          pz: [7, 15]
+        }
+      },
+      7: {
+        name:"furnace",
+        isSolid:true,
+        faces: {
+          nx: [13, 13],
+          ny: [13, 13],
+          nz: [13, 13],
+          px: [12, 13],
+          py: [14,12],
+          pz: [13,13]
+        }
+      },
+      8: {
+        name:"library",
+        isSolid:true,
+        faces: {
+          nx: [3, 13],
+          ny: [4, 15],
+          nz: [3, 13],
+          px: [3, 13],
+          py: [4,15],
+          pz: [3,13]
+        }
+      },
+      9: {
+        name:"tnt",
+        isSolid:true,
+        faces: {
+          nx: [8, 15],
+          ny: [10, 15],
+          nz: [8, 15],
+          px: [8, 15],
+          py: [9, 15],
+          pz: [8, 15]
+        }
       }
     }
   }
@@ -316,7 +362,7 @@ class Terrain {
       geo=geo.applyMatrix4(matrix)
       geo.translate(0,-0.25,0)
       return [geo]
-    }if(voxel==5){
+    }else if(voxel==5){
       var geo=anvilGeometry.clone()
       geo=geo.applyMatrix4(matrix)
       geo.translate(0,-0.25,0)
@@ -664,7 +710,7 @@ function init(){
 
   raycaster = new THREE.Raycaster();
 
-  var texture = new THREE.TextureLoader().load('assets/textures/mcatlas.png');
+  var texture = new THREE.TextureLoader().load('assets/textures/Terrain.png');
   texture.magFilter = THREE.NearestFilter;
 
   gameState="menu";
@@ -721,7 +767,7 @@ function init(){
   }
   var inv_bar = new InventoryBar({
     boxSize: 60,
-    boxes: 5,
+    boxes: 9,
     padding: 4,
     div: ".inventoryBar",
     activeBox: 1
@@ -731,6 +777,10 @@ function init(){
   inv_bar.setBox(3,"https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Oak_Planks_JE6_BE3.png")
   inv_bar.setBox(4,"https://gamepedia.cursecdn.com/minecraft_gamepedia/archive/e/e0/20200317210502%21Stone_Brick_Stairs_JE3_BE2.png?version=29cb53ead07bbd3a08d158397d1078d5")
   inv_bar.setBox(5,"https://vignette.wikia.nocookie.net/minecraft/images/4/4e/AnvilNew.png/revision/latest?cb=20200226224259")
+  inv_bar.setBox(6,"https://gamepedia.cursecdn.com/minecraft_gamepedia/6/62/Bricks_JE5_BE3.png")
+  inv_bar.setBox(7,"https://gamepedia.cursecdn.com/minecraft_pl_gamepedia/c/c0/Furnace_przed_Texture_Update.png")
+  inv_bar.setBox(8,"https://gamepedia.cursecdn.com/minecraft_gamepedia/0/05/Bookshelf_JE4_BE2.png")
+  inv_bar.setBox(9,"https://gamepedia.cursecdn.com/minecraft_pl_gamepedia/1/1e/TNT.png")
   inv_bar.setFocusOnly(1)
 
   $(window).on('wheel', function (event) {
