@@ -681,7 +681,7 @@ class FirstPersonControls {
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,stairsGeometry,world,cube,FPC,anvilGeometry,socket;
+  gameState,stairsGeometry,world,cube,FPC,anvilGeometry,socket,playerObject;
 
 init()
 animate()
@@ -699,6 +699,42 @@ function init(){
   })
   socket.on("blockUpdate",function (block){
     world.setVoxel(...block)
+  })
+  var playersx={}
+  socket.on("playerUpdate",function (players){
+    var sockets={};
+    Object.keys(players).forEach(function (p){
+      sockets[p]=true;
+      if(playersx[p]==undefined && p!=socket.id){
+        loader.load( 'assets/models/player.fbx', function ( object ) {
+          var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
+          texturex.magFilter = THREE.NearestFilter;
+          object.children[1].scale.set(1,1,1)
+          object.children[1].position.set(25,25,25)
+          object.children[0].material.map=texturex
+          object.children[0].material.color=new THREE.Color( 0xffffff );
+          object.children[1].scale.set(0.5,0.5,0.5)
+          scene.add(object)
+          playersx[p]=object;
+        });
+      }
+      try{
+        playersx[p].children[1].position.set(players[p].x,players[p].y-0.5,players[p].z)
+        playersx[p].children[1].children[0].children[0].children[0].children[2].rotation.x=players[p].xyaw;
+        playersx[p].children[1].children[0].rotation.z=players[p].zyaw
+      }catch(e){}
+      
+      // setInterval(function (){
+      //       object.children[1].children[0].children[0].children[0].children[2].rotation.x=-camera.rotation.x
+      //       object.children[1].children[0].rotation.z=camera.rotation.y+Math.PI
+      //     })
+    })
+    Object.keys(playersx).forEach(function (p){
+      if(sockets[p]==undefined){
+        scene.remove(playersx[p]);
+        delete playersx[p]
+      }
+    })
   })
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -747,20 +783,24 @@ function init(){
     anvilGeometry.rotateX(-Math.PI/2)
     anvilGeometry.translate(0,0.17,0)
   });
-  loader.load( 'assets/models/villager.fbx', function ( object ) {
-    // object.scale.set(0.01,0.01,0.01)
-    // console.log(object)
-    var texturex = new THREE.TextureLoader().load('assets/textures/villager.png');
-    texturex.magFilter = THREE.NearestFilter;
 
-    object.children[1].scale.set(1,1,1)
-    object.children[1].position.set(26,26,26)
-    object.children[0].material.map=texturex
-    object.children[0].material.color=new THREE.Color( 0xffffff );
-    object.children[1].children[0].children[1].children[2].children[0].rotation.x=Math.PI/5
-    // console.log(object.children[1].children[0].children[1].children[2])
-    scene.add(object)
-  });
+  // loader.load( 'assets/models/player.fbx', function ( object ) {
+  //   // object.scale.set(0.01,0.01,0.01)
+  //   // console.log(object)
+  //   var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
+  //   texturex.magFilter = THREE.NearestFilter;
+
+  //   object.children[1].scale.set(1,1,1)
+  //   object.children[1].position.set(25,25,25)
+  //   object.children[0].material.map=texturex
+  //   object.children[0].material.color=new THREE.Color( 0xffffff );
+  //   object.children[1].scale.set(0.5,0.5,0.5)
+  //   setInterval(function (){
+  //     object.children[1].children[0].children[0].children[0].children[2].rotation.x=-camera.rotation.x
+  //     object.children[1].children[0].rotation.z=camera.rotation.y+Math.PI
+  //   })
+  //   scene.add(object)
+  // });
 
   world = new Terrain({
     textureAtlas: texture,
@@ -931,11 +971,20 @@ function render() {
     camera.updateProjectionMatrix();
   }
   if (gameState=="game") {
+    socket.emit("playerUpdate",{
+      x:camera.position.x,
+      y:camera.position.y,
+      z:camera.position.z,
+      xyaw:-camera.rotation.x,
+      zyaw:camera.rotation.y+Math.PI
+    })
     FPC.camMicroMove()
+
   }
   renderer.render(scene, camera);
   world.updateCells()
   updateCursor()
+  
 }
     </script>
   </body>
