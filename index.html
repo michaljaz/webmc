@@ -47,6 +47,7 @@
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
+      <script src="http://wmc.glitch.me/socket.io/socket.io.js"></script>
     </div>
 
   </head>
@@ -242,7 +243,7 @@ class Terrain {
     const cellX = Math.floor(x / cellSize);
     const cellY = Math.floor(y / cellSize);
     const cellZ = Math.floor(z / cellSize);
-    return `${cellX}:${cellY}:${cellZ}`
+    return this.parseVec(cellX,cellY,cellZ)
   }
   getCellForVoxel(x, y, z) {
     return this.cells[this.computeCellId(x, y, z)];
@@ -680,12 +681,25 @@ class FirstPersonControls {
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,stairsGeometry,world,cube,FPC,anvilGeometry;
+  gameState,stairsGeometry,world,cube,FPC,anvilGeometry,socket;
 
 init()
 animate()
 
 function init(){
+  socket=io.connect("https://wmc.glitch.me/");
+  socket.on("connect",()=>{
+    console.log("Połączono z serverem socketio")
+    socket.emit("siemka","siemka")
+
+  })
+  socket.on("firstLoad",function (v){
+    console.log("Otrzymano pakiet świata!")
+    replaceWorld(v)
+  })
+  socket.on("blockUpdate",function (block){
+    world.setVoxel(...block)
+  })
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
     canvas
@@ -743,8 +757,8 @@ function init(){
     object.children[1].position.set(26,26,26)
     object.children[0].material.map=texturex
     object.children[0].material.color=new THREE.Color( 0xffffff );
-    object.children[1].children[0].children[1].children[2].rotation.x=Math.PI/4
-    console.log(object.children[1])
+    object.children[1].children[0].children[1].children[2].children[0].rotation.x=Math.PI/5
+    // console.log(object.children[1].children[0].children[1].children[2])
     scene.add(object)
   });
 
@@ -754,17 +768,17 @@ function init(){
     textureCols: 16,
     cellSize: 16,
   })
-  var vari=50
-  for (let y = 0; y < vari; ++y) {
-    for (let z = 0; z < vari; ++z) {
-      for (let x = 0; x < vari; ++x) {
-        const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
-        if (y < height) {
-          world.setVoxel(x, y, z, 2);
-        }
-      }
-    }
-  }
+  // var vari=50
+  // for (let y = 0; y < vari; ++y) {
+  //   for (let z = 0; z < vari; ++z) {
+  //     for (let x = 0; x < vari; ++x) {
+  //       const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
+  //       if (y < height) {
+  //         world.setVoxel(x, y, z, 2);
+  //       }
+  //     }
+  //   }
+  // }
   var inv_bar = new InventoryBar({
     boxSize: 60,
     boxes: 9,
@@ -855,11 +869,15 @@ function init(){
         const pos = intersection.position.map((v, ndx) => {
           return v + intersection.normal[ndx] * (voxelId > 0 ? 0.5 : -0.5);
         });
-        world.setVoxel(...pos, voxelId);
+        // world.setVoxel(...pos, voxelId);
+        socket.emit("blockUpdate",[...pos,voxelId])
       }
     }
   })
 }
+
+
+
 function updateCursor(){
   const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
   const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
@@ -879,6 +897,14 @@ function updateCursor(){
   }
 }
 
+function replaceWorld(voxels){
+  Object.keys(voxels).forEach(function (id){
+    // console.log(id)
+    if(voxels[id]!=world.getVoxel(...id.split(":"))){
+      world.setVoxel(...id.split(":"),voxels[id]);
+    }
+  })
+}
 
 function animate() {
   stats.begin();
