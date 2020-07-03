@@ -708,6 +708,7 @@ function init(){
       if(playersx[p]==undefined && p!=socket.id){
         loader.load( 'assets/models/player.fbx', function ( object ) {
           var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
+          console.log("Creating new player:"+p)
           texturex.magFilter = THREE.NearestFilter;
           object.children[1].scale.set(1,1,1)
           object.children[1].position.set(25,25,25)
@@ -729,6 +730,7 @@ function init(){
       //       object.children[1].children[0].rotation.z=camera.rotation.y+Math.PI
       //     })
     })
+    // console.log(players)
     Object.keys(playersx).forEach(function (p){
       if(sockets[p]==undefined){
         scene.remove(playersx[p]);
@@ -760,7 +762,7 @@ function init(){
 
   raycaster = new THREE.Raycaster();
 
-  var texture = new THREE.TextureLoader().load('assets/textures/mcatlas.png');
+  var texture = new THREE.TextureLoader().load('assets/textures/Terrain.png');
   texture.magFilter = THREE.NearestFilter;
 
   gameState="menu";
