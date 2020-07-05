@@ -349,6 +349,7 @@ class Terrain {
     if (geometries.length != 0) {
       var geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
       geometry.computeBoundingSphere();
+      geometry.computeVertexNormals();
     } else {
       var geometry = null;
     }
@@ -403,6 +404,8 @@ class Terrain {
   }
   generateFace(type, voxel) {
     var geometry = new THREE.PlaneBufferGeometry(1, 1);
+    var light = new THREE.Color( 0xffffff );
+    var shadow = new THREE.Color( 0x505050 );
     if (type == "px") {
       geometry.rotateY(Math.PI / 2);
       geometry.translate(0.5, 0, 0);
@@ -429,7 +432,6 @@ class Terrain {
     var uv = this.blocks[voxel]["faces"][type]
 
     this.setUv(geometry, uv[0], uv[1], 180)
-
     return geometry;
   }
   setUv(geometry, x, y, rotation = 0) {
@@ -744,8 +746,10 @@ function init(){
   });
 
   scene = new THREE.Scene();
-  scene.background = new THREE.Color('lightblue');
-  scene.fog = new THREE.FogExp2(0xffffff, 0.00015);
+  scene.background = new THREE.Color(0xb0b0b0);
+  const color = new THREE.Color(0xb0b0b0);
+  const density = 0.01;
+  scene.fog = new THREE.FogExp2(color, density);
 
   camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
   camera.rotation.order = "YXZ"
