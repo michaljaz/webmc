@@ -6,48 +6,17 @@
     <div css>
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css" rel="stylesheet">
-      <link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css" rel="stylesheet">
-      <style>
-        body { margin: 0; }
-        canvas { 
-          display: block; 
-          width:100%;
-          height:100%;
-          position:fixed;
-          top:0px;
-          left:0px
-        }
-        .cross{
-          z-index:9;
-          position:fixed;
-          top:50%;
-          left:50%;
-          margin-top:-15px;
-          margin-left:-15px;
-        }
-        .gameMenu{
-          margin: 0;
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          -ms-transform: translate(-50%, -50%);
-          transform: translate(-50%, -50%);
-          width:800px;
-          height:400px;
-          background:#303030;
-          z-index:99999;
-          color:white;
-        }
-      </style>
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
+      <link rel="stylesheet" href="css/main.css">
     </div>
 
     <div js>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
-      <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/js/mdb.min.js"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+      <script type="text/javascript" src="js/jq.js?1234"></script>
+      <script type="text/javascript" src="js/popper.min.js?1234"></script>
+      <script type="text/javascript" src="js/bootstrap.min.js?1234"></script>
+      <script type="text/javascript" src="js/mdb.min.js?1234"></script>
+      <script type="text/javascript" src="js/socket.io.js?1234"></script>
     </div>
 
   </head>
@@ -103,12 +72,11 @@
         </svg>
       </div>
     </div>
-    <script src="js/jq.js?10210281028012"></script>
     <script type="module">
-import * as THREE from 'https://threejs.org/build/three.module.js';
-import {BufferGeometryUtils} from 'https://threejs.org/examples/jsm/utils/BufferGeometryUtils.js';
-import Stats from 'https://threejs.org/examples/jsm/libs/stats.module.js';
-import {FBXLoader} from 'https://threejs.org/examples/jsm/loaders/FBXLoader.js';
+import * as THREE from './module/build/three.module.js';
+import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
+import Stats from './module/jsm/libs/stats.module.js';
+import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
 
 class Terrain {
   constructor(options) {
