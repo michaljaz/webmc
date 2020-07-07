@@ -1,7 +1,10 @@
-
+<!DOCTYPE html>
 <html>
   <head>
-    <title>Minecraft</title>
+
+    <title>Web-Minecraft</title>
+
+    <link rel="icon" href="https://gamepedia.cursecdn.com/minecraft_gamepedia/6/6a/Grass_Block_JE6_BE5.png">
 
     <div css>
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -73,6 +76,7 @@
       </div>
     </div>
     <script type="module">
+
 import * as THREE from './module/build/three.module.js';
 import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
 import Stats from './module/jsm/libs/stats.module.js';
@@ -646,6 +650,12 @@ class FirstPersonControls {
   }
   lockPointer() {
     this.canvas.requestPointerLock()
+  }
+}
+
+class Player {
+  constructor(options){
+
   }
 }
 
