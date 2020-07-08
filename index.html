@@ -102,9 +102,10 @@ class Terrain {
       [0, 1, 0],
       [0, 0, -1],
       [0, 0, 1]
-    ],
+    ]
     this.blocks = {
-      0: {
+      0:{
+        name:"air",
         isSolid:false
       },
       1: {
@@ -336,18 +337,9 @@ class Terrain {
     var voxel = this.getVoxel(x, y, z);
     var matrix = new THREE.Matrix4();
     matrix.makeTranslation(x, y, z);
-    if(voxel==4){
-      var geo=stairsGeometry.clone()
-      geo=geo.applyMatrix4(matrix)
-      geo.translate(0,-0.25,0)
-      return [geo]
-    }else if(voxel==5){
-      var geo=anvilGeometry.clone()
-      geo=geo.applyMatrix4(matrix)
-      geo.translate(0,-0.25,0)
-      return [geo]
-    }else{
-      if (voxel!=0 && voxel!=4) {
+    if(voxel){
+      if(this.blocks[voxel].isSolid){
+        //Normal block
         var geometries = [];
         if (!this.blocks[this.getVoxel(x - 1, y, z)].isSolid) {
           var nxGeometry = this.generateFace("nx", voxel);
@@ -374,10 +366,23 @@ class Terrain {
           geometries.push(pzGeometry.applyMatrix4(matrix))
         }
         return geometries; 
-      } else {
-        return []
+      }else{
+        if(voxel==4){
+          var geo=stairsGeometry.clone()
+          geo=geo.applyMatrix4(matrix)
+          geo.translate(0,-0.25,0)
+          return [geo]
+        }else if(voxel==5){
+          var geo=anvilGeometry.clone()
+          geo=geo.applyMatrix4(matrix)
+          geo.translate(0,-0.25,0)
+          return [geo]
+        }
       }
+    }else{
+      return []
     }
+    
   }
   generateFace(type, voxel) {
     var geometry = new THREE.PlaneBufferGeometry(1, 1);
@@ -682,16 +687,20 @@ class Entities {
   }
 }
 
-
-
-$.get("assets/textures/textureMapping.json",function (data){
-  textureAtlasMapping=data
-  console.log(data["bricks"].x)
-  init()
-  animate()
+$.get("assets/blocks.json",function (blocks){
+  Object.keys(blocks).forEach(function (p){
+    if(!blocks[p].isBlock){
+      console.log(blocks[p].name,"isn't a solid block")
+    }
+  })
 })
 
-
+$.get("assets/textureMapping.json",function (textureMapping){
+  textureAtlasMapping=textureMapping
+  init()
+  animate()
+  
+})
 
 
 function init(){
@@ -732,13 +741,8 @@ function init(){
         playersx[p].children[1].children[0].children[0].children[0].children[2].rotation.x=players[p].xyaw;
         playersx[p].children[1].children[0].rotation.z=players[p].zyaw
       }catch(e){}
-      
-      // setInterval(function (){
-      //       object.children[1].children[0].children[0].children[0].children[2].rotation.x=-camera.rotation.x
-      //       object.children[1].children[0].rotation.z=camera.rotation.y+Math.PI
-      //     })
     })
-    // console.log(players)
+
     Object.keys(playersx).forEach(function (p){
       if(sockets[p]==undefined){
         scene.remove(playersx[p]);
@@ -797,24 +801,21 @@ function init(){
     anvilGeometry.rotateX(-Math.PI/2)
     anvilGeometry.translate(0,0.17,0)
   });
-
-  // loader.load( 'assets/models/player.fbx', function ( object ) {
-  //   // object.scale.set(0.01,0.01,0.01)
-  //   // console.log(object)
-  //   var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
-  //   texturex.magFilter = THREE.NearestFilter;
-
-  //   object.children[1].scale.set(1,1,1)
-  //   object.children[1].position.set(25,25,25)
-  //   object.children[0].material.map=texturex
-  //   object.children[0].material.color=new THREE.Color( 0xffffff );
-  //   object.children[1].scale.set(0.5,0.5,0.5)
-  //   setInterval(function (){
-  //     object.children[1].children[0].children[0].children[0].children[2].rotation.x=-camera.rotation.x
-  //     object.children[1].children[0].rotation.z=camera.rotation.y+Math.PI
-  //   })
-  //   scene.add(object)
-  // });
+  loader.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
+    var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
+    console.log("Creating new player:")
+    texturex.magFilter = THREE.NearestFilter;
+    object.children[0].children[0].scale.set(0.01,0.01,0.01)
+    // object.children[1].position.set(25,25,25)
+    object.children[1].material.map=texturex
+    object.children[1].material.color=new THREE.Color( 0xffffff );
+    // object.children[1].scale.set(0.5,0.5,0.5)
+    console.log(object)
+    scene.add(object)
+    var x2=object.clone()
+    scene.add(x2)
+    x2.children[0].position.set(0,0,0)
+  });
 
   world = new Terrain({
     textureAtlas: texture,
@@ -822,17 +823,7 @@ function init(){
     textureCols: 27,
     cellSize: 16,
   })
-  // var vari=50
-  // for (let y = 0; y < vari; ++y) {
-  //   for (let z = 0; z < vari; ++z) {
-  //     for (let x = 0; x < vari; ++x) {
-  //       const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
-  //       if (y < height) {
-  //         world.setVoxel(x, y, z, 2);
-  //       }
-  //     }
-  //   }
-  // }
+
   var inv_bar = new InventoryBar({
     boxSize: 60,
     boxes: 9,
