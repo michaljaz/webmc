@@ -82,6 +82,11 @@ import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
 import Stats from './module/jsm/libs/stats.module.js';
 import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
 
+
+var canvas,renderer,scene,camera,stats,raycaster,
+  gameState,stairsGeometry,world,cube,FPC,anvilGeometry,socket,playerObject,textureAtlasMapping;
+
+
 class Terrain {
   constructor(options) {
     this.textureAtlas = options.textureAtlas;
@@ -106,36 +111,36 @@ class Terrain {
         name:"grass",
         isSolid:true,
         faces: {
-          nx: [3, 15],
-          ny: [2, 15],
-          nz: [3, 15],
-          px: [3, 15],
-          py: [0, 15],
-          pz: [3, 15]
+          nx: "grass_block_side",
+          ny: "grass_block_top",
+          nz: "grass_block_side",
+          px: "grass_block_side",
+          py: "grass_block_top",
+          pz: "grass_block_side"
         }
       },
       2: {
         name:"stone",
         isSolid:true,
         faces: {
-          nx: [1, 15],
-          ny: [1, 15],
-          nz: [1, 15],
-          px: [1, 15],
-          py: [1, 15],
-          pz: [1, 15]
+          nx: "stone",
+          ny: "stone",
+          nz: "stone",
+          px: "stone",
+          py: "stone",
+          pz: "stone"
         }
       },
       3: {
         name:"wood",
         isSolid:true,
         faces: {
-          nx: [4, 15],
-          ny: [4, 15],
-          nz: [4, 15],
-          px: [4, 15],
-          py: [4, 15],
-          pz: [4, 15]
+          nx: "oak_planks",
+          ny: "oak_planks",
+          nz: "oak_planks",
+          px: "oak_planks",
+          py: "oak_planks",
+          pz: "oak_planks"
         }
       },
       4: {
@@ -150,48 +155,48 @@ class Terrain {
         name:"brick",
         isSolid:true,
         faces: {
-          nx: [7, 15],
-          ny: [7, 15],
-          nz: [7, 15],
-          px: [7, 15],
-          py: [7, 15],
-          pz: [7, 15]
+          nx: "bricks",
+          ny: "bricks",
+          nz: "bricks",
+          px: "bricks",
+          py: "bricks",
+          pz: "bricks"
         }
       },
       7: {
         name:"furnace",
         isSolid:true,
         faces: {
-          nx: [13, 13],
-          ny: [13, 13],
-          nz: [13, 13],
-          px: [12, 13],
-          py: [14,12],
-          pz: [13,13]
+          nx: "furnace_side",
+          ny: "furnace_top",
+          nz: "furnace_side",
+          px: "furnace_side",
+          py: "furnace_top",
+          pz: "furnace_front",
         }
       },
       8: {
         name:"library",
         isSolid:true,
         faces: {
-          nx: [3, 13],
-          ny: [4, 15],
-          nz: [3, 13],
-          px: [3, 13],
-          py: [4,15],
-          pz: [3,13]
+          nx: "bookshelf",
+          ny: "oak_planks",
+          nz: "bookshelf",
+          px: "bookshelf",
+          py: "oak_planks",
+          pz: "bookshelf"
         }
       },
       9: {
         name:"tnt",
         isSolid:true,
         faces: {
-          nx: [8, 15],
-          ny: [10, 15],
-          nz: [8, 15],
-          px: [8, 15],
-          py: [9, 15],
-          pz: [8, 15]
+          nx: "tnt_side",
+          ny: "tnt_bottom",
+          nz: "tnt_side",
+          px: "tnt_side",
+          py: "tnt_top",
+          pz: "tnt_side"
         }
       }
     }
@@ -402,8 +407,16 @@ class Terrain {
       geometry.translate(0, 0, -0.5);
     }
     var uv = this.blocks[voxel]["faces"][type]
+    try{
+      var uvX=textureAtlasMapping[uv]["x"]-1
+      var uvY=27-textureAtlasMapping[uv]["y"]
+    }catch(e){
+      var uvX=1
+      var uvY=1
+    }
+    
 
-    this.setUv(geometry, uv[0], uv[1], 180)
+    this.setUv(geometry, uvX,uvY, 180)
     return geometry;
   }
   setUv(geometry, x, y, rotation = 0) {
@@ -653,18 +666,33 @@ class FirstPersonControls {
   }
 }
 
-class Player {
+class Entities {
   constructor(options){
+    this.entities={
+    }
+  }
+  updateEntities(){
+    const {entities}=this;
+    Object.keys(entities).forEach(function (p){
+
+    })
+  }
+  addEntity(name){
 
   }
 }
 
 
-var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,stairsGeometry,world,cube,FPC,anvilGeometry,socket,playerObject;
 
-init()
-animate()
+$.get("assets/textures/textureMapping.json",function (data){
+  textureAtlasMapping=data
+  console.log(data["bricks"].x)
+  init()
+  animate()
+})
+
+
+
 
 function init(){
   socket=io.connect("https://d93db05c1da1.ngrok.io/");
@@ -686,7 +714,7 @@ function init(){
     Object.keys(players).forEach(function (p){
       sockets[p]=true;
       if(playersx[p]==undefined && p!=socket.id){
-        loader.load( 'assets/models/player.fbx', function ( object ) {
+        loader.load( 'assets/models/player/player.fbx', function ( object ) {
           var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
           console.log("Creating new player:"+p)
           texturex.magFilter = THREE.NearestFilter;
@@ -744,24 +772,26 @@ function init(){
 
   raycaster = new THREE.Raycaster();
 
-  var texture = new THREE.TextureLoader().load('assets/textures/Terrain.png');
+  var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
   texture.magFilter = THREE.NearestFilter;
+
+  
 
   gameState="menu";
 
   var loader = new FBXLoader();
-  loader.load( 'assets/models/clouds.fbx', function ( object ) {
+  loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
     object.scale.x=0.1
     object.scale.y=0.1
     object.scale.z=0.1
     object.position.y=100
     scene.add( object );
   } );
-  loader.load( 'assets/models/stairso.fbx', function ( object ) {
+  loader.load( 'assets/models/stairs/stairs.fbx', function ( object ) {
     stairsGeometry=object.children[0].geometry
     stairsGeometry.scale(10,10,10)
   });
-  loader.load( 'assets/models/anvil.fbx', function ( object ) {
+  loader.load( 'assets/models/anvil/anvil.fbx', function ( object ) {
     anvilGeometry=object.children[0].geometry
     anvilGeometry.scale(1,1,1)
     anvilGeometry.rotateX(-Math.PI/2)
@@ -788,8 +818,8 @@ function init(){
 
   world = new Terrain({
     textureAtlas: texture,
-    textureRows: 16,
-    textureCols: 16,
+    textureRows: 27,
+    textureCols: 27,
     cellSize: 16,
   })
   // var vari=50
