@@ -3309,7 +3309,8 @@ var FBXLoader = ( function () {
 
 			var version = reader.getUint32();
 
-			console.log( 'THREE.FBXLoader: FBX binary version: ' + version );
+			// console.log(`Model loaded! (THREE.FBXLoader ${version})`)
+			// console.log( 'THREE.FBXLoader: FBX binary version: ' + version );
 
 			var allNodes = new FBXTree();
 

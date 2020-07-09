@@ -80,7 +80,7 @@
 import * as THREE from './module/build/three.module.js';
 import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
 import Stats from './module/jsm/libs/stats.module.js';
-import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
+import {FBXLoader} from './module/jsm/loaders/FBXLoader.js?1';
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
@@ -103,104 +103,7 @@ class Terrain {
       [0, 0, -1],
       [0, 0, 1]
     ]
-    this.blocks = {
-      0:{
-        name:"air",
-        isSolid:false
-      },
-      1: {
-        name:"grass",
-        isSolid:true,
-        faces: {
-          nx: "grass_block_side",
-          ny: "grass_block_top",
-          nz: "grass_block_side",
-          px: "grass_block_side",
-          py: "grass_block_top",
-          pz: "grass_block_side"
-        }
-      },
-      2: {
-        name:"stone",
-        isSolid:true,
-        faces: {
-          nx: "stone",
-          ny: "stone",
-          nz: "stone",
-          px: "stone",
-          py: "stone",
-          pz: "stone"
-        }
-      },
-      3: {
-        name:"wood",
-        isSolid:true,
-        faces: {
-          nx: "oak_planks",
-          ny: "oak_planks",
-          nz: "oak_planks",
-          px: "oak_planks",
-          py: "oak_planks",
-          pz: "oak_planks"
-        }
-      },
-      4: {
-        name:"stairs",
-        isSolid:false,
-      },
-      5: {
-        name:"stairs",
-        isSolid:false,
-      },
-      6: {
-        name:"brick",
-        isSolid:true,
-        faces: {
-          nx: "bricks",
-          ny: "bricks",
-          nz: "bricks",
-          px: "bricks",
-          py: "bricks",
-          pz: "bricks"
-        }
-      },
-      7: {
-        name:"furnace",
-        isSolid:true,
-        faces: {
-          nx: "furnace_side",
-          ny: "furnace_top",
-          nz: "furnace_side",
-          px: "furnace_side",
-          py: "furnace_top",
-          pz: "furnace_front",
-        }
-      },
-      8: {
-        name:"library",
-        isSolid:true,
-        faces: {
-          nx: "bookshelf",
-          ny: "oak_planks",
-          nz: "bookshelf",
-          px: "bookshelf",
-          py: "oak_planks",
-          pz: "bookshelf"
-        }
-      },
-      9: {
-        name:"tnt",
-        isSolid:true,
-        faces: {
-          nx: "tnt_side",
-          ny: "tnt_bottom",
-          nz: "tnt_side",
-          px: "tnt_side",
-          py: "tnt_top",
-          pz: "tnt_side"
-        }
-      }
-    }
+    this.models={}
   }
   parseVec(x, y, z) {
     return `${x}:${y}:${z}`;
@@ -338,51 +241,50 @@ class Terrain {
     var matrix = new THREE.Matrix4();
     matrix.makeTranslation(x, y, z);
     if(voxel){
-      if(this.blocks[voxel].isSolid){
+      if(this.blocks[voxel].isBlock){
         //Normal block
         var geometries = [];
-        if (!this.blocks[this.getVoxel(x - 1, y, z)].isSolid) {
+        if (!this.blocks[this.getVoxel(x - 1, y, z)].isBlock) {
           var nxGeometry = this.generateFace("nx", voxel);
           geometries.push(nxGeometry.applyMatrix4(matrix))
         }
-        if (!this.blocks[this.getVoxel(x + 1, y, z)].isSolid) {
+        if (!this.blocks[this.getVoxel(x + 1, y, z)].isBlock) {
           var pxGeometry = this.generateFace("px", voxel);
           geometries.push(pxGeometry.applyMatrix4(matrix))
         }
-        if (!this.blocks[this.getVoxel(x, y - 1, z)].isSolid) {
+        if (!this.blocks[this.getVoxel(x, y - 1, z)].isBlock) {
           var nyGeometry = this.generateFace("ny", voxel);
           geometries.push(nyGeometry.applyMatrix4(matrix))
         }
-        if (!this.blocks[this.getVoxel(x, y + 1, z)].isSolid) {
+        if (!this.blocks[this.getVoxel(x, y + 1, z)].isBlock) {
           var pyGeometry = this.generateFace("py", voxel);
           geometries.push(pyGeometry.applyMatrix4(matrix))
         }
-        if (!this.blocks[this.getVoxel(x, y, z - 1)].isSolid) {
+        if (!this.blocks[this.getVoxel(x, y, z - 1)].isBlock) {
           var nzGeometry = this.generateFace("nz", voxel);
           geometries.push(nzGeometry.applyMatrix4(matrix))
         }
-        if (!this.blocks[this.getVoxel(x, y, z + 1)].isSolid) {
+        if (!this.blocks[this.getVoxel(x, y, z + 1)].isBlock) {
           var pzGeometry = this.generateFace("pz", voxel);
           geometries.push(pzGeometry.applyMatrix4(matrix))
         }
         return geometries; 
       }else{
         if(voxel==4){
-          var geo=stairsGeometry.clone()
+          var geo=world.models.stairs.clone()
           geo=geo.applyMatrix4(matrix)
-          geo.translate(0,-0.25,0)
+          // geo
           return [geo]
         }else if(voxel==5){
-          var geo=anvilGeometry.clone()
+          var geo=world.models.anvil.clone()
           geo=geo.applyMatrix4(matrix)
-          geo.translate(0,-0.25,0)
+          // geo.translate(0,-0.25,0)
           return [geo]
         }
       }
     }else{
       return []
-    }
-    
+    } 
   }
   generateFace(type, voxel) {
     var geometry = new THREE.PlaneBufferGeometry(1, 1);
@@ -540,6 +442,17 @@ class Terrain {
     }
     return null;
   }
+  replaceWorld(voxels){
+    Object.keys(voxels).forEach(function (id){
+      // console.log(id)
+      if(voxels[id]!=world.getVoxel(...id.split(":"))){
+        world.setVoxel(...id.split(":"),voxels[id]);
+      }
+    })
+  }
+  saveModel(geometry,name){
+    this.models[name]=geometry;
+  }
 }
 
 class InventoryBar {
@@ -671,48 +584,83 @@ class FirstPersonControls {
   }
 }
 
-class Entities {
-  constructor(options){
-    this.entities={
-    }
-  }
-  updateEntities(){
-    const {entities}=this;
-    Object.keys(entities).forEach(function (p){
-
-    })
-  }
-  addEntity(name){
-
-  }
-}
-
-$.get("assets/blocks.json",function (blocks){
-  Object.keys(blocks).forEach(function (p){
-    if(!blocks[p].isBlock){
-      console.log(blocks[p].name,"isn't a solid block")
-    }
-  })
-})
-
 $.get("assets/textureMapping.json",function (textureMapping){
   textureAtlasMapping=textureMapping
   init()
   animate()
-  
 })
 
 
 function init(){
+  canvas = document.querySelector('#c');
+  renderer = new THREE.WebGLRenderer({
+    canvas,
+    PixelRatio:window.devicePixelRatio
+  });
+  scene = new THREE.Scene();
+  scene.background = new THREE.Color(0xb0b0b0);
+  const color = new THREE.Color(0xb0b0b0);
+  const density = 0.01;
+  scene.fog = new THREE.FogExp2(color, density);
+  camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+  camera.rotation.order = "YXZ"
+  camera.position.set(26, 26, 26)
+  stats = new Stats();
+  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+  document.body.appendChild(stats.dom);
+  var ambientLight = new THREE.AmbientLight(0xcccccc);
+  scene.add(ambientLight);
+  var directionalLight = new THREE.DirectionalLight(0x333333, 2);
+  directionalLight.position.set(1, 1, 0.5).normalize();
+  scene.add(directionalLight);
+  raycaster = new THREE.Raycaster();
+  var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
+  texture.magFilter = THREE.NearestFilter;
+
+
+  gameState="menu";
+
+
+  var loader = new FBXLoader();
+  loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
+    object.scale.x=0.1
+    object.scale.y=0.1
+    object.scale.z=0.1
+    object.position.y=100
+    scene.add( object );
+  } );
+  loader.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
+    var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
+    texturex.magFilter = THREE.NearestFilter;
+    object.children[0].children[0].scale.set(0.01,0.01,0.01)
+    // object.children[1].position.set(25,25,25)
+    object.children[1].material.map=texturex
+    object.children[1].material.color=new THREE.Color( 0xffffff );
+    // object.children[1].scale.set(0.5,0.5,0.5)
+    scene.add(object)
+  });
+
+
+  world = new Terrain({
+    textureAtlas: texture,
+    textureRows: 27,
+    textureCols: 27,
+    cellSize: 16,
+  })
+  $.get("assets/blocks.json",function (blocks){
+    world.blocks=blocks
+    loadBlocksModels(function (){
+      console.log(world.models)
+    })
+  })
+  
+
+
   socket=io.connect("https://d93db05c1da1.ngrok.io/");
   socket.on("connect",()=>{
     console.log("Połączono z serverem socketio")
     socket.emit("siemka","siemka")
 
-  })
-  socket.on("firstLoad",function (v){
-    console.log("Otrzymano pakiet świata!")
-    replaceWorld(v)
   })
   socket.on("blockUpdate",function (block){
     world.setVoxel(...block)
@@ -742,7 +690,6 @@ function init(){
         playersx[p].children[1].children[0].rotation.z=players[p].zyaw
       }catch(e){}
     })
-
     Object.keys(playersx).forEach(function (p){
       if(sockets[p]==undefined){
         scene.remove(playersx[p]);
@@ -750,79 +697,11 @@ function init(){
       }
     })
   })
-  canvas = document.querySelector('#c');
-  renderer = new THREE.WebGLRenderer({
-    canvas
-  });
-
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xb0b0b0);
-  const color = new THREE.Color(0xb0b0b0);
-  const density = 0.01;
-  scene.fog = new THREE.FogExp2(color, density);
-
-  camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
-  camera.rotation.order = "YXZ"
-  camera.position.set(26, 26, 26)
-  stats = new Stats();
-  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-  document.body.appendChild(stats.dom);
-
-  var ambientLight = new THREE.AmbientLight(0xcccccc);
-  scene.add(ambientLight);
-  var directionalLight = new THREE.DirectionalLight(0x333333, 2);
-  directionalLight.position.set(1, 1, 0.5).normalize();
-  scene.add(directionalLight);
-
-  raycaster = new THREE.Raycaster();
-
-  var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
-  texture.magFilter = THREE.NearestFilter;
-
-  
-
-  gameState="menu";
-
-  var loader = new FBXLoader();
-  loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
-    object.scale.x=0.1
-    object.scale.y=0.1
-    object.scale.z=0.1
-    object.position.y=100
-    scene.add( object );
-  } );
-  loader.load( 'assets/models/stairs/stairs.fbx', function ( object ) {
-    stairsGeometry=object.children[0].geometry
-    stairsGeometry.scale(10,10,10)
-  });
-  loader.load( 'assets/models/anvil/anvil.fbx', function ( object ) {
-    anvilGeometry=object.children[0].geometry
-    anvilGeometry.scale(1,1,1)
-    anvilGeometry.rotateX(-Math.PI/2)
-    anvilGeometry.translate(0,0.17,0)
-  });
-  loader.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
-    var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
-    console.log("Creating new player:")
-    texturex.magFilter = THREE.NearestFilter;
-    object.children[0].children[0].scale.set(0.01,0.01,0.01)
-    // object.children[1].position.set(25,25,25)
-    object.children[1].material.map=texturex
-    object.children[1].material.color=new THREE.Color( 0xffffff );
-    // object.children[1].scale.set(0.5,0.5,0.5)
-    console.log(object)
-    scene.add(object)
-    var x2=object.clone()
-    scene.add(x2)
-    x2.children[0].position.set(0,0,0)
-  });
-
-  world = new Terrain({
-    textureAtlas: texture,
-    textureRows: 27,
-    textureCols: 27,
-    cellSize: 16,
+  socket.on("firstLoad",function (v){
+    console.log("Otrzymano pakiet świata!")
+    world.replaceWorld(v)
   })
+
 
   var inv_bar = new InventoryBar({
     boxSize: 60,
@@ -831,17 +710,16 @@ function init(){
     div: ".inventoryBar",
     activeBox: 1
   })
-  inv_bar.setBox(1,"https://gamepedia.cursecdn.com/minecraft_gamepedia/6/6a/Grass_Block_JE6_BE5.png")
-  inv_bar.setBox(2,"https://gamepedia.cursecdn.com/minecraft_gamepedia/2/29/Stone_JE4_BE2.png")
-  inv_bar.setBox(3,"https://gamepedia.cursecdn.com/minecraft_gamepedia/3/37/Oak_Planks_JE6_BE3.png")
-  inv_bar.setBox(4,"https://gamepedia.cursecdn.com/minecraft_gamepedia/archive/e/e0/20200317210502%21Stone_Brick_Stairs_JE3_BE2.png?version=29cb53ead07bbd3a08d158397d1078d5")
-  inv_bar.setBox(5,"https://vignette.wikia.nocookie.net/minecraft/images/4/4e/AnvilNew.png/revision/latest?cb=20200226224259")
-  inv_bar.setBox(6,"https://gamepedia.cursecdn.com/minecraft_gamepedia/6/62/Bricks_JE5_BE3.png")
-  inv_bar.setBox(7,"https://gamepedia.cursecdn.com/minecraft_pl_gamepedia/c/c0/Furnace_przed_Texture_Update.png")
-  inv_bar.setBox(8,"https://gamepedia.cursecdn.com/minecraft_gamepedia/0/05/Bookshelf_JE4_BE2.png")
-  inv_bar.setBox(9,"https://gamepedia.cursecdn.com/minecraft_pl_gamepedia/1/1e/TNT.png")
+  inv_bar.setBox(1,"assets/images/grass_block.png")
+  inv_bar.setBox(2,"assets/images/stone.png")
+  inv_bar.setBox(3,"assets/images/oak_planks.png")
+  inv_bar.setBox(4,"assets/images/stairs.png")
+  inv_bar.setBox(5,"assets/images/anvil.png")
+  inv_bar.setBox(6,"assets/images/brick.png")
+  inv_bar.setBox(7,"assets/images/furnace.png")
+  inv_bar.setBox(8,"assets/images/bookshelf.png")
+  inv_bar.setBox(9,"assets/images/tnt.png")
   inv_bar.setFocusOnly(1)
-
   $(window).on('wheel', function (event) {
     if (event.originalEvent.deltaY < 0) {
       inv_bar.moveBoxPlus()
@@ -849,6 +727,7 @@ function init(){
       inv_bar.moveBoxMinus()
     }
   })
+
 
   FPC = new FirstPersonControls({
     canvas: document.getElementById("c"),
@@ -865,7 +744,6 @@ function init(){
       FPC.camera.rotation.x = FPC.degtorad(90)
     }
   }
-
   function lockChangeAlert() {
     if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
       document.addEventListener("mousemove", updatePosition, false);
@@ -890,6 +768,7 @@ function init(){
     FPC.lockPointer()
   })
 
+
   var geometry = new THREE.BoxGeometry(1, 1, 1);
   var material = new THREE.MeshBasicMaterial({
     color: 0x00ff00
@@ -900,6 +779,8 @@ function init(){
     linewidth: 0.5
   }));
   scene.add(cube);
+
+
   $(document).mousedown(function (e) {
     if (gameState=="game") {
       const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
@@ -922,6 +803,52 @@ function init(){
 }
 
 
+function loadBlocksModels(f){
+  var modelsNumber=0;
+  var modelsLoaded=0;
+  var modelsToLoad=[];
+  var loader = new FBXLoader();
+  var blocks=world.blocks
+  Object.keys(blocks).forEach(function (p){
+    if(!blocks[p].isBlock && p!=0){
+      var modelPath=`assets/models/${blocks[p].model}`;
+      console.log(blocks[p].name,": preparing to load model")
+      modelsNumber++;
+      modelsToLoad.push(blocks[p])
+    }
+  })
+  for(var i=0;i<modelsToLoad.length;i++){
+    (function () {
+      var block=modelsToLoad[i];
+      loader.load( `assets/models/${block.model}`, function ( object ) {
+        var geometry=object.children[0].geometry;
+        world.saveModel(prepareModel(geometry,block.name),block.name)
+        modelsLoaded++;
+        if(modelsLoaded==modelsNumber){
+          console.warn("DONE! Models loaded!")
+          f();
+        }
+      });
+    })();
+    
+  }
+}
+
+function prepareModel(geometry,name){
+  if(name=="anvil"){
+    geometry.rotateX(-Math.PI/2)
+    geometry.translate(0,0.17,0)
+    geometry.translate(0,-0.25,0)
+  }
+  if(name=="stairs"){
+    geometry.scale(10,10,10)
+    geometry.translate(0,-0.25,0)
+  }
+  return geometry
+}
+
+
+
 
 function updateCursor(){
   const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
@@ -940,15 +867,6 @@ function updateCursor(){
   }else{
     cube.visible=false;
   }
-}
-
-function replaceWorld(voxels){
-  Object.keys(voxels).forEach(function (id){
-    // console.log(id)
-    if(voxels[id]!=world.getVoxel(...id.split(":"))){
-      world.setVoxel(...id.split(":"),voxels[id]);
-    }
-  })
 }
 
 function animate() {
