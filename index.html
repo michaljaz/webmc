@@ -4,7 +4,7 @@
 
     <title>Web-Minecraft</title>
 
-    <link rel="icon" href="https://gamepedia.cursecdn.com/minecraft_gamepedia/6/6a/Grass_Block_JE6_BE5.png">
+    <link rel="icon" href="assets/images/grass_block.png">
 
     <div css>
       <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
@@ -79,6 +79,7 @@
 
 import * as THREE from './module/build/three.module.js';
 import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
+import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js';
 import Stats from './module/jsm/libs/stats.module.js';
 import {FBXLoader} from './module/jsm/loaders/FBXLoader.js?1';
 
@@ -270,17 +271,10 @@ class Terrain {
         }
         return geometries; 
       }else{
-        if(voxel==4){
-          var geo=world.models.stairs.clone()
-          geo=geo.applyMatrix4(matrix)
-          // geo
-          return [geo]
-        }else if(voxel==5){
-          var geo=world.models.anvil.clone()
-          geo=geo.applyMatrix4(matrix)
-          // geo.translate(0,-0.25,0)
-          return [geo]
-        }
+        var blockName=this.blocks[voxel].name
+        var geo=world.models[blockName].clone()
+        geo=geo.applyMatrix4(matrix)
+        return [geo]
       }
     }else{
       return []
@@ -318,8 +312,8 @@ class Terrain {
       var uvX=textureAtlasMapping[uv]["x"]-1
       var uvY=27-textureAtlasMapping[uv]["y"]
     }catch(e){
-      var uvX=1
-      var uvY=1
+      var uvX=textureAtlasMapping["debug"]["x"]-1
+      var uvY=27-textureAtlasMapping["debug"]["y"]
     }
     
 
@@ -470,7 +464,7 @@ class InventoryBar {
       boxSize,
       padding
     } = this;
-    console.warn("InventoryBar created!")
+    // console.warn("InventoryBar created!")
     var result = ``;
     for (var i = 0; i < boxes; i++) {
       result += `<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=" width=${boxSize} height=${boxSize} style="border:1px solid black" alt="">`
@@ -584,11 +578,9 @@ class FirstPersonControls {
   }
 }
 
-$.get("assets/textureMapping.json",function (textureMapping){
-  textureAtlasMapping=textureMapping
-  init()
-  animate()
-})
+init()
+animate()
+
 
 
 function init(){
@@ -637,28 +629,33 @@ function init(){
     object.children[1].material.map=texturex
     object.children[1].material.color=new THREE.Color( 0xffffff );
     // object.children[1].scale.set(0.5,0.5,0.5)
+    console.log(object)
     scene.add(object)
+
+    var ghast2=SkeletonUtils.clone(object);
+    scene.add(ghast2)
+    ghast2.position.set(3,0,0)
   });
 
-
+  $.get("assets/textureMapping.json",function (textureMapping){
+    textureAtlasMapping=textureMapping
+  })
   world = new Terrain({
     textureAtlas: texture,
     textureRows: 27,
     textureCols: 27,
     cellSize: 16,
   })
-  $.get("assets/blocks.json",function (blocks){
+  $.get(`assets/blocks.json?${uuidv4()}`,function (blocks){
     world.blocks=blocks
-    loadBlocksModels(function (){
-      console.log(world.models)
-    })
+    loadBlocksModels()
   })
   
 
 
   socket=io.connect("https://d93db05c1da1.ngrok.io/");
   socket.on("connect",()=>{
-    console.log("Połączono z serverem socketio")
+    console.log("Połączono z serverem!")
     socket.emit("siemka","siemka")
 
   })
@@ -673,7 +670,7 @@ function init(){
       if(playersx[p]==undefined && p!=socket.id){
         loader.load( 'assets/models/player/player.fbx', function ( object ) {
           var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
-          console.log("Creating new player:"+p)
+          // console.log("Creating new player:"+p)
           texturex.magFilter = THREE.NearestFilter;
           object.children[1].scale.set(1,1,1)
           object.children[1].position.set(25,25,25)
@@ -812,11 +809,11 @@ function loadBlocksModels(f){
   Object.keys(blocks).forEach(function (p){
     if(!blocks[p].isBlock && p!=0){
       var modelPath=`assets/models/${blocks[p].model}`;
-      console.log(blocks[p].name,": preparing to load model")
       modelsNumber++;
       modelsToLoad.push(blocks[p])
     }
   })
+  // console.table(modelsToLoad)
   for(var i=0;i<modelsToLoad.length;i++){
     (function () {
       var block=modelsToLoad[i];
@@ -825,15 +822,17 @@ function loadBlocksModels(f){
         world.saveModel(prepareModel(geometry,block.name),block.name)
         modelsLoaded++;
         if(modelsLoaded==modelsNumber){
-          console.warn("DONE! Models loaded!")
-          f();
+          // console.log("DONE! Models loaded!")
+          if(f!=null){
+            f();
+          }
+          
         }
       });
     })();
     
   }
 }
-
 function prepareModel(geometry,name){
   if(name=="anvil"){
     geometry.rotateX(-Math.PI/2)
@@ -848,6 +847,12 @@ function prepareModel(geometry,name){
 }
 
 
+function uuidv4() {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}
 
 
 function updateCursor(){
