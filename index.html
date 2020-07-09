@@ -80,12 +80,12 @@
 import * as THREE from './module/build/three.module.js';
 import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
 import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js';
+import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
 import Stats from './module/jsm/libs/stats.module.js';
-import {FBXLoader} from './module/jsm/loaders/FBXLoader.js?1';
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,world,cube,FPC,socket,playerObject,textureAtlasMapping;
+  gameState,world,cube,FPC,socket,playerObject,textureAtlasMapping,materials,parameters;
 
 
 class Terrain {
@@ -590,10 +590,9 @@ function init(){
     PixelRatio:window.devicePixelRatio
   });
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xb0b0b0);
-  const color = new THREE.Color(0xb0b0b0);
+  scene.background = new THREE.Color("lightblue");
   const density = 0.01;
-  scene.fog = new THREE.FogExp2(color, density);
+  // scene.fog = new THREE.FogExp2(new THREE.Color(0xb0b0b0), density);
   camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
   camera.rotation.order = "YXZ"
   camera.position.set(26, 26, 26)
@@ -614,6 +613,63 @@ function init(){
 
 
   var loader = new FBXLoader();
+  var textureLoader = new THREE.TextureLoader();
+
+  var geometry = new THREE.BufferGeometry();
+  var vertices = [];
+  materials=[]
+  var sprite1 = textureLoader.load( 'assets/images/snowflakes/snowflake1.png' );
+  var sprite2 = textureLoader.load( 'assets/images/snowflakes/snowflake2.png' );
+  var sprite3 = textureLoader.load( 'assets/images/snowflakes/snowflake3.png' );
+  var sprite4 = textureLoader.load( 'assets/images/snowflakes/snowflake4.png' );
+  var sprite5 = textureLoader.load( 'assets/images/snowflakes/snowflake5.png' );
+
+  for ( var i = 0; i < 100; i ++ ) {
+
+    var x = Math.random() * 2000 - 1000;
+    var y = Math.random() * 2000 - 1000;
+    var z = Math.random() * 2000 - 1000;
+
+    vertices.push( x, y, z );
+
+  }
+
+  geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+
+  parameters = [
+    [[ 1.0, 0.2, 0.5 ], sprite2, 20 ],
+    [[ 0.95, 0.1, 0.5 ], sprite3, 15 ],
+    [[ 0.90, 0.05, 0.5 ], sprite1, 10 ],
+    [[ 0.85, 0, 0.5 ], sprite5, 8 ],
+    [[ 0.80, 0, 0.5 ], sprite4, 5 ]
+  ];
+
+  for ( var i = 0; i < parameters.length; i ++ ) {
+
+    var color = parameters[ i ][ 0 ];
+    var sprite = parameters[ i ][ 1 ];
+    var size = parameters[ i ][ 2 ];
+
+    materials[ i ] = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent: true } );
+    materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] );
+
+    var particles = new THREE.Points( geometry, materials[ i ] );
+
+    particles.rotation.x = Math.random() * 6;
+    particles.rotation.y = Math.random() * 6;
+    particles.rotation.z = Math.random() * 6;
+
+    scene.add( particles );
+
+  }
+  for ( var i = 0; i < materials.length; i ++ ) {
+
+    materials[ i ].map = parameters[ i ][ 1 ];
+    materials[ i ].needsUpdate = true;
+
+  }
+
+
   loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
     object.scale.x=0.1
     object.scale.y=0.1
@@ -629,7 +685,6 @@ function init(){
     object.children[1].material.map=texturex
     object.children[1].material.color=new THREE.Color( 0xffffff );
     // object.children[1].scale.set(0.5,0.5,0.5)
-    console.log(object)
     scene.add(object)
 
     var ghast2=SkeletonUtils.clone(object);
@@ -828,7 +883,6 @@ function loadBlocksModels(f){
           if(f!=null){
             f();
           }
-          
         }
       });
     })();
@@ -847,6 +901,7 @@ function prepareModel(geometry,name){
   }
   return geometry
 }
+
 
 
 function uuidv4() {
@@ -895,6 +950,28 @@ function resizeRendererToDisplaySize(renderer) {
 }
 
 function render() {
+  var time = Date.now() * 0.00005;
+
+  for ( var i = 0; i < scene.children.length; i ++ ) {
+
+    var object = scene.children[ i ];
+
+    if ( object instanceof THREE.Points ) {
+
+      object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
+
+    }
+
+  }
+
+  for ( var i = 0; i < materials.length; i ++ ) {
+
+    var color = parameters[ i ][ 0 ];
+
+    var h = ( 360 * ( color[ 0 ] + time ) % 360 ) / 360;
+    materials[ i ].color.setHSL( h, color[ 1 ], color[ 2 ] );
+
+  }
   if (resizeRendererToDisplaySize(renderer)) {
     const canvas = renderer.domElement;
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
@@ -914,6 +991,7 @@ function render() {
   renderer.render(scene, camera);
   world.updateCells()
   updateCursor()
+
   
 }
     </script>
