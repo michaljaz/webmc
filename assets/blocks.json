@@ -40,9 +40,9 @@
     }
   },
   "4": {
-    "name":"stairs",
+    "name":"fire",
     "isBlock":false,
-    "model":"stairs/stairs.fbx"
+    "model":"fire/fire.fbx"
   },
   "5": {
     "name":"anvil",

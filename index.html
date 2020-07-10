@@ -85,12 +85,12 @@ import Stats from './module/jsm/libs/stats.module.js';
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,world,cube,FPC,socket,playerObject,textureAtlasMapping,materials,parameters;
+  gameState="menu",world,cube,FPC,socket,playerObject,textureAtlasMapping,materials,parameters;
 
 
 class Terrain {
   constructor(options) {
-    this.textureAtlas = options.textureAtlas;
+    this.textureMaterial = options.textureMaterial;
     this.textureRows = options.textureRows;
     this.textureCols = options.textureCols;
     this.cellSize = options.cellSize;
@@ -177,9 +177,6 @@ class Terrain {
   }
   updateCellGeometry(x, y, z) {
     console.warn(`updating Chunk: ${x}:${y}:${z}`)
-    const {
-      textureAtlas
-    } = this;
     if (this.cells[this.parseVec(x, y, z)].needsUpdate) {
       var mesh = this.cells_meshes[this.parseVec(x, y, z)];
       var geometry = this.generateCellGeometry(x, y, z);
@@ -189,10 +186,7 @@ class Terrain {
           mesh.geometry = geometry;
         } else {
           var geometry = geometry;
-          var mesh = new THREE.Mesh(geometry, new THREE.MeshLambertMaterial({
-            map: textureAtlas,
-            side: 0
-          }));
+          var mesh = new THREE.Mesh(geometry, this.textureMaterial);
           // mesh.computeAngleVertexNormals(Math.PI/2);
           scene.add(mesh)
           this.cells_meshes[this.parseVec(x, y, z)] = mesh;
@@ -210,7 +204,6 @@ class Terrain {
   }
   generateCellGeometry(x, y, z) {
     const {
-      textureAtlas,
       cellSize
     } = this;
     var geometries = [];
@@ -578,137 +571,242 @@ class FirstPersonControls {
   }
 }
 
+class TextureAtlasCreator {
+  constructor(options){
+    this.textureX=options.textureX;
+    this.textureMapping=options.textureMapping
+    this.size=36
+    this.willSize=27
+  }
+  gen(tick){
+    const {textureX,textureMapping,size,willSize} = this;
+    var multi={}
+    for(var i in textureMapping){
+      if(i.includes("@")){
+        var xd=this.decodeName(i);
+        if(multi[xd.pref]==undefined){
+          multi[xd.pref]=xd;
+        }else{
+          multi[xd.pref].x=Math.max(multi[xd.pref].x,xd.x)
+          multi[xd.pref].y=Math.max(multi[xd.pref].y,xd.y)
+        }
+        // console.log(xd)
+      }
+    }
+
+    var canvas = document.createElement('canvas');
+    var ctx=canvas.getContext("2d")
+    canvas.width=willSize*16
+    canvas.height=willSize*16
+
+    var toxelX=1;
+    var toxelY=1;
+
+
+    for(var i in textureMapping){
+      if(i.includes("@")){
+        var xd=this.decodeName(i);
+        if(multi[xd.pref].loaded==undefined){
+          // console.log(xd.pref,multi[xd.pref].x+1,multi[xd.pref].y+1)
+          multi[xd.pref].loaded=true
+          //add toxel to canvas
+
+          var lol=this.getToxelForTick(tick,multi[xd.pref].x+1,multi[xd.pref].y+1)
+
+          var texmap=textureMapping[`${xd.pref}@${lol.col}@${lol.row}`]
+          // console.log(`${xd.pref}@${lol.col}@${lol.row}`)
+          ctx.drawImage(textureX,(texmap.x-1)*16,(texmap.y-1)*16,16,16,(toxelX-1)*16,(toxelY-1)*16,16,16)
+
+          toxelX++;
+          if(toxelX>willSize){
+            toxelX=1;
+            toxelY++;
+          }
+        }
+        // console.log(xd.pref)
+      }else{
+        // console.log(i)
+        //add toxel to canvas
+        ctx.drawImage(textureX,(textureMapping[i].x-1)*16,(textureMapping[i].y-1)*16,16,16,(toxelX-1)*16,(toxelY-1)*16,16,16)
+
+        toxelX++;
+        if(toxelX>willSize){
+          toxelX=1;
+          toxelY++;
+        }
+      }
+    }
+    return canvas
+  }
+  decodeName(i){
+    var m=null;
+    for(var j=0;j<i.length;j++){
+      if(i[j]=="@"){
+        m=j;
+        break;
+      }
+    }
+    var pref=i.substr(0,m);
+    var sub=i.substr(m,i.length)
+    var m2=null;
+    for(var j=0;j<sub.length;j++){
+      if(sub[j]=="@"){
+        m2=j;
+      }
+    }
+    var x=parseInt(sub.substr(1,m2-1))
+
+    var y=parseInt(sub.substr(m2+1,sub.length))
+    // console.log(pref,x,y)
+    return {pref,x,y}
+  }
+  getToxelForTick(tick,w,h){
+    tick=tick%(w*h)+1;
+    // console.log(tick)
+    //option1
+      var col=(tick-1)%w;
+      var row=Math.ceil(tick/w)-1;
+    //option2
+      // var col=Math.ceil(tick/h)-1;
+      // var row=(tick-1)%h;
+    return {
+      row,
+      col
+    }
+  }  
+}
+
 init()
 animate()
 
 
 
 function init(){
-  canvas = document.querySelector('#c');
-  renderer = new THREE.WebGLRenderer({
-    canvas,
-    PixelRatio:window.devicePixelRatio
-  });
-  scene = new THREE.Scene();
-  scene.background = new THREE.Color("lightblue");
-  const density = 0.01;
-  // scene.fog = new THREE.FogExp2(new THREE.Color(0xb0b0b0), density);
-  camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
-  camera.rotation.order = "YXZ"
-  camera.position.set(26, 26, 26)
-  stats = new Stats();
-  stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
-  document.body.appendChild(stats.dom);
-  var ambientLight = new THREE.AmbientLight(0xcccccc);
-  scene.add(ambientLight);
-  var directionalLight = new THREE.DirectionalLight(0x333333, 2);
-  directionalLight.position.set(1, 1, 0.5).normalize();
-  scene.add(directionalLight);
-  raycaster = new THREE.Raycaster();
-  var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
-  texture.magFilter = THREE.NearestFilter;
 
+  //basic setups
+  {
+    canvas = document.querySelector('#c');
+    renderer = new THREE.WebGLRenderer({
+      canvas,
+      PixelRatio:window.devicePixelRatio
+    });
+    scene = new THREE.Scene();
+    scene.background = new THREE.Color("lightblue");
+    const density = 0.01;
+    // scene.fog = new THREE.FogExp2(new THREE.Color(0xb0b0b0), density);
+    camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+    camera.rotation.order = "YXZ"
+    camera.position.set(26, 26, 26)
 
-  gameState="menu";
-
-
-  var loader = new FBXLoader();
-  var textureLoader = new THREE.TextureLoader();
-
-  var geometry = new THREE.BufferGeometry();
-  var vertices = [];
-  materials=[]
-  var sprite1 = textureLoader.load( 'assets/images/snowflakes/snowflake1.png' );
-  var sprite2 = textureLoader.load( 'assets/images/snowflakes/snowflake2.png' );
-  var sprite3 = textureLoader.load( 'assets/images/snowflakes/snowflake3.png' );
-  var sprite4 = textureLoader.load( 'assets/images/snowflakes/snowflake4.png' );
-  var sprite5 = textureLoader.load( 'assets/images/snowflakes/snowflake5.png' );
-
-  for ( var i = 0; i < 100; i ++ ) {
-
-    var x = Math.random() * 2000 - 1000;
-    var y = Math.random() * 2000 - 1000;
-    var z = Math.random() * 2000 - 1000;
-
-    vertices.push( x, y, z );
-
+    stats = new Stats();
+    stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
+    document.body.appendChild(stats.dom);
+    var ambientLight = new THREE.AmbientLight(0xcccccc);
+    scene.add(ambientLight);
+    var directionalLight = new THREE.DirectionalLight(0x333333, 2);
+    directionalLight.position.set(1, 1, 0.5).normalize();
+    scene.add(directionalLight);
+    raycaster = new THREE.Raycaster();
+    
+    var loader = new FBXLoader();
+    var textureLoader = new THREE.TextureLoader();
   }
+  
 
-  geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
-
-  parameters = [
-    [[ 1.0, 0.2, 0.5 ], sprite2, 20 ],
-    [[ 0.95, 0.1, 0.5 ], sprite3, 15 ],
-    [[ 0.90, 0.05, 0.5 ], sprite1, 10 ],
-    [[ 0.85, 0, 0.5 ], sprite5, 8 ],
-    [[ 0.80, 0, 0.5 ], sprite4, 5 ]
-  ];
-
-  for ( var i = 0; i < parameters.length; i ++ ) {
-
-    var color = parameters[ i ][ 0 ];
-    var sprite = parameters[ i ][ 1 ];
-    var size = parameters[ i ][ 2 ];
-
-    materials[ i ] = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent: true } );
-    materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] );
-
-    var particles = new THREE.Points( geometry, materials[ i ] );
-
-    particles.rotation.x = Math.random() * 6;
-    particles.rotation.y = Math.random() * 6;
-    particles.rotation.z = Math.random() * 6;
-
-    scene.add( particles );
-
-  }
-  for ( var i = 0; i < materials.length; i ++ ) {
-
-    materials[ i ].map = parameters[ i ][ 1 ];
-    materials[ i ].needsUpdate = true;
-
+  //Snowflakes
+  {
+    var geometry = new THREE.BufferGeometry();
+    var vertices = [];
+    materials=[]
+    var sprite1 = textureLoader.load( 'assets/images/snowflakes/snowflake1.png' );
+    var sprite2 = textureLoader.load( 'assets/images/snowflakes/snowflake2.png' );
+    var sprite3 = textureLoader.load( 'assets/images/snowflakes/snowflake3.png' );
+    var sprite4 = textureLoader.load( 'assets/images/snowflakes/snowflake4.png' );
+    var sprite5 = textureLoader.load( 'assets/images/snowflakes/snowflake5.png' );
+    for ( var i = 0; i < 100; i ++ ) {
+      var x = Math.random() * 2000 - 1000;
+      var y = Math.random() * 2000 - 1000;
+      var z = Math.random() * 2000 - 1000;
+      vertices.push( x, y, z );
+    }
+    geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+    parameters = [
+      [[ 1.0, 0.2, 0.5 ], sprite2, 20 ],
+      [[ 0.95, 0.1, 0.5 ], sprite3, 15 ],
+      [[ 0.90, 0.05, 0.5 ], sprite1, 10 ],
+      [[ 0.85, 0, 0.5 ], sprite5, 8 ],
+      [[ 0.80, 0, 0.5 ], sprite4, 5 ]
+    ];
+    for ( var i = 0; i < parameters.length; i ++ ) {
+      var color = parameters[ i ][ 0 ];
+      var sprite = parameters[ i ][ 1 ];
+      var size = parameters[ i ][ 2 ];
+      materials[ i ] = new THREE.PointsMaterial( { size: size, map: sprite, blending: THREE.AdditiveBlending, depthTest: false, transparent: true } );
+      materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] );
+      var particles = new THREE.Points( geometry, materials[ i ] );
+      particles.rotation.x = Math.random() * 6;
+      particles.rotation.y = Math.random() * 6;
+      particles.rotation.z = Math.random() * 6;
+      scene.add( particles );
+    }
+    for ( var i = 0; i < materials.length; i ++ ) {
+      materials[ i ].map = parameters[ i ][ 1 ];
+      materials[ i ].needsUpdate = true;
+    }
   }
 
 
-  loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
-    object.scale.x=0.1
-    object.scale.y=0.1
-    object.scale.z=0.1
-    object.position.y=100
-    scene.add( object );
-  } );
-  loader.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
-    var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
-    texturex.magFilter = THREE.NearestFilter;
-    object.children[0].children[0].scale.set(0.01,0.01,0.01)
-    // object.children[1].position.set(25,25,25)
-    object.children[1].material.map=texturex
-    object.children[1].material.color=new THREE.Color( 0xffffff );
-    // object.children[1].scale.set(0.5,0.5,0.5)
-    scene.add(object)
+  //Load models
+  {
+    loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
+      object.scale.x=0.1
+      object.scale.y=0.1
+      object.scale.z=0.1
+      object.position.y=100
+      scene.add( object );
+    } );
+    loader.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
+      var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
+      texturex.magFilter = THREE.NearestFilter;
+      object.children[0].children[0].scale.set(0.01,0.01,0.01)
+      // object.children[1].position.set(25,25,25)
+      object.children[1].material.map=texturex
+      object.children[1].material.color=new THREE.Color( 0xffffff );
+      // object.children[1].scale.set(0.5,0.5,0.5)
+      scene.add(object)
 
-    var ghast2=SkeletonUtils.clone(object);
-    scene.add(ghast2)
-    ghast2.position.set(3,0,0)
-  });
-  loader.load( 'assets/models/player/player.fbx', function ( object ) {
-    var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
-    // console.log("Creating new player:"+p)
-    texturex.magFilter = THREE.NearestFilter;
-    object.children[1].scale.set(1,1,1)
-    object.children[1].position.set(25,25,25)
-    object.children[0].material.map=texturex
-    object.children[0].material.color=new THREE.Color( 0xffffff );
-    object.children[1].scale.set(0.5,0.5,0.5)
-    // scene.add(object)
-    playerObject=object
-  });
+      var ghast2=SkeletonUtils.clone(object);
+      scene.add(ghast2)
+      ghast2.position.set(3,0,0)
+    });
+    loader.load( 'assets/models/player/player.fbx', function ( object ) {
+      var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
+      // console.log("Creating new player:"+p)
+      texturex.magFilter = THREE.NearestFilter;
+      object.children[1].scale.set(1,1,1)
+      object.children[1].position.set(25,25,25)
+      object.children[0].material.map=texturex
+      object.children[0].material.color=new THREE.Color( 0xffffff );
+      object.children[1].scale.set(0.5,0.5,0.5)
+      // scene.add(object)
+      playerObject=object
+    });
+  }
+  
 
   $.get("assets/textureMapping.json",function (textureMapping){
     textureAtlasMapping=textureMapping
   })
+  var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
+  texture.magFilter = THREE.NearestFilter;
+
+  var worldMaterial=new THREE.MeshLambertMaterial({
+    map: texture,
+    side: 0
+  })
+
   world = new Terrain({
-    textureAtlas: texture,
+    textureMaterial: worldMaterial,
     textureRows: 27,
     textureCols: 27,
     cellSize: 16,
@@ -717,110 +815,159 @@ function init(){
     world.blocks=blocks
     loadBlocksModels()
   })
+
+
+
+
+  //animated Texture Atlas
+  {
+    var textureAtlasX = new Image;
+    textureAtlasX.onload = function() {
+      $.get("assets/textureMappingX.json",function (textureMappingX){
+        var atlasCreator=new TextureAtlasCreator({
+          textureX:textureAtlasX,
+          textureMapping:textureMappingX
+        })
+        
+        var q;
+        var tickq=0;
+        setInterval(function (){
+          try{
+            q.remove()
+          }catch(e){}
+          q=atlasCreator.gen(tickq)
+          tickq++;
+          var tekstura=new THREE.TextureLoader().load(q.toDataURL(),function (text){
+            tekstura.magFilter = THREE.NearestFilter;
+            worldMaterial.map=tekstura
+
+            // worldMaterial.map.needsUpdate=true;
+          });
+          
+          // world.textureAtlas=new THREE.TextureLoader().load(q.toDataURL());
+          // world.textureAtlas.magFilter = THREE.NearestFilter;
+          // $("body").append(q)
+        },150)
+        
+      })
+    }
+    textureAtlasX.src = 'assets/textures/textureAtlasX.png';
+  }
   
 
+  //Socket io
+  {
+    socket=io.connect("https://d93db05c1da1.ngrok.io/");
+    socket.on("connect",()=>{
+      console.log("Połączono z serverem!")
+      socket.emit("siemka","siemka")
 
-  socket=io.connect("https://d93db05c1da1.ngrok.io/");
-  socket.on("connect",()=>{
-    console.log("Połączono z serverem!")
-    socket.emit("siemka","siemka")
-
-  })
-  socket.on("blockUpdate",function (block){
-    world.setVoxel(...block)
-  })
-  var playersx={}
-  socket.on("playerUpdate",function (players){
-    var sockets={};
-    Object.keys(players).forEach(function (p){
-      sockets[p]=true;
-      if(playersx[p]==undefined && p!=socket.id){
-        playersx[p]=SkeletonUtils.clone(playerObject);
-        scene.add(playersx[p])
-      }
-      try{
-        playersx[p].children[1].position.set(players[p].x,players[p].y-0.5,players[p].z)
-        playersx[p].children[1].children[0].children[0].children[0].children[2].rotation.x=players[p].xyaw;
-        playersx[p].children[1].children[0].rotation.z=players[p].zyaw
-      }catch(e){}
     })
-    Object.keys(playersx).forEach(function (p){
-      if(sockets[p]==undefined){
-        scene.remove(playersx[p]);
-        delete playersx[p]
+    socket.on("blockUpdate",function (block){
+      world.setVoxel(...block)
+    })
+    var playersx={}
+    socket.on("playerUpdate",function (players){
+      var sockets={};
+      Object.keys(players).forEach(function (p){
+        sockets[p]=true;
+        if(playersx[p]==undefined && p!=socket.id){
+          playersx[p]=SkeletonUtils.clone(playerObject);
+          scene.add(playersx[p])
+        }
+        try{
+          playersx[p].children[1].position.set(players[p].x,players[p].y-0.5,players[p].z)
+          playersx[p].children[1].children[0].children[0].children[0].children[2].rotation.x=players[p].xyaw;
+          playersx[p].children[1].children[0].rotation.z=players[p].zyaw
+        }catch(e){}
+      })
+      Object.keys(playersx).forEach(function (p){
+        if(sockets[p]==undefined){
+          scene.remove(playersx[p]);
+          delete playersx[p]
+        }
+      })
+    })
+    socket.on("firstLoad",function (v){
+      console.log("Otrzymano pakiet świata!")
+
+      world.replaceWorld(v)
+
+    })
+  }
+  
+  //Inventory Bar
+  {
+    var inv_bar = new InventoryBar({
+      boxSize: 60,
+      boxes: 9,
+      padding: 4,
+      div: ".inventoryBar",
+      activeBox: 1
+    })
+    inv_bar.setBox(1,"assets/images/grass_block.png")
+    inv_bar.setBox(2,"assets/images/stone.png")
+    inv_bar.setBox(3,"assets/images/oak_planks.png")
+    inv_bar.setBox(4,"https://vignette.wikia.nocookie.net/minecraftpocketedition/images/a/a5/Fire.gif/revision/latest?cb=20160210064250")
+    inv_bar.setBox(5,"assets/images/anvil.png")
+    inv_bar.setBox(6,"assets/images/brick.png")
+    inv_bar.setBox(7,"assets/images/furnace.png")
+    inv_bar.setBox(8,"assets/images/bookshelf.png")
+    inv_bar.setBox(9,"assets/images/tnt.png")
+    inv_bar.setFocusOnly(1)
+    $(window).on('wheel', function (event) {
+      if (event.originalEvent.deltaY < 0) {
+        inv_bar.moveBoxPlus()
+      } else {
+        inv_bar.moveBoxMinus()
       }
     })
-  })
-  socket.on("firstLoad",function (v){
-    console.log("Otrzymano pakiet świata!")
-    world.replaceWorld(v)
-  })
-
-
-  var inv_bar = new InventoryBar({
-    boxSize: 60,
-    boxes: 9,
-    padding: 4,
-    div: ".inventoryBar",
-    activeBox: 1
-  })
-  inv_bar.setBox(1,"assets/images/grass_block.png")
-  inv_bar.setBox(2,"assets/images/stone.png")
-  inv_bar.setBox(3,"assets/images/oak_planks.png")
-  inv_bar.setBox(4,"assets/images/stairs.png")
-  inv_bar.setBox(5,"assets/images/anvil.png")
-  inv_bar.setBox(6,"assets/images/brick.png")
-  inv_bar.setBox(7,"assets/images/furnace.png")
-  inv_bar.setBox(8,"assets/images/bookshelf.png")
-  inv_bar.setBox(9,"assets/images/tnt.png")
-  inv_bar.setFocusOnly(1)
-  $(window).on('wheel', function (event) {
-    if (event.originalEvent.deltaY < 0) {
-      inv_bar.moveBoxPlus()
-    } else {
-      inv_bar.moveBoxMinus()
-    }
-  })
-
-
-  FPC = new FirstPersonControls({
-    canvas: document.getElementById("c"),
-    camera,
-    micromove: 0.3
-  })
-  function updatePosition(e) {
-    FPC.camera.rotation.x -= FPC.degtorad(e.movementY / 10)
-    FPC.camera.rotation.y -= FPC.degtorad(e.movementX / 10)
-    if (FPC.radtodeg(FPC.camera.rotation.x) < -90) {
-      FPC.camera.rotation.x = FPC.degtorad(-90)
-    }
-    if (FPC.radtodeg(FPC.camera.rotation.x) > 90) {
-      FPC.camera.rotation.x = FPC.degtorad(90)
-    }
   }
-  function lockChangeAlert() {
-    if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
-      document.addEventListener("mousemove", updatePosition, false);
-      $(".gameMenu").css("display", "none")
-      gameState="game"
-    } else {
-      document.removeEventListener("mousemove", updatePosition, false);
-      $(".gameMenu").css("display", "block")
-      gameState="menu"
+
+  //First Person Controls
+  {
+    FPC = new FirstPersonControls({
+      canvas: document.getElementById("c"),
+      camera,
+      micromove: 0.3
+    })
+    function updatePosition(e) {
+      FPC.camera.rotation.x -= FPC.degtorad(e.movementY / 10)
+      FPC.camera.rotation.y -= FPC.degtorad(e.movementX / 10)
+      if (FPC.radtodeg(FPC.camera.rotation.x) < -90) {
+        FPC.camera.rotation.x = FPC.degtorad(-90)
+      }
+      if (FPC.radtodeg(FPC.camera.rotation.x) > 90) {
+        FPC.camera.rotation.x = FPC.degtorad(90)
+      }
     }
+    function lockChangeAlert() {
+      if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
+        document.addEventListener("mousemove", updatePosition, false);
+        $(".gameMenu").css("display", "none")
+        gameState="game"
+      } else {
+        document.removeEventListener("mousemove", updatePosition, false);
+        $(".gameMenu").css("display", "block")
+        gameState="menu"
+      }
+    }
+    document.addEventListener('pointerlockchange', lockChangeAlert, false);
+    document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
+    $(document).keydown(function (z) {
+      FPC.keys[z.keyCode] = true;
+      inv_bar.directBoxChange(z)
+    })
+    $(document).keyup(function (z) {
+      delete FPC.keys[z.keyCode];
+    })
+    $(".gameOn").click(function () {
+      FPC.lockPointer()
+    })
   }
-  document.addEventListener('pointerlockchange', lockChangeAlert, false);
-  document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
-  $(document).keydown(function (z) {
-    FPC.keys[z.keyCode] = true;
-    inv_bar.directBoxChange(z)
-  })
-  $(document).keyup(function (z) {
-    delete FPC.keys[z.keyCode];
-  })
-  $(".gameOn").click(function () {
-    FPC.lockPointer()
-  })
+  
+
+  
 
 
   var geometry = new THREE.BoxGeometry(1, 1, 1);
@@ -895,9 +1042,11 @@ function prepareModel(geometry,name){
     geometry.translate(0,0.17,0)
     geometry.translate(0,-0.25,0)
   }
-  if(name=="stairs"){
-    geometry.scale(10,10,10)
-    geometry.translate(0,-0.25,0)
+  if(name=="fire"){
+    geometry.rotateX(-Math.PI/2)
+    geometry.scale(0.5,0.5,0.5)
+    // geometry.translate(0,0.25,0)
+    // geometry.translate(0,-0.25,0)
   }
   return geometry
 }
@@ -951,27 +1100,19 @@ function resizeRendererToDisplaySize(renderer) {
 
 function render() {
   var time = Date.now() * 0.00005;
-
   for ( var i = 0; i < scene.children.length; i ++ ) {
-
     var object = scene.children[ i ];
-
     if ( object instanceof THREE.Points ) {
-
       object.rotation.y = time * ( i < 4 ? i + 1 : - ( i + 1 ) );
-
     }
-
   }
-
   for ( var i = 0; i < materials.length; i ++ ) {
-
     var color = parameters[ i ][ 0 ];
-
     var h = ( 360 * ( color[ 0 ] + time ) % 360 ) / 360;
     materials[ i ].color.setHSL( h, color[ 1 ], color[ 2 ] );
-
   }
+
+
   if (resizeRendererToDisplaySize(renderer)) {
     const canvas = renderer.domElement;
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
