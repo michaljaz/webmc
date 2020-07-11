@@ -40,9 +40,16 @@
     }
   },
   "4": {
-    "name":"fire",
-    "isBlock":false,
-    "model":"fire/fire.fbx"
+    "name":"smoker",
+    "isBlock":true,
+    "faces": {
+      "nx": "smoker_side",
+      "ny": "smoker_top",
+      "nz": "smoker_side",
+      "px": "smoker_side",
+      "py": "smoker_top",
+      "pz": "smoker_front_on"
+    }
   },
   "5": {
     "name":"anvil",

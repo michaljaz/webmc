@@ -793,61 +793,79 @@ function init(){
     });
   }
   
+  //World
+  {
+    $.get("assets/textureMapping.json",function (textureMapping){
+      textureAtlasMapping=textureMapping
+    })
+    var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
+    texture.magFilter = THREE.NearestFilter;
 
-  $.get("assets/textureMapping.json",function (textureMapping){
-    textureAtlasMapping=textureMapping
-  })
-  var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
-  texture.magFilter = THREE.NearestFilter;
+    var worldMaterial=new THREE.MeshLambertMaterial({
+      map: texture,
+      side: 0
+    })
 
-  var worldMaterial=new THREE.MeshLambertMaterial({
-    map: texture,
-    side: 0
-  })
-
-  world = new Terrain({
-    textureMaterial: worldMaterial,
-    textureRows: 27,
-    textureCols: 27,
-    cellSize: 16,
-  })
-  $.get(`assets/blocks.json?${uuidv4()}`,function (blocks){
-    world.blocks=blocks
-    loadBlocksModels()
-  })
-
-
+    world = new Terrain({
+      textureMaterial: worldMaterial,
+      textureRows: 27,
+      textureCols: 27,
+      cellSize: 16,
+    })
+    $.get(`assets/blocks.json?${uuidv4()}`,function (blocks){
+      world.blocks=blocks
+      loadBlocksModels()
+    })
+  }
 
 
   //animated Texture Atlas
   {
     var textureAtlasX = new Image;
+    
     textureAtlasX.onload = function() {
       $.get("assets/textureMappingX.json",function (textureMappingX){
         var atlasCreator=new TextureAtlasCreator({
           textureX:textureAtlasX,
           textureMapping:textureMappingX
         })
-        
+        var savedTextures=[]
+        for(var i=0;i<500;i++){
+          var t=atlasCreator.gen(i).toDataURL();
+          var tekstura=new THREE.TextureLoader().load(t,function (textu){
+
+            
+            // worldMaterial.map=tekstura
+
+            // worldMaterial.map.needsUpdate=true;
+          });
+          tekstura.magFilter = THREE.NearestFilter;
+          savedTextures.push(tekstura)
+        }
         var q;
         var tickq=0;
+
         setInterval(function (){
           try{
             q.remove()
           }catch(e){}
-          q=atlasCreator.gen(tickq)
+          // q=atlasCreator.gen(tickq)
           tickq++;
-          var tekstura=new THREE.TextureLoader().load(q.toDataURL(),function (text){
-            tekstura.magFilter = THREE.NearestFilter;
-            worldMaterial.map=tekstura
+          var tekst=savedTextures[tickq%500];
+          worldMaterial.map=tekst
 
-            // worldMaterial.map.needsUpdate=true;
-          });
+          worldMaterial.map.needsUpdate=true;
+          // var tekstura=new THREE.TextureLoader().load(q.toDataURL(),function (text){
+          //   // tekstura.magFilter = THREE.NearestFilter;
+          //   // worldMaterial.map=tekstura
+
+          //   // worldMaterial.map.needsUpdate=true;
+          // });
           
           // world.textureAtlas=new THREE.TextureLoader().load(q.toDataURL());
           // world.textureAtlas.magFilter = THREE.NearestFilter;
           // $("body").append(q)
-        },150)
+        },100)
         
       })
     }
@@ -896,6 +914,7 @@ function init(){
     })
   }
   
+
   //Inventory Bar
   {
     var inv_bar = new InventoryBar({
@@ -908,7 +927,7 @@ function init(){
     inv_bar.setBox(1,"assets/images/grass_block.png")
     inv_bar.setBox(2,"assets/images/stone.png")
     inv_bar.setBox(3,"assets/images/oak_planks.png")
-    inv_bar.setBox(4,"https://vignette.wikia.nocookie.net/minecraftpocketedition/images/a/a5/Fire.gif/revision/latest?cb=20160210064250")
+    inv_bar.setBox(4,"assets/images/smoker.gif")
     inv_bar.setBox(5,"assets/images/anvil.png")
     inv_bar.setBox(6,"assets/images/brick.png")
     inv_bar.setBox(7,"assets/images/furnace.png")
@@ -923,6 +942,7 @@ function init(){
       }
     })
   }
+
 
   //First Person Controls
   {
@@ -967,21 +987,21 @@ function init(){
   }
   
 
+  //Raycast cube
+  {
+    var geometry = new THREE.BoxGeometry(1, 1, 1);
+    var material = new THREE.MeshBasicMaterial({
+      color: 0x00ff00
+    });
+    var edges = new THREE.EdgesGeometry(geometry);
+    cube = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
+      color: 0x000000,
+      linewidth: 0.5
+    }));
+    scene.add(cube);
+  }
+
   
-
-
-  var geometry = new THREE.BoxGeometry(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial({
-    color: 0x00ff00
-  });
-  var edges = new THREE.EdgesGeometry(geometry);
-  cube = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
-    color: 0x000000,
-    linewidth: 0.5
-  }));
-  scene.add(cube);
-
-
   $(document).mousedown(function (e) {
     if (gameState=="game") {
       const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
@@ -1023,7 +1043,18 @@ function loadBlocksModels(f){
       var block=modelsToLoad[i];
       loader.load( `assets/models/${block.model}`, function ( object ) {
         var geometry=object.children[0].geometry;
-        world.saveModel(prepareModel(geometry,block.name),block.name)
+        if(block.name=="anvil"){
+          geometry.rotateX(-Math.PI/2)
+          geometry.translate(0,0.17,0)
+          geometry.translate(0,-0.25,0)
+        }
+        if(block.name=="fire"){
+          geometry.rotateX(-Math.PI/2)
+          geometry.scale(0.5,0.5,0.5)
+          // geometry.translate(0,0.25,0)
+          // geometry.translate(0,-0.25,0)
+        }
+        world.saveModel(geometry,block.name)
         modelsLoaded++;
         if(modelsLoaded==modelsNumber){
           // console.log("DONE! Models loaded!")
@@ -1033,24 +1064,8 @@ function loadBlocksModels(f){
         }
       });
     })();
-    
   }
 }
-function prepareModel(geometry,name){
-  if(name=="anvil"){
-    geometry.rotateX(-Math.PI/2)
-    geometry.translate(0,0.17,0)
-    geometry.translate(0,-0.25,0)
-  }
-  if(name=="fire"){
-    geometry.rotateX(-Math.PI/2)
-    geometry.scale(0.5,0.5,0.5)
-    // geometry.translate(0,0.25,0)
-    // geometry.translate(0,-0.25,0)
-  }
-  return geometry
-}
-
 
 
 function uuidv4() {
@@ -1061,25 +1076,6 @@ function uuidv4() {
 }
 
 
-function updateCursor(){
-  const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
-  const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
-  const intersection = world.intersectsRay(start, end);
-  if(intersection){
-    const pos = intersection.position.map((v, ndx) => {
-      return v + intersection.normal[ndx] * -0.5;
-    });
-    pos[0]=Math.floor(pos[0])
-    pos[1]=Math.floor(pos[1])
-    pos[2]=Math.floor(pos[2])
-    cube.position.set(...pos)
-    // console.log(pos)
-    cube.visible=true;
-  }else{
-    cube.visible=false;
-  }
-}
-
 function animate() {
   stats.begin();
   render()
@@ -1087,16 +1083,6 @@ function animate() {
   requestAnimationFrame(animate)
 }
 
-function resizeRendererToDisplaySize(renderer) {
-  const canvas = renderer.domElement;
-  const width = canvas.clientWidth;
-  const height = canvas.clientHeight;
-  const needResize = canvas.width !== width || canvas.height !== height;
-  if (needResize) {
-    renderer.setSize(width, height, false);
-  }
-  return needResize;
-}
 
 function render() {
   var time = Date.now() * 0.00005;
@@ -1113,11 +1099,17 @@ function render() {
   }
 
 
-  if (resizeRendererToDisplaySize(renderer)) {
+  const canvas = renderer.domElement;
+  const width = canvas.clientWidth;
+  const height = canvas.clientHeight;
+  const needResize = canvas.width !== width || canvas.height !== height;
+  if (needResize) {
+    renderer.setSize(width, height, false);
     const canvas = renderer.domElement;
     camera.aspect = canvas.clientWidth / canvas.clientHeight;
     camera.updateProjectionMatrix();
   }
+    
   if (gameState=="game") {
     socket.emit("playerUpdate",{
       x:camera.position.x,
@@ -1131,7 +1123,24 @@ function render() {
   }
   renderer.render(scene, camera);
   world.updateCells()
-  updateCursor()
+  
+
+  const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
+  const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
+  const intersection = world.intersectsRay(start, end);
+  if(intersection){
+    const pos = intersection.position.map((v, ndx) => {
+      return v + intersection.normal[ndx] * -0.5;
+    });
+    pos[0]=Math.floor(pos[0])
+    pos[1]=Math.floor(pos[1])
+    pos[2]=Math.floor(pos[2])
+    cube.position.set(...pos)
+    // console.log(pos)
+    cube.visible=true;
+  }else{
+    cube.visible=false;
+  }
 
   
 }
