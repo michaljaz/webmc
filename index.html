@@ -11,7 +11,7 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
-      <link rel="stylesheet" href="css/main.css">
+      <link rel="stylesheet" href="css/main.css?11">
     </div>
 
     <div js>
@@ -25,6 +25,9 @@
   </head>
   <body>
     <canvas id="c"></canvas>
+    <div class="initLoading">
+      <img src="assets/images/loadingx.gif" class="loadingBar">
+    </div>
     <div class="gui">
       <div class="inventoryBar"></div>
       <div class="gameMenu">
@@ -75,6 +78,7 @@
         </svg>
       </div>
     </div>
+
     <script type="module">
 
 import * as THREE from './module/build/three.module.js';
@@ -82,10 +86,12 @@ import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js';
 import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js';
 import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
 import Stats from './module/jsm/libs/stats.module.js';
+import {Tools} from './module/tools.js';
 
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState="menu",world,cube,FPC,socket,playerObject,textureAtlasMapping,materials,parameters;
+  gameState="menu",world,cube,FPC,socket,
+  playerObject,textureAtlasMapping,materials,parameters;
 
 
 class Terrain {
@@ -434,6 +440,7 @@ class Terrain {
       // console.log(id)
       if(voxels[id]!=world.getVoxel(...id.split(":"))){
         world.setVoxel(...id.split(":"),voxels[id]);
+        
       }
     })
   }
@@ -692,8 +699,6 @@ function init(){
     });
     scene = new THREE.Scene();
     scene.background = new THREE.Color("lightblue");
-    const density = 0.01;
-    // scene.fog = new THREE.FogExp2(new THREE.Color(0xb0b0b0), density);
     camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
     camera.rotation.order = "YXZ"
     camera.position.set(26, 26, 26)
@@ -708,7 +713,7 @@ function init(){
     scene.add(directionalLight);
     raycaster = new THREE.Raycaster();
     
-    var loader = new FBXLoader();
+    
     var textureLoader = new THREE.TextureLoader();
   }
   
@@ -758,14 +763,32 @@ function init(){
 
   //Load models
   {
-    loader.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
+    var manager = new THREE.LoadingManager();
+    // manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
+    //   console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+    // };
+
+    manager.onLoad = function ( ) {
+      console.log( 'Loading complete!');
+    };
+    // manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
+    //   console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
+    // };
+
+    // manager.onError = function ( url ) {
+    //   console.log( 'There was an error loading ' + url );
+    // };
+
+
+    var fbxl = new FBXLoader(manager);
+    fbxl.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
       object.scale.x=0.1
       object.scale.y=0.1
       object.scale.z=0.1
       object.position.y=100
       scene.add( object );
     } );
-    loader.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
+    fbxl.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
       var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
       texturex.magFilter = THREE.NearestFilter;
       object.children[0].children[0].scale.set(0.01,0.01,0.01)
@@ -779,7 +802,7 @@ function init(){
       scene.add(ghast2)
       ghast2.position.set(3,0,0)
     });
-    loader.load( 'assets/models/player/player.fbx', function ( object ) {
+    fbxl.load( 'assets/models/player/player.fbx', function ( object ) {
       var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
       // console.log("Creating new player:"+p)
       texturex.magFilter = THREE.NearestFilter;
@@ -798,7 +821,7 @@ function init(){
     $.get("assets/textureMapping.json",function (textureMapping){
       textureAtlasMapping=textureMapping
     })
-    var texture = new THREE.TextureLoader().load('assets/textures/textureAtlas.png');
+    var texture = new THREE.TextureLoader(manager).load('assets/textures/textureAtlas.png');
     texture.magFilter = THREE.NearestFilter;
 
     var worldMaterial=new THREE.MeshLambertMaterial({
@@ -812,9 +835,44 @@ function init(){
       textureCols: 27,
       cellSize: 16,
     })
-    $.get(`assets/blocks.json?${uuidv4()}`,function (blocks){
+    $.get(`assets/blocks.json?${Tools.uuidv4()}`,function (blocks){
       world.blocks=blocks
-      loadBlocksModels()
+      var modelsNumber=0;
+      var modelsLoaded=0;
+      var modelsToLoad=[];
+      var blocks=world.blocks
+      Object.keys(blocks).forEach(function (p){
+        if(!blocks[p].isBlock && p!=0){
+          var modelPath=`assets/models/${blocks[p].model}`;
+          modelsNumber++;
+          modelsToLoad.push(blocks[p])
+        }
+      })
+      // console.table(modelsToLoad)
+      for(var i=0;i<modelsToLoad.length;i++){
+        (function () {
+          var block=modelsToLoad[i];
+          fbxl.load( `assets/models/${block.model}`, function ( object ) {
+            var geometry=object.children[0].geometry;
+            if(block.name=="anvil"){
+              geometry.rotateX(-Math.PI/2)
+              geometry.translate(0,0.17,0)
+              geometry.translate(0,-0.25,0)
+            }
+            if(block.name=="fire"){
+              geometry.rotateX(-Math.PI/2)
+              geometry.scale(0.5,0.5,0.5)
+              // geometry.translate(0,0.25,0)
+              // geometry.translate(0,-0.25,0)
+            }
+            world.saveModel(geometry,block.name)
+            modelsLoaded++;
+            if(modelsLoaded==modelsNumber){
+              console.log("DONE! Models loaded!")
+            }
+          });
+        })();
+      }
     })
   }
 
@@ -830,9 +888,9 @@ function init(){
           textureMapping:textureMappingX
         })
         var savedTextures=[]
-        for(var i=0;i<500;i++){
+        for(var i=0;i<10;i++){
           var t=atlasCreator.gen(i).toDataURL();
-          var tekstura=new THREE.TextureLoader().load(t,function (textu){
+          var tekstura=new THREE.TextureLoader(manager).load(t,function (textu){
 
             
             // worldMaterial.map=tekstura
@@ -849,22 +907,11 @@ function init(){
           try{
             q.remove()
           }catch(e){}
-          // q=atlasCreator.gen(tickq)
           tickq++;
-          var tekst=savedTextures[tickq%500];
+          var tekst=savedTextures[tickq%9];
           worldMaterial.map=tekst
 
           worldMaterial.map.needsUpdate=true;
-          // var tekstura=new THREE.TextureLoader().load(q.toDataURL(),function (text){
-          //   // tekstura.magFilter = THREE.NearestFilter;
-          //   // worldMaterial.map=tekstura
-
-          //   // worldMaterial.map.needsUpdate=true;
-          // });
-          
-          // world.textureAtlas=new THREE.TextureLoader().load(q.toDataURL());
-          // world.textureAtlas.magFilter = THREE.NearestFilter;
-          // $("body").append(q)
         },100)
         
       })
@@ -875,11 +922,9 @@ function init(){
 
   //Socket io
   {
-    socket=io.connect("https://d93db05c1da1.ngrok.io/");
+    socket=io.connect("http://localhost:35565");
     socket.on("connect",()=>{
       console.log("Połączono z serverem!")
-      socket.emit("siemka","siemka")
-
     })
     socket.on("blockUpdate",function (block){
       world.setVoxel(...block)
@@ -908,9 +953,9 @@ function init(){
     })
     socket.on("firstLoad",function (v){
       console.log("Otrzymano pakiet świata!")
-
+      // console.log(v)
       world.replaceWorld(v)
-
+      $(".initLoading").css("display","none")
     })
   }
   
@@ -1024,56 +1069,8 @@ function init(){
 }
 
 
-function loadBlocksModels(f){
-  var modelsNumber=0;
-  var modelsLoaded=0;
-  var modelsToLoad=[];
-  var loader = new FBXLoader();
-  var blocks=world.blocks
-  Object.keys(blocks).forEach(function (p){
-    if(!blocks[p].isBlock && p!=0){
-      var modelPath=`assets/models/${blocks[p].model}`;
-      modelsNumber++;
-      modelsToLoad.push(blocks[p])
-    }
-  })
-  // console.table(modelsToLoad)
-  for(var i=0;i<modelsToLoad.length;i++){
-    (function () {
-      var block=modelsToLoad[i];
-      loader.load( `assets/models/${block.model}`, function ( object ) {
-        var geometry=object.children[0].geometry;
-        if(block.name=="anvil"){
-          geometry.rotateX(-Math.PI/2)
-          geometry.translate(0,0.17,0)
-          geometry.translate(0,-0.25,0)
-        }
-        if(block.name=="fire"){
-          geometry.rotateX(-Math.PI/2)
-          geometry.scale(0.5,0.5,0.5)
-          // geometry.translate(0,0.25,0)
-          // geometry.translate(0,-0.25,0)
-        }
-        world.saveModel(geometry,block.name)
-        modelsLoaded++;
-        if(modelsLoaded==modelsNumber){
-          // console.log("DONE! Models loaded!")
-          if(f!=null){
-            f();
-          }
-        }
-      });
-    })();
-  }
-}
 
 
-function uuidv4() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-    var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
 
 
 function animate() {
