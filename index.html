@@ -11,15 +11,15 @@
       <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
-      <link rel="stylesheet" href="css/main.css?11">
+      <link rel="stylesheet" href="cdn/css/main.css?12">
     </div>
 
     <div js>
-      <script type="text/javascript" src="js/jq.js?1234"></script>
-      <script type="text/javascript" src="js/popper.min.js?1234"></script>
-      <script type="text/javascript" src="js/bootstrap.min.js?1234"></script>
-      <script type="text/javascript" src="js/mdb.min.js?1234"></script>
-      <script type="text/javascript" src="js/socket.io.js?1234"></script>
+      <script type="text/javascript" src="cdn/js/jq.js?1234"></script>
+      <script type="text/javascript" src="cdn/js/popper.min.js?1234"></script>
+      <script type="text/javascript" src="cdn/js/bootstrap.min.js?1234"></script>
+      <script type="text/javascript" src="cdn/js/mdb.min.js?1234"></script>
+      <script type="text/javascript" src="cdn/js/socket.io.js?1234"></script>
     </div>
 
   </head>
@@ -89,19 +89,24 @@ import {Terrain} from './module/jsm/main/Terrain.js';
 import {TextureAtlasCreator} from './module/jsm/main/TextureAtlasCreator.js';
 import {FirstPersonControls} from './module/jsm/main/FirstPersonControls.js';
 import {InventoryBar} from './module/jsm/main/InventoryBar.js';
-
+import {AssetLoader} from './module/jsm/main/AssetLoader.js?3';
 
 var canvas,renderer,scene,camera,stats,raycaster,
   gameState="menu",world,cube,FPC,socket,
   playerObject,textureAtlasMapping,materials,parameters;
 
 
-init()
-animate()
+var al=new AssetLoader()
+$.get(`assets/assetLoader.json?${Tools.uuidv4()}`,function (assets){
+  al.load(assets,function (){
+    console.log("AssetLoader: done loading!")
+    init()
+    animate()
+  },al)
+})
 
 
 function init(){
-
   //basic setups
   {
     canvas = document.querySelector('#c');
@@ -122,9 +127,7 @@ function init(){
     directionalLight.position.set(1, 1, 0.5).normalize();
     scene.add(directionalLight);
     raycaster = new THREE.Raycaster();
-    
-    
-    var textureLoader = new THREE.TextureLoader();
+    var fbxl = new FBXLoader();
   }
   
 
@@ -133,11 +136,11 @@ function init(){
     var geometry = new THREE.BufferGeometry();
     var vertices = [];
     materials=[]
-    var sprite1 = textureLoader.load( 'assets/images/snowflakes/snowflake1.png' );
-    var sprite2 = textureLoader.load( 'assets/images/snowflakes/snowflake2.png' );
-    var sprite3 = textureLoader.load( 'assets/images/snowflakes/snowflake3.png' );
-    var sprite4 = textureLoader.load( 'assets/images/snowflakes/snowflake4.png' );
-    var sprite5 = textureLoader.load( 'assets/images/snowflakes/snowflake5.png' );
+    var sprite1 = al.get("snowflake1")
+    var sprite2 = al.get("snowflake2")
+    var sprite3 = al.get("snowflake3")
+    var sprite4 = al.get("snowflake4")
+    var sprite5 = al.get("snowflake5")
     for ( var i = 0; i < 100; i ++ ) {
       var x = Math.random() * 2000 - 1000;
       var y = Math.random() * 2000 - 1000;
@@ -170,74 +173,43 @@ function init(){
     }
   }
 
-
-  //Load models
-  {
-    var manager = new THREE.LoadingManager();
-    // manager.onStart = function ( url, itemsLoaded, itemsTotal ) {
-    //   console.log( 'Started loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
-    // };
-
-    manager.onLoad = function ( ) {
-      console.log( 'Loading complete!');
-    };
-    // manager.onProgress = function ( url, itemsLoaded, itemsTotal ) {
-    //   console.log( 'Loading file: ' + url + '.\nLoaded ' + itemsLoaded + ' of ' + itemsTotal + ' files.' );
-    // };
-
-    // manager.onError = function ( url ) {
-    //   console.log( 'There was an error loading ' + url );
-    // };
-
-
-    var fbxl = new FBXLoader(manager);
-    fbxl.load( 'assets/models/clouds/clouds.fbx', function ( object ) {
-      object.scale.x=0.1
-      object.scale.y=0.1
-      object.scale.z=0.1
-      object.position.y=100
-      scene.add( object );
-    } );
-    fbxl.load( 'assets/models/ghast/ghast.fbx', function ( object ) {
-      var texturex = new THREE.TextureLoader().load('assets/textures/ghast.png');
-      texturex.magFilter = THREE.NearestFilter;
-      object.children[0].children[0].scale.set(0.01,0.01,0.01)
-      // object.children[1].position.set(25,25,25)
-      object.children[1].material.map=texturex
-      object.children[1].material.color=new THREE.Color( 0xffffff );
-      // object.children[1].scale.set(0.5,0.5,0.5)
-      scene.add(object)
-
-      var ghast2=SkeletonUtils.clone(object);
-      scene.add(ghast2)
-      ghast2.position.set(3,0,0)
-    });
-    fbxl.load( 'assets/models/player/player.fbx', function ( object ) {
-      var texturex = new THREE.TextureLoader().load('assets/textures/steve.png');
-      // console.log("Creating new player:"+p)
-      texturex.magFilter = THREE.NearestFilter;
-      object.children[1].scale.set(1,1,1)
-      object.children[1].position.set(25,25,25)
-      object.children[0].material.map=texturex
-      object.children[0].material.color=new THREE.Color( 0xffffff );
-      object.children[1].scale.set(0.5,0.5,0.5)
-      // scene.add(object)
-      playerObject=object
-    });
-  }
+  //Clouds
+    var clouds=al.get("clouds");
+    clouds.scale.x=0.1
+    clouds.scale.y=0.1
+    clouds.scale.z=0.1
+    clouds.position.y=100
+    scene.add( clouds );
+  //Ghast
+    var ghast=al.get("ghastF")
+    var texturex = al.get("ghast")
+    texturex.magFilter = THREE.NearestFilter;
+    ghast.children[0].children[0].scale.set(0.01,0.01,0.01)
+    // object.children[1].position.set(25,25,25)
+    ghast.children[1].material.map=texturex
+    ghast.children[1].material.color=new THREE.Color( 0xffffff );
+    // object.children[1].scale.set(0.5,0.5,0.5)
+    scene.add(ghast)
+    var ghast2=SkeletonUtils.clone(ghast);
+    scene.add(ghast2)
+    ghast2.position.set(3,0,0)
+  //Player
+    var playerObject=al.get("player")
+    var texturex = al.get("steve")
+    // console.log("Creating new player:"+p)
+    texturex.magFilter = THREE.NearestFilter;
+    playerObject.children[1].scale.set(1,1,1)
+    playerObject.children[1].position.set(25,25,25)
+    playerObject.children[0].material.map=texturex
+    playerObject.children[0].material.color=new THREE.Color( 0xffffff );
+    playerObject.children[1].scale.set(0.5,0.5,0.5)
   
   //World
   {
-    var texture = new THREE.TextureLoader(manager).load('assets/textures/textureAtlas.png');
-    texture.magFilter = THREE.NearestFilter;
-
     var worldMaterial=new THREE.MeshLambertMaterial({
-      map: texture,
       side: 0
-    })
-    $.get("assets/textureMapping.json",function (textureMapping){
-      world.textureAtlasMapping=textureMapping;
-    })
+    })    
+
     world = new Terrain({
       textureMaterial: worldMaterial,
       textureRows: 27,
@@ -245,91 +217,70 @@ function init(){
       cellSize: 16,
       scene:scene
     })
+    world.textureAtlasMapping=al.get("textureMappingJson")
     
 
-
-    $.get(`assets/blocks.json?${Tools.uuidv4()}`,function (blocks){
-      world.blocks=blocks
-      var modelsNumber=0;
-      var modelsLoaded=0;
-      var modelsToLoad=[];
-      var blocks=world.blocks
-      Object.keys(blocks).forEach(function (p){
-        if(!blocks[p].isBlock && p!=0){
-          var modelPath=`assets/models/${blocks[p].model}`;
-          modelsNumber++;
-          modelsToLoad.push(blocks[p])
-        }
-      })
-      // console.table(modelsToLoad)
-      for(var i=0;i<modelsToLoad.length;i++){
-        (function () {
-          var block=modelsToLoad[i];
-          fbxl.load( `assets/models/${block.model}`, function ( object ) {
-            var geometry=object.children[0].geometry;
-            if(block.name=="anvil"){
-              geometry.rotateX(-Math.PI/2)
-              geometry.translate(0,0.17,0)
-              geometry.translate(0,-0.25,0)
-            }
-            if(block.name=="fire"){
-              geometry.rotateX(-Math.PI/2)
-              geometry.scale(0.5,0.5,0.5)
-              // geometry.translate(0,0.25,0)
-              // geometry.translate(0,-0.25,0)
-            }
-            world.saveModel(geometry,block.name)
-            modelsLoaded++;
-            if(modelsLoaded==modelsNumber){
-              console.log("DONE! Models loaded!")
-            }
-          });
-        })();
+    var blocks=al.get("blocks")
+    world.blocks=blocks
+    var modelsNumber=0;
+    var modelsLoaded=0;
+    var modelsToLoad=[];
+    var blocks=world.blocks
+    Object.keys(blocks).forEach(function (p){
+      if(!blocks[p].isBlock && p!=0){
+        var modelPath=`assets/models/${blocks[p].model}`;
+        modelsNumber++;
+        modelsToLoad.push(blocks[p])
       }
     })
+    // console.table(modelsToLoad)
+    for(var i=0;i<modelsToLoad.length;i++){
+      (function () {
+        var block=modelsToLoad[i];
+        fbxl.load( `assets/models/${block.model}`, function ( object ) {
+          var geometry=object.children[0].geometry;
+          if(block.name=="anvil"){
+            geometry.rotateX(-Math.PI/2)
+            geometry.translate(0,0.17,0)
+            geometry.translate(0,-0.25,0)
+          }
+          world.saveModel(geometry,block.name)
+          modelsLoaded++;
+          if(modelsLoaded==modelsNumber){
+            console.log("Custom blocks models loaded!")
+          }
+        });
+      })();
+    }
   }
 
 
   //animated Texture Atlas
   {
-    var textureAtlasX = new Image;
-    
-    textureAtlasX.onload = function() {
-      $.get("assets/textureMappingX.json",function (textureMappingX){
-        var atlasCreator=new TextureAtlasCreator({
-          textureX:textureAtlasX,
-          textureMapping:textureMappingX
-        })
-        var savedTextures=[]
-        for(var i=0;i<10;i++){
-          var t=atlasCreator.gen(i).toDataURL();
-          var tekstura=new THREE.TextureLoader(manager).load(t,function (textu){
 
-            
-            // worldMaterial.map=tekstura
+    var textureAtlasX = al.get("textureAtlasX")
+    var textureMappingX = al.get("textureMappingX")
 
-            // worldMaterial.map.needsUpdate=true;
-          });
-          tekstura.magFilter = THREE.NearestFilter;
-          savedTextures.push(tekstura)
-        }
-        var q;
-        var tickq=0;
-
-        setInterval(function (){
-          try{
-            q.remove()
-          }catch(e){}
-          tickq++;
-          var tekst=savedTextures[tickq%9];
-          worldMaterial.map=tekst
-
-          worldMaterial.map.needsUpdate=true;
-        },100)
-        
-      })
+    var atlasCreator=new TextureAtlasCreator({
+      textureX:textureAtlasX,
+      textureMapping:textureMappingX
+    })
+    var savedTextures=[]
+    for(var i=0;i<10;i++){
+      var t=atlasCreator.gen(i).toDataURL();
+      var tekstura=new THREE.TextureLoader().load(t);
+      tekstura.magFilter = THREE.NearestFilter;
+      savedTextures.push(tekstura)
     }
-    textureAtlasX.src = 'assets/textures/textureAtlasX.png';
+    var tickq=0;
+
+    setInterval(function (){
+      tickq++;
+      var tekst=savedTextures[tickq%9];
+      worldMaterial.map=tekst
+
+      worldMaterial.map.needsUpdate=true;
+    },100)
   }
   
 
@@ -372,7 +323,6 @@ function init(){
       stats = new Stats();
       stats.showPanel(0);
       document.body.appendChild(stats.dom);
-       // 0: fps, 1: ms, 2: mb, 3+: custom
     })
   }
   
@@ -561,8 +511,6 @@ function render() {
   }else{
     cube.visible=false;
   }
-
-  
 }
     </script>
   </body>

@@ -38,7 +38,7 @@ canvas {
   background-size: 100px;
   background-repeat: repeat;
   background-image:
-    url(../assets/images/dirt.jpg);
+    url(../../assets/images/dirt.jpg);
     box-shadow: inset 0px 0px 400px 110px rgba(0, 0, 0, .7);
 }
 
