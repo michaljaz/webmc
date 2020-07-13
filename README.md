@@ -10,3 +10,8 @@ git clone https://github.com/michaljaz/web-minecraft
 node web-minecraft/nodejs/run.js
 
 ```
+
+<img src="screenshot.png"
+     alt="screenshot"
+     style="float: left; margin-right: 10px;" />
+     <br><br>
