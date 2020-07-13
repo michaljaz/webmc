@@ -180,7 +180,7 @@ class Terrain {
         return geometries; 
       }else{
         var blockName=this.blocks[voxel].name
-        var geo=world.models[blockName].clone()
+        var geo=this.models[blockName].clone()
         geo=geo.applyMatrix4(matrix)
         return [geo]
       }

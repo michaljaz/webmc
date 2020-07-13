@@ -1,6 +1,14 @@
-var server = require("http").createServer();
-var io = require("socket.io")(server);
+const http = require('http');
+var finalhandler = require('finalhandler');
+var serveStatic = require('serve-static');
+var opn = require('opn');
 
+var socketPort=35565;
+var serverPort=8080;
+
+//Socketio
+var server1 = http.createServer();
+var io = require("socket.io")(server1);
 var world={};
 startUp();
 function startUp(){
@@ -45,4 +53,18 @@ io.sockets.on("connection", function(socket) {
   });
 });//
 
-server.listen(35565);
+server1.listen(socketPort);
+
+//Webserver
+var serve = serveStatic("../");
+
+var server2 = http.createServer(function(req, res) {
+  var done = finalhandler(req, res);
+  serve(req, res, done);
+});
+
+server2.listen(serverPort,function (){
+  opn(`http://localhost:${serverPort}`)
+});
+
+

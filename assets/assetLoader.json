@@ -27,6 +27,10 @@
     "path":"assets/textures/ghast.png",
     "type":"texture"
   },
+  "ghastS":{
+    "path":"assets/textures/ghast_shooting.png",
+    "type":"texture"
+  },
   "textureMappingJson":{
     "path":"assets/textureMapping.json",
     "type":"text"
