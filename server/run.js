@@ -56,7 +56,7 @@ io.sockets.on("connection", function(socket) {
 server1.listen(socketPort);
 
 //Webserver
-var serve = serveStatic(__dirname+"/../");
+var serve = serveStatic(__dirname+"/../client/");
 
 var server2 = http.createServer(function(req, res) {
   var done = finalhandler(req, res);

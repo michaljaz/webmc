@@ -7,7 +7,7 @@ Render minecrafta w przeglądarce
 git clone https://github.com/michaljaz/web-minecraft
 
 #Utworzenie serwera i uruchomienie przeglądarki
-node web-minecraft/nodejs/run.js
+node web-minecraft/server/run.js
 
 ```
 
