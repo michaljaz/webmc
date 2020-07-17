@@ -390,6 +390,7 @@ class TerrainX {
         }
       }
     }
+    this.cellsData[cellId].needsUpdate=true;
   }
   getVoxel(voxelX,voxelY,voxelZ){
     var cell=this.computeCellForVoxel(voxelX,voxelY,voxelZ);
