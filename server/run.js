@@ -12,7 +12,7 @@ var io = require("socket.io")(server1);
 var world={};
 startUp();
 function startUp(){
-  var vari=50
+  var vari=25;
   for (let y = 0; y < vari; ++y) {
     for (let z = 0; z < vari; ++z) {
       for (let x = 0; x < vari; ++x) {

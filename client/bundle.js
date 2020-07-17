@@ -6,8 +6,9 @@ import Stats from './module/jsm/libs/stats.module.js';
 import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js'
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,world,cube,FPC,socket,
-  playerObject,materials,parameters;
+  gameState,cube,FPC,socket,
+  playerObject,materials,parameters,terrain;
+
 
 var Tools={
   uuidv4:function (){
@@ -181,7 +182,6 @@ class TextureAtlasCreator {
       if(i.includes("@")){
         var xd=this.decodeName(i);
         if(multi[xd.pref].loaded==undefined){
-          // console.log(xd.pref,multi[xd.pref].x+1,multi[xd.pref].y+1)
           multi[xd.pref].loaded=true
           //add toxel to canvas
 
@@ -197,9 +197,7 @@ class TextureAtlasCreator {
             toxelY++;
           }
         }
-        // console.log(xd.pref)
       }else{
-        // console.log(i)
         //add toxel to canvas
         ctx.drawImage(textureX,(textureMapping[i].x-1)*16,(textureMapping[i].y-1)*16,16,16,(toxelX-1)*16,(toxelY-1)*16,16,16)
 
@@ -210,6 +208,7 @@ class TextureAtlasCreator {
         }
       }
     }
+    // console.log(canvas.toDataURL())
     return canvas
   }
   decodeName(i){
@@ -320,16 +319,18 @@ class InventoryBar {
   }
 }
 
-class Terrain {
-  constructor(options) {
-    this.textureMaterial = options.textureMaterial;
-    this.textureRows = options.textureRows;
-    this.textureCols = options.textureCols;
-    this.cellSize = options.cellSize;
+class TerrainX {
+  constructor(options){
+    //TODO
+    this.cellSize=16;
+    this.cellsData={};
+    this.toxelSize=27;
+    this.blocks=options.blocks;
+    this.blocksMapping=options.blocksMapping;
+    this.material=options.material
+    this.cells={};
+    this.models={}
     this.scene=options.scene;
-    this.textureAtlasMapping=options.textureAtlasMapping;
-    this.cells = {};
-    this.cells_meshes = {};
     this.neighbours = [
       [-1, 0, 0],
       [1, 0, 0],
@@ -338,247 +339,258 @@ class Terrain {
       [0, 0, -1],
       [0, 0, 1]
     ]
-    this.models={}
   }
-  parseVec(x, y, z) {
-    return `${x}:${y}:${z}`;
-  }
-  computeVoxelOffset(x, y, z) {
-    const {
-      cellSize
-    } = this;
-    x = THREE.MathUtils.euclideanModulo(x, cellSize) | 0;
-    y = THREE.MathUtils.euclideanModulo(y, cellSize) | 0;
-    z = THREE.MathUtils.euclideanModulo(z, cellSize) | 0;
+  computeVoxelOffset(voxelX,voxelY,voxelZ){
+    const {cellSize} = this;
+    var x = THREE.MathUtils.euclideanModulo(voxelX, cellSize) | 0;
+    var y = THREE.MathUtils.euclideanModulo(voxelY, cellSize) | 0;
+    var z = THREE.MathUtils.euclideanModulo(voxelZ, cellSize) | 0;
     return [x, y, z]
   }
-  computeCellId(x, y, z) {
-    const {
-      cellSize
-    } = this;
-    const cellX = Math.floor(x / cellSize);
-    const cellY = Math.floor(y / cellSize);
-    const cellZ = Math.floor(z / cellSize);
-    return this.parseVec(cellX,cellY,cellZ)
+  computeCellForVoxel(voxelX,voxelY,voxelZ){
+    const {cellSize} = this;
+    var cellX = Math.floor(voxelX / cellSize);
+    var cellY = Math.floor(voxelY / cellSize);
+    var cellZ = Math.floor(voxelZ / cellSize);
+    return [cellX,cellY,cellZ];
   }
-  getCellForVoxel(x, y, z) {
-    return this.cells[this.computeCellId(x, y, z)];
-  }
-  setVoxel(x, y, z, v) {
-    var voxel = this.computeVoxelOffset(x, y, z);
-    var cellId = this.computeCellId(x, y, z);
-    if (this.cells[cellId] != undefined) {
-      this.cells[cellId][this.parseVec(...voxel)] = v;
-    } else {
-      this.cells[cellId] = {
-        [this.parseVec(...voxel)]: v
-      };
+  vec3(x,y,z){
+    if(typeof x=="string"){
+      x=parseInt(x);
     }
-    this.cells[cellId].needsUpdate = true;
-    // console.log(this.neighbours)
-    for (var i = 0; i < this.neighbours.length; i++) {
-      var neigh = this.neighbours[i];
-      var cellIdX = this.computeCellId(x + neigh[0], y + neigh[1], z + neigh[2]);
-      try {
-        this.cells[cellIdX].needsUpdate = true;
-      } catch (e) {}
-
+    if(typeof y=="string"){
+      y=parseInt(y);
     }
+    if(typeof z=="string"){
+      z=parseInt(z);
+    }
+    return `${x}:${y}:${z}`;
   }
-  getVoxel(x, y, z) {
-    var voxel = this.computeVoxelOffset(x, y, z);
-    var cellId = this.computeCellId(x, y, z);
-    if (this.cells[cellId] != undefined) {
-      var val = this.cells[cellId][this.parseVec(...voxel)];
-      if (val != undefined) {
-        return val;
-      } else {
-        return 0;
+  setVoxel(voxelX,voxelY,voxelZ,value){
+    var voff=this.computeVoxelOffset(voxelX,voxelY,voxelZ);
+    var cell=this.computeCellForVoxel(voxelX,voxelY,voxelZ);
+    var cellId=this.vec3(...cell);
+    if(this.cellsData[cellId]==undefined){
+      //there is no cell for voxel;
+      this.cellsData[cellId]={
+        [this.vec3(...voff)]:value
       }
-    } else {
-      return 0;
+    }else{
+      var prevVox=this.cellsData[cellId][this.vec3(...voff)];
+      if(prevVox!=value){
+        //voxel has to be changed
+        this.cellsData[cellId][this.vec3(...voff)]=value
+        this.cellsData[cellId].needsUpdate=true;
+        for(var nei of this.neighbours){
+          //For each neighbour cell
+          var neiCellId=this.vec3(...this.computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2]))
+          try{
+            this.cellsData[neiCellId].needsUpdate=true;
+          }catch(e){}
+        }
+      }
     }
   }
-  updateCells(world) {
-    const {
-      cells
-    } = this;
-    Object.keys(cells).forEach(function (id) {
-      if (cells[id].needsUpdate) {
-        world.updateCellGeometry(...id.split(":"))
+  getVoxel(voxelX,voxelY,voxelZ){
+    var cell=this.computeCellForVoxel(voxelX,voxelY,voxelZ);
+    var cellId=this.vec3(...cell);
+    var voff=this.computeVoxelOffset(voxelX,voxelY,voxelZ);
+    var voxId=this.vec3(...voff);
+    if(this.cellsData[cellId]!=undefined){
+      //cell Exist
+      var voxel=this.cellsData[cellId][voxId];
+      if(voxel!=undefined){
+        return voxel;
+      }
+    }
+    return 0;
+  }
+  updateCells(){
+    const {cellsData} = this;
+    var _this=this;
+    Object.keys(cellsData).forEach(function (id) {
+      if (cellsData[id].needsUpdate) {
+        _this.updateCellMesh(...id.split(":"))
       }
     })
   }
-  updateCellGeometry(x, y, z) {
-    console.warn(`updating Chunk: ${x}:${y}:${z}`)
-    if (this.cells[this.parseVec(x, y, z)].needsUpdate) {
-      var mesh = this.cells_meshes[this.parseVec(x, y, z)];
-      var geometry = this.generateCellGeometry(x, y, z);
-      if (geometry != null) {
-        geometry.dynamic = false;
-        if (mesh != undefined) {
-          mesh.geometry = geometry;
-        } else {
-          var geometry = geometry;
-          var mesh = new THREE.Mesh(geometry, this.textureMaterial);
-          // mesh.computeAngleVertexNormals(Math.PI/2);
-          this.scene.add(mesh)
-          this.cells_meshes[this.parseVec(x, y, z)] = mesh;
-        }
-      } else {
-        this.scene.remove(this.cells_meshes[this.parseVec(x, y, z)])
-        delete this.cells_meshes[this.parseVec(x, y, z)]
-        // delete this.cells[this.parseVec(x,y,z)]
+  updateCellMesh(cellX,cellY,cellZ){
+    console.log(`updating cell: ${cellX}:${cellY}:${cellZ}`)
+    var cellId=this.vec3(cellX,cellY,cellZ);
+    if(this.cellsData[cellId].needsUpdate){
+      var mesh=this.cells[cellId];
+      var geometry=this.generateCellGeometry(cellX,cellY,cellZ)
+      var material=this.material;
+      if(mesh==undefined){
+        this.cells[cellId]=new THREE.Mesh(geometry,material);
+        this.scene.add(this.cells[cellId])
+      }else{
+        this.cells[cellId].geometry=geometry;
       }
-      try {
-        this.cells[this.parseVec(x, y, z)].needsUpdate = false;
-      } catch (e) {}
-
+      this.cellsData[cellId].needsUpdate=false;
     }
   }
-  generateCellGeometry(x, y, z) {
-    const {
-      cellSize
-    } = this;
-    var geometries = [];
-    for (var i = 0; i < cellSize; i++) {
-      for (var j = 0; j < cellSize; j++) {
-        for (var k = 0; k < cellSize; k++) {
-          var voxelGeometries = this.generateVoxelGeometry(x * cellSize + i, y * cellSize + j, z * cellSize + k);
-          for (var l = 0; l < voxelGeometries.length; l++) {
-            if(voxelGeometries[l].index!=null){
-              voxelGeometries[l]=voxelGeometries[l].toNonIndexed()
-            }
-            geometries.push(voxelGeometries[l]);
+  generateCellGeometry(cellX,cellY,cellZ){
+    //setup
+    const {cellSize}=this;
+    var positions=[];
+    var normals=[];
+    var uvs=[];
+    var _this=this;
+    function addFace(type,pos,voxel){
+      var faceVertex=_this.genBlockFace(type,voxel);
+      for(var vertex of faceVertex){
+        vertex.pos[0]+=pos[0]
+        vertex.pos[1]+=pos[1]
+        vertex.pos[2]+=pos[2]
+        positions.push(...vertex.pos);
+        normals.push(...vertex.norm);
+        uvs.push(...vertex.uv)
+      }
+    }
+    function addGeo(geo,pos){
+      var posi=geo.attributes.position.array;
+      var norm=geo.attributes.normal.array;
+      var uv=geo.attributes.uv.array;
+      for(var i=0;i<posi.length;i++){
+        positions.push(posi[i]+pos[i%3]);
+      }
+      normals.push(...norm);
+      uvs.push(...uv)
+    }
 
+    //Add positions,normals,uvs
+    for(var i=0;i<cellSize;i++){
+      for(var j=0;j<cellSize;j++){
+        for(var k=0;k<cellSize;k++){
+          var pos=[
+            cellX*cellSize+i,
+            cellY*cellSize+j,
+            cellZ*cellSize+k
+          ]
+          var voxel=this.getVoxel(...pos);
+
+          if(voxel!=0){
+            if(this.blocks[voxel].isBlock){
+              //Normal block
+              if(!this.blocks[this.getVoxel(pos[0]+1,pos[1],pos[2])].isBlock){
+                addFace("nx",pos,voxel)
+              }
+              if(!this.blocks[this.getVoxel(pos[0]-1,pos[1],pos[2])].isBlock){
+                addFace("px",pos,voxel)
+              }
+              if(!this.blocks[this.getVoxel(pos[0],pos[1]-1,pos[2])].isBlock){
+                addFace("ny",pos,voxel)
+              }
+              if(!this.blocks[this.getVoxel(pos[0],pos[1]+1,pos[2])].isBlock){
+                addFace("py",pos,voxel)
+              }
+              if(!this.blocks[this.getVoxel(pos[0],pos[1],pos[2]+1)].isBlock){
+                addFace("pz",pos,voxel)
+              }
+              if(!this.blocks[this.getVoxel(pos[0],pos[1],pos[2]-1)].isBlock){
+                addFace("nz",pos,voxel)
+              }
+            }else{
+              //Specific block
+              var blockName=this.blocks[voxel].name
+              var geo=this.models[blockName];
+              addGeo(geo,pos)
+            }
+            
           }
         }
       }
     }
-    if (geometries.length != 0) {
-      var geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
-      geometry.computeBoundingSphere();
-      geometry.computeVertexNormals();
-    } else {
-      var geometry = null;
-    }
-    return geometry;
+    var cellGeometry=new THREE.BufferGeometry();
+    cellGeometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(positions), 3));
+    cellGeometry.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(normals), 3));
+    cellGeometry.setAttribute('uv',new THREE.BufferAttribute(new Float32Array(uvs), 2));
+    return cellGeometry;
+    //Generate geometry
   }
-  generateVoxelGeometry(x, y, z) {
-    var voxel = this.getVoxel(x, y, z);
-    var matrix = new THREE.Matrix4();
-    matrix.makeTranslation(x, y, z);
-    if(voxel){
-      if(this.blocks[voxel].isBlock){
-        //Normal block
-        var geometries = [];
-        if (!this.blocks[this.getVoxel(x - 1, y, z)].isBlock) {
-          var nxGeometry = this.generateFace("nx", voxel);
-          geometries.push(nxGeometry.applyMatrix4(matrix))
-        }
-        if (!this.blocks[this.getVoxel(x + 1, y, z)].isBlock) {
-          var pxGeometry = this.generateFace("px", voxel);
-          geometries.push(pxGeometry.applyMatrix4(matrix))
-        }
-        if (!this.blocks[this.getVoxel(x, y - 1, z)].isBlock) {
-          var nyGeometry = this.generateFace("ny", voxel);
-          geometries.push(nyGeometry.applyMatrix4(matrix))
-        }
-        if (!this.blocks[this.getVoxel(x, y + 1, z)].isBlock) {
-          var pyGeometry = this.generateFace("py", voxel);
-          geometries.push(pyGeometry.applyMatrix4(matrix))
-        }
-        if (!this.blocks[this.getVoxel(x, y, z - 1)].isBlock) {
-          var nzGeometry = this.generateFace("nz", voxel);
-          geometries.push(nzGeometry.applyMatrix4(matrix))
-        }
-        if (!this.blocks[this.getVoxel(x, y, z + 1)].isBlock) {
-          var pzGeometry = this.generateFace("pz", voxel);
-          geometries.push(pzGeometry.applyMatrix4(matrix))
-        }
-        return geometries; 
-      }else{
-        var blockName=this.blocks[voxel].name
-        var geo=this.models[blockName].clone()
-        geo=geo.applyMatrix4(matrix)
-        return [geo]
-      }
-    }else{
-      return []
-    } 
-  }
-  generateFace(type, voxel) {
-    const {textureAtlasMapping}=this;
-    var geometry = new THREE.PlaneBufferGeometry(1, 1);
-    var light = new THREE.Color( 0xffffff );
-    var shadow = new THREE.Color( 0x505050 );
-    if (type == "px") {
-      geometry.rotateY(Math.PI / 2);
-      geometry.translate(0.5, 0, 0);
-    }
-    if (type == "nx") {
-      geometry.rotateY(-Math.PI / 2);
-      geometry.translate(-0.5, 0, 0);
-    }
-    if (type == "py") {
-      geometry.rotateX(-Math.PI / 2);
-      geometry.translate(0, 0.5, 0);
-    }
-    if (type == "ny") {
-      geometry.rotateX(Math.PI / 2);
-      geometry.translate(0, -0.5, 0);
-    }
-    if (type == "pz") {
-      geometry.translate(0, 0, 0.5);
-    }
-    if (type == "nz") {
-      geometry.rotateY(Math.PI);
-      geometry.translate(0, 0, -0.5);
-    }
-    var uv = this.blocks[voxel]["faces"][type]
+  genBlockFace(type,voxel){
+    const {toxelSize,blocksMapping}=this;
+    var blockName=this.blocks[voxel]["faces"][type]
     try{
-      var uvX=textureAtlasMapping[uv]["x"]-1
-      var uvY=27-textureAtlasMapping[uv]["y"]
+      var toxX=blocksMapping[blockName]["x"]-1
+      var toxY=blocksMapping[blockName]["y"]-1
     }catch(e){
-      var uvX=textureAtlasMapping["debug"]["x"]-1
-      var uvY=27-textureAtlasMapping["debug"]["y"]
+      var toxX=blocksMapping["debug"]["x"]-1
+      var toxY=27-blocksMapping["debug"]["y"]
     }
-    
+    var q=1/toxelSize;
+    var x1=q*toxX;
+    var y1=1-q*toxY-q;
+    var x2=x1+q;
+    var y2=y1+q;
+    var uv=[
+      [x1,y1],
+      [x1,y2],
+      [x2,y1],
+      [x2,y2]
+    ]
+    switch (type){
+      case 'pz':
+        return [
+          { pos: [-0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[0], },
+          { pos: [ 0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[2], },
+          { pos: [-0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[1], },
 
-    this.setUv(geometry, uvX,uvY, 180)
-    return geometry;
-  }
-  setUv(geometry, x, y, rotation = 0) {
-    const {
-      textureRows,
-      textureCols
-    } = this;
-    var textureSizeX = 1 / textureRows;
-    var textureSizeY = 1 / textureCols;
-    if (rotation == 0) {
-      geometry.attributes.uv.array[0] = textureSizeX * x;
-      geometry.attributes.uv.array[1] = textureSizeY * y;
-
-      geometry.attributes.uv.array[2] = textureSizeX + textureSizeX * x;
-      geometry.attributes.uv.array[3] = 0 + textureSizeY * y;
-
-      geometry.attributes.uv.array[4] = 0 + textureSizeX * x;
-      geometry.attributes.uv.array[5] = textureSizeY + textureSizeY * y;
-
-      geometry.attributes.uv.array[6] = textureSizeX + textureSizeX * x;
-      geometry.attributes.uv.array[7] = textureSizeY + textureSizeY * y;
-    } else if (rotation == 180) {
-      geometry.attributes.uv.array[4] = textureSizeX * x;
-      geometry.attributes.uv.array[5] = textureSizeY * y;
-
-      geometry.attributes.uv.array[6] = textureSizeX + textureSizeX * x;
-      geometry.attributes.uv.array[7] = 0 + textureSizeY * y;
-
-      geometry.attributes.uv.array[0] = 0 + textureSizeX * x;
-      geometry.attributes.uv.array[1] = textureSizeY + textureSizeY * y;
-
-      geometry.attributes.uv.array[2] = textureSizeX + textureSizeX * x;
-      geometry.attributes.uv.array[3] = textureSizeY + textureSizeY * y;
+          { pos: [-0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[1], },
+          { pos: [ 0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[2], },
+          { pos: [ 0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[3], }
+        ]
+      case 'nx':
+        return [
+          { pos: [ 0.5, -0.5,  0.5], norm: [ 1,  0,  0], uv: uv[0],},
+          { pos: [ 0.5, -0.5, -0.5], norm: [ 1,  0,  0], uv: uv[2], },
+          { pos: [ 0.5,  0.5,  0.5], norm: [ 1,  0,  0], uv: uv[1], },
+         
+          { pos: [ 0.5,  0.5,  0.5], norm: [ 1,  0,  0], uv: uv[1], },
+          { pos: [ 0.5, -0.5, -0.5], norm: [ 1,  0,  0], uv: uv[2], },
+          { pos: [ 0.5,  0.5, -0.5], norm: [ 1,  0,  0], uv: uv[3], }
+        ]
+      case 'nz':
+        return [
+          { pos: [ 0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[0], },
+          { pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
+          { pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
+         
+          { pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
+          { pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
+          { pos: [-0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[3], }
+        ]
+      case 'px':
+        return [
+          { pos: [-0.5, -0.5, -0.5], norm: [-1,  0,  0], uv: uv[0], },
+          { pos: [-0.5, -0.5,  0.5], norm: [-1,  0,  0], uv: uv[2], },
+          { pos: [-0.5,  0.5, -0.5], norm: [-1,  0,  0], uv: uv[1], },
+         
+          { pos: [-0.5,  0.5, -0.5], norm: [-1,  0,  0], uv: uv[1], },
+          { pos: [-0.5, -0.5,  0.5], norm: [-1,  0,  0], uv: uv[2], },
+          { pos: [-0.5,  0.5,  0.5], norm: [-1,  0,  0], uv: uv[3], },
+        ]
+      case 'py':
+        return [
+          { pos: [ 0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[0], },
+          { pos: [-0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[2], },
+          { pos: [ 0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[1], },
+         
+          { pos: [ 0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[1], },
+          { pos: [-0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[2], },
+          { pos: [-0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[3], }
+        ]
+      case 'ny':
+        return [
+          { pos: [ 0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[0], },
+          { pos: [-0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[2], },
+          { pos: [ 0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[1], },
+         
+          { pos: [ 0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[1], },
+          { pos: [-0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[2], },
+          { pos: [-0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[3], }
+        ]
     }
   }
   intersectsRay(start,end){
@@ -664,11 +676,12 @@ class Terrain {
     }
     return null;
   }
-  replaceWorld(voxels,world){
+  replaceWorld(voxels){
+    var _this=this;
     Object.keys(voxels).forEach(function (id){
       // console.log(id)
-      if(voxels[id]!=world.getVoxel(...id.split(":"))){
-        world.setVoxel(...id.split(":"),voxels[id]);
+      if(voxels[id]!=_this.getVoxel(...id.split(":"))){
+        _this.setVoxel(...id.split(":"),voxels[id]);
       }
     })
   }
@@ -696,7 +709,7 @@ function init(){
     });
     scene = new THREE.Scene();
     scene.background = new THREE.Color("lightblue");
-    camera = new THREE.PerspectiveCamera(75, 2, 0.1, 1000);
+    camera = new THREE.PerspectiveCamera(75, 2, 0.1, 64*5);
     camera.rotation.order = "YXZ"
     camera.position.set(26, 26, 26)
 
@@ -720,7 +733,7 @@ function init(){
     var sprite3 = al.get("snowflake3")
     var sprite4 = al.get("snowflake4")
     var sprite5 = al.get("snowflake5")
-    for ( var i = 0; i < 100; i ++ ) {
+    for ( var i = 0; i < 1000; i ++ ) {
       var x = Math.random() * 2000 - 1000;
       var y = Math.random() * 2000 - 1000;
       var z = Math.random() * 2000 - 1000;
@@ -772,6 +785,8 @@ function init(){
     ghast.children[1].material.color=new THREE.Color( 0xffffff );
     var mat=ghast.children[1].material.clone()
     scene.add(ghast)
+
+
   //Ghast2
     
     const ghast2=SkeletonUtils.clone(ghast);
@@ -795,54 +810,12 @@ function init(){
     playerObject.children[1].scale.set(0.5,0.5,0.5)
   
 
-  //Setup world
+  //Setup worlds
     var worldMaterial=new THREE.MeshLambertMaterial({
-      side: 0
+      side: 0,
+      map:null
     })    
-    world = new Terrain({
-      textureMaterial: worldMaterial,
-      textureRows: 27,
-      textureCols: 27,
-      cellSize: 16,
-      scene:scene
-    })
-    world.textureAtlasMapping=al.get("textureMappingJson")
-    
 
-  //Load Custom blocks models
-    var blocks=al.get("blocks")
-    world.blocks=blocks
-    var modelsNumber=0;
-    var modelsLoaded=0;
-    var modelsToLoad=[];
-    Object.keys(blocks).forEach(function (p){
-      if(!blocks[p].isBlock && p!=0){
-        var modelPath=`assets/models/${blocks[p].model}`;
-        modelsNumber++;
-        modelsToLoad.push(blocks[p])
-      }
-    })
-    for(var i=0;i<modelsToLoad.length;i++){
-      (function () {
-        var block=modelsToLoad[i];
-        fbxl.load( `assets/models/${block.model}`, function ( object ) {
-          var geometry=object.children[0].geometry;
-          if(block.name=="anvil"){
-            geometry.rotateX(-Math.PI/2)
-            geometry.translate(0,0.17,0)
-            geometry.translate(0,-0.25,0)
-          }
-          world.saveModel(geometry,block.name)
-          modelsLoaded++;
-          if(modelsLoaded==modelsNumber){
-            console.log("Custom blocks models loaded!")
-          }
-        });
-      })();
-    }
-
-
-  //animated Texture Atlas
     var textureAtlasX = al.get("textureAtlasX")
     var textureMappingX = al.get("textureMappingX")
 
@@ -868,14 +841,55 @@ function init(){
     },100)
   
 
+    terrain=new TerrainX({
+      blocks:al.get("blocks"),
+      blocksMapping:al.get("textureMappingJson"),
+      material:worldMaterial,
+      scene,
+    })
+
+  //Load Custom blocks models
+    var blocks=al.get("blocks")
+    var modelsNumber=0;
+    var modelsLoaded=0;
+    var modelsToLoad=[];
+    Object.keys(blocks).forEach(function (p){
+      if(!blocks[p].isBlock && p!=0){
+        var modelPath=`assets/models/${blocks[p].model}`;
+        modelsNumber++;
+        modelsToLoad.push(blocks[p])
+      }
+    })
+    for(var i=0;i<modelsToLoad.length;i++){
+      (function () {
+        var block=modelsToLoad[i];
+        fbxl.load( `assets/models/${block.model}`, function ( object ) {
+          var geometry=object.children[0].geometry;
+          if(block.name=="anvil"){
+            geometry.rotateX(-Math.PI/2)
+            geometry.translate(0,0.17,0)
+            geometry.translate(0,-0.25,0)
+          }
+          terrain.saveModel(geometry,block.name)
+          modelsLoaded++;
+          if(modelsLoaded==modelsNumber){
+            console.log("Custom blocks models loaded!")
+          }
+        });
+      })();
+    }
+
+
+
   //Socket io setup
     socket=io.connect("http://localhost:35565");
     socket.on("connect",()=>{
       console.log("Połączono z serverem!")
     })
     socket.on("blockUpdate",function (block){
-      world.setVoxel(...block)
+      terrain.setVoxel(...block)
     })
+
 
   //Socket.io players
     var playersx={}
@@ -901,11 +915,12 @@ function init(){
       })
     })
 
+
   //Socket.io first world load
     socket.on("firstLoad",function (v){
       console.log("Otrzymano pakiet świata!")
       // console.log(v)
-      world.replaceWorld(v,world)
+      terrain.replaceWorld(v)
       $(".initLoading").css("display","none")
       stats = new Stats();
       stats.showPanel(0);
@@ -993,12 +1008,13 @@ function init(){
     }));
     scene.add(cube);
 
+
   //jquery events
     $(document).mousedown(function (e) {
       if (gameState=="game") {
         const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
         const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
-        const intersection = world.intersectsRay(start, end);
+        const intersection = terrain.intersectsRay(start, end);
         if (e.which == 1) {
           var voxelId=0;
         } else {
@@ -1013,11 +1029,8 @@ function init(){
         }
       }
     })
+
 }
-
-
-
-
 
 
 function animate() {
@@ -1067,12 +1080,12 @@ function render() {
 
   }
   renderer.render(scene, camera);
-  world.updateCells(world)
+  terrain.updateCells()
   
 
   const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
   const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
-  const intersection = world.intersectsRay(start, end);
+  const intersection = terrain.intersectsRay(start, end);
   if(intersection){
     const pos = intersection.position.map((v, ndx) => {
       return v + intersection.normal[ndx] * -0.5;
