@@ -459,7 +459,7 @@ class Terrain {
     })
   }
   updateCellMesh(cellX,cellY,cellZ){
-    console.log(`updating cell: ${cellX}:${cellY}:${cellZ}`)
+    console.warn(`Updating cell: ${cellX}:${cellY}:${cellZ}`)
     var cellId=this.vec3(cellX,cellY,cellZ);
     if(this.cellsData[cellId].needsUpdate){
       var mesh=this.cells[cellId];
@@ -908,6 +908,7 @@ function init(){
       scene,
       camera,
     })
+    
 
 
   //Load Custom blocks models
@@ -1099,20 +1100,19 @@ function render() {
 
   }
   renderer.render(scene, camera);
-  terrain.updateCells()
   
-
-  var rayBlock=terrain.getRayBlock();
-
-  if(rayBlock){
-    var pos=rayBlock.posBreak;
-    pos[0]=Math.floor(pos[0])
-    pos[1]=Math.floor(pos[1])
-    pos[2]=Math.floor(pos[2])
-    cursor.position.set(...pos)
-    // console.log(pos)
-    cursor.visible=true;
-  }else{
-    cursor.visible=false;
-  }
+  terrain.updateCells()
+  //update cursor
+    var rayBlock=terrain.getRayBlock();
+    if(rayBlock){
+      var pos=rayBlock.posBreak;
+      pos[0]=Math.floor(pos[0])
+      pos[1]=Math.floor(pos[1])
+      pos[2]=Math.floor(pos[2])
+      cursor.position.set(...pos)
+      // console.log(pos)
+      cursor.visible=true;
+    }else{
+      cursor.visible=false;
+    }
 }

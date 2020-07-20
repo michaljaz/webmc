@@ -2,6 +2,7 @@ const http = require('http');
 var finalhandler = require('finalhandler');
 var serveStatic = require('serve-static');
 var opn = require('opn');
+const { exec } = require("child_process");
 
 var socketPort=35565;
 var serverPort=8080;
@@ -12,7 +13,7 @@ var serverPort=8080;
   var world={};
   startUp();
   function startUp(){
-    var vari=25;
+    var vari=10;
     for (let y = 0; y < vari; ++y) {
       for (let z = 0; z < vari; ++z) {
         for (let x = 0; x < vari; ++x) {
@@ -62,8 +63,11 @@ var serverPort=8080;
     serve(req, res, done);
   });
 
+
+
   server2.listen(serverPort,function (){
-    opn(`http://localhost:${serverPort}`)
+    // opn(`http://localhost:${serverPort}`)
+    exec(`google-chrome --new-window --app=http://localhost:${serverPort}`)
   });
 
 
