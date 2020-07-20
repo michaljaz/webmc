@@ -3,27 +3,18 @@ import * as THREE from './module/build/three.module.js';
 import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js';
 import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
 import Stats from './module/jsm/libs/stats.module.js';
-import {BufferGeometryUtils} from './module/jsm/utils/BufferGeometryUtils.js'
 
 var canvas,renderer,scene,camera,stats,raycaster,
-  gameState,cube,FPC,socket,
+  gameState,cursor,FPC,socket,
   playerObject,materials,parameters,terrain;
 
-
-var Tools={
-  uuidv4:function (){
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-     });
-  }
-}
 
 class AssetLoader{
   constructor(options){
     this.assets={}
   }
-  load(assets,callback,_this){
+  load(assets,callback){
+    var _this=this;
     var textureLoader = new THREE.TextureLoader();
     var fbxl = new FBXLoader();
     var assetsNumber=0;
@@ -38,7 +29,7 @@ class AssetLoader{
       var path=assets[p].path;
       var dynamic=assets[p].dynamic;
       if(dynamic){
-        path+="?"+Tools.uuidv4()
+        path+="?"+THREE.MathUtils.generateUUID()
       }
       if(type=="texture"){
         textureLoader.load(path,function (texture){
@@ -111,28 +102,22 @@ class FirstPersonControls {
       y: r_y
     };
   }
-  degtorad(deg) {
-    return deg * Math.PI / 180;
-  }
-  radtodeg(rad) {
-    return rad * 180 / Math.PI;
-  }
   camMicroMove() {
     if (this.keys[this.kc["w"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(180), this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(180), this.micromove).y;
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(180), this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(180), this.micromove).y;
     }
     if (this.keys[this.kc["s"]]) {
       this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y, this.micromove).x;
       this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y, this.micromove).y;
     }
     if (this.keys[this.kc["a"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - this.degtorad(90), this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - this.degtorad(90), this.micromove).y;
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - THREE.MathUtils.degToRad(90), this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - THREE.MathUtils.degToRad(90), this.micromove).y;
     }
     if (this.keys[this.kc["d"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(90), this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + this.degtorad(90), this.micromove).y;
+      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(90), this.micromove).x;
+      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(90), this.micromove).y;
     }
     if (this.keys[this.kc["space"]]) {
       this.camera.position.y += this.micromove;
@@ -143,6 +128,42 @@ class FirstPersonControls {
   }
   lockPointer() {
     this.canvas.requestPointerLock()
+  }
+  updatePosition(e){
+    FPC.camera.rotation.x -= THREE.MathUtils.degToRad(e.movementY / 10)
+    FPC.camera.rotation.y -= THREE.MathUtils.degToRad(e.movementX / 10)
+    if (THREE.MathUtils.radToDeg(FPC.camera.rotation.x) < -90) {
+      FPC.camera.rotation.x = THREE.MathUtils.degToRad(-90)
+    }
+    if (THREE.MathUtils.radToDeg(FPC.camera.rotation.x) > 90) {
+      FPC.camera.rotation.x = THREE.MathUtils.degToRad(90)
+    }
+  }
+  lockChangeAlert(){
+    if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
+      document.addEventListener("mousemove", FPC.updatePosition, false);
+      $(".gameMenu").css("display", "none")
+      gameState="game"
+    } else {
+      document.removeEventListener("mousemove", FPC.updatePosition, false);
+      $(".gameMenu").css("display", "block")
+      gameState="menu"
+    }
+  }
+  listen(){
+    var _this=this;
+    $(document).keydown(function (z) {
+      _this.keys[z.keyCode] = true;
+    })
+    $(document).keyup(function (z) {
+      delete _this.keys[z.keyCode];
+    })
+    $(".gameOn").click(function () {
+      _this.lockPointer()
+    })
+    document.addEventListener('pointerlockchange', _this.lockChangeAlert, false);
+    document.addEventListener('mozpointerlockchange', _this.lockChangeAlert, false);
+    return this;
   }
 }
 
@@ -296,6 +317,7 @@ class InventoryBar {
       this.setFocus(i, i == number)
     }
     this.activeBox = number
+    return this;
   }
   moveBoxMinus() {
     if (this.activeBox + 1 > this.boxes) {
@@ -317,9 +339,29 @@ class InventoryBar {
       this.setFocusOnly(code - 48)
     }
   }
+  setBoxes(images){
+    for(var i=0;i<images.length;i++){
+      this.setBox(i+1,images[i]);
+    }
+    return this;
+  }
+  listen(){
+    var _this=this;
+    $(window).on('wheel', function (event) {
+      if (event.originalEvent.deltaY < 0) {
+        _this.moveBoxPlus()
+      } else {
+        _this.moveBoxMinus()
+      }
+    })
+    $(document).keydown(function (z) {
+      _this.directBoxChange(z)
+    })
+    return this;
+  }
 }
 
-class TerrainX {
+class Terrain {
   constructor(options){
     //TODO
     this.cellSize=16;
@@ -330,6 +372,7 @@ class TerrainX {
     this.material=options.material
     this.cells={};
     this.models={}
+    this.camera=options.camera
     this.scene=options.scene;
     this.neighbours = [
       [-1, 0, 0],
@@ -689,11 +732,28 @@ class TerrainX {
   saveModel(geometry,name){
     this.models[name]=geometry;
   }
+  getRayBlock(){
+    const start = new THREE.Vector3().setFromMatrixPosition(this.camera.matrixWorld);
+    const end = new THREE.Vector3().set(0,0, 1).unproject(this.camera);
+    const intersection = terrain.intersectsRay(start, end);
+
+    if(intersection){
+      const posPlace = intersection.position.map((v, ndx) => {
+        return v + intersection.normal[ndx] * 0.5;
+      });
+      const posBreak = intersection.position.map((v, ndx) => {
+        return v + intersection.normal[ndx] * -0.5;
+      });
+      return {posPlace,posBreak}
+    }else{
+      return false
+    }
+  }
 }
 
 
 var al=new AssetLoader()
-$.get(`assets/assetLoader.json?${Tools.uuidv4()}`,function (assets){
+$.get(`assets/assetLoader.json?${THREE.MathUtils.generateUUID()}`,function (assets){
   al.load(assets,function (){
     console.log("AssetLoader: done loading!")
     init()
@@ -811,19 +871,17 @@ function init(){
     playerObject.children[1].scale.set(0.5,0.5,0.5)
   
 
-  //Setup worlds
-    var worldMaterial=new THREE.MeshLambertMaterial({
+  //Animated TextureAtas
+    var worldMaterial=new THREE.MeshStandardMaterial({
       side: 0,
       map:null
     })    
 
-    var textureAtlasX = al.get("textureAtlasX")
-    var textureMappingX = al.get("textureMappingX")
-
     var atlasCreator=new TextureAtlasCreator({
-      textureX:textureAtlasX,
-      textureMapping:textureMappingX
+      textureX:al.get("textureAtlasX"),
+      textureMapping:al.get("textureMappingX")
     })
+    
     var savedTextures=[]
     for(var i=0;i<10;i++){
       var t=atlasCreator.gen(i).toDataURL();
@@ -840,14 +898,17 @@ function init(){
 
       worldMaterial.map.needsUpdate=true;
     },100)
-  
 
-    terrain=new TerrainX({
+
+  //Setup terrain
+    terrain=new Terrain({
       blocks:al.get("blocks"),
       blocksMapping:al.get("textureMappingJson"),
       material:worldMaterial,
       scene,
+      camera,
     })
+
 
   //Load Custom blocks models
     var blocks=al.get("blocks")
@@ -879,7 +940,6 @@ function init(){
         });
       })();
     }
-
 
 
   //Socket io setup
@@ -936,24 +996,17 @@ function init(){
       padding: 4,
       div: ".inventoryBar",
       activeBox: 1
-    })
-    inv_bar.setBox(1,"assets/images/grass_block.png")
-    inv_bar.setBox(2,"assets/images/stone.png")
-    inv_bar.setBox(3,"assets/images/oak_planks.png")
-    inv_bar.setBox(4,"assets/images/smoker.gif")
-    inv_bar.setBox(5,"assets/images/anvil.png")
-    inv_bar.setBox(6,"assets/images/brick.png")
-    inv_bar.setBox(7,"assets/images/furnace.png")
-    inv_bar.setBox(8,"assets/images/bookshelf.png")
-    inv_bar.setBox(9,"assets/images/tnt.png")
-    inv_bar.setFocusOnly(1)
-    $(window).on('wheel', function (event) {
-      if (event.originalEvent.deltaY < 0) {
-        inv_bar.moveBoxPlus()
-      } else {
-        inv_bar.moveBoxMinus()
-      }
-    })
+    }).setBoxes([
+      "assets/images/grass_block.png",
+      "assets/images/stone.png",
+      "assets/images/oak_planks.png",
+      "assets/images/smoker.gif",
+      "assets/images/anvil.png",
+      "assets/images/brick.png",
+      "assets/images/furnace.png",
+      "assets/images/bookshelf.png",
+      "assets/images/tnt.png"
+    ]).setFocusOnly(1).listen()
 
 
   //First Person Controls
@@ -961,71 +1014,36 @@ function init(){
       canvas: document.getElementById("c"),
       camera,
       micromove: 0.3
-    })
-    function updatePosition(e) {
-      FPC.camera.rotation.x -= FPC.degtorad(e.movementY / 10)
-      FPC.camera.rotation.y -= FPC.degtorad(e.movementX / 10)
-      if (FPC.radtodeg(FPC.camera.rotation.x) < -90) {
-        FPC.camera.rotation.x = FPC.degtorad(-90)
-      }
-      if (FPC.radtodeg(FPC.camera.rotation.x) > 90) {
-        FPC.camera.rotation.x = FPC.degtorad(90)
-      }
-    }
-    function lockChangeAlert() {
-      if (document.pointerLockElement === canvas || document.mozPointerLockElement === canvas) {
-        document.addEventListener("mousemove", updatePosition, false);
-        $(".gameMenu").css("display", "none")
-        gameState="game"
-      } else {
-        document.removeEventListener("mousemove", updatePosition, false);
-        $(".gameMenu").css("display", "block")
-        gameState="menu"
-      }
-    }
-    document.addEventListener('pointerlockchange', lockChangeAlert, false);
-    document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
-    $(document).keydown(function (z) {
-      FPC.keys[z.keyCode] = true;
-      inv_bar.directBoxChange(z)
-    })
-    $(document).keyup(function (z) {
-      delete FPC.keys[z.keyCode];
-    })
-    $(".gameOn").click(function () {
-      FPC.lockPointer()
-    })
+    }).listen()
   
 
-  //Raycast cube
-    var geometry = new THREE.BoxGeometry(1, 1, 1);
-    var material = new THREE.MeshBasicMaterial({
-      color: 0x00ff00
-    });
-    var edges = new THREE.EdgesGeometry(geometry);
-    cube = new THREE.LineSegments(edges, new THREE.LineBasicMaterial({
-      color: 0x000000,
-      linewidth: 0.5
-    }));
-    scene.add(cube);
+  //Raycast cursor
+
+    cursor=new THREE.LineSegments(
+      new THREE.EdgesGeometry(
+        new THREE.BoxGeometry(1, 1, 1)
+      )
+      , new THREE.LineBasicMaterial({
+        color: 0x000000,
+        linewidth: 0.5
+      })
+    );
+    scene.add(cursor);
 
 
   //jquery events
     $(document).mousedown(function (e) {
       if (gameState=="game") {
-        const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
-        const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
-        const intersection = terrain.intersectsRay(start, end);
-        if (e.which == 1) {
-          var voxelId=0;
-        } else {
-          var voxelId=inv_bar.activeBox;
-        }
-        if(intersection){
-          const pos = intersection.position.map((v, ndx) => {
-            return v + intersection.normal[ndx] * (voxelId > 0 ? 0.5 : -0.5);
-          });
-          // world.setVoxel(...pos, voxelId);
+        var rayBlock=terrain.getRayBlock();
+        var pos;
+        if(rayBlock){
+          if (e.which == 1) {
+            var voxelId=0;
+            pos=rayBlock.posBreak;
+          } else {
+            var voxelId=inv_bar.activeBox;
+            pos=rayBlock.posPlace;
+          }
           socket.emit("blockUpdate",[...pos,voxelId])
         }
       }
@@ -1084,20 +1102,17 @@ function render() {
   terrain.updateCells()
   
 
-  const start = new THREE.Vector3().setFromMatrixPosition(camera.matrixWorld);
-  const end = new THREE.Vector3().set(0,0, 1).unproject(camera);
-  const intersection = terrain.intersectsRay(start, end);
-  if(intersection){
-    const pos = intersection.position.map((v, ndx) => {
-      return v + intersection.normal[ndx] * -0.5;
-    });
+  var rayBlock=terrain.getRayBlock();
+
+  if(rayBlock){
+    var pos=rayBlock.posBreak;
     pos[0]=Math.floor(pos[0])
     pos[1]=Math.floor(pos[1])
     pos[2]=Math.floor(pos[2])
-    cube.position.set(...pos)
+    cursor.position.set(...pos)
     // console.log(pos)
-    cube.visible=true;
+    cursor.visible=true;
   }else{
-    cube.visible=false;
+    cursor.visible=false;
   }
 }
