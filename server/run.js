@@ -1,11 +1,11 @@
 const http = require('http');
-var finalhandler = require('finalhandler');
-var serveStatic = require('serve-static');
 var opn = require('opn');
 const { exec } = require("child_process");
+const express = require('express');
+const app = express();
 
 var socketPort=35565;
-var serverPort=8080;
+var serverPort=25565;
 
 //Socketio
   var server1 = http.createServer();
@@ -56,18 +56,9 @@ var serverPort=8080;
   server1.listen(socketPort);
 
 //Webserver
-  var serve = serveStatic(__dirname+"/../client/");
-
-  var server2 = http.createServer(function(req, res) {
-    var done = finalhandler(req, res);
-    serve(req, res, done);
+  app.use(express.static(__dirname + "/../client/"));
+  app.listen(serverPort, () => {
+    console.log(`Server started at port ${serverPort}`);
+    opn(`http://localhost:${serverPort}`)
   });
-
-
-
-  server2.listen(serverPort,function (){
-    // opn(`http://localhost:${serverPort}`)
-    exec(`google-chrome --new-window --app=http://localhost:${serverPort}`)
-  });
-
 

@@ -750,7 +750,22 @@ class Terrain {
     }
   }
 }
-
+class TerrainWorker{
+  constructor(options){
+    //TODO
+    this.worker=new Worker("workers/terrain.js")
+    this.worker.onmessage=function (data){
+      console.log(data.data)
+    }
+  }
+  sendObject(type,object){
+    var object=JSON.stringify(object)
+    this.worker.postMessage({type,data:object})
+  }
+  setVoxel(voxelX,voxelY,voxelZ,value){
+    this.sendObject("setVoxel",[voxelX,voxelY,voxelZ,value])
+  }
+}
 
 var al=new AssetLoader()
 $.get(`assets/assetLoader.json?${THREE.MathUtils.generateUUID()}`,function (assets){
@@ -762,6 +777,10 @@ $.get(`assets/assetLoader.json?${THREE.MathUtils.generateUUID()}`,function (asse
 })
 
 function init(){
+  //worker
+    // var world=new TerrainWorker()
+    // world.setVoxel(0,0,0,2)
+
   //basic setups
     canvas = document.querySelector('#c');
     renderer = new THREE.WebGLRenderer({
