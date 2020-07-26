@@ -57,6 +57,10 @@ var serverPort=25565;
 
 //Webserver
   app.use(express.static(__dirname + "/../client/"));
+  app.use((req, res, next) => {
+    res.set('Cache-Control', 'no-store')
+    next()
+  })
   app.listen(serverPort, () => {
     console.log(`Server started at port ${serverPort}`);
     opn(`http://localhost:${serverPort}`)
