@@ -5,13 +5,17 @@ Render minecrafta w przeglądarce
 ```bash
 #Instalacja repozytorium
 git clone https://github.com/michaljaz/web-minecraft
+cd web-minecraft
 
 #Utworzenie serwera i uruchomienie przeglądarki
-node web-minecraft/server/run.js
+npm start
+
+#Automatyczny Kompilator Coffeescript
+npm run coffee
 
 ```
 
-<img src="screenshot.png"
+<img src="src/screenshot.png"
      alt="screenshot"
      style="float: left; margin-right: 10px;" />
      <br><br>

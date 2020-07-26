@@ -59,5 +59,9 @@
   "player":{
     "path":"assets/models/player/player.fbx",
     "type":"fbx"
+  },
+  "anvil":{
+    "path":"assets/models/anvil/anvil.fbx",
+    "type":"fbx"
   }
 }

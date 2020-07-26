@@ -1,10 +1,10 @@
-
 #Bundle.js
-"use strict"
-import * as THREE from './module/build/three.module.js';
-import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js';
-import {FBXLoader} from './module/jsm/loaders/FBXLoader.js';
-import Stats from './module/jsm/libs/stats.module.js';
+
+import * as THREE from './module/build/three.module.js'
+import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js'
+import {FBXLoader} from './module/jsm/loaders/FBXLoader.js'
+import Stats from './module/jsm/libs/stats.module.js'
+
 scene=null
 materials=null
 parameters=null
@@ -62,7 +62,7 @@ class Terrain
 			if prevVox isnt value
 				@cellsData[cellId][@vec3(voff...)]=value
 				@cellsData[cellId].needsUpdate=true
-				for nei of @neighbours
+				for nei in @neighbours
 					neiCellId=@vec3 @computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2])...
 					try
 						@cellsData[neiCellId].needsUpdate=true
@@ -119,16 +119,14 @@ class Terrain
 			uv=geo.attributes.uv.array
 			for i in [0..posi.length-1]
 				positions.push posi[i]+pos[i%3]
-
 			normals.push norm...
 			uvs.push uv...
 			return 
-		for i in [0..@cellSize]
-			for j in [0..@cellSize]
-				for k in [0..@cellSize]
+		for i in [0..@cellSize-1]
+			for j in [0..@cellSize-1]
+				for k in [0..@cellSize-1]
 					pos=[cellX*@cellSize+i,cellY*@cellSize+j,cellZ*@cellSize+k]
 					voxel=@getVoxel pos...
-
 					if voxel
 						if @blocks[voxel].isBlock
 							if not @blocks[@getVoxel(pos[0]+1,pos[1],pos[2])].isBlock
@@ -144,8 +142,11 @@ class Terrain
 							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]-1)].isBlock
 								addFace "nz",pos,voxel 
 						else
-							blockName=@blocks[voxel].name
-							geo=@models[blockName]
+							geo=al.get(@blocks[voxel].model).children[0].geometry.clone()
+							if @blocks[voxel].model is "anvil"
+								geo.rotateX -Math.PI/2
+								geo.translate 0,0.17,0 
+								geo.translate 0,-0.25,0 
 							addGeo geo,pos
 		cellGeometry=new THREE.BufferGeometry;
 		cellGeometry.setAttribute 'position',new THREE.BufferAttribute(new Float32Array(positions), 3)
@@ -564,8 +565,11 @@ class TextureAtlasCreator
 		col=Math.ceil(tick/h)-1
 		row=(tick-1)%h;
 		return {row,col}  
+init = ()->
+	#Terrain worker
+	worker=new Worker "workers/terrain.js"
+	worker.postMessage 'hi'
 
-init = ()-> 
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer({
 		canvas
@@ -576,15 +580,13 @@ init = ()->
 	camera = new THREE.PerspectiveCamera 75, 2, 0.1, 64*5
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
-
+	#Lights
 	ambientLight=new THREE.AmbientLight 0xcccccc
 	scene.add ambientLight
 	directionalLight = new THREE.DirectionalLight 0x333333, 2
 	directionalLight.position.set(1, 1, 0.5).normalize()
 	scene.add directionalLight 
-	fbxl = new FBXLoader
 	gameState="menu"
-
 	#Snowflakes
 	geometry = new THREE.BufferGeometry
 	vertices = []
@@ -627,7 +629,6 @@ init = ()->
 	for i in [0..materials.length-1]
 		materials[ i ].map = parameters[ i ][ 1 ]
 		materials[ i ].needsUpdate = true
-
 	#Clouds
 	clouds=al.get "clouds"
 	clouds.scale.x=0.1
@@ -635,28 +636,23 @@ init = ()->
 	clouds.scale.z=0.1
 	clouds.position.y=100
 	scene.add clouds
-
 	#Ghast1
 	ghast=al.get "ghastF"
 	texturex1 = al.get "ghast"
 	texturex1.magFilter = THREE.NearestFilter
 	ghast.children[1].material.map=texturex1
-    
 	ghast.children[0].children[0].scale.set 0.01,0.01,0.01 
 	ghast.children[1].material.color=new THREE.Color 0xffffff
 	mat=ghast.children[1].material.clone()
 	scene.add ghast
-
 	#Ghast2
 	ghast2=SkeletonUtils.clone ghast
 	texturex2 = al.get "ghastS"
 	texturex2.magFilter = THREE.NearestFilter
-
 	ghast2.children[1].material=mat
 	ghast2.children[1].material.map=texturex2
 	ghast2.position.set 3,0,0
 	scene.add ghast2
-
 	#Player
 	playerObject=al.get "player"
 	texturex = al.get "steve"
@@ -666,7 +662,6 @@ init = ()->
 	playerObject.children[0].material.map=texturex
 	playerObject.children[0].material.color=new THREE.Color 0xffffff
 	playerObject.children[1].scale.set 0.5,0.5,0.5
-
 	#Animated Material
 	worldMaterial=new THREE.MeshStandardMaterial({
 		side: 0
@@ -676,7 +671,6 @@ init = ()->
 		textureX:al.get "textureAtlasX"
 		textureMapping:al.get "textureMappingX"
 	})
-    
 	savedTextures=[]
 	for i in [0..9]
 		t=atlasCreator.gen(i).toDataURL()
@@ -691,7 +685,6 @@ init = ()->
 		worldMaterial.map.needsUpdate=true
 		return
 	,100)
-
 	#setup terrain
 	terrain=new Terrain({
 		cellSize:16
@@ -701,35 +694,6 @@ init = ()->
 		scene
 		camera
 	})
-	#Load Custom blocks models
-	blocks=al.get "blocks"
-	modelsNumber=0
-	modelsLoaded=0
-	modelsToLoad=[]
-	Object.keys(blocks).forEach (p)->
-		if not blocks[p].isBlock and p isnt 0
-			modelPath="assets/models/#{blocks[p].model}"
-			modelsNumber++
-			modelsToLoad.push(blocks[p])
-		return
-	for i in [0..modelsToLoad.length-1]
-		(()->
-			block=modelsToLoad[i]
-			if block.name isnt "air"
-				fbxl.load "assets/models/#{block.model}",( object )->
-					geometry=object.children[0].geometry
-					if block.name is "anvil"
-						geometry.rotateX -Math.PI/2
-						geometry.translate 0,0.17,0 
-						geometry.translate 0,-0.25,0 
-					terrain.models[block.name]=geometry
-					modelsLoaded++
-					if modelsLoaded is modelsNumber
-						console.log "Custom blocks models loaded!"
-					return
-			return
-		)()
-
 	#Socket.io setup
 	socket=io.connect "http://localhost:35565"
 	socket.on "connect",()->
@@ -738,7 +702,6 @@ init = ()->
 	socket.on "blockUpdate",(block)->
 		terrain.setVoxel block...
 		return
-
 	#Socket.io players
 	playersx={}
 	socket.on "playerUpdate",(players)->
@@ -759,7 +722,6 @@ init = ()->
 				delete playersx[p]
 			return
 		return
-
 	#Socket.io first world load
 	socket.on "firstLoad",(v)->
 		console.log "Otrzymano pakiet świata!"
@@ -829,7 +791,6 @@ render = ->
 		color = parameters[ i ][ 0 ]
 		h = ( 360 * ( color[ 0 ] + time ) % 360 ) / 360
 		materials[ i ].color.setHSL h, color[ 1 ], color[ 2 ]
-
 	#Resize canvas
 	width=window.innerWidth
 	height=window.innerHeight
@@ -870,13 +831,11 @@ animate = ->
 		stats.end()
 	requestAnimationFrame animate
 	return
-
 al=new AssetLoader
 $.get "assets/assetLoader.json?#{THREE.MathUtils.generateUUID()}", (assets)->
 	al.load assets,()->
 		console.log "AssetLoader: done loading!"
 		init()
-		
 		return
 	,al
 	return

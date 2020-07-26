@@ -54,7 +54,7 @@
   "5": {
     "name":"anvil",
     "isBlock":false,
-    "model":"anvil/anvil.fbx"
+    "model":"anvil"
   },
   "6": {
     "name":"brick",
