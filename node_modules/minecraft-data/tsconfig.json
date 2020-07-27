@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "lib": [
+      "es6"
+    ],
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "strictNullChecks": false,
+    "strictFunctionTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "types": ["node"]
+  },
+  "files": [
+    "index.d.ts",
+    "typings/test-typings.ts"
+  ]
+}

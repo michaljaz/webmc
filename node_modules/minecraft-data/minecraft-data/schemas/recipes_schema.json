@@ -1,0 +1,100 @@
+{
+  "title": "recipes",
+  "description":"A dictionary of quoted numerical item IDs. Each ID maps to a list of recipes. There may be multiple different recipes per item (same ID and metadata). The recipes may not be sorted.",
+  "definitions": {
+    "id": {
+      "type":["integer","null"],
+      "description":"A single numerical ID or null."
+    },
+    "metadata": {"type":"integer"},
+    "count": {"type":"integer"},
+    "id_metadata_array":{
+      "type":"array",
+      "title":"[id,metadata]",
+      "description":"A list of id and metadata. This is preferred if there are many items at once, e.g. in a shape.",
+      "items":[
+        {"$ref" : "#/definitions/id"},
+        {"$ref" : "#/definitions/metadata"}
+      ],
+      "additionalItems": false
+    },
+    "id_metadata_count_object":{
+      "type":"object",
+      "title":"{id:1,metadata:1,count:1}",
+      "description":"A dictionary of at least id, optionally metadata and count. This is preferred if there are not many items at once, e.g. result in a recipe.",
+      "properties":{
+        "id":{"$ref" : "#/definitions/id"},
+        "metadata":{"$ref" : "#/definitions/metadata"},
+        "count":{"$ref" : "#/definitions/count"}
+      },
+      "required": ["id"],
+      "additionalProperties":false
+    },
+    "recipeItem":{
+      "title":"recipe item",
+      "description":"An item can be represented different ways.",
+      "oneOf":[
+        {"$ref": "#/definitions/id"},
+        {"$ref": "#/definitions/id_metadata_array"},
+        {"$ref": "#/definitions/id_metadata_count_object"}
+      ]
+    },
+    "shapeRow":{
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {"$ref" : "#/definitions/recipeItem"}
+    },
+    "shape": {
+      "type": "array",
+      "description":"A shape is a list of rows, which are lists of items. There must be at least one row with at least one item in it. All rows must have the same length. Empty rows at the beginning or end of a shape may be omitted. Empty colums at the end may also be omitted. When an item can be crafted in a 2x2 grid, the shape may not be larger than 2x2.",
+      "minItems": 1,
+      "maxItems": 3,
+      "items": {"$ref" : "#/definitions/shapeRow"}
+    },
+    "ingredients": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref" : "#/definitions/recipeItem"}
+    },
+    "shaped_recipe": {
+      "title":"shaped recipe",
+      "description":"A shaped recipe is a dictionary of result, inShape and optionally outShape",
+      "type": "object",
+      "properties": {
+        "result":{"$ref" : "#/definitions/recipeItem"},
+        "inShape":{"$ref" : "#/definitions/shape"},
+        "outShape":{"$ref" : "#/definitions/shape"}
+      },
+      "required":["result","inShape"],
+      "additionalProperties":false
+    },
+    "shapeless_recipe": {
+      "title":"shapeless recipe",
+      "description":"A shapeless recipe is a dictionary of result and ingredients",
+      "type": "object",
+      "properties": {
+        "result":{"$ref" : "#/definitions/recipeItem"},
+        "ingredients":{"$ref" : "#/definitions/ingredients"}
+      },
+      "required":["result","ingredients"],
+      "additionalProperties":false
+    },
+    "recipe": {
+      "oneOf":[
+        {"$ref" : "#/definitions/shaped_recipe"},
+        {"$ref" : "#/definitions/shapeless_recipe"}
+      ]
+    }
+  },
+  "type": "object",
+  "uniqueItems": true,
+  "patternProperties" : {
+    "^[0-9]+$": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {"$ref" : "#/definitions/recipe"}
+    }
+  },
+  "additionalProperties": false
+}

@@ -588,7 +588,7 @@ class TerrainWorker
 	constructor: (options)->
 		@worker=new Worker "workers/terrain.js", {type:'module'}
 		@worker.postMessage {
-			type:'assets'
+			type:'init'
 			data:{
 				models:{
 					anvil:{
@@ -600,10 +600,28 @@ class TerrainWorker
 				toxelSize: 27
 			}
 		}
+	setVoxel: (voxelX,voxelY,voxelZ,value)->
+		@worker.postMessage {
+			type:"setVoxel"
+			data:{
+				voxelX
+				voxelY
+				voxelZ
+				value
+			}
+		}
+	genCellGeo: (cellX,cellY,cellZ)->
+		@worker.postMessage {
+			type:"genCellGeo"
+			data:{
+				cellX,cellY,cellZ
+			}
+		}
 init = ()->
 	#Terrain worker
 	worker=new TerrainWorker
-
+	worker.setVoxel(0,0,0,2)
+	worker.genCellGeo(0,0,0)
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
 		canvas

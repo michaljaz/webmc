@@ -1,0 +1,43 @@
+{
+  "switch":{
+    "title": "switch",
+    "type": "array",
+    "items":[
+      {"enum":["switch"]},
+      {
+        "type":"object",
+        "properties": {
+          "compareTo":{"$ref": "definitions#/definitions/contextualizedFieldName"},
+          "compareToValue":{"type":"string"},
+          "fields":{
+            "type":"object",
+            "patternProperties" : {
+              "^[-a-zA-Z0-9 _:]+$":{"$ref": "dataType"}
+            },
+            "additionalProperties": false
+          },
+          "default":{"$ref": "dataType"}
+        },
+        "oneOf":[
+          {
+            "required":["compareTo","fields"]
+          },
+          {
+            "required":["compareToValue","fields"]
+          }
+        ],
+        "additionalProperties": false
+      }
+    ],
+    "additionalItems": false
+  },
+  "option":{
+    "title": "option",
+    "type": "array",
+    "items":[
+      {"enum":["option"]},
+      {"$ref": "dataType"}
+    ],
+    "additionalItems": false
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "title": "entityMetadataItem",
+  "type": "array",
+  "items": [
+    { "enum": ["entityMetadataItem"] },
+    {
+      "type": "object",
+      "properties": {
+        "compareTo":{"$ref": "definitions#/definitions/contextualizedFieldName"}
+      },
+      "required": ["compareTo"],
+      "additionalProperties": false
+    }
+  ]
+}

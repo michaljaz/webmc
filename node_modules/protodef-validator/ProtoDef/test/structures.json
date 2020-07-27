@@ -1,0 +1,139 @@
+[
+  {
+    "type":"container",
+    "subtypes":[
+      {
+        "description":"simple container with 2 u8 and one varint",
+        "type":[
+          "container",
+          [
+            {
+              "name": "horizontalPos",
+              "type": "u8"
+            },
+            {
+              "name": "y",
+              "type": "u8"
+            },
+            {
+              "name": "blockId",
+              "type": "varint"
+            }
+          ]
+        ],
+        "values":[
+          {
+            "value":{
+              "horizontalPos":56,
+              "y":25,
+              "blockId":5
+            },
+            "buffer":["0x38","0x19","0x05"]
+          }
+        ]
+      },
+      {
+        "description":"set_protocol",
+        "type":[
+          "container",
+          [
+            {
+              "name": "protocolVersion",
+              "type": "varint"
+            },
+            {
+              "name": "serverHost",
+              "type": ["pstring",{
+                "countType":"varint"
+              }]
+            },
+            {
+              "name": "serverPort",
+              "type": "u16"
+            },
+            {
+              "name": "nextState",
+              "type": "varint"
+            }
+          ]
+        ],
+        "values":[
+          {
+            "value":{
+              "protocolVersion":47,
+              "serverHost":"127.0.0.1",
+              "serverPort":25565,
+              "nextState":1
+            },
+            "buffer":["0x2f","0x09","0x31","0x32","0x37","0x2e","0x30","0x2e","0x30","0x2e","0x31","0x63","0xdd","0x01"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type":"count",
+    "subtypes":[
+      {
+        "description":"a container with a count, a second field and an array using the count",
+        "type":["container",
+          [
+            {
+              "name":"number",
+              "type":["count",
+                {
+                  "type":"u8",
+                  "countFor":"records"
+                }
+              ]
+            },
+            {
+              "name":"diameter",
+              "type":"u8"
+            },
+            {
+              "name":"records",
+              "type":["array",
+                {
+                  "count":"number",
+                  "type":"u8"
+                }
+              ]
+            }
+          ]
+        ],
+        "values":[
+          {
+            "value":{
+              "number":2,
+              "diameter":5,
+              "records":[1,2]
+            },
+            "buffer":["0x02","0x05","0x01","0x02"]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "type":"array",
+    "subtypes":[
+      {
+        "description": "a simple u16 prefixed array of u8",
+        "type":[
+          "array",
+          {
+            "countType": "u16",
+            "type": "u8"
+          }
+        ],
+        "values":[
+          {
+            "value":[1,2,3,4],
+            "buffer":["0x00","0x04","0x01","0x02","0x03","0x04"]
+          }
+        ]
+      }
+    ]
+  }
+]

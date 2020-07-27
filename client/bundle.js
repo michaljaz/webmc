@@ -1073,7 +1073,7 @@ TerrainWorker = class TerrainWorker {
       type: 'module'
     });
     this.worker.postMessage({
-      type: 'assets',
+      type: 'init',
       data: {
         models: {
           anvil: {...al.get("anvil").children[0].geometry.attributes}
@@ -1085,12 +1085,28 @@ TerrainWorker = class TerrainWorker {
     });
   }
 
+  setVoxel(voxelX, voxelY, voxelZ, value) {
+    return this.worker.postMessage({
+      type: "setVoxel",
+      data: {voxelX, voxelY, voxelZ, value}
+    });
+  }
+
+  genCellGeo(cellX, cellY, cellZ) {
+    return this.worker.postMessage({
+      type: "genCellGeo",
+      data: {cellX, cellY, cellZ}
+    });
+  }
+
 };
 
 init = function() {
   var ambientLight, atlasCreator, clouds, color, directionalLight, geometry, ghast, ghast2, i, inv_bar, l, mat, n, o, particles, playerObject, playersx, q, ref, ref1, savedTextures, size, sprite, sprite1, sprite2, sprite3, sprite4, sprite5, t, tekstura, texturex, texturex1, texturex2, tickq, vertices, worker, worldMaterial, x, y, z;
   //Terrain worker
   worker = new TerrainWorker();
+  worker.setVoxel(0, 0, 0, 2);
+  worker.genCellGeo(0, 0, 0);
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
     canvas,

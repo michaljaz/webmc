@@ -1,0 +1,19 @@
+version: 2
+
+jobs:
+  build:
+    parallelism: 1
+    docker:
+      - image: circleci/node:10
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: git submodule sync --recursive && git submodule update --recursive --init
+      - run: npm i
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run: npm test
+      - run: npm run benchmark

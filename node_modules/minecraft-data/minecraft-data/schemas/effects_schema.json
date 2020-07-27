@@ -1,0 +1,31 @@
+{
+  "title": "effects",
+  "type": "array",
+  "uniqueItems": true,
+  "items" : {
+    "title": "effect",
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "The unique identifier for an effect",
+        "type": "integer",
+        "minimum": 0
+      },
+      "displayName": {
+        "description": "The display name of an effect",
+        "type": "string"
+      },
+      "name": {
+        "description": "The name of an effect",
+        "type": "string",
+        "pattern": "\\S+"
+      },
+      "type": {
+        "description": "Whether an effect is positive or negative",
+        "enum": [ "good","bad" ]
+      }
+    },
+    "required": ["id", "displayName", "type", "name"],
+    "additionalProperties":false
+  }
+}

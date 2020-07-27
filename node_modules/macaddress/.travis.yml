@@ -1,0 +1,29 @@
+language: node_js
+os:
+  - linux
+  - osx
+  - windows
+node_js:
+  - stable
+  - lts/*
+  - "10.5"
+  - "8.11"
+  - "6.14"
+  - "4.9"
+  - "0.12"
+  - "0.11"
+  - "0.10"
+  - "0.9"
+  - "0.8"
+  - iojs
+  - iojs-v1.0.4
+install:
+  - npm install
+jobs:
+  exclude:
+    - os: windows
+      node_js: stable
+    - os: windows
+      node_js: iojs
+    - os: windows
+      node_js: iojs-v1.0.4

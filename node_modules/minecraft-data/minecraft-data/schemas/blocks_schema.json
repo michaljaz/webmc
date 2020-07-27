@@ -1,0 +1,210 @@
+{
+  "title": "blocks",
+  "type": "array",
+  "uniqueItems": true,
+  "items": {
+    "title": "block",
+    "type": "object",
+    "properties": {
+      "id": {
+        "description": "The unique identifier for a block",
+        "type": "integer",
+        "minimum": 0
+      },
+      "displayName": {
+        "description": "The display name of a block",
+        "type": "string"
+      },
+      "name": {
+        "description": "The name of a block",
+        "type": "string",
+        "pattern": "\\S+"
+      },
+      "hardness": {
+        "description": "Hardness of a block",
+        "type": [
+          "number",
+          "null"
+        ],
+        "minimum": 0
+      },
+      "stackSize": {
+        "description": "Stack size for a block",
+        "type": "integer",
+        "minimum": 0
+      },
+      "diggable": {
+        "description": "true if a block is diggable",
+        "type": "boolean"
+      },
+      "boundingBox": {
+        "description": "BoundingBox of a block",
+        "enum": [
+          "block",
+          "empty"
+        ]
+      },
+      "material": {
+        "description": "Material of a block",
+        "type": "string"
+      },
+      "harvestTools": {
+        "description": "Using one of these tools is required to harvest a block, without that you get a 3.33x time penalty.",
+        "type": "object",
+        "patternProperties": {
+          "^[0-9]+$": {"type": "boolean"}
+        }
+      },
+      "variations": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "metadata": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "displayName": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "metadata",
+            "displayName"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "states": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "description": "The name of the property",
+              "type": "string"
+            },
+             "type": {
+              "description": "The type of the property",
+              "type": "string"
+            },
+            "values": {
+              "description": "The possible values of the property",
+              "type": "array"
+            },
+            "num_values": {
+              "description": "The number of possible values",
+              "type": "number",
+             "minimum": 1
+            }
+          },
+          "required": [
+            "name",
+            "type",
+            "num_values"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "drops": {
+        "type": "array",
+        "items": {
+          "oneOf" : [
+            {
+              "type": ["integer"]
+            },
+            {
+              "type": "object",
+              "properties": {
+                "minCount": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "minimum number or chance, default : 1"
+                },
+                "maxCount": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "maximum number or chance, default : minCount"
+                },
+                "drop": {
+                  "oneOf": [
+                    {
+                      "type": ["integer"]
+                    },
+                    {
+                      "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "metadata": {
+                            "type": "integer",
+                            "minimum": 0
+                          }
+                        },
+                        "required": [
+                          "id",
+                          "metadata"
+                        ],
+                      "additionalProperties": false
+                    }
+                  ]
+                }
+              },
+              "required": [
+                "drop"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "transparent": {
+        "description": "true if a block is transparent",
+        "type": "boolean"
+      },
+      "emitLight": {
+        "description": "Light emitted by that block",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 15
+      },
+      "filterLight": {
+        "description": "Light filtered by that block",
+        "type": "integer",
+        "minimum": 0,
+        "maximum": 15
+      },
+      "minStateId": {
+        "description": "Minimum state id",
+        "type": "integer",
+        "minimum": 0
+      },
+      "maxStateId": {
+        "description": "Maximum state id",
+        "type": "integer",
+        "minimum": 0
+      },
+      "defaultState": {
+        "description": "Default state id",
+        "type": "integer",
+        "minimum": 0
+      }
+    },
+    "required": [
+      "id",
+      "displayName",
+      "name",
+      "hardness",
+      "stackSize",
+      "diggable",
+      "boundingBox",
+      "drops",
+      "transparent",
+      "emitLight",
+      "filterLight"
+    ],
+    "additionalProperties": false
+  }
+}

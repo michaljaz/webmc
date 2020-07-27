@@ -1,0 +1,6 @@
+- [Introduction](/)
+- [API](API.md)
+- [FAQ](FAQ.md)
+- [History](HISTORY.md)
+- [Protocol documentation](http://minecraft-data.prismarine.js.org/?d=protocol)
+- [Wiki.vg](https://wiki.vg/Protocol)

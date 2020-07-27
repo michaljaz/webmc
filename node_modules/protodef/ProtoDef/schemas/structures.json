@@ -1,0 +1,95 @@
+{
+  "array":{
+    "title": "array",
+    "type":"array",
+    "items":[
+      {"enum":["array"]},
+      {
+        "oneOf":[
+          {
+            "type":"object",
+            "properties":{
+              "type": {"$ref": "dataType"},
+              "countType": {"$ref": "dataType"}
+            },
+            "additionalProperties": false,
+            "required":["type","countType"]
+          },
+          {
+            "type":"object",
+            "properties":{
+              "type": {"$ref": "dataType"},
+              "count": {"$ref": "definitions#/definitions/dataTypeArgsCount"}
+            },
+            "additionalProperties": false,
+            "required":["type","count"]
+          }
+        ]
+      }
+    ],
+    "additionalItems": false
+  },
+  "count":{
+    "title": "count",
+    "type": "array",
+    "items":[
+      {"enum":["count"]},
+      {
+        "type": "object",
+        "properties": {
+          "countFor": {"$ref":"definitions#/definitions/contextualizedFieldName"},
+          "type": {"$ref": "dataType"}
+        },
+        "required": ["countFor", "type"],
+        "additionalProperties": false
+      }
+    ],
+    "additionalItems": false
+  },
+  "container":{
+    "title": "container",
+    "type": "array",
+    "items": [
+      {
+        "enum": [
+          "container"
+        ]
+      },
+      {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "anon": {
+              "type": "boolean"
+            },
+            "name": {
+              "$ref": "definitions#/definitions/fieldName"
+            },
+            "type": {
+              "$ref": "dataType"
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "anon"
+              ]
+            },
+            {
+              "required": [
+                "name"
+              ]
+            }
+          ],
+          "required": [
+            "type"
+          ],
+          "additionalProperties": false
+        },
+        "additionalItems": false
+      }
+    ],
+    "additionalItems": false
+  }
+}

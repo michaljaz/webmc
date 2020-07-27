@@ -3,6 +3,7 @@ var opn = require('opn');
 const { exec } = require("child_process");
 const express = require('express');
 const app = express();
+const fs = require('fs');
 
 var socketPort=35565;
 var serverPort=25565;
@@ -11,24 +12,17 @@ var serverPort=25565;
   var server1 = http.createServer();
   var io = require("socket.io")(server1);
   var world={};
-  startUp();
-  function startUp(){
-    var vari=10;
-    for (let y = 0; y < vari; ++y) {
-      for (let z = 0; z < vari; ++z) {
-        for (let x = 0; x < vari; ++x) {
-          const height = (Math.sin(x / vari * Math.PI * 2) + Math.sin(z / vari * Math.PI * 3)) * (vari / 6) + (vari / 2);
-          if (y < height) {
-            world[`${x}:${y}:${z}`]=2;
-          }
-        }
-      }
-    }
+  function saveWorld(){
+    fs.writeFile("savedWorld.json",JSON.stringify(world),function (callback){})
   }
+  function restoreWorld(){
+    world=JSON.parse(fs.readFileSync('savedWorld.json'))
+  }
+  restoreWorld()
   var players={};
 
   io.sockets.on("connection", function(socket) {
-    console.log("User connected: "+socket.id)
+    console.log("[\x1b[32m+\x1b[0m] "+socket.id)
     socket.emit("firstLoad",world)
     socket.on("playerUpdate",function (data){
       players[socket.id]=data
@@ -41,14 +35,15 @@ var serverPort=25565;
       world[`${block[0]}:${block[1]}:${block[2]}`]=block[3];
       if(block[3]==0){
         delete world[`${block[0]}:${block[1]}:${block[2]}`]
-        console.log("Block removed",`${block[0]}:${block[1]}:${block[2]}`)
+        // console.log("Block removed",`${block[0]}:${block[1]}:${block[2]}`)
       }else{
-        console.log("Block placed",`${block[0]}:${block[1]}:${block[2]}`)
+        // console.log("Block placed",`${block[0]}:${block[1]}:${block[2]}`)
       }
       io.sockets.emit("blockUpdate",block)
+      saveWorld()
     })
     socket.on("disconnect", function() {
-      console.log("User disconnected: " + socket.id);
+      console.log("[\x1b[31m-\x1b[0m] " + socket.id);
       delete players[socket.id]
     });
   });
@@ -61,7 +56,7 @@ var serverPort=25565;
     next()
   })
   app.listen(serverPort, () => {
-    console.log(`Server started at port ${serverPort}`);
+    console.log(`Running: \x1b[35m\x1b[4mhttp://localhost:${serverPort}\x1b[0m`);
     opn(`http://localhost:${serverPort}`)
   });
 

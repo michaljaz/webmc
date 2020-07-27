@@ -1,0 +1,513 @@
+[
+  {
+    "id": 0,
+    "name": "ocean",
+    "displayName": "Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 1,
+    "name": "plains",
+    "displayName": "Plains",
+    "rainfall": 0.4,
+    "temperature": 0.8
+  },
+  {
+    "id": 2,
+    "name": "desert",
+    "displayName": "Desert",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 3,
+    "name": "mountains",
+    "displayName": "Mountains",
+    "rainfall": 0.3,
+    "temperature": 0.2
+  },
+  {
+    "id": 4,
+    "name": "forest",
+    "displayName": "Forest",
+    "rainfall": 0.8,
+    "temperature": 0.7
+  },
+  {
+    "id": 5,
+    "name": "taiga",
+    "displayName": "Taiga",
+    "rainfall": 0.8,
+    "temperature": 0.25
+  },
+  {
+    "id": 6,
+    "name": "swamp",
+    "displayName": "Swamp",
+    "rainfall": 0.9,
+    "temperature": 0.8
+  },
+  {
+    "id": 7,
+    "name": "river",
+    "displayName": "River",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 8,
+    "name": "nether",
+    "displayName": "Nether",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 9,
+    "name": "the_end",
+    "displayName": "The End",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 10,
+    "name": "frozen_ocean",
+    "displayName": "Frozen Ocean",
+    "rainfall": 0.5,
+    "temperature": 0
+  },
+  {
+    "id": 11,
+    "name": "frozen_river",
+    "displayName": "Frozen River",
+    "rainfall": 0.5,
+    "temperature": 0
+  },
+  {
+    "id": 12,
+    "name": "snowy_tundra",
+    "displayName": "Snowy Tundra",
+    "rainfall": 0.5,
+    "temperature": 0
+  },
+  {
+    "id": 13,
+    "name": "snowy_mountains",
+    "displayName": "Snowy Mountains",
+    "rainfall": 0.5,
+    "temperature": 0
+  },
+  {
+    "id": 14,
+    "name": "mushroom_fields",
+    "displayName": "Mushroom Fields",
+    "rainfall": 1,
+    "temperature": 0.9
+  },
+  {
+    "id": 15,
+    "name": "mushroom_field_shore",
+    "displayName": "Mushroom Field Shore",
+    "rainfall": 1,
+    "temperature": 0.9
+  },
+  {
+    "id": 16,
+    "name": "beach",
+    "displayName": "Beach",
+    "rainfall": 0.4,
+    "temperature": 0.8
+  },
+  {
+    "id": 17,
+    "name": "desert_hills",
+    "displayName": "Desert Hills",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 18,
+    "name": "wooded_hills",
+    "displayName": "Wooded Hills",
+    "rainfall": 0.8,
+    "temperature": 0.7
+  },
+  {
+    "id": 19,
+    "name": "taiga_hills",
+    "displayName": "Taiga Hills",
+    "rainfall": 0.8,
+    "temperature": 0.25
+  },
+  {
+    "id": 20,
+    "name": "mountain_edge",
+    "displayName": "Mountain Edge",
+    "rainfall": 0.3,
+    "temperature": 0.2
+  },
+  {
+    "id": 21,
+    "name": "jungle",
+    "displayName": "Jungle",
+    "rainfall": 0.9,
+    "temperature": 0.95
+  },
+  {
+    "id": 22,
+    "name": "jungle_hills",
+    "displayName": "Jungle Hills",
+    "rainfall": 0.9,
+    "temperature": 0.95
+  },
+  {
+    "id": 23,
+    "name": "jungle_edge",
+    "displayName": "Jungle Edge",
+    "rainfall": 0.8,
+    "temperature": 0.95
+  },
+  {
+    "id": 24,
+    "name": "deep_ocean",
+    "displayName": "Deep Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 25,
+    "name": "stone_shore",
+    "displayName": "Stone Shore",
+    "rainfall": 0.3,
+    "temperature": 0.2
+  },
+  {
+    "id": 26,
+    "name": "snowy_beach",
+    "displayName": "Snowy Beach",
+    "rainfall": 0.3,
+    "temperature": 0.05
+  },
+  {
+    "id": 27,
+    "name": "birch_forest",
+    "displayName": "Birch Forest",
+    "rainfall": 0.6,
+    "temperature": 0.6
+  },
+  {
+    "id": 28,
+    "name": "birch_forest_hills",
+    "displayName": "Birch Forest Hills",
+    "rainfall": 0.6,
+    "temperature": 0.6
+  },
+  {
+    "id": 29,
+    "name": "dark_forest",
+    "displayName": "Dark Forest",
+    "rainfall": 0.8,
+    "temperature": 0.7
+  },
+  {
+    "id": 30,
+    "name": "snowy_taiga",
+    "displayName": "Snowy Taiga",
+    "rainfall": 0.4,
+    "temperature": -0.5
+  },
+  {
+    "id": 31,
+    "name": "snowy_taiga_hills",
+    "displayName": "Snowy Taiga Hills",
+    "rainfall": 0.4,
+    "temperature": -0.5
+  },
+  {
+    "id": 32,
+    "name": "giant_tree_taiga",
+    "displayName": "Giant Tree Taiga",
+    "rainfall": 0.8,
+    "temperature": 0.3
+  },
+  {
+    "id": 33,
+    "name": "giant_tree_taiga_hills",
+    "displayName": "Giant Tree Taiga Hills",
+    "rainfall": 0.8,
+    "temperature": 0.3
+  },
+  {
+    "id": 34,
+    "name": "wooded_mountains",
+    "displayName": "Wooded Mountains",
+    "rainfall": 0.3,
+    "temperature": 0.2
+  },
+  {
+    "id": 35,
+    "name": "savanna",
+    "displayName": "Savanna",
+    "rainfall": 0,
+    "temperature": 1.2
+  },
+  {
+    "id": 36,
+    "name": "savanna_plateau",
+    "displayName": "Savanna Plateau",
+    "rainfall": 0,
+    "temperature": 1
+  },
+  {
+    "id": 37,
+    "name": "badlands",
+    "displayName": "Badlands",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 38,
+    "name": "wooded_badlands_plateau",
+    "displayName": "Wooded Badlands Plateau",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 39,
+    "name": "badlands_plateau",
+    "displayName": "Badlands Plateau",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 40,
+    "name": "small_end_islands",
+    "displayName": "Small End Islands",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 41,
+    "name": "end_midlands",
+    "displayName": "End Midlands",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 42,
+    "name": "end_highlands",
+    "displayName": "End Highlands",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 43,
+    "name": "end_barrens",
+    "displayName": "End Barrens",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 44,
+    "name": "warm_ocean",
+    "displayName": "Warm Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 45,
+    "name": "lukewarm_ocean",
+    "displayName": "Lukewarm Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 46,
+    "name": "cold_ocean",
+    "displayName": "Cold Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 47,
+    "name": "deep_warm_ocean",
+    "displayName": "Deep Warm Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 48,
+    "name": "deep_lukewarm_ocean",
+    "displayName": "Deep Lukewarm Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 49,
+    "name": "deep_cold_ocean",
+    "displayName": "Deep Cold Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 50,
+    "name": "deep_frozen_ocean",
+    "displayName": "Deep Frozen Ocean",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 127,
+    "name": "the_void",
+    "displayName": "The Void",
+    "rainfall": 0.5,
+    "temperature": 0.5
+  },
+  {
+    "id": 129,
+    "name": "sunflower_plains",
+    "displayName": "Sunflower Plains",
+    "rainfall": 0.4,
+    "temperature": 0.8
+  },
+  {
+    "id": 130,
+    "name": "desert_lakes",
+    "displayName": "Desert Lakes",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 131,
+    "name": "gravelly_mountains",
+    "displayName": "Gravelly Mountains",
+    "rainfall": 0.3,
+    "temperature": 0.2
+  },
+  {
+    "id": 132,
+    "name": "flower_forest",
+    "displayName": "Flower Forest",
+    "rainfall": 0.8,
+    "temperature": 0.7
+  },
+  {
+    "id": 133,
+    "name": "taiga_mountains",
+    "displayName": "Taiga Mountains",
+    "rainfall": 0.8,
+    "temperature": 0.25
+  },
+  {
+    "id": 134,
+    "name": "swamp_hills",
+    "displayName": "Swamp Hills",
+    "rainfall": 0.9,
+    "temperature": 0.8
+  },
+  {
+    "id": 140,
+    "name": "ice_spikes",
+    "displayName": "Ice Spikes",
+    "rainfall": 0.5,
+    "temperature": 0
+  },
+  {
+    "id": 149,
+    "name": "modified_jungle",
+    "displayName": "Modified Jungle",
+    "rainfall": 0.9,
+    "temperature": 0.95
+  },
+  {
+    "id": 151,
+    "name": "modified_jungle_edge",
+    "displayName": "Modified Jungle Edge",
+    "rainfall": 0.8,
+    "temperature": 0.95
+  },
+  {
+    "id": 155,
+    "name": "tall_birch_forest",
+    "displayName": "Tall Birch Forest",
+    "rainfall": 0.6,
+    "temperature": 0.6
+  },
+  {
+    "id": 156,
+    "name": "tall_birch_hills",
+    "displayName": "Tall Birch Hills",
+    "rainfall": 0.6,
+    "temperature": 0.6
+  },
+  {
+    "id": 157,
+    "name": "dark_forest_hills",
+    "displayName": "Dark Forest Hills",
+    "rainfall": 0.8,
+    "temperature": 0.7
+  },
+  {
+    "id": 158,
+    "name": "snowy_taiga_mountains",
+    "displayName": "Snowy Taiga Mountains",
+    "rainfall": 0.4,
+    "temperature": -0.5
+  },
+  {
+    "id": 160,
+    "name": "giant_spruce_taiga",
+    "displayName": "Giant Spruce Taiga",
+    "rainfall": 0.8,
+    "temperature": 0.25
+  },
+  {
+    "id": 161,
+    "name": "giant_spruce_taiga_hills",
+    "displayName": "Giant Spruce Taiga Hills",
+    "rainfall": 0.8,
+    "temperature": 0.25
+  },
+  {
+    "id": 162,
+    "name": "modified_gravelly_mountains",
+    "displayName": "Gravelly Mountains+",
+    "rainfall": 0.3,
+    "temperature": 0.2
+  },
+  {
+    "id": 163,
+    "name": "shattered_savanna",
+    "displayName": "Shattered Savanna",
+    "rainfall": 0,
+    "temperature": 1.1
+  },
+  {
+    "id": 164,
+    "name": "shattered_savanna_plateau",
+    "displayName": "Shattered Savanna Plateau",
+    "rainfall": 0,
+    "temperature": 1
+  },
+  {
+    "id": 165,
+    "name": "eroded_badlands",
+    "displayName": "Eroded Badlands",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 166,
+    "name": "modified_wooded_badlands_plateau",
+    "displayName": "Modified Wooded Badlands Plateau",
+    "rainfall": 0,
+    "temperature": 2
+  },
+  {
+    "id": 167,
+    "name": "modified_badlands_plateau",
+    "displayName": "Modified Badlands Plateau",
+    "rainfall": 0,
+    "temperature": 2
+  }
+]

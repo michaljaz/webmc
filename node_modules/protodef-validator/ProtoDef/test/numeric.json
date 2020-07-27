@@ -1,0 +1,534 @@
+[
+  {
+    "type": "i8",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x3d"
+        ],
+        "value": 61
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x86"
+        ],
+        "value": -122
+      }
+    ]
+  },
+  {
+    "type": "u8",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x3d"
+        ],
+        "value": 61
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x86"
+        ],
+        "value": 134
+      }
+    ]
+  },
+  {
+    "type": "i16",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x30",
+          "0x87"
+        ],
+        "value": 12423
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0xef",
+          "0x77"
+        ],
+        "value": -4233
+      }
+    ]
+  },
+  {
+    "type": "u16",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x30",
+          "0x87"
+        ],
+        "value": 12423
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0xef",
+          "0x77"
+        ],
+        "value": 61303
+      }
+    ]
+  },
+  {
+    "type": "i32",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0xea"
+        ],
+        "value": 234
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0xff",
+          "0xff",
+          "0xfc",
+          "0x00"
+        ],
+        "value": -1024
+      }
+    ]
+  },
+  {
+    "type": "u32",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0xea"
+        ],
+        "value": 234
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0xff",
+          "0xff",
+          "0xfc",
+          "0x00"
+        ],
+        "value": 4294966272
+      }
+    ]
+  },
+  {
+    "type": "f32",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x47",
+          "0x05",
+          "0xc3",
+          "0x00"
+        ],
+        "value": 34243
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0xc6",
+          "0x42",
+          "0x4c",
+          "0x00"
+        ],
+        "value": -12435
+      }
+    ]
+  },
+  {
+    "type": "f64",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x40",
+          "0xe0",
+          "0xb8",
+          "0x60",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": 34243
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0xc0",
+          "0xc8",
+          "0x49",
+          "0x80",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": -12435
+      }
+    ]
+  },
+  {
+    "type": "i64",
+    "values": [
+      {
+        "description": "small",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0xff"
+        ],
+        "value": [
+          0,
+          255
+        ]
+      },
+      {
+        "description": "big",
+        "buffer": [
+          "0x81",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": [
+          -2130706432,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "type": "u64",
+    "values": [
+      {
+        "description": "small",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0xff"
+        ],
+        "value": [
+          0,
+          255
+        ]
+      },
+      {
+        "description": "big",
+        "buffer": [
+          "0x7f",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": [
+          2130706432,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "type": "li8",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x3d"
+        ],
+        "value": 61
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x86"
+        ],
+        "value": -122
+      }
+    ]
+  },
+  {
+    "type": "lu8",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x3d"
+        ],
+        "value": 61
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x86"
+        ],
+        "value": 134
+      }
+    ]
+  },
+  {
+    "type": "li16",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x87",
+          "0x30"
+        ],
+        "value": 12423
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x77",
+          "0xef"
+        ],
+        "value": -4233
+      }
+    ]
+  },
+  {
+    "type": "lu16",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x87",
+          "0x30"
+        ],
+        "value": 12423
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x77",
+          "0xef"
+        ],
+        "value": 61303
+      }
+    ]
+  },
+  {
+    "type": "li32",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0xea",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": 234
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x00",
+          "0xfc",
+          "0xff",
+          "0xff"
+        ],
+        "value": -1024
+      }
+    ]
+  },
+  {
+    "type": "lu32",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0xea",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": 234
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x00",
+          "0xfc",
+          "0xff",
+          "0xff"
+        ],
+        "value": 4294966272
+      }
+    ]
+  },
+  {
+    "type": "lf32",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x00",
+          "0xc3",
+          "0x05",
+          "0x47"
+        ],
+        "value": 34243
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x00",
+          "0x4c",
+          "0x42",
+          "0xc6"
+        ],
+        "value": -12435
+      }
+    ]
+  },
+  {
+    "type": "lf64",
+    "values": [
+      {
+        "description": "positive",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x60",
+          "0xb8",
+          "0xe0",
+          "0x40"
+        ],
+        "value": 34243
+      },
+      {
+        "description": "negative",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x80",
+          "0x49",
+          "0xc8",
+          "0xc0"
+        ],
+        "value": -12435
+      }
+    ]
+  },
+  {
+    "type": "li64",
+    "values": [
+      {
+        "description": "small",
+        "buffer": [
+          "0xff",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": [
+          0,
+          255
+        ]
+      },
+      {
+        "description": "big",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x81"
+        ],
+        "value": [
+          -2130706432,
+          0
+        ]
+      }
+    ]
+  },
+  {
+    "type": "lu64",
+    "values": [
+      {
+        "description": "small",
+        "buffer": [
+          "0xff",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00"
+        ],
+        "value": [
+          0,
+          255
+        ]
+      },
+      {
+        "description": "big",
+        "buffer": [
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x00",
+          "0x7f"
+        ],
+        "value": [
+          2130706432,
+          0
+        ]
+      }
+    ]
+  }
+]

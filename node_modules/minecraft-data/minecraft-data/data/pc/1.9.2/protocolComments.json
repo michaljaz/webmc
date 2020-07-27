@@ -1,0 +1,2531 @@
+{
+  "handshaking": {
+    "toClient": {},
+    "toServer": {
+      "set_protocol": {
+        "before": [
+          "",
+          "This causes the server to switch into the target state.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "legacy_server_list_ping": {
+        "before": [
+          "",
+          "{{Warning|This packet uses a nonstandard format. It is never length-prefixed, and the packet ID is an Unsigned Byte instead of a VarInt.}}",
+          "",
+          "While not technically part of the current protocol, legacy clients may send this packet to initiate [[Server List Ping]], and modern servers should handle it correctly.",
+          ""
+        ],
+        "after": [
+          "",
+          "See [[Server List Ping#1.6]] for the details of the protocol that follows this packet.",
+          ""
+        ],
+        "id": "0xfe"
+      }
+    }
+  },
+  "status": {
+    "toClient": {
+      "server_info": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "ping": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x01"
+      }
+    },
+    "toServer": {
+      "ping_start": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "ping": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x01"
+      }
+    }
+  },
+  "login": {
+    "toClient": {
+      "disconnect": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "encryption_begin": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "See [[Protocol Encryption]] for details.",
+          ""
+        ],
+        "id": "0x01"
+      },
+      "success": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "This packet switches the connection state to [[#Play|play]].",
+          ""
+        ],
+        "id": "0x02"
+      },
+      "compress": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x03"
+      }
+    },
+    "toServer": {
+      "login_start": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "encryption_begin": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "See [[Protocol Encryption]] for details.",
+          "",
+          "[[Category:Protocol Details]]",
+          "[[Category:Minecraft Modern]]"
+        ],
+        "id": "0x01"
+      }
+    }
+  },
+  "play": {
+    "toClient": {
+      "spawn_entity": {
+        "before": [
+          "",
+          "Sent by the server when a vehicle or other object is created.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "spawn_entity_experience_orb": {
+        "before": [
+          "",
+          "Spawns one or more experience orbs.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x01"
+      },
+      "spawn_entity_weather": {
+        "before": [
+          "",
+          "With this packet, the server notifies the client of thunderbolts striking within a 512 block radius around the player. The coordinates specify where exactly the thunderbolt strikes.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x02"
+      },
+      "spawn_entity_living": {
+        "before": [
+          "",
+          "Sent by the server when a mob entity is spawned.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x03"
+      },
+      "spawn_entity_painting": {
+        "before": [
+          "",
+          "This packet shows location, name, and type of painting.",
+          ""
+        ],
+        "after": [
+          "",
+          "Calculating the center of an image: given a (width × height) grid of cells, with <code>(0, 0)</code> being the top left corner, the center is <code>(max(0, width / 2 - 1), height / 2)</code>. E.g. <code>(1, 0)</code> for a 2×1 painting, or <code>(1, 2)</code> for a 4×4 painting.",
+          ""
+        ],
+        "id": "0x04"
+      },
+      "named_entity_spawn": {
+        "before": [
+          "",
+          "This packet is sent by the server when a player comes into visible range, ''not'' when a player joins.",
+          "",
+          "This packet must be sent after the [[#Player List Item|Player List Item]] ([[#Play|Play]], 0x38, clientbound) packet that adds the player data for the client to use when spawning a player. If the Player List Item for the player spawned by this packet is not present when this packet arrives, Notchian clients will not spawn the player entity. The Player List Item packet includes skin/cape data.",
+          "",
+          "Servers can, however, safely spawn player entities for players not in visible range. The client appears to handle it correctly.",
+          ""
+        ],
+        "after": [
+          "",
+          "When in {{Minecraft Wiki|Serve.properties#online-mode|online mode}}, the UUIDs must be valid and have valid skin blobs. In offline mode, UUID v3 is used.",
+          "",
+          "For NPCs UUID v2 should be used. Note:",
+          "",
+          " <+Grum> i will never confirm this as a feature you know that :)",
+          "",
+          "In an example UUID, <code>xxxxxxxx-xxxx-Yxxx-xxxx-xxxxxxxxxxxx</code>, the UUID version is specified by <code>Y</code>. So, for UUID v3, <code>Y</code> will always be <code>3</code>, and for UUID v2, <code>Y</code> will always be <code>2</code>.",
+          ""
+        ],
+        "id": "0x05"
+      },
+      "animation": {
+        "before": [
+          "",
+          "Sent whenever an entity should change animation.",
+          ""
+        ],
+        "after": [
+          "",
+          "Animation can be one of the following values:",
+          "",
+          "{| class=\"wikitable\"",
+          " ! ID",
+          " ! Animation",
+          " |-",
+          " | 0",
+          " | Swing main arm",
+          " |-",
+          " | 1",
+          " | Take damage",
+          " |-",
+          " | 2",
+          " | Leave bed",
+          " |-",
+          " | 3",
+          " | Swing offhand",
+          " |-",
+          " | 4",
+          " | Critical effect",
+          " |-",
+          " | 5",
+          " | Magic critical effect",
+          " |}",
+          ""
+        ],
+        "id": "0x06"
+      },
+      "statistics": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x07"
+      },
+      "block_break_animation": {
+        "before": [
+          "",
+          "0–9 are the displayable destroy stages and each other number means that there is no animation on this coordinate.",
+          "",
+          "Block break animations can still be applied on air; the animation will remain visible although there is no block being broken.  However, if this is applied to a transparent block, odd graphical effects may happen, including water losing its transparency.  (An effect similar to this can be seen in normal gameplay when breaking ice blocks)",
+          "",
+          "If you need to display several break animations at the same time you have to give each of them a unique Entity ID.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x08"
+      },
+      "tile_entity_data": {
+        "before": [
+          "",
+          "Essentially a block update on a block entity.",
+          ""
+        ],
+        "after": [
+          "",
+          "''Action'' field:",
+          "",
+          "* '''1''': Set SpawnPotentials of a mob spawner",
+          "* '''2''': Set command block text (command and last execution status)",
+          "* '''3''': Set the level, primary, and secondary powers of a beacon",
+          "* '''4''': Set rotation and skin of mob head",
+          "* '''5''': Set type of flower in flower pot",
+          "* '''6''': Set base color and patterns on a banner",
+          "* '''7''': Set the data for a Structure tile entity",
+          "* '''8''': Set the destination for a end gateway",
+          ""
+        ],
+        "id": "0x09"
+      },
+      "block_action": {
+        "before": [
+          "",
+          "This packet is used for a number of things:",
+          "",
+          "* Chests opening and closing",
+          "* Pistons pushing and pulling",
+          "* Note blocks playing",
+          "* Updating beacons",
+          "",
+          "See also: [[Block Actions]] ",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0a"
+      },
+      "block_change": {
+        "before": [
+          "",
+          "Fired whenever a block is changed within the render distance.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0b"
+      },
+      "boss_bar": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "{| class=\"wikitable\"",
+          " ! ID",
+          " ! Color",
+          " |-",
+          " | 0",
+          " | Pink",
+          " |-",
+          " | 1",
+          " | Blue",
+          " |-",
+          " | 2",
+          " | Red",
+          " |-",
+          " | 3",
+          " | Green",
+          " |-",
+          " | 4",
+          " | Yellow",
+          " |-",
+          " | 5",
+          " | Purple",
+          " |-",
+          " | 6",
+          " | White",
+          " |}",
+          "",
+          "{| class=\"wikitable\"",
+          " ! ID",
+          " ! Type of division",
+          " |-",
+          " | 0",
+          " | No division",
+          " |-",
+          " | 1",
+          " | 6 notches",
+          " |-",
+          " | 2",
+          " | 10 notches",
+          " |-",
+          " | 3",
+          " | 12 notches",
+          " |-",
+          " | 4",
+          " | 20 notches",
+          " |}",
+          ""
+        ],
+        "id": "0x0c"
+      },
+      "difficulty": {
+        "before": [
+          "",
+          "Changes the difficulty setting in the client's option menu",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0d"
+      },
+      "tab_complete": {
+        "before": [
+          "",
+          "The server responds with a list of auto-completions of the last word sent to it. In the case of regular chat, this is a player username. Command names and parameters are also supported.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0e"
+      },
+      "chat": {
+        "before": [
+          "",
+          "Identifying the difference between Chat/System Message is important as it helps respect the user's chat visibility options. While Position 2 accepts json formatting it will not display, old style formatting works",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0f"
+      },
+      "multi_block_change": {
+        "before": [
+          "",
+          "Fired whenever 2 or more blocks are changed within the same chunk on the same tick.",
+          ""
+        ],
+        "after": [
+          "",
+          "To decode the position into a world position:",
+          "",
+          "<syntaxhighlight lang=\"java\">",
+          "worldX = (horizPos >> 4 & 15) + (chunkX * 16);",
+          "worldY = vertPos;",
+          "worldZ = (horizPos & 15) + (chunkZ * 16);",
+          "</syntaxhighlight>",
+          ""
+        ],
+        "id": "0x10"
+      },
+      "transaction": {
+        "before": [
+          "",
+          "A packet from the server indicating whether a request from the client was accepted, or whether there was a conflict (due to lag).",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x11"
+      },
+      "close_window": {
+        "before": [
+          "",
+          "This packet is sent from the server to the client when a window is forcibly closed, such as when a chest is destroyed while it's open.",
+          "",
+          "Note, notchian clients send a close window packet with Window ID 0 to close their inventory even though there is never an [[#Open Window|Open Window]] packet for inventory. ",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x12"
+      },
+      "open_window": {
+        "before": [
+          "",
+          "This is sent to the client when it should open an inventory, such as a chest, workbench, or furnace. This message is not sent anywhere for clients opening their own inventory.",
+          ""
+        ],
+        "after": [
+          "",
+          "See [[Inventory]] for further information.",
+          ""
+        ],
+        "id": "0x13"
+      },
+      "window_items": {
+        "before": [
+          "[[File:Inventory-slots.png|thumb|The inventory slots]]",
+          "",
+          "Sent by the server when items in multiple slots (in a window) are added/removed. This includes the main inventory, equipped armour and crafting slots.",
+          ""
+        ],
+        "after": [
+          "",
+          "See [[Inventory#Windows|inventory windows]] for further information about how slots are indexed.",
+          ""
+        ],
+        "id": "0x14"
+      },
+      "craft_progress_bar": {
+        "before": [
+          "",
+          "This packet is used to inform the client that part of a GUI window should be updated.",
+          ""
+        ],
+        "after": [
+          "",
+          "The meaning of the Property field depends on the type of the window. The following table shows the known combinations of window type and property, and how the value is to be interpreted.",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Window type",
+          " ! Property",
+          " ! Value",
+          " |-",
+          " |rowspan=\"4\"| Furnace",
+          " | 0: Fire icon (fuel left)",
+          " | counting from fuel burn time down to 0 (in-game ticks)",
+          " |-",
+          " | 1: Maximum fuel burn time",
+          " | fuel burn time or 0 (in-game ticks)",
+          " |-",
+          " | 2: Progress arrow",
+          " | 0–200 (in-game ticks)",
+          " |-",
+          " | 3: Maximum progress",
+          " | always 200",
+          " |-",
+          " |rowspan=\"7\"| Enchantment Table",
+          " | 0: Level requirement for top enchantment slot",
+          " |rowspan=\"3\"| The enchantment's xp level requirement",
+          " |-",
+          " | 1: Level requirement for middle enchantment slot",
+          " |-",
+          " | 2: Level requirement for bottom enchantment slot",
+          " |-",
+          " | 3: The seed for generating the enchantments view for the client",
+          " | Unknown",
+          " |-",
+          " | 4: Enchantment shown on mouse hover over top enchantment slot",
+          " |rowspan=\"3\"| The enchantment id (set to -1 to hide it)",
+          " |-",
+          " | 5: Enchantment shown on mouse hover over middle enchantment slot",
+          " |-",
+          " | 6: Enchantment shown on mouse hover over bottom enchantment slot",
+          " |-",
+          " |rowspan=\"3\"| Beacon",
+          " | 0: Power level",
+          " | Unknown",
+          " |-",
+          " | 1: First potion effect",
+          " | Unknown",
+          " |-",
+          " | 2: Second potion effect",
+          " | Unknown",
+          " |-",
+          " | Anvil",
+          " | 0: Repair cost",
+          " | The repair's cost in xp levels",
+          " |-",
+          " | Brewing Stand",
+          " | 0: Brew time",
+          " | 0–400, with 400 making the arrow empty, and 0 making the arrow full",
+          " |}",
+          ""
+        ],
+        "id": "0x15"
+      },
+      "set_slot": {
+        "before": [
+          "",
+          "Sent by the server when an item in a slot (in a window) is added/removed.",
+          ""
+        ],
+        "after": [
+          "",
+          "To set the cursor (the item currently dragged with the mouse), use -1 as Window ID and as Slot.",
+          "",
+          "This packet can only be used to edit the hotbar of the player's inventory if window ID is set to 0 (slots 36 through 44).  If the window ID is set to -2, then any slot in the inventory can be used but no add item animation will be played.",
+          ""
+        ],
+        "id": "0x16"
+      },
+      "set_cooldown": {
+        "before": [
+          "",
+          "Applies a cooldown period to an item type.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x17"
+      },
+      "custom_payload": {
+        "before": [
+          "",
+          "Mods and plugins can use this to send their data. Minecraft itself uses a number of [[plugin channel]]s. These internal channels are prefixed with <code>MC|</code>.",
+          "",
+          "More documentation on this: [http://dinnerbone.com/blog/2012/01/13/minecraft-plugin-channels-messaging/ http://dinnerbone.com/blog/2012/01/13/minecraft-plugin-channels-messaging/]",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x18"
+      },
+      "named_sound_effect": {
+        "before": [
+          "{{See also|#Sound Effect}}",
+          "",
+          "Used to play a sound effect on the client. Custom sounds may be added by resource packs.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x19"
+      },
+      "kick_disconnect": {
+        "before": [
+          "",
+          "Sent by the server before it disconnects a client. The client assumes that the server has already closed the connection by the time the packet arrives.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1a"
+      },
+      "entity_status": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Entity Status",
+          " ! Meaning",
+          " |-",
+          " | 0",
+          " | Spawn tipped arrow particle effects",
+          " |-",
+          " | 1",
+          " | Reset a mob spawner minecart's timer (unused by the client?)",
+          " |-",
+          " | 1",
+          " | Create rabbit running particles",
+          " |-",
+          " | 2",
+          " | Entity hurt animation",
+          " |-",
+          " | 3",
+          " | Entity died animation",
+          " |-",
+          " | 4",
+          " | Iron Golem throwing up arms",
+          " |-",
+          " | 6",
+          " | Wolf/Ocelot/Horse taming — Spawn “heart” particles",
+          " |-",
+          " | 7",
+          " | Wolf/Ocelot/Horse tamed — Spawn “smoke” particles",
+          " |-",
+          " | 8",
+          " | Wolf shaking water — Trigger the shaking animation",
+          " |-",
+          " | 9",
+          " | Mark item use as finished (ie, eating finished, drinking finished)",
+          " |-",
+          " | 10",
+          " | Sheep eating grass",
+          " |-",
+          " | 10",
+          " | Ignite TNT minecart",
+          " |-",
+          " | 11",
+          " | Iron Golem handing over a rose",
+          " |-",
+          " | 12",
+          " | Villager mating — Spawn “heart” particles",
+          " |-",
+          " | 13",
+          " | Spawn particles indicating that a villager is angry and seeking revenge",
+          " |-",
+          " | 14",
+          " | Spawn happy particles near a villager",
+          " |-",
+          " | 15",
+          " | Witch animation — Spawn “magic” particles",
+          " |-",
+          " | 16",
+          " | Play zombie converting into a villager sound",
+          " |-",
+          " | 17",
+          " | Firework exploding",
+          " |-",
+          " | 18",
+          " | Animal in love (ready to mate) — Spawn “heart” particles",
+          " |-",
+          " | 19",
+          " | Reset squid rotation",
+          " |-",
+          " | 20",
+          " | Spawn explosion particle — works for some living entities",
+          " |-",
+          " | 21",
+          " | Play guardian sound — works for every entity",
+          " |-",
+          " | 22",
+          " | Enables reduced {{Minecraft Wiki|Debug screen|debug}} for the given player",
+          " |-",
+          " | 23",
+          " | Disables reduced {{Minecraft Wiki|Debug screen|debug}} for the given player",
+          " |-",
+          " | 24–28",
+          " | Sets the {{Minecraft Wiki|Server.properties#op-permission-level|op permission level}} 0–4 for the connected player",
+          " |-",
+          " | 29",
+          " | Shield block sound",
+          " |-",
+          " | 30",
+          " | Shield break sound",
+          " |-",
+          " | 31",
+          " | For a fishing rod bobber, if the hooked entity is this player, tug that player toward the caster of the rod",
+          " |-",
+          " | 32",
+          " | Armorstand hit sound",
+          " |-",
+          " | 33",
+          " | Entity hurt due to thorns (play thorns sound, perform normal hurt animation)",
+          " |}",
+          ""
+        ],
+        "id": "0x1b"
+      },
+      "explosion": {
+        "before": [
+          "",
+          "Sent when an explosion occurs (creepers, TNT, and ghast fireballs).",
+          "",
+          "Each block in Records is set to air. Coordinates for each axis in record is int(X) + record.x",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1c"
+      },
+      "unload_chunk": {
+        "before": [
+          "",
+          "Tells the client to unload a chunk column.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1d"
+      },
+      "game_state_change": {
+        "before": [
+          "",
+          "Used for a wide variety of game state things, from weather to bed use to game mode to demo messages.",
+          ""
+        ],
+        "after": [
+          "",
+          "''Reason codes'':",
+          "",
+          "{| class=\"wikitable\"",
+          " ! Reason",
+          " ! Effect",
+          " ! Value",
+          " |-",
+          " | 0",
+          " | Invalid Bed",
+          " | Would be used to switch between messages, but the only used message is 0 for invalid bed",
+          " |-",
+          " | 1",
+          " | End raining",
+          " | ",
+          " |-",
+          " | 2",
+          " | Begin raining",
+          " | ",
+          " |-",
+          " | 3",
+          " | Change game mode",
+          " | 0: Survival, 1: Creative, 2: Adventure, 3: Spectator",
+          " |-",
+          " | 4",
+          " | Exit end",
+          " | 0: Immediately send Client Status of respawn without showing end credits; 1: Show end credits and respawn at the end (or when esc is pressed).  1 is sent if the player has not yet received the \"The end?\" achievement, while if they do have it 0 is used.",
+          " |-",
+          " | 5",
+          " | Demo message",
+          " | 0: Show welcome to demo screen, 101: Tell movement controls, 102: Tell jump control, 103: Tell inventory control",
+          " |- ",
+          " | 6",
+          " | Arrow hitting player",
+          " | Appears to be played when an arrow strikes another player in Multiplayer",
+          " |-",
+          " | 7",
+          " | Fade value",
+          " | The current darkness value. 1 = Dark, 0 = Bright, Setting the value higher causes the game to change color and freeze",
+          " |-",
+          " | 8",
+          " | Fade time",
+          " | Time in ticks for the sky to fade",
+          " |-",
+          " | 10",
+          " | Play elder guardian mob appearance (effect and sound)",
+          " | ",
+          " |}",
+          ""
+        ],
+        "id": "0x1e"
+      },
+      "keep_alive": {
+        "before": [
+          "",
+          "The server will frequently send out a keep-alive, each containing a random ID. The client must respond with the same packet. If the client does not respond to them for over 30 seconds, the server kicks the client. Vice versa, if the server does not send any keep-alives for 20 seconds, the client will disconnect and yields a \"Timed out\" exception.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1f"
+      },
+      "map_chunk": {
+        "before": [
+          "{{See also|#Unload Chunk}}",
+          "",
+          "The server only sends skylight information for chunk pillars in the {{Minecraft Wiki|Overworld}}, it's up to the client to know in which dimenison the player is currently located. You can also infer this information from the primary bitmask and the amount of uncompressed bytes sent.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x20"
+      },
+      "world_event": {
+        "before": [
+          "",
+          "Sent when a client is to play a sound or particle effect.",
+          "",
+          "By default, the Minecraft client adjusts the volume of sound effects based on distance. The final boolean field is used to disable this, and instead the effect is played from 2 blocks away in the correct direction. Currently this is only used for effect 1023 (wither spawn) and effect 1028 (enderdragon death); it is ignored on other effects.",
+          ""
+        ],
+        "after": [
+          "",
+          "Effect IDs:",
+          "",
+          "{| class=\"wikitable\"",
+          " ! ID",
+          " ! Name",
+          " ! Data",
+          " |-",
+          " !colspan=\"3\"| Sound",
+          " |-",
+          " | 1000",
+          " | Dispenser dispenses",
+          " | ",
+          " |-",
+          " | 1001",
+          " | Dispenser fails to dispense",
+          " | ",
+          " |-",
+          " | 1002",
+          " | Dispenser shoots",
+          " | ",
+          " |-",
+          " | 1003",
+          " | Ender eye launched",
+          " | ",
+          " |-",
+          " | 1004",
+          " | Firework shot",
+          " | ",
+          " |-",
+          " | 1005",
+          " | Iron door opened",
+          " | ",
+          " |-",
+          " | 1006",
+          " | Wooden door opened",
+          " | ",
+          " |-",
+          " | 1007",
+          " | Wooden trapdoor opened",
+          " | ",
+          " |-",
+          " | 1008",
+          " | Fence gate opened",
+          " | ",
+          " |-",
+          " | 1009",
+          " | Fire extinguished",
+          " | ",
+          " |-",
+          " | 1010",
+          " | Play record",
+          " | {{Minecraft Wiki|Music Discs|Record ID}}",
+          " |-",
+          " | 1011",
+          " | Iron door closed",
+          " | ",
+          " |-",
+          " | 1012",
+          " | Wooden door closed",
+          " | ",
+          " |-",
+          " | 1013",
+          " | Wooden trapdoor closed",
+          " | ",
+          " |-",
+          " | 1014",
+          " | Fence gate closed",
+          " | ",
+          " |-",
+          " | 1015",
+          " | Ghast warns",
+          " | ",
+          " |-",
+          " | 1016",
+          " | Ghast shoots",
+          " | ",
+          " |-",
+          " | 1017",
+          " | Enderdragon shoots",
+          " | ",
+          " |-",
+          " | 1018",
+          " | Blaze shoots",
+          " | ",
+          " |-",
+          " | 1019",
+          " | Zombie attacks wood door",
+          " | ",
+          " |-",
+          " | 1020",
+          " | Zombie attacks iron door",
+          " | ",
+          " |-",
+          " | 1021",
+          " | Zombie breaks wood door",
+          " |",
+          " |-",
+          " | 1022",
+          " | Wither breaks block",
+          " |",
+          " |-",
+          " | 1023",
+          " | Wither spawned",
+          " | ",
+          " |-",
+          " | 1024",
+          " | Wither shoots",
+          " |",
+          " |-",
+          " | 1025",
+          " | Bat takes off",
+          " |",
+          " |-",
+          " | 1026",
+          " | Zombie infects",
+          " |",
+          " |-",
+          " | 1027",
+          " | Zombie villager converted",
+          " |",
+          " |-",
+          " | 1028",
+          " | Ender dragon death",
+          " |",
+          " |-",
+          " | 1029",
+          " | Anvil destroyed",
+          " | ",
+          " |-",
+          " | 1030",
+          " | Anvil used",
+          " | ",
+          " |-",
+          " | 1031",
+          " | Anvil landed",
+          " |",
+          " |-",
+          " | 1032",
+          " | Portal travel",
+          " | ",
+          " |-",
+          " | 1033",
+          " | Chorus flower grown",
+          " |",
+          " |-",
+          " | 1034",
+          " | Chorus flower died",
+          " | ",
+          " |-",
+          " | 1035",
+          " | Brewing stand brewed",
+          " |",
+          " |-",
+          " | 1036",
+          " | Iron trapdoor opened",
+          " | ",
+          " |-",
+          " | 1037",
+          " | Iron trapdoor closed",
+          " |",
+          " |-",
+          " !colspan=\"3\"| Particle",
+          " |-",
+          " | 2000",
+          " | Spawns 10 smoke particles, e.g. from a fire",
+          " | Direction, see below",
+          " |-",
+          " | 2001",
+          " | Block break + block break sound",
+          " | {{Minecraft Wiki|Data values|Block ID}}",
+          " |-",
+          " | 2002",
+          " | Splash potion. Particle effect + glass break sound.",
+          " | [http://minecraft.gamepedia.com/Data_values#Potions Potion ID]",
+          " |-",
+          " | 2003",
+          " | Eye of Ender entity break animation — particles and sound",
+          " | ",
+          " |-",
+          " | 2004",
+          " | Mob spawn particle effect: smoke + flames",
+          " | ",
+          " |-",
+          " | 2005",
+          " | Bonemeal particles",
+          " | How many particles to spawn (if set to 0, 15 are spawned)",
+          " |-",
+          " | 2006",
+          " | Dragon breath",
+          " |",
+          " |-",
+          " | 3000",
+          " | End gateway spawn",
+          " | ",
+          " |-",
+          " | 3001",
+          " | Enderdragon growl",
+          " |",
+          " |}",
+          "",
+          "Smoke directions:",
+          "",
+          "{| class=\"wikitable\"",
+          " ! ID",
+          " ! Direction",
+          " |-",
+          " | 0",
+          " | South-East",
+          " |-",
+          " | 1",
+          " | South",
+          " |-",
+          " | 2",
+          " | South-West",
+          " |-",
+          " | 3",
+          " | East",
+          " |-",
+          " | 4",
+          " | (Up or middle ?)",
+          " |-",
+          " | 5",
+          " | West",
+          " |-",
+          " | 6",
+          " | North-East",
+          " |-",
+          " | 7",
+          " | North",
+          " |-",
+          " | 8",
+          " | North-West",
+          " |}",
+          ""
+        ],
+        "id": "0x21"
+      },
+      "world_particles": {
+        "before": [
+          "",
+          "Displays the named particle",
+          ""
+        ],
+        "after": [
+          "",
+          "Particle IDs:",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Particle Name",
+          " ! Particle ID",
+          " |-",
+          " | explode",
+          " | 0",
+          " |-",
+          " | largeexplosion",
+          " | 1",
+          " |-",
+          " | hugeexplosion",
+          " | 2",
+          " |-",
+          " | fireworksSpark",
+          " | 3",
+          " |-",
+          " | bubble",
+          " | 4",
+          " |-",
+          " | splash",
+          " | 5",
+          " |-",
+          " | wake",
+          " | 6",
+          " |-",
+          " | suspended",
+          " | 7",
+          " |-",
+          " | depthsuspend",
+          " | 8",
+          " |-",
+          " | crit",
+          " | 9",
+          " |-",
+          " | magicCrit",
+          " | 10",
+          " |-",
+          " | smoke",
+          " | 11",
+          " |-",
+          " | largesmoke",
+          " | 12",
+          " |-",
+          " | spell",
+          " | 13",
+          " |-",
+          " | instantSpell",
+          " | 14",
+          " |-",
+          " | mobSpell",
+          " | 15",
+          " |-",
+          " | mobSpellAmbient",
+          " | 16",
+          " |-",
+          " | witchMagic",
+          " | 17",
+          " |-",
+          " | dripWater",
+          " | 18",
+          " |-",
+          " | dripLava",
+          " | 19",
+          " |-",
+          " | angryVillager",
+          " | 20",
+          " |-",
+          " | happyVillager",
+          " | 21",
+          " |-",
+          " | townaura",
+          " | 22",
+          " |-",
+          " | note",
+          " | 23",
+          " |-",
+          " | portal",
+          " | 24",
+          " |-",
+          " | enchantmenttable",
+          " | 25",
+          " |-",
+          " | flame",
+          " | 26",
+          " |-",
+          " | lava",
+          " | 27",
+          " |-",
+          " | footstep",
+          " | 28",
+          " |-",
+          " | cloud",
+          " | 29",
+          " |-",
+          " | reddust",
+          " | 30",
+          " |-",
+          " | snowballpoof",
+          " | 31",
+          " |-",
+          " | snowshovel",
+          " | 32",
+          " |-",
+          " | slime",
+          " | 33",
+          " |-",
+          " | heart",
+          " | 34",
+          " |-",
+          " | barrier",
+          " | 35",
+          " |-",
+          " | iconcrack_(id)_(data)",
+          " | 36",
+          " |-",
+          " | blockcrack_(id+(data<<12))",
+          " | 37",
+          " |-",
+          " | blockdust_(id)",
+          " | 38",
+          " |-",
+          " | droplet",
+          " | 39",
+          " |-",
+          " | take",
+          " | 40",
+          " |-",
+          " | mobappearance",
+          " | 41",
+          " |-",
+          " | dragonbreath",
+          " | 42",
+          " |-",
+          " | endrod",
+          " | 43",
+          " |-",
+          " | damageindicator",
+          " | 44",
+          " |-",
+          " | sweepattack",
+          " | 45",
+          " |}",
+          ""
+        ],
+        "id": "0x22"
+      },
+      "login": {
+        "before": [
+          "",
+          "See [[Protocol Encryption]] for information on logging in.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x23"
+      },
+      "map": {
+        "before": [
+          "",
+          "Updates a rectangular area on a {{Minecraft Wiki|map}} item.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x24"
+      },
+      "rel_entity_move": {
+        "before": [
+          "",
+          "This packet is sent by the server when an entity moves less then 8 blocks; if an entity moves more than 8 blocks [[#Entity Teleport|Entity Teleport]] ([[#Play|Play]], 0x4A, clientbound) should be sent instead.",
+          "",
+          "This packet allows at most 8 blocks movement in any direction, because short range is from -32768 to 32767. And <code>32768 / (128 * 32)</code> = 8.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x25"
+      },
+      "entity_move_look": {
+        "before": [
+          "",
+          "This packet is sent by the server when an entity rotates and moves. Since a short range is limited from -32768 to 32767, and movement is offset of fixed-point numbers, this packet allows at most 8 blocks movement in any direction. (<code>-32768 / (32 * 128) == -8</code>)",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x26"
+      },
+      "entity_look": {
+        "before": [
+          "",
+          "This packet is sent by the server when an entity rotates.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x27"
+      },
+      "entity": {
+        "before": [
+          "",
+          "This packet may be used to initialize an entity.",
+          "",
+          "For player entities, either this packet or any move/look packet is sent every game tick. So the meaning of this packet is basically that the entity did not move/look since the last such packet.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x28"
+      },
+      "vehicle_move": {
+        "before": [
+          "",
+          "Note that all fields use absolute positioning and do not allow for relative positioning.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x29"
+      },
+      "open_sign_entity": {
+        "before": [
+          "",
+          "Sent when the client has placed a sign and is allowed to send [[#Update Sign 2|Update Sign]].",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x2a"
+      },
+      "abilities": {
+        "before": [
+          "",
+          "The latter 2 floats are used to indicate the field of view and flying speed respectively, while the first byte is used to determine the value of 4 booleans.",
+          ""
+        ],
+        "after": [
+          "",
+          "About the flags:",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Field",
+          " ! Bit",
+          " |-",
+          " | Invulnerable",
+          " | 0x01",
+          " |-",
+          " | Flying",
+          " | 0x02",
+          " |-",
+          " | Allow Flying",
+          " | 0x04",
+          " |-",
+          " | Creative Mode",
+          " | 0x08",
+          " |}",
+          ""
+        ],
+        "id": "0x2b"
+      },
+      "combat_event": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x2c"
+      },
+      "player_info": {
+        "before": [
+          "",
+          "Sent by the server to update the user list (<tab> in the client).",
+          ""
+        ],
+        "after": [
+          "",
+          "The Property field looks as in the response of [[Mojang API#UUID -> Profile + Skin/Cape]], except of course using the protocol format instead of JSON. That is, each player will usually have one property with Name “textures” and Value being a base64-encoded JSON string as documented at [[Mojang API#UUID -> Profile + Skin/Cape]]. An empty properties array is also acceptable, and will cause clients to display the player with one of the two default skins depending on UUID.",
+          ""
+        ],
+        "id": "0x2d"
+      },
+      "position": {
+        "before": [
+          "",
+          "Updates the player's position on the server. This packet will also close the “Downloading Terrain” screen when joining/respawning.",
+          "",
+          "If the distance between the last known position of the player on the server and the new position set by this packet is greater than 100 meters, the client will be kicked for “You moved too quickly :( (Hacking?)”.",
+          "",
+          "Also if the fixed-point number of X or Z is set greater than <code>3.2E7D</code> the client will be kicked for “Illegal position”.",
+          "",
+          "Yaw is measured in degrees, and does not follow classical trigonometry rules. The unit circle of yaw on the XZ-plane starts at (0, 1) and turns counterclockwise, with 90 at (-1, 0), 180 at (0, -1) and 270 at (1, 0). Additionally, yaw is not clamped to between 0 and 360 degrees; any number is valid, including negative numbers and numbers greater than 360.",
+          "",
+          "Pitch is measured in degrees, where 0 is looking straight ahead, -90 is looking straight up, and 90 is looking straight down.",
+          ""
+        ],
+        "after": [
+          "",
+          "About the Flags field:",
+          "",
+          " <Dinnerbone> It's a bitfield, X/Y/Z/Y_ROT/X_ROT. If X is set, the x value is relative and not absolute.",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Field",
+          " ! Bit",
+          " |-",
+          " | X",
+          " | 0x01",
+          " |-",
+          " | Y",
+          " | 0x02",
+          " |-",
+          " | Z",
+          " | 0x04",
+          " |-",
+          " | Y_ROT",
+          " | 0x08",
+          " |-",
+          " | X_ROT",
+          " | 0x10",
+          " |}",
+          ""
+        ],
+        "id": "0x2e"
+      },
+      "bed": {
+        "before": [
+          "",
+          "This packet tells that a player goes to bed.",
+          "",
+          "The client with the matching Entity ID will go into bed mode.",
+          "",
+          "This Packet is sent to all nearby players including the one sent to bed.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x2f"
+      },
+      "entity_destroy": {
+        "before": [
+          "",
+          "Sent by the server when a list of entities is to be destroyed on the client.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x30"
+      },
+      "remove_entity_effect": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x31"
+      },
+      "resource_pack_send": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x32"
+      },
+      "respawn": {
+        "before": [
+          "",
+          "To change the player's dimension (overworld/nether/end), send them a respawn packet with the appropriate dimension, followed by prechunks/chunks for the new dimension, and finally a position and look packet. You do not need to unload chunks, the client will do it automatically.",
+          ""
+        ],
+        "after": [
+          "",
+          "{{Warning2|Avoid changing player's dimension to same dimension they were already in unless they are dead. If you change the dimension to one they are already in, weird bugs can occur, such as the player being unable to attack other players in new world (until they die and respawn).",
+          "",
+          "If you must respawn a player in the same dimension without killing them, send two respawn packets, one to a different world and then another to the world you want. You do not need to complete the first respawn; it only matters that you send two packets.}}",
+          ""
+        ],
+        "id": "0x33"
+      },
+      "entity_head_rotation": {
+        "before": [
+          "",
+          "Changes the direction an entity's head is facing.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x34"
+      },
+      "world_border": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "The Notchian client determines how solid to display the warning by comparing to whichever is higher, the warning distance or whichever is lower, the distance from the current diameter to the target diameter or the place the border will be after warningTime seconds. In pseudocode:",
+          "",
+          "<syntaxhighlight lang=\"java\">",
+          "distance = max(min(resizeSpeed * 1000 * warningTime, abs(targetDiameter - currentDiameter)), warningDistance);",
+          "if (playerDistance < distance) {",
+          "    warning = 1.0 - playerDistance / distance;",
+          "} else {",
+          "    warning = 0.0;",
+          "}",
+          "</syntaxhighlight>",
+          ""
+        ],
+        "id": "0x35"
+      },
+      "camera": {
+        "before": [
+          "",
+          "Sets the entity that the player renders from. This is normally used when the player left-clicks an entity while in spectator mode.",
+          "",
+          "The player's camera will move with the entity and look where it is looking. The entity is often another player, but can be any type of entity.  The player is unable to move this entity (move packets will act as if they are coming from the other entity).",
+          "",
+          "If the given entity is not loaded by the player, this packet is ignored.  To return control to the player, send this packet with their entity ID.",
+          "",
+          "The Notchian server resets this (sends it back to the default entity) whenever the spectated entity is killed or the player sneaks, but only if they were spectating an entity. It also sends this packet whenever the player switches out of spectator mode (even if they weren't spectating an entity).",
+          ""
+        ],
+        "after": [
+          "",
+          "The notchian also loads certain shaders for given entities:",
+          "",
+          "* Creeper &rarr; <code>shaders/post/creeper.json</code>",
+          "* Spider (and cave spider) &rarr; <code>shaders/post/spider.json</code>",
+          "* Enderman &rarr; <code>shaders/post/invert.json</code>",
+          "* Anything else &rarr; the current shader is unloaded",
+          ""
+        ],
+        "id": "0x36"
+      },
+      "held_item_slot": {
+        "before": [
+          "",
+          "Sent to change the player's slot selection.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x37"
+      },
+      "scoreboard_display_objective": {
+        "before": [
+          "",
+          "This is sent to the client when it should display a scoreboard.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x38"
+      },
+      "entity_metadata": {
+        "before": [
+          "",
+          "Updates one or more [[Entities#Entity Metadata Format|metadata]] properties for an existing entity. Any properties not included in the Metadata field are left unchanged.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x39"
+      },
+      "attach_entity": {
+        "before": [
+          "",
+          "This packet is sent when an entity has been {{Minecraft Wiki|Lead|leashed}} to another entity.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x3a"
+      },
+      "entity_velocity": {
+        "before": [
+          "",
+          "Velocity is believed to be in units of 1/8000 of a block per server tick (50ms); for example, -1343 would move (-1343 / 8000) = −0.167875 blocks per tick (or −3,3575 blocks per second).",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x3b"
+      },
+      "entity_equipment": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x3c"
+      },
+      "experience": {
+        "before": [
+          "",
+          "Sent by the server when the client should change experience levels.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x3d"
+      },
+      "update_health": {
+        "before": [
+          "",
+          "Sent by the server to update/set the health of the player it is sent to.",
+          "",
+          "Food {{Minecraft Wiki|Food#Hunger vs. Saturation|saturation}} acts as a food “overcharge”. Food values will not decrease while the saturation is over zero. Players logging in automatically get a saturation of 5.0. Eating food increases the saturation as well as the food bar.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x3e"
+      },
+      "scoreboard_objective": {
+        "before": [
+          "",
+          "This is sent to the client when it should create a new {{Minecraft Wiki|scoreboard}} objective or remove one.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x3f"
+      },
+      "set_passengers": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x40"
+      },
+      "teams": {
+        "before": [
+          "",
+          "Creates and updates teams.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x41"
+      },
+      "scoreboard_score": {
+        "before": [
+          "",
+          "This is sent to the client when it should update a scoreboard item. ",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x42"
+      },
+      "spawn_position": {
+        "before": [
+          "",
+          "Sent by the server after login to specify the coordinates of the spawn point (the point at which players spawn at, and which the compass points to). It can be sent at any time to update the point compasses point at.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x43"
+      },
+      "update_time": {
+        "before": [
+          "",
+          "Time is based on ticks, where 20 ticks happen every second. There are 24000 ticks in a day, making Minecraft days exactly 20 minutes long.",
+          "",
+          "The time of day is based on the timestamp modulo 24000. 0 is sunrise, 6000 is noon, 12000 is sunset, and 18000 is midnight.",
+          "",
+          "The default SMP server increments the time by <code>20</code> every second.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x44"
+      },
+      "title": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "“Hide” makes the title disappear, but if you run times again the same title will appear. “Reset” erases the text.",
+          "",
+          "The title is visible on screen for Fade In + Stay + Fade Out ticks.",
+          ""
+        ],
+        "id": "0x45"
+      },
+      "update_sign": {
+        "before": [
+          "",
+          "This message is sent from the server to the client whenever a sign is discovered or created. This message is NOT sent when a sign is destroyed or unloaded.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x46"
+      },
+      "sound_effect": {
+        "before": [
+          "",
+          "This packet is used to play a number of [http://pokechu22.github.io/Burger/1.9.html#sounds hardcoded sound events]. For custom sounds, use [[#Named Sound Effect|Named Sound Effect]] ([[#Play|Play]], 0x19, clientbound).",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x47"
+      },
+      "playerlist_header": {
+        "before": [
+          "",
+          "This packet may be used by custom servers to display additional information above/below the player list. It is never sent by the Notchian server.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x48"
+      },
+      "collect": {
+        "before": [
+          "",
+          "Sent by the server when someone picks up an item lying on the ground — its sole purpose appears to be the animation of the item flying towards you. It doesn't destroy the entity in the client memory, and it doesn't add it to your inventory. The server only checks for items to be picked up after each [[#Player Position|Player Position]] (and [[#Player Position And Look|Player Position And Look]]) packet sent by the client.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x49"
+      },
+      "entity_teleport": {
+        "before": [
+          "",
+          "This packet is sent by the server when an entity moves more than 4 blocks.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x4a"
+      },
+      "entity_update_attributes": {
+        "before": [
+          "",
+          "Sets {{Minecraft Wiki|Attribute|attributes}} on the given entity.",
+          ""
+        ],
+        "after": [
+          "",
+          "Known Key values (see also {{Minecraft Wiki|Attribute#Modifiers}}):",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Key",
+          " ! Default",
+          " ! Min",
+          " ! Max",
+          " ! Label",
+          " |-",
+          " | generic.maxHealth",
+          " | 20.0",
+          " | 0.0",
+          " | 1024.0",
+          " | Max Health",
+          " |-",
+          " | generic.followRange",
+          " | 32.0",
+          " | 0.0",
+          " | 2048.0",
+          " | Follow Range",
+          " |-",
+          " | generic.knockbackResistance",
+          " | 0.0 ",
+          " | 0.0",
+          " | 1.0",
+          " | Knockback Resistance",
+          " |-",
+          " | generic.movementSpeed",
+          " | 0.699999988079071",
+          " | 0.0",
+          " | 1024.0",
+          " | Movement Speed",
+          " |-",
+          " | generic.attackDamage",
+          " | 2.0",
+          " | 0.0",
+          " | 2048.0",
+          " | Attack Damage",
+          " |-",
+          " | generic.attackSpeed",
+          " | 4.0",
+          " | 0.0",
+          " | 1024.0",
+          " | Attack Speed",
+          " |-",
+          " | horse.jumpStrength",
+          " | 0.7",
+          " | 0.0",
+          " | 2.0",
+          " | Jump Strength",
+          " |-",
+          " | zombie.spawnReinforcements",
+          " | 0.0",
+          " | 0.0",
+          " | 1.0",
+          " | Spawn Reinforcements Chance",
+          " |}",
+          "",
+          "''Modifier Data'' structure:",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Field Name",
+          " ! Field Type",
+          " ! Notes",
+          " |-",
+          " | UUID",
+          " | UUID",
+          " | ",
+          " |-",
+          " | Amount",
+          " | Double",
+          " | May be positive or negative",
+          " |-",
+          " | Operation",
+          " | Byte",
+          " | See below",
+          " |}",
+          "",
+          "The operation controls how the base value of the modifier is changed.",
+          "",
+          "* 0: Add/subtract amount",
+          "* 1: Add/subtract amount percent of the current value",
+          "* 2: Multiply by amount percent",
+          "",
+          "All of the 0's are applied first, and then the 1's, and then the 2's.",
+          ""
+        ],
+        "id": "0x4b"
+      },
+      "entity_effect": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x4c"
+      }
+    },
+    "toServer": {
+      "teleport_confirm": {
+        "before": [
+          "",
+          "Sent by client as confirmation of [[#Player Position And Look (clientbound)|Player Position And Look]] ([[#Play|Play]], 0x2E, clientbound).",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x00"
+      },
+      "tab_complete": {
+        "before": [
+          "",
+          "Sent when the user presses ''tab'' while writing text.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x01"
+      },
+      "chat": {
+        "before": [
+          "",
+          "Used to send a chat message to the server.  The message may not be longer than 100 characters or else the server will kick the client.",
+          "",
+          "If the message starts with a <code>/</code>, the server will attempt to interpret it as a command.  Otherwise, the server will broadcast the same chat message to all players on the server (including the player that sent the message), prepended with player's name.  Specifically, it will respond with a translate [[chat]] component, \"<code>chat.type.text</code>\" with the first parameter set to the display name of the player (including some chat component logic to support clicking the name to send a PM) and the second parameter set to the message.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x02"
+      },
+      "client_command": {
+        "before": [
+          "",
+          "Sent when the client is ready to complete login and when the client is ready to respawn after death.",
+          ""
+        ],
+        "after": [
+          "",
+          "''Action ID'' values:",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Action ID",
+          " ! Action",
+          " |-",
+          " | 0",
+          " | Perform respawn",
+          " |-",
+          " | 1",
+          " | Request stats",
+          " |-",
+          " | 2",
+          " | Open inventory",
+          " |}",
+          ""
+        ],
+        "id": "0x03"
+      },
+      "settings": {
+        "before": [
+          "",
+          "Sent when the player connects, or when settings are changed.",
+          ""
+        ],
+        "after": [
+          "",
+          "''Displayed Skin Parts'' flags:",
+          "",
+          "* Bit 0 (0x01): Cape enabled",
+          "* Bit 1 (0x02): Jacket enabled",
+          "* Bit 2 (0x04): Left Sleeve enabled",
+          "* Bit 3 (0x08): Right Sleeve enabled",
+          "* Bit 4 (0x10): Left Pants Leg enabled",
+          "* Bit 5 (0x20): Right Pants Leg enabled",
+          "* Bit 6 (0x40): Hat enabled",
+          "",
+          "The most significant bit (bit 7, 0x80) appears to be unused.",
+          ""
+        ],
+        "id": "0x04"
+      },
+      "transaction": {
+        "before": [
+          "",
+          "If a transaction sent by the client was not accepted, the server will reply with a [[#Confirm Transaction|Confirm Transaction]] ([[#Play|Play]], 0x32, clientbound) packet with the Accepted field set to false. When this happens, the client must reflect the packet to apologize (as with movement), otherwise the server ignores any successive transactions.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x05"
+      },
+      "enchant_item": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x06"
+      },
+      "window_click": {
+        "before": [
+          "",
+          "This packet is sent by the player when it clicks on a slot in a window.",
+          ""
+        ],
+        "after": [
+          "",
+          "See [[Inventory]] for further information about how slots are indexed.",
+          "",
+          "When right-clicking on a stack of items, half the stack will be picked up and half left in the slot. If the stack is an odd number, the half left in the slot will be smaller of the amounts.",
+          "",
+          "The distinct type of click performed by the client is determined by the combination of the Mode and Button fields.",
+          "",
+          "{| class=\"wikitable\"",
+          " ! Mode",
+          " ! Button",
+          " ! Slot",
+          " ! Trigger",
+          " |-",
+          " !rowspan=\"2\"| 0",
+          " | 0",
+          " | Normal",
+          " | Left mouse click",
+          " |-",
+          " | 1",
+          " | Normal",
+          " | Right mouse click",
+          " |-",
+          " !rowspan=\"2\"| 1",
+          " | 0",
+          " | Normal",
+          " | Shift + left mouse click",
+          " |-",
+          " | 1",
+          " | Normal",
+          " | Shift + right mouse click ''(identical behavior)''",
+          " |-",
+          " !rowspan=\"5\"| 2",
+          " | 0",
+          " | Normal",
+          " | Number key 1",
+          " |-",
+          " | 1",
+          " | Normal",
+          " | Number key 2",
+          " |-",
+          " | 2",
+          " | Normal",
+          " | Number key 3",
+          " |-",
+          " | ⋮",
+          " | ⋮",
+          " | ⋮",
+          " |-",
+          " | 8",
+          " | Normal",
+          " | Number key 9",
+          " |-",
+          " !rowspan=\"1\"| 3",
+          " | 2",
+          " | Normal",
+          " | Middle click",
+          " |-",
+          " !rowspan=\"4\"| 4",
+          " | 0",
+          " | Normal*",
+          " | Drop key (Q) (* Clicked item is different, see above)",
+          " |-",
+          " | 1",
+          " | Normal*",
+          " | Ctrl + Drop key (Ctrl-Q) ''(drops full stack)''",
+          " |-",
+          " | 0",
+          " | -999",
+          " | Left click outside inventory holding nothing ''(no-op)''",
+          " |-",
+          " | 1",
+          " | -999",
+          " | Right click outside inventory holding nothing ''(no-op)''",
+          " |-",
+          " !rowspan=\"6\"| 5",
+          " | 0",
+          " | -999",
+          " | Starting left mouse drag ''(or middle mouse)''",
+          " |-",
+          " | 4",
+          " | -999",
+          " | Starting right mouse drag",
+          " |-",
+          " | 1",
+          " | Normal",
+          " | Add slot for left-mouse drag",
+          " |-",
+          " | 5",
+          " | Normal",
+          " | Add slot for right-mouse drag",
+          " |-",
+          " | 2",
+          " | -999",
+          " | Ending left mouse drag",
+          " |-",
+          " | 6",
+          " | -999",
+          " | Ending right mouse drag",
+          " |-",
+          " ! 6",
+          " | 0",
+          " | Normal",
+          " | Double click",
+          " |}",
+          "",
+          "Starting from version 1.5, “painting mode” is available for use in inventory windows. It is done by picking up stack of something (more than 1 item), then holding mouse button (left, right or middle) and dragging held stack over empty (or same type in case of right button) slots. In that case client sends the following to server after mouse button release (omitting first pickup packet which is sent as usual):",
+          "",
+          "# packet with mode 5, slot -999, button (0 for left | 4 for right);",
+          "# packet for every slot painted on, mode is still 5, button (1 | 5);",
+          "# packet with mode 5, slot -999, button (2 | 6);",
+          "",
+          "If any of the painting packets other than the “progress” ones are sent out of order (for example, a start, some slots, then another start; or a left-click in the middle) the painting status will be reset.",
+          "",
+          "The server will send back a [[#Confirm Transaction|Confirm Transaction]] packet. If the click was not accepted, the client must reflect that packet before sending more [[#Click Window|Click Window]] packets, otherwise the server will reject them silently. The Notchian server also sends a [[#Window Items|Window Items]] packet for the open window and [[#Set Slot|Set Slot]] packets for the clicked and cursor slot, but only when the click was not accepted, probably to resynchronize client and server.",
+          ""
+        ],
+        "id": "0x07"
+      },
+      "close_window": {
+        "before": [
+          "",
+          "This packet is sent by the client when closing a window.",
+          "",
+          "Notchian clients send a Close Window packet with Window ID 0 to close their inventory even though there is never an [[#Open Window|Open Window]] packet for the inventory.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x08"
+      },
+      "custom_payload": {
+        "before": [
+          "",
+          "Mods and plugins can use this to send their data. Minecraft itself uses a number of [[plugin channel]]s. These internal channels are prefixed with <code>MC|</code>.",
+          "",
+          "More documentation on this: [http://dinnerbone.com/blog/2012/01/13/minecraft-plugin-channels-messaging/ http://dinnerbone.com/blog/2012/01/13/minecraft-plugin-channels-messaging/]",
+          "",
+          "Note that the length of Data is known only from the packet length, since the packet has no length field of any kind.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x09"
+      },
+      "use_entity": {
+        "before": [
+          "",
+          "This packet is sent from the client to the server when the client attacks or right-clicks another entity (a player, minecart, etc).",
+          "",
+          "A Notchian server only accepts this packet if the entity being attacked/used is visible without obstruction and within a 4-unit radius of the player's position.",
+          "",
+          "Note that middle-click in creative mode is interpreted by the client and sent as a [[#Creative Inventory Action|Creative Inventory Action]] packet instead.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0a"
+      },
+      "keep_alive": {
+        "before": [
+          "",
+          "The server will frequently send out a keep-alive, each containing a random ID. The client must respond with the same packet.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0b"
+      },
+      "position": {
+        "before": [
+          "",
+          "Updates the player's XYZ position on the server.",
+          "",
+          "Checking for moving too fast is achieved like this:",
+          "",
+          "* Each server tick, the player's current position is stored",
+          "* When a player moves, the changes in x, y, and z coordinates are compared with the positions from the previous tick (&Delta;x, &Delta;y, &Delta;z)",
+          "* Total movement distance squared is computed as &Delta;x&sup2; + &Delta;y&sup2; + &Delta;z&sup2;",
+          "* The expected movement distance squared is computed as velocityX&sup2; + veloctyY&sup2; + velocityZ&sup2;",
+          "* If the total movement distance squared value minus the expected movement distance squared value is more than 100 (300 if the player is using an elytra), they are moving too fast.",
+          "",
+          "If the player is moving too fast, it will be logged that \"<player> moved too quickly! \" followed by the change in x, y, and z, and the player will be teleported back to their current (before this packet) serverside position.",
+          "",
+          "Also, if the absolute value of X or the absolute value of Z is a value greater than 3.2×10<sup>7</sup>, or X, Y, or Z are not finite (either positive infinity, negative infinity, or NaN), the client will be kicked for “Invalid move player packet received”.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0c"
+      },
+      "position_look": {
+        "before": [
+          "",
+          "A combination of [[#Player Look|Player Look]] and [[#Player Position|Player Position]].",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0d"
+      },
+      "look": {
+        "before": [
+          "[[File:Minecraft-trig-yaw.png|thumb|The unit circle for yaw]]",
+          "[[File:Yaw.png|thumb|The unit circle of yaw, redrawn]]",
+          "",
+          "Updates the direction the player is looking in.",
+          "",
+          "Yaw is measured in degrees, and does not follow classical trigonometry rules. The unit circle of yaw on the XZ-plane starts at (0, 1) and turns counterclockwise, with 90 at (-1, 0), 180 at (0,-1) and 270 at (1, 0). Additionally, yaw is not clamped to between 0 and 360 degrees; any number is valid, including negative numbers and numbers greater than 360.",
+          "",
+          "Pitch is measured in degrees, where 0 is looking straight ahead, -90 is looking straight up, and 90 is looking straight down.",
+          "",
+          "The yaw and pitch of player (in degrees), standing at point (x0, y0, z0) and looking towards point (x, y, z) one can be calculated with:",
+          "",
+          " dx = x-x0",
+          " dy = y-y0",
+          " dz = z-z0",
+          " r = sqrt( dx*dx + dy*dy + dz*dz )",
+          " yaw = -atan2(dx,dz)/PI*180",
+          " if yaw < 0 then",
+          "     yaw = 360 - yaw",
+          " pitch = -arcsin(dy/r)/PI*180",
+          "",
+          "You can get a unit vector from a given yaw/pitch via:",
+          "",
+          " x = -cos(pitch) * sin(yaw)",
+          " y = -sin(pitch)",
+          " z =  cos(pitch) * cos(yaw)",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0e"
+      },
+      "flying": {
+        "before": [
+          "",
+          "This packet as well as [[#Player Position|Player Position]] ([[#Play|Play]], 0x04, serverbound), [[#Player Look|Player Look]] ([[#Play|Play]], 0x05, serverbound), and [[#Player Position And Look 2|Player Position And Look]] ([[#Play|Play]], 0x06, serverbound) are called the “serverbound movement packets”. At least one of them must be sent on each tick to ensure that servers will update things like player health correctly. Vanilla clients will send Player Position once every 20 ticks even for a stationary player, and Player on every other tick.",
+          "",
+          "This packet is used to indicate whether the player is on ground (walking/swimming), or airborne (jumping/falling).",
+          "",
+          "When dropping from sufficient height, fall damage is applied when this state goes from false to true. The amount of damage applied is based on the point where it last changed from true to false. Note that there are several movement related packets containing this state.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x0f"
+      },
+      "vehicle_move": {
+        "before": [
+          "",
+          "Sent when a player moves in a vehicle. Fields are the same as in [[#Player Position And Look (serverbound)|Player Position And Look]] ([[#Play|Play]], 0x2E, serverbound). Note that all fields use absolute positioning and do not allow for relative positioning.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x10"
+      },
+      "steer_boat": {
+        "before": [
+          "",
+          "Used to ''visually'' update whether boat paddles are turning.  The server will update the [[Entities#Boat|Boat entity metadata]] to match the values here.",
+          ""
+        ],
+        "after": [
+          "",
+          "Right paddle turning is set to true when the left button or forward button is held; left paddle turning is set to true when the right button or forward button is set to true.",
+          ""
+        ],
+        "id": "0x11"
+      },
+      "abilities": {
+        "before": [
+          "",
+          "The latter 2 bytes are used to indicate the walking and flying speeds respectively, while the first byte is used to determine the value of 4 booleans.",
+          "",
+          "The vanilla client sends this packet when the player starts/stops flying with the Flags parameter changed accordingly. All other parameters are ignored by the vanilla server.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x12"
+      },
+      "block_dig": {
+        "before": [
+          "",
+          "Sent when the player mines a block. A Notchian server only accepts digging packets with coordinates within a 6-unit radius between the center of the block and 1.5 units from the player's feet (''not'' their eyes).",
+          ""
+        ],
+        "after": [
+          "",
+          "Status can be one of seven values:",
+          "",
+          "{| class=\"wikitable\"",
+          " ! Value",
+          " ! Meaning",
+          " ! Notes",
+          " |-",
+          " | 0",
+          " | Started digging",
+          " | ",
+          " |-",
+          " | 1",
+          " | Cancelled digging",
+          " | Sent when the player lets go of the Mine Block key (default: left click)",
+          " |-",
+          " | 2",
+          " | Finished digging",
+          " | Sent when the client thinks it is finished",
+          " |-",
+          " | 3",
+          " | Drop item stack",
+          " | Triggered by using the Drop Item key (default: Q) with the modifier to drop the entire selected stack (default: depends on OS). Location is always set to 0/0/0, Face is always set to -Y.",
+          " |-",
+          " | 4",
+          " | Drop item",
+          " | Triggered by using the Drop Item key (default: Q). Location is always set to 0/0/0, Face is always set to -Y.",
+          " |-",
+          " | 5",
+          " | Shoot arrow / finish eating",
+          " | Location is always set to 0/0/0, Face is always set to Special.",
+          " |-",
+          " | 6",
+          " | Swap item in hand",
+          " | Used to swap or assign an item to the second hand. Location is always set to 0/0/0, Face is always set to -Y.",
+          " |}",
+          "",
+          "The Face field can be one of the following values, representing the face being hit (or the Special value used for “shoot arrow / finish eating”):",
+          "",
+          "{| class=\"wikitable\"",
+          " |-",
+          " ! Value",
+          " ! Offset",
+          " ! Face",
+          " |-",
+          " | 0",
+          " | -Y",
+          " | Bottom",
+          " |-",
+          " | 1",
+          " | +Y",
+          " | Top",
+          " |-",
+          " | 2",
+          " | -Z",
+          " | North",
+          " |-",
+          " | 3",
+          " | +Z",
+          " | South",
+          " |-",
+          " | 4",
+          " | -X",
+          " | West",
+          " |-",
+          " | 5",
+          " | +X",
+          " | East",
+          " |-",
+          " | 255",
+          " | —",
+          " | Special",
+          " |}",
+          ""
+        ],
+        "id": "0x13"
+      },
+      "entity_action": {
+        "before": [
+          "",
+          "Sent by the client to indicate that it has performed certain actions: sneaking (crouching), sprinting, exiting a bed, jumping with a horse, and opening a horse's inventory while riding it.",
+          ""
+        ],
+        "after": [
+          "",
+          "Action ID can be one of the following values:",
+          "",
+          "{| class=\"wikitable\"",
+          " ! ID",
+          " ! Action",
+          " |-",
+          " | 0",
+          " | Start sneaking",
+          " |-",
+          " | 1",
+          " | Stop sneaking",
+          " |-",
+          " | 2",
+          " | Leave bed",
+          " |-",
+          " | 3",
+          " | Start sprinting",
+          " |-",
+          " | 4",
+          " | Stop sprinting",
+          " |-",
+          " | 5",
+          " | Start jump with horse",
+          " |-",
+          " | 6",
+          " | Stop jump with horse",
+          " |-",
+          " | 7",
+          " | Open horse inventory",
+          " |-",
+          " | 8",
+          " | Start flying with elytra",
+          " |}",
+          "",
+          "Leave bed is only sent when the “Leave Bed” button is clicked on the sleep GUI, not when waking up due today time.",
+          "",
+          "Open horse inventory is only sent when pressing the inventory key (default: E) while on a horse — all other methods of opening a horse's inventory (involving right-clicking or shift-right-clicking it) do not use this packet.",
+          "",
+          "“Open inventory” is now sent via the [[#Client Status|Client Status]] ([[#Play|Play]], 0x03, serverbound) packet.",
+          ""
+        ],
+        "id": "0x14"
+      },
+      "steer_vehicle": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x15"
+      },
+      "resource_pack_receive": {
+        "before": [
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x16"
+      },
+      "held_item_slot": {
+        "before": [
+          "",
+          "Sent when the player changes the slot selection",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x17"
+      },
+      "set_creative_slot": {
+        "before": [
+          "",
+          "While the user is in the standard inventory (i.e., not a crafting bench) in Creative mode, the player will send this packet.",
+          "",
+          "Clicking in the creative inventory menu is quite different from non-creative inventory management. Picking up an item with the mouse actually deletes the item from the server, and placing an item into a slot or dropping it out of the inventory actually tells the server to create the item from scratch. (This can be verified by clicking an item that you don't mind deleting, then severing the connection to the server; the item will be nowhere to be found when you log back in.) As a result of this implementation strategy, the \"Destroy Item\" slot is just a client-side implementation detail that means \"I don't intend to recreate this item.\". Additionally, the long listings of items (by category, etc.) are a client-side interface for choosing which item to create. Picking up an item from such listings sends no packets to the server; only when you put it somewhere does it tell the server to create the item in that location.",
+          "",
+          "This action can be described as \"set inventory slot\". Picking up an item sets the slot to item ID -1. Placing an item into an inventory slot sets the slot to the specified item. Dropping an item (by clicking outside the window) effectively sets slot -1 to the specified item, which causes the server to spawn the item entity, etc.. All other inventory slots are numbered the same as the non-creative inventory (including slots for the 2x2 crafting menu, even though they aren't visible in the vanilla client).",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x18"
+      },
+      "update_sign": {
+        "before": [
+          "",
+          "This message is sent from the client to the server when the “Done” button is pushed after placing a sign.",
+          "",
+          "The server only accepts this packet after [[#Open Sign Editor|Open Sign Editor]] ([[#Play|Play]], 0x2A, clientbound), otherwise this packet is silently ignored.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x19"
+      },
+      "arm_animation": {
+        "before": [
+          "",
+          "Sent when the player's arm swings.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1a"
+      },
+      "spectate": {
+        "before": [
+          "",
+          "Teleports the player to the given entity.  The player must be in spectator mode.",
+          "",
+          "The Notchian client only uses this to teleport to players, but it appears to accept any type of entity.  The entity does not need to be in the same dimension as the player; if necessary, the player will be respawned in the right world.  If the given entity cannot be found (or isn't loaded), this packet will be ignored.  It will also be ignored if the player attempts to teleport to themselves.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1b"
+      },
+      "block_place": {
+        "before": [
+          ""
+        ],
+        "after": [
+          "",
+          "In normal operation (i.e. placing a block), this packet is sent once, with the values set normally.",
+          "",
+          "The Cursor Position X/Y/Z fields (also known as in-block coordinates) are calculated using raytracing. The unit corresponds to one pixel in the default resource pack. For example, let's say a slab is being placed against the south face of a full block. The Cursor Position X will be higher if the player was pointing near the right (east) edge of the face, lower if pointing near the left. The Cursor Position Y will be used to determine whether it will appear as a bottom slab (values 0–7) or as a top slab (values 8–15). The Cursor Position Z should be 15 since the player was looking at the southernmost part of the block.",
+          "",
+          "This packet has a special case where X, Y, Z, and Face are all -1. (Note that Y is unsigned so set to 255.) This special packet indicates that the currently held item for the player should have its state updated such as eating food, pulling back bows, using buckets, etc.",
+          "",
+          "Special note on using buckets: When using buckets, the Notchian client might send two packets: first a normal and then a special case. The first normal packet is sent when you're looking at a block (e.g. the water you want to scoop up). This normal packet does not appear to do anything with a Notchian server. The second, special case packet appears to perform the action — based on current position/orientation and with a distance check — it appears that buckets can only be used within a radius of 6 units.",
+          ""
+        ],
+        "id": "0x1c"
+      },
+      "use_item": {
+        "before": [
+          "",
+          "Sent when pressing the Use Item key (default: right click) with an item in hand.",
+          ""
+        ],
+        "after": [
+          ""
+        ],
+        "id": "0x1d"
+      }
+    }
+  }
+}

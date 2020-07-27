@@ -1,0 +1,52 @@
+{
+  "title": "blockCollisionShapes",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "blocks",
+    "shapes"
+  ],
+  "properties": {
+    "blocks": {
+      "description": "Each block's collision shape id(s).",
+      "type": "object",
+      "additionalProperties": {
+        "oneOf": [
+          {
+            "description": "The shape id shared by all block states of this block.",
+            "type": "number",
+            "minimum": 0
+          },
+          {
+            "description": "The shape ids of each block state of this block.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        ]
+      }
+    },
+    "shapes": {
+      "description": "Collision shapes by id, each shape being composed of a list of collision boxes.",
+      "type": "object",
+      "additionalProperties": {
+        "description": "The boxes of this shape.",
+        "type": "array",
+        "items": {
+          "description": "The min/max x/y/z corner coordinates of this box.",
+          "type": "array",
+          "minItems": 6,
+          "maxItems": 6,
+          "items": {
+            "type": "number",
+            "minimum": -0.25,
+            "maximum": 1.5
+          }
+        }
+      }
+    }
+  }
+}

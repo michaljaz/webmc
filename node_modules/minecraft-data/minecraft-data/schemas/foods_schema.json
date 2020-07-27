@@ -1,0 +1,71 @@
+{
+    "title": "foods",
+    "type": "array",
+    "uniqueItems": true,
+    "items" : {
+      "title": "food",
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The unique identifier for an item",
+          "type": "integer",
+          "minimum": 0
+        },
+        "displayName": {
+          "description": "The display name of an item",
+          "type": "string"
+        },
+        "stackSize": {
+          "description": "Stack size for an item",
+          "type": "integer",
+          "minimum": 0
+        },
+        "name": {
+          "description": "The name of an item",
+          "type": "string",
+          "pattern": "\\S+"
+        },
+        "foodPoints": {
+          "description": "The amount of food points the food item replenishes",
+          "type": "number",
+          "minimum": 0
+        },
+        "saturation":{
+          "description": "The amount of saturation points the food  restores",
+          "type": "number",
+          "minimum": 0
+        },
+        "effectiveQuality":{
+          "description": "The effective quality of the food item",
+          "type": "number",
+          "minimum": 0
+        },
+        "saturationRatio":{
+          "description": "The saturation ratio of the food item",
+          "type": "number",
+          "minimum": 0
+        },
+        "variations" : {
+          "type" : "array",
+          "items": {
+            "type" : "object",
+            "properties": {
+              "metadata":{
+                "type":"integer",
+                "minimum": 0
+              },
+              "displayName":{
+                "type":"string"
+              }
+            },
+            "required": ["metadata", "displayName"],
+            "additionalProperties":false
+          }
+        }
+  
+      },
+      "required": ["id", "displayName", "stackSize", "name", "foodPoints", "saturation", "effectiveQuality", "saturationRatio"],
+      "additionalProperties":false
+    }
+  }
+  

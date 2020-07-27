@@ -1,0 +1,16 @@
+{
+  "title": "entityMetadataLoop",
+  "type": "array",
+  "items": [
+    { "enum": ["entityMetadataLoop"] },
+    {
+      "type": "object",
+      "properties": {
+        "endVal": { "type": "number" },
+        "type": {"$ref": "dataType"}
+      },
+      "required": ["endVal", "type"],
+      "additionalProperties": false
+    }
+  ]
+}

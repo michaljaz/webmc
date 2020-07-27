@@ -1,0 +1,3 @@
+[submodule "ProtoDef"]
+	path = ProtoDef
+	url = https://github.com/ProtoDef-io/ProtoDef.git

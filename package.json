@@ -22,6 +22,7 @@
     "child_process": "^1.0.2",
     "express": "^4.17.1",
     "http": "0.0.1-security",
+    "mineflayer": "^2.24.0",
     "opn": "^6.0.0",
     "socket.io": "^2.3.0"
   }

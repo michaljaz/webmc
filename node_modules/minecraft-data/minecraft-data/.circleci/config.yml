@@ -1,0 +1,19 @@
+version: 2
+
+jobs:
+  build:
+    parallelism: 1
+    docker:
+      - image: circleci/node:10
+    working_directory: ~/repo/tools/js
+    steps:
+      - checkout:
+          path: ~/repo
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: npm i
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - ./node_modules
+      - run: npm test

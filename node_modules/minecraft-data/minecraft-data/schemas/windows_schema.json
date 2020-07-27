@@ -1,0 +1,78 @@
+{
+  "title": "windows",
+  "type": "array",
+  "minItems": 1,
+  "uniqueItems": true,
+  "items": {
+    "title": "window",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "id": {
+        "description": "The unique identifier for the window",
+        "type": "string"
+      },
+      "name": {
+        "description": "The default displayed name of the window",
+        "type": "string"
+      },
+      "slots": {
+        "description": "The slots displayed in the window",
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "description": "A slot or slot range in the window",
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "name": {
+              "description": "The name of the slot or slot range",
+              "type": "string"
+            },
+            "index": {
+              "description": "The position of the slot or begin of the slot range",
+              "type": "integer",
+              "minimum": 0
+            },
+            "size": {
+              "description": "The size of the slot range",
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "name",
+            "index"
+          ]
+        },
+        "additionalItems":false
+      },
+      "properties": {
+        "description": "Names of the properties of the window",
+        "type": "array",
+        "minItems": 1,
+        "items": {
+          "type": "string"
+        },
+        "additionalItems":false
+      },
+      "openedWith" : {
+        "type":"array",
+        "items":{
+          "type":"object",
+          "properties":{
+            "type":{"enum":["item","entity","block"]},
+            "id":{"type":"integer"}
+          },
+          "required":["type","id"],
+          "additionalProperties":false
+        }
+      }
+    },
+    "required": [
+      "id",
+      "name"
+    ]
+  }
+}

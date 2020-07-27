@@ -1,0 +1,1126 @@
+@doc "8-bit signed integer"
+@type integer("i8") def_native("i8");
+
+@doc "8-bit unsigned integer"
+@type integer("u8") def_native("u8");
+
+@doc "16-bit signed integer"
+@type integer("i16") def_native("i16");
+
+@doc "16-bit unsigned integer"
+@type integer("u16") def_native("u16");
+
+@doc "32-bit signed integer"
+@type integer("i32") def_native("i32");
+
+@doc "64-bit signed integer"
+@type integer("i64") def_native("i64");
+
+@doc "Protobuf-style unsigned variable length integer with a maximum precision of 32-bit"
+@type integer("u32") def_native("varint");
+
+@doc "Protobuf-style unsigned variable length integer with a maximum precision of 64-bit"
+@type integer("u64") def_native("varlong");
+
+@doc "simple 1-byte boolean"
+@type boolean def_native("bool");
+
+@doc "IEEE-754 32-bit floating-point number"
+def_native("f32");
+
+@doc "IEEE-754 64-bit floating-point number"
+def_native("f64");
+
+@doc "UUID encoded as a 128-bit unsigned integer"
+def_native("uuid");
+
+@doc "Zero-sized unit type"
+def_native("void");
+
+@doc "Takes the remaining data in the packet as a raw binary"
+def_native("restBuffer");
+def_native("nbt");
+def_native("optionalNbt");
+
+@doc "
+Position encoded as:
+
+* x as 26-bit signed integer
+* y as 12-bit signed integer
+* z as 26-bit signed integer
+
+Takes up a total of 8 bytes.
+All numbers are two's complement encoded.
+"
+def_native("position");
+
+def_native("entityMetadata");
+def_native("slot");
+
+@type binary("utf8")
+def_native("sized_string") {
+    argument("size", stage: "read") => integer("usize");
+};
+@type binary("raw")
+def_native("sized_buffer") {
+    argument("size", stage: "read") => integer("usize");
+};
+
+def("string") => container(virtual: "true") {
+    virtual_field("size", value: "string/@size") => varint;
+    field("string") => sized_string(size: "../size");
+};
+def("varint_buffer") => container(virtual: "true") {
+    virtual_field("size", value: "string/@size") => varint;
+    field("string") => sized_buffer(size: "../size");
+};
+
+namespace("handshaking::toClient") {
+    @export "handshaking_to_client_packet"
+    def("packet") => container(virtual: true) {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("handshaking_to_client", tag: "../tag") {
+        };
+    };
+};
+
+namespace("handshaking::toServer") {
+    def("packet_set_protocol") => container {
+        field("protocol_version") => ::varint;
+        field("server_host") => ::string;
+        field("server_port") => ::u16;
+        field("next_state") => ::varint;
+    };
+    def("packet_legacy_server_list_ping") => container {
+        field("payload") => ::u8;
+    };
+    @export "handshaking_to_server_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("handshaking_to_server", tag: "../tag") {
+            variant("set_protocol", match: "0x00") => packet_set_protocol;
+            variant("legacy_server_list_ping", match: "0xfe") => packet_legacy_server_list_ping;
+        };
+    };
+};
+
+namespace("status::toClient") {
+    def("packet_server_info") => container {
+        field("response") => ::string;
+    };
+    def("packet_ping") => container {
+        field("time") => ::i64;
+    };
+    @export "status_to_client_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("status_to_client", tag: "../tag") {
+            variant("server_info", match: "0x00") => packet_server_info;
+            variant("ping", match: "0x01") => packet_ping;
+        };
+    };
+};
+
+namespace("status::toServer") {
+    def("packet_ping_start") => container {};
+    def("packet_ping") => container {
+        field("time") => ::i64;
+    };
+    @export "status_to_server_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("status_to_client", tag: "../tag") {
+            variant("ping_start", match: "0x00") => packet_ping_start;
+            variant("ping", match: "0x01") => packet_ping;
+        };
+    };
+};
+
+namespace("login::toClient") {
+    def("packet_disconnect") => container {
+        field("reason") => ::string;
+    };
+    def("packet_encryption_begin") => container {
+        field("server_id") => ::string;
+        field("public_key") => ::varint_buffer;
+        field("verify_token") => ::varint_buffer;
+    };
+    def("packet_success") => container {
+        field("uuid") => ::string;
+        field("username") => ::string;
+    };
+    def("packet_compress") => container {
+        field("threshold") => ::varint;
+    };
+    @export "login_to_client_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("status_to_client", tag: "../tag") {
+            variant("disconnect", match: "0x00") => packet_disconnect;
+            variant("encryption_begin", match: "0x01") => packet_encryption_begin;
+            variant("success", match: "0x02") => packet_success;
+            variant("compress", match: "0x03") => packet_compress;
+        };
+    };
+};
+
+namespace("login::toServer") {
+    def("packet_login_start") => container {
+        field("username") => ::string;
+    };
+    def("packet_encryption_begin") => container {
+        field("shared_secret") => ::varint_buffer;
+        field("verify_token") => ::varint_buffer;
+    };
+    @export "login_to_server_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("status_to_client", tag: "../tag") {
+            variant("login_start", match: "0x00") => packet_login_start;
+            variant("encryption_begin", match: "0x01") => packet_encryption_begin;
+        };
+    };
+};
+
+namespace("play::toClient") {
+    def("packet_spawn_entity") => container {
+        field("entity_id") => ::varint;
+        field("object_uuid") => ::uuid;
+        field("type") => ::i8;
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("pitch") => ::i8;
+        field("yaw") => ::i8;
+        field("int_field") => ::i32;
+        field("velocity_x") => ::i16;
+        field("velocity_y") => ::i16;
+        field("velocity_z") => ::i16;
+    };
+    def("packet_spawn_entity_experience_orb") => container {
+        field("entity_id") => ::varint;
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("count") => ::i16;
+    };
+    def("packet_spawn_entity_weather") => container {
+        field("entity_id") => ::varint;
+        field("type") => ::i8;
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+    };
+    def("packet_spawn_entity_living") => container {
+        field("entity_id") => ::varint;
+        field("entity_uuid") => ::uuid;
+        field("type") => ::varint;
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::i8;
+        field("pitch") => ::i8;
+        field("head_pitch") => ::i8;
+        field("velocity_x") => ::i16;
+        field("velocity_y") => ::i16;
+        field("velocity_z") => ::i16;
+        field("metadata") => ::entityMetadata;
+    };
+    def("packet_spawn_entity_painting") => container {
+        field("entity_id") => ::varint;
+        field("entity_uuid") => ::uuid;
+        field("title") => ::string;
+        field("location") => ::position;
+        field("direction") => ::u8;
+    };
+    def("packet_named_entity_spawn") => container {
+        field("entity_id") => ::varint;
+        field("player_uuid") => ::uuid;
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::i8;
+        field("pitch") => ::i8;
+        field("metadata") => ::entityMetadata;
+    };
+    def("packet_animation") => container {
+        field("entity_id") => ::varint;
+        field("animation") => ::u8;
+    };
+    def("packet_statistics") => container {
+        virtual_field("entries_length", value: "entries/@length") => ::varint;
+        field("entries") => array(length: "../entries_length") => container {
+            field("name") => ::string;
+            field("value") => ::varint;
+        };
+    };
+    def("packet_block_break_animation") => container {
+        field("entity_id") => ::varint;
+        field("location") => ::position;
+        field("destroy_stage") => ::i8;
+    };
+    def("packet_tile_entity_data") => container {
+        field("location") => ::position;
+        field("action") => ::u8;
+        field("nbt_data") => ::optionalNbt;
+    };
+    def("packet_block_action") => container {
+        field("location") => ::position;
+        field("byte_one") => ::u8;
+        field("byte_two") => ::u8;
+        field("block_id") => ::varint;
+    };
+    def("packet_block_change") => container {
+        field("location") => ::position;
+        field("type") => ::varint;
+    };
+    def("packet_boss_bar") => container {
+        field("entity_uuid") => ::uuid;
+        virtual_field("action", value: "data/@tag") => ::varint;
+        field("data") => union("boss_bar_data", tag: "../action") {
+            variant("add", match: "0") => container {
+                field("title") => ::string;
+                field("health") => ::f32;
+                field("color") => ::varint;
+                field("dividers") => ::varint;
+                field("flags") => ::u8;
+            };
+            variant("remove", match: "1") => container {};
+            variant("update_health", match: "2") => container {
+                field("health") => ::f32;
+            };
+            variant("update_title", match: "3") => container {
+                field("title") => ::string;
+            };
+            variant("update_style", match: "4") => container {
+                field("color") => ::varint;
+                field("dividers") => ::varint;
+            };
+            variant("update_flags", match: "5") => container {
+                field("flags") => ::u8;
+            };
+        };
+    };
+    def("packet_difficulty") => container {
+        field("difficulty") => ::u8;
+    };
+    def("packet_tab_complete") => container {
+        virtual_field("matches_length", value: "matches/@length") => ::varint;
+        field("matches") => array(length: "../matches_length") => ::string;
+    };
+    def("packet_chat") => container {
+        field("message") => ::string;
+        field("position") => ::i8;
+    };
+    def("packet_multi_block_change") => container {
+        field("chunk_x") => ::i32;
+        field("chunk_y") => ::i32;
+        virtual_field("records_length", value: "records/@length") => ::varint;
+        field("records") => array(length: "../records_length") => container {
+            field("horizontal_pos") => ::u8;
+            field("y") => ::u8;
+            field("block_id") => ::varint;
+        };
+    };
+    def("packet_transaction") => container {
+        field("window_id") => ::i8;
+        field("action") => ::i16;
+        field("accepted") => ::bool;
+    };
+    def("packet_close_window") => container {
+        field("window_id") => ::u8;
+    };
+    def("packet_open_window") => container {
+        field("window_id") => ::u8;
+        field("inventory_type") => ::string;
+        field("window_title") => ::string;
+        field("slot_count") => ::u8;
+        field("entity_id") => union("window_extra_data", tag: "../inventory_type") {
+            variant("horse_data", match: "EntityHorse") => container {
+                field("entity_id") => ::i32;
+            };
+            default("no_data") => container {};
+        };
+
+    };
+    def("packet_window_items") => container {
+        field("window_id") => ::u8;
+        virtual_field("items_length", value: "items/@length") => ::i16;
+        field("items") => array(length: "../items_length") => ::slot;
+    };
+    def("packet_craft_progress_bar") => container {
+        field("window_id") => ::u8;
+        field("property") => ::i16;
+        field("value") => ::i16;
+    };
+    def("packet_set_slot") => container {
+        field("window_id") => ::i8;
+        field("slot") => ::i16;
+        field("item") => ::slot;
+    };
+    def("packet_set_cooldown") => container {
+        field("item_id") => ::varint;
+        field("cooldown_ticks") => ::varint;
+    };
+    def("packet_custom_payload") => container {
+        field("channel") => ::string;
+        field("data") => ::restBuffer;
+    };
+    def("packet_named_sound_effect") => container {
+        field("sound_name") => ::string;
+        field("sound_category") => ::varint;
+        field("x") => ::i32;
+        field("y") => ::i32;
+        field("z") => ::i32;
+        field("volume") => ::f32;
+        field("pitch") => ::f32;
+    };
+    def("packet_kick_disconnect") => container {
+        field("reason") => ::string;
+    };
+    def("packet_entity_status") => container {
+        field("entity_id") => ::i32;
+        field("entity_status") => ::i8;
+    };
+    def("packet_explosion") => container {
+        field("x") => ::f32;
+        field("y") => ::f32;
+        field("z") => ::f32;
+        field("radius") => ::f32;
+        virtual_field("affected_block_offsets_length", value: "affected_block_offsets/@length") => ::i32;
+        field("affected_block_offsets") => array(length: "../affected_block_offsets_length") => container {
+            field("x") => ::i8;
+            field("y") => ::i8;
+            field("z") => ::i8;
+        };
+        field("player_motion_x") => ::f32;
+        field("player_motion_y") => ::f32;
+        field("player_motion_z") => ::f32;
+    };
+    def("packet_unload_chunk") => container {
+        field("chunk_x") => ::i32;
+        field("chunk_z") => ::i32;
+    };
+    def("packet_game_state_change") => container {
+        field("reason") => ::u8;
+        field("game_mode") => ::f32;
+    };
+    def("packet_keep_alive") => container {
+        field("keep_alive_id") => ::varint;
+    };
+    def("packet_map_chunk") => container {
+        field("x") => ::i32;
+        field("z") => ::i32;
+        field("ground_up") => ::bool;
+        field("bit_map") => ::varint;
+        field("chunk_data") => ::varint_buffer;
+        virtual_field("block_entities_length", value: "block_entities/@length") => ::varint;
+        field("block_entities") => array(length: "../block_entities_length") => ::nbt;
+    };
+    def("packet_world_event") => container {
+        field("effect_id") => ::i32;
+        field("location") => ::position;
+        field("data") => ::i32;
+        field("global") => ::bool;
+    };
+    def("packet_world_particles") => container {
+        field("particle_id") => ::i32;
+        field("long_distance") => ::bool;
+        field("x") => ::f32;
+        field("y") => ::f32;
+        field("z") => ::f32;
+        field("offset_x") => ::f32;
+        field("offset_y") => ::f32;
+        field("offset_z") => ::f32;
+        field("particle_data") => ::f32;
+        field("particles") => ::i32;
+        field("extra_data") => union("particles_extra_data", tag: "../particle_id") {
+            variant("one", match: "36") => container {
+                field("a") => ::varint;
+                field("b") => ::varint;
+            };
+            variant("two", match: "37") => ::varint;
+            variant("three", match: "38") => ::varint;
+            default("no_data") => container {};
+        };
+    };
+    def("packet_login") => container {
+        field("entity_d") => ::i32;
+        field("game_mode") => ::u8;
+        field("dimension") => ::i32;
+        field("difficulty") => ::u8;
+        field("max_players") => ::u8;
+        field("level_type") => ::string;
+        field("reduced_debug_info") => ::bool;
+    };
+    def("packet_map") => container {
+        field("item_damage") => ::varint;
+        field("scale") => ::i8;
+        field("tracking_position") => ::bool;
+        virtual_field("icons_length", value: "icons/@length") => ::varint;
+        field("icons") => array(length: "../icons_length") => container {
+            field("direction_and_type") => ::i8;
+            field("x") => ::i8;
+            field("y") => ::i8;
+        };
+        field("columns") => ::i8;
+        field("columns_data") => union("columns_data", tag: "../columns") {
+            variant("none", match: "0") => container {};
+            default("some") => container {
+                field("rows") => ::i8;
+                field("x") => ::i8;
+                field("z") => ::i8;
+                virtual_field("data_length", value: "data/@length") => ::varint;
+                field("data") => array(length: "../data_length") => ::i8;
+            };
+        };
+    };
+    def("packet_rel_entity_move") => container {
+        field("entity_id") => ::varint;
+        field("d_x") => ::i16;
+        field("d_y") => ::i16;
+        field("d_z") => ::i16;
+        field("on_ground") => ::bool;
+    };
+    def("packet_entity_move_look") => container {
+        field("entity_id") => ::varint;
+        field("d_x") => ::i16;
+        field("d_y") => ::i16;
+        field("d_z") => ::i16;
+        field("yaw") => ::i8;
+        field("pitch") => ::i8;
+        field("on_ground") => ::bool;
+    };
+    def("packet_entity_look") => container {
+        field("entity_id") => ::varint;
+        field("yaw") => ::i8;
+        field("pitch") => ::i8;
+        field("on_ground") => ::bool;
+    };
+    def("packet_entity") => container {
+        field("entity_id") => ::varint;
+    };
+    def("packet_vehicle_move") => container {
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::f32;
+        field("pitch") => ::f32;
+    };
+    def("packet_open_sign_entity") => container {
+        field("location") => ::position;
+    };
+    def("packet_abilities") => container {
+        field("flags") => ::i8;
+        field("flying_speed") => ::f32;
+        field("walking_speed") => ::f32;
+    };
+    def("packet_combat_event") => container {
+        virtual_field("event_tag", value: "event/@tag") => ::varint;
+        field("event") => union("combat_event", tag: "../event_tag") {
+            variant("enter_combat", match: "0") => container {};
+            variant("end_combat", match: "1") => container {
+                field("duration") => ::varint;
+                field("entity_id") => ::i32;
+            };
+            variant("entity_dead", match: "2") => container {
+                field("player_id") => ::varint;
+                field("entity_id") => ::i32;
+                field("message") => ::string;
+            };
+        };
+    };
+    def("packet_player_info") => container(virtual: true) {
+        virtual_field("action", value: "data/@tag") => ::varint;
+        field("data") => union("player_info_type", tag: "../action") {
+
+            variant("add_player", match: "0") => container(virtual: "true") {
+                virtual_field("actions_length", value: "action/@length") => ::varint;
+                field("action") => array(length: "../actions_length") => container {
+                    field("uuid") => ::uuid;
+                    field("name") => ::string;
+                    virtual_field("properties_length", value: "properties/@length") => ::varint;
+                    field("properties") => array(length: "../properties_length") => container {
+                        field("name") => ::string;
+                        field("value") => ::string;
+                        virtual_field("has_signature", value: "signature/@tag") => ::bool;
+                        field("signature") => union("signature_option", tag: "../has_signature") {
+                            variant("some", match: "true") => ::string;
+                            variant("none", match: "false") => container {};
+                        };
+                    };
+                    field("gamemode") => ::varint;
+                    field("ping") => ::varint;
+                    virtual_field("has_display_name", value: "display_name/@tag") => ::bool;
+                    field("display_name") => union("display_name_option", tag: "../has_display_name") {
+                        variant("some", match: "true") => ::string;
+                        variant("none", match: "false") => container {};
+                    };
+                };
+            };
+
+            variant("update_gamemode", match: "1") => container(virtual: "true") {
+                virtual_field("actions_length", value: "actions/@length") => ::varint;
+                field("actions") => array(length: "../actions_length") => container {
+                    field("uuid") => ::uuid;
+                    field("gamemode") => ::varint;
+                };
+            };
+
+            variant("update_latency", match: "2") => container(virtual: "true") {
+                virtual_field("actions_length", value: "actions/@length") => ::varint;
+                field("actions") => array(length: "../actions_length") => container {
+                    field("uuid") => ::uuid;
+                    field("latency") => ::varint;
+                };
+            };
+
+            variant("update_display_name", match: "3") => container(virtual: "true") {
+                virtual_field("actions_length", value: "actions/@length") => ::varint;
+                field("actions") => array(length: "../actions_length") => container {
+                    field("uuid") => ::uuid;
+                    virtual_field("has_display_name", value: "display_name/@tag") => ::bool;
+                    field("display_name") => union("display_name_option", tag: "../has_display_name") {
+                        variant("some", match: "true") => ::string;
+                        variant("none", match: "false") => container {};
+                    };
+                };
+            };
+
+            variant("remove_player", match: "4") => container(virtual: "true") {
+                virtual_field("actions_length", value: "actions/@length") => ::varint;
+                field("actions") => array(length: "../actions_length") => container {
+                    field("uuid") => ::uuid;
+                };
+            };
+
+        };
+    };
+    def("packet_position") => container {
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::f32;
+        field("pitch") => ::f32;
+        field("flags") => ::i8;
+        field("teleport_id") => ::varint;
+    };
+    def("packet_bed") => container {
+        field("entity_id") => ::varint;
+        field("location") => ::position;
+    };
+    def("packet_entity_destroy") => container {
+        virtual_field("entity_ids_length", value: "entity_ids/@length") => ::varint;
+        field("entity_ids") => array(length: "../entity_ids_length") => ::varint;
+    };
+    def("packet_remove_entity_effect") => container {
+        field("entity_id") => ::varint;
+        field("effect_id") => ::i8;
+    };
+    def("packet_resource_pack_send") => container {
+        field("url") => ::string;
+        field("hash") => ::string;
+    };
+    def("packet_respawn") => container {
+        field("dimension") => ::i32;
+        field("difficulty") => ::u8;
+        field("gamemode") => ::u8;
+        field("level_type") => ::string;
+    };
+    def("packet_entity_head_rotation") => container {
+        field("entity_id") => ::varint;
+        field("head_yaw") => ::i8;
+    };
+    def("packet_world_border") => container {
+        virtual_field("action_tag", value: "action/@tag") => ::varint;
+        field("action") => union("world_border_action", tag: "../action_tag") {
+            variant("set_size", match: "0") => container {
+                field("diameter") => ::f64;
+            };
+            variant("lerp_size", match: "1") => container {
+                field("old_diameter") => ::f64;
+                field("new_diameter") => ::f64;
+                field("speed") => ::varlong;
+            };
+            variant("set_center", match: "2") => container {
+                field("x") => ::f64;
+                field("z") => ::f64;
+            };
+            variant("initialize", match: "3") => container {
+                field("x") => ::f64;
+                field("z") => ::f64;
+                field("old_diameter") => ::f64;
+                field("new_diameter") => ::f64;
+                field("speed") => ::varlong;
+                field("portal_teleport_boundary") => ::varint;
+                field("warning_time") => ::varint;
+                field("warning_blocks") => ::varint;
+            };
+            variant("set_warning_time", match: "4") => container {
+                field("warning_time") => ::varint;
+            };
+            variant("set_warning_blocks", match: "5") => container {
+                field("warning_blocks") => ::varint;
+            };
+        };
+    };
+    def("packet_camera") => container {
+        field("camera_id") => ::varint;
+    };
+    def("packet_held_item_slot") => container {
+        field("slot") => ::i8;
+    };
+    def("packet_scoreboard_display_objective") => container {
+        field("position") => ::i8;
+        field("name") => ::string;
+    };
+    def("packet_entity_metadata") => container {
+        field("entity_id") => ::varint;
+        field("metadata") => ::entityMetadata;
+    };
+    def("packet_attach_entity") => container {
+        field("entity_id") => ::i32;
+        field("vehicle_id") => ::i32;
+    };
+    def("packet_entity_velocity") => container {
+        field("entity_id") => ::varint;
+        field("velocity_x") => ::i16;
+        field("velocity_y") => ::i16;
+        field("velocity_z") => ::i16;
+    };
+    def("packet_entity_equipment") => container {
+        field("entity_id") => ::varint;
+        field("slot") => ::varint;
+        field("item") => ::slot;
+    };
+    def("packet_experience") => container {
+        field("experience_bar") => ::f32;
+        field("level") => ::varint;
+        field("total_experience") => ::varint;
+    };
+    def("packet_update_health") => container {
+        field("health") => ::f32;
+        field("food") => ::varint;
+        field("food_saturation") => ::f32;
+    };
+    def("packet_scoreboard_objective") => container {
+        field("name") => ::string;
+        virtual_field("action_tag", value: "action/@tag") => ::i8;
+        field("action") => union("action", tag: "../action_tag") {
+            variant("create", match: "0") => container {
+                field("objective") => ::string;
+                field("type") => ::string;
+            };
+            variant("remove", match: "1") => container {};
+            variant("update", match: "2") => container {
+                field("objective") => ::string;
+                field("type") => ::string;
+            };
+        };
+    };
+    def("packet_set_passengers") => container {
+        field("entity_id") => ::varint;
+        virtual_field("passengers_length", value: "passengers/@length") => ::varint;
+        field("passengers") => array(length: "../passengers_length") => ::varint;
+    };
+    def("packet_teams") => container {
+        field("team_name") => ::string;
+        virtual_field("mode_tag", value: "mode/@tag") => ::i8;
+        field("mode") => union("team_action", tag: "../mode_tag") {
+            variant("create", match: "0") => container {
+                field("team_display_name") => ::string;
+                field("team_prefix") => ::string;
+                field("team_suffix") => ::string;
+                field("friendly_flags") => ::i8;
+                field("name_tag_visibility") => ::string;
+                field("collision_rule") => ::string;
+                field("color") => ::i8;
+                virtual_field("entities_count", value: "entities/@length") => ::varint;
+                field("entities") => array(length: "../entities_count") => ::string;
+            };
+            variant("remove", match: "1") => container {};
+            variant("update_info", match: "2") => container {
+                field("team_display_name") => ::string;
+                field("team_prefix") => ::string;
+                field("team_suffix") => ::string;
+                field("friendly_flags") => ::i8;
+                field("name_tag_visibility") => ::string;
+                field("collision_rule") => ::string;
+                field("color") => ::i8;
+            };
+            variant("add_players", match: "3") => container {
+                virtual_field("entities_count", value: "entities/@length") => ::varint;
+                field("entities") => array(length: "../entities_count") => ::string;
+            };
+            variant("remove_players", match: "3") => container {
+                virtual_field("entities_count", value: "entities/@length") => ::varint;
+                field("entities") => array(length: "../entities_count") => ::string;
+            };
+        };
+    };
+    def("packet_scoreboard_score") => container {
+        field("item_name") => ::string;
+        virtual_field("action_tag", value: "action/@tag") => ::i8;
+        field("action") => union("score_update_variant", tag: "../action_tag") {
+            variant("create", match: "0") => container {
+                field("objective_name") => ::string;
+                field("score") => ::varint;
+            };
+            variant("remove", match: "1") => container {
+                field("objective_name") => ::string;
+            };
+        };
+    };
+    def("packet_spawn_position") => container {
+        field("location") => ::position;
+    };
+    def("packet_update_time") => container {
+        field("age") => ::i64;
+        field("time") => ::i64;
+    };
+    def("packet_title") => container {
+        virtual_field("action_tag", value: "action/@tag") => ::varint;
+        field("action") => union("title_action", tag: "../action_tag") {
+            variant("set_title", match: "0") => container {
+                field("text") => ::string;
+            };
+            variant("set_subtitle", match: "1") => container {
+                field("text") => ::string;
+            };
+            variant("set_action_bar", match: "2") => container {
+                field("text") => ::string;
+            };
+            variant("set_times", match: "3") => container {
+                field("fade_in") => ::i32;
+                field("stay") => ::i32;
+                field("fade_out") => ::i32;
+            };
+            variant("hide", match: "4") => container {};
+            variant("reset", match: "5") => container {};
+        };
+    };
+    def("packet_sound_effect") => container {
+        field("sound_id") => ::varint;
+        field("sound_category") => ::varint;
+        field("x") => ::i32;
+        field("y") => ::i32;
+        field("z") => ::i32;
+        field("volume") => ::f32;
+        field("pitch") => ::f32;
+    };
+    def("packet_playerlist_header") => container {
+        field("header") => ::string;
+        field("footer") => ::string;
+    };
+    def("packet_collect") => container {
+        field("collected_entity_id") => ::varint;
+        field("collector_entity_id") => ::varint;
+        field("pickup_item_count") => ::varint;
+    };
+    def("packet_entity_teleport") => container {
+        field("entity_id") => ::varint;
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::i8;
+        field("pitch") => ::i8;
+        field("on_ground") => ::bool;
+    };
+    def("packet_entity_update_attributes") => container {
+        field("entity_id") => ::varint;
+        virtual_field("properties_length", value: "properties/@length") => ::i32;
+        field("properties") => array(length: "../properties_length") => container {
+            field("key") => ::string;
+            field("value") => ::f64;
+            virtual_field("modifiers_length", value: "modifiers/@length") => ::varint;
+            field("modifiers") => array(length: "../modifiers_length") => container {
+                field("uuid") => ::uuid;
+                field("amount") => ::f64;
+                field("operation") => ::i8;
+            };
+        };
+    };
+    def("packet_entity_effect") => container {
+        field("entity_id") => ::varint;
+        field("effect_id") => ::i8;
+        field("amplifier") => ::i8;
+        field("duration") => ::varint;
+        field("hide_particles") => ::i8;
+    };
+    @export "play_to_client_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("play_to_client", tag: "../tag") {
+            variant("spawn_entity", match: "0") => packet_spawn_entity;
+            variant("spawn_entity_experience_orb", match: "1") => packet_spawn_entity_experience_orb;
+            variant("spawn_entity_weather", match: "2") => packet_spawn_entity_weather;
+            variant("spawn_entity_living", match: "3") => packet_spawn_entity_living;
+            variant("spawn_entity_painting", match: "4") => packet_spawn_entity_painting;
+            variant("named_entity_spawn", match: "5") => packet_named_entity_spawn;
+            variant("animation", match: "6") => packet_animation;
+            variant("statistics", match: "7") => packet_statistics;
+            variant("block_break_animation", match: "8") => packet_block_break_animation;
+            variant("tile_entity_data", match: "9") => packet_tile_entity_data;
+            variant("block_action", match: "10") => packet_block_action;
+            variant("block_change", match: "11") => packet_block_change;
+            variant("boss_bar", match: "12") => packet_boss_bar;
+            variant("difficulty", match: "13") => packet_difficulty;
+            variant("tab_complete", match: "14") => packet_tab_complete;
+            variant("chat", match: "15") => packet_chat;
+            variant("multi_block_change", match: "16") => packet_multi_block_change;
+            variant("transaction", match: "17") => packet_transaction;
+            variant("close_window", match: "18") => packet_close_window;
+            variant("open_window", match: "19") => packet_open_window;
+            variant("window_items", match: "20") => packet_window_items;
+            variant("craft_progress_bar", match: "21") => packet_craft_progress_bar;
+            variant("set_slot", match: "22") => packet_set_slot;
+            variant("set_cooldown", match: "23") => packet_set_cooldown;
+            variant("custom_payload", match: "24") => packet_custom_payload;
+            variant("named_sound_effect", match: "25") => packet_named_sound_effect;
+            variant("kick_disconnect", match: "26") => packet_kick_disconnect;
+            variant("entity_status", match: "27") => packet_entity_status;
+            variant("explosion", match: "28") => packet_explosion;
+            variant("unload_chunk", match: "29") => packet_unload_chunk;
+            variant("game_state_change", match: "30") => packet_game_state_change;
+            variant("keep_alive", match: "31") => packet_keep_alive;
+            variant("map_chunk", match: "32") => packet_map_chunk;
+            variant("world_event", match: "33") => packet_world_event;
+            variant("world_particles", match: "34") => packet_world_particles;
+            variant("login", match: "35") => packet_login;
+            variant("map", match: "36") => packet_map;
+            variant("rel_entity_move", match: "37") => packet_rel_entity_move;
+            variant("entity_move_look", match: "38") => packet_entity_move_look;
+            variant("entity_look", match: "39") => packet_entity_look;
+            variant("entity", match: "40") => packet_entity;
+            variant("vehicle_move", match: "41") => packet_vehicle_move;
+            variant("open_sign_entity", match: "42") => packet_open_sign_entity;
+            variant("abilities", match: "43") => packet_abilities;
+            variant("combat_event", match: "44") => packet_combat_event;
+            variant("player_info", match: "45") => packet_player_info;
+            variant("position", match: "46") => packet_position;
+            variant("bed", match: "47") => packet_bed;
+            variant("entity_destroy", match: "48") => packet_entity_destroy;
+            variant("remove_entity_effect", match: "49") => packet_remove_entity_effect;
+            variant("resource_pack_send", match: "50") => packet_resource_pack_send;
+            variant("respawn", match: "51") => packet_respawn;
+            variant("entity_update_attributes", match: "52") => packet_entity_update_attributes;
+            variant("world_border", match: "53") => packet_world_border;
+            variant("camera", match: "54") => packet_camera;
+            variant("held_item_slot", match: "55") => packet_held_item_slot;
+            variant("scoreboard_display_objective", match: "56") => packet_scoreboard_display_objective;
+            variant("entity_metadata", match: "57") => packet_entity_metadata;
+            variant("attach_entity", match: "58") => packet_attach_entity;
+            variant("entity_velocity", match: "59") => packet_entity_velocity;
+            variant("entity_equipment", match: "60") => packet_entity_equipment;
+            variant("experience", match: "61") => packet_experience;
+            variant("update_health", match: "62") => packet_update_health;
+            variant("scoreboard_objective", match: "63") => packet_scoreboard_objective;
+            variant("set_passengers", match: "64") => packet_set_passengers;
+            variant("teams", match: "65") => packet_teams;
+            variant("scoreboard_score", match: "66") => packet_scoreboard_score;
+            variant("spawn_position", match: "67") => packet_spawn_position;
+            variant("update_time", match: "68") => packet_update_time;
+            variant("title", match: "69") => packet_title;
+            variant("sound_effect", match: "70") => packet_sound_effect;
+            variant("playerlist_header", match: "71") => packet_playerlist_header;
+            variant("collect", match: "72") => packet_collect;
+            variant("entity_teleport", match: "73") => packet_entity_teleport;
+            variant("entity_head_rotation", match: "74") => packet_entity_head_rotation;
+            variant("entity_effect", match: "75") => packet_entity_effect;
+        };
+    };
+};
+namespace("play::toServer") {
+    def("packet_teleport_confirm") => container {
+        field("teleport_id") => ::varint;
+    };
+    def("packet_tab_complete") => container {
+        field("text") => ::string;
+        field("assume_command") => ::bool;
+        virtual_field("has_position", value: "position") => ::bool;
+        field("position") => union("tab_complete_positon_option", tag: "../has_position") {
+            variant("some", match: "true") => ::position;
+            variant("none", match: "false") => container {};
+        };
+    };
+    def("packet_chat") => container {
+        field("message") => ::string;
+    };
+    def("packet_client_command") => container {
+        field("action_id") => ::varint;
+    };
+    def("packet_settings") => container {
+        field("locale") => ::string;
+        field("view_distance") => ::i8;
+        field("chat_flags") => ::varint;
+        field("chat_colors") => ::bool;
+        field("skin_parts") => ::u8;
+        field("main_hand") => ::varint;
+    };
+    def("packet_transaction") => container {
+        field("window_id") => ::i8;
+        field("action") => ::i16;
+        field("accepted") => ::bool;
+    };
+    def("packet_enchant_item") => container {
+        field("window_id") => ::i8;
+        field("enchantment") => ::i8;
+    };
+    def("packet_window_click") => container {
+        field("window_id") => ::u8;
+        field("slot") => ::i16;
+        field("mouse_button") => ::i8;
+        field("action") => ::i16;
+        field("mode") => ::i8;
+        field("item") => ::slot;
+    };
+    def("packet_close_window") => container {
+        field("window_id") => ::u8;
+    };
+    def("packet_custom_payload") => container {
+        field("channel") => ::string;
+        field("data") => ::restBuffer;
+    };
+    def("packet_use_entity") => container {
+        field("target") => ::varint;
+        virtual_field("mouse_tag", value: "mouse") => ::varint;
+        field("mouse") => union("use_entity_mouse", tag: "../mouse_tag") {
+            variant("interact", match: "0") => container {
+                field("hand") => ::varint;
+            };
+            variant("attack", match: "1") => container {};
+            variant("interact_at", match: "2") => container {
+                field("x") => ::f32;
+                field("y") => ::f32;
+                field("z") => ::f32;
+                field("hand") => ::varint;
+            };
+        };
+    };
+    def("packet_keep_alive") => container {
+        field("keep_alive_id") => ::varint;
+    };
+    def("packet_position") => container {
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("on_ground") => ::bool;
+    };
+    def("packet_position_look") => container {
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::f32;
+        field("pitch") => ::f32;
+        field("on_ground") => ::bool;
+    };
+    def("packet_look") => container {
+        field("yaw") => ::f32;
+        field("pitch") => ::f32;
+        field("on_ground") => ::bool;
+    };
+    def("packet_flying") => container {
+        field("on_ground") => ::bool;
+    };
+    def("packet_vehicle_move") => container {
+        field("x") => ::f64;
+        field("y") => ::f64;
+        field("z") => ::f64;
+        field("yaw") => ::f32;
+        field("pitch") => ::f32;
+    };
+    def("packet_steer_boat") => container {
+        field("right_paddle_turning") => ::bool;
+        field("left_paddle_turning") => ::bool;
+    };
+    def("packet_abilities") => container {
+        field("flags") => ::i8;
+        field("flying_speed") => ::f32;
+        field("walking_speed") => ::f32;
+    };
+    def("packet_block_dig") => container {
+        field("status") => ::i8;
+        field("location") => ::position;
+        field("face") => ::i8;
+    };
+    def("packet_entity_action") => container {
+        field("entity_id") => ::varint;
+        field("action_id") => ::varint;
+        field("jump_boost") => ::varint;
+    };
+    def("packet_steer_vehicle") => container {
+        field("sideways") => ::f32;
+        field("forward") => ::f32;
+        field("jump") => ::u8;
+    };
+    def("packet_resource_pack_receive") => container {
+        field("result") => ::varint;
+    };
+    def("packet_held_item_slot") => container {
+        field("slot_id") => ::i16;
+    };
+    def("packet_set_creative_slot") => container {
+        field("slot") => ::i16;
+        field("item") => ::slot;
+    };
+    def("packet_update_sign") => container {
+        field("location") => ::position;
+        field("text_one") => ::string;
+        field("text_two") => ::string;
+        field("text_three") => ::string;
+        field("text_four") => ::string;
+    };
+    def("packet_arm_animation") => container {
+        field("hand") => ::varint;
+    };
+    def("packet_spectate") => container {
+        field("target") => ::uuid;
+    };
+    def("packet_block_place") => container {
+        field("location") => ::position;
+        field("direction") => ::varint;
+        field("hand") => ::varint;
+        field("cursor_x") => ::f32;
+        field("cursor_y") => ::f32;
+        field("cursor_z") => ::f32;
+    };
+    def("packet_use_item") => container {
+        field("hand") => ::varint;
+    };
+    @export "play_to_server_packet"
+    def("packet") => container {
+        virtual_field("tag", value: "data/@tag") => ::varint;
+        field("data") => union("play_to_server", tag: "../tag") {
+            variant("teleport_confirm", match: "0") => packet_teleport_confirm;
+            variant("tab_complete", match: "1") => packet_tab_complete;
+            variant("chat", match: "2") => packet_chat;
+            variant("client_command", match: "3") => packet_client_command;
+            variant("settings", match: "3") => packet_settings;
+            variant("transaction", match: "4") => packet_transaction;
+            variant("enchant_item", match: "5") => packet_enchant_item;
+            variant("window_click", match: "6") => packet_window_click;
+            variant("close_window", match: "7") => packet_close_window;
+            variant("custom_payload", match: "8") => packet_custom_payload;
+            variant("use_entity", match: "9") => packet_use_entity;
+            variant("keep_alive", match: "10") => packet_keep_alive;
+            variant("position", match: "11") => packet_position;
+            variant("position_look", match: "12") => packet_position_look;
+            variant("look", match: "13") => packet_look;
+            variant("flying", match: "14") => packet_flying;
+            variant("vehicle_move", match: "15") => packet_vehicle_move;
+            variant("steer_boat", match: "16") => packet_steer_boat;
+            variant("abilities", match: "17") => packet_abilities;
+            variant("block_dig", match: "18") => packet_block_dig;
+            variant("entity_action", match: "19") => packet_entity_action;
+            variant("steer_vehicle", match: "20") => packet_steer_vehicle;
+            variant("resource_pack_receive", match: "21") => packet_resource_pack_receive;
+            variant("held_item_slot", match: "22") => packet_held_item_slot;
+            variant("set_creative_slot", match: "23") => packet_set_creative_slot;
+            variant("update_sign", match: "24") => packet_update_sign;
+            variant("arm_animation", match: "25") => packet_arm_animation;
+            variant("spectate", match: "26") => packet_spectate;
+            variant("block_place", match: "27") => packet_block_place;
+            variant("use_item", match: "28") => packet_use_item;
+        };
+    };
+};
