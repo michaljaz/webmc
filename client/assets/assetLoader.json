@@ -31,21 +31,21 @@
     "path":"assets/textures/ghast_shooting.png",
     "type":"texture"
   },
-  "textureMappingJson":{
-    "path":"assets/textureMapping.json",
+  "blocksMapping":{
+    "path":"assets/blocks/blocksMapping.json",
     "type":"text"
   },
   "blocks":{
-    "path":"assets/blocks.json",
+    "path":"assets/blocks/blocks.json",
     "type":"text",
     "dynamic":true
   },
-  "textureAtlasX":{
-    "path":"assets/textures/textureAtlasX.png",
+  "blocksAtlasFull":{
+    "path":"assets/blocks/blocksAtlas-full.png",
     "type":"image"
   },
-  "textureMappingX":{
-    "path":"assets/textureMappingX.json",
+  "blocksMappingFull":{
+    "path":"assets/blocks/blocksMapping-full.json",
     "type":"text"
   },
   "clouds":{

@@ -1,10 +1,6 @@
-#Terrain Worker
-
-#load necessary models data (example: anvil-normals,uvs,positions)
 
 addEventListener "message", (e)->
-	console.log(e.data)
+	mess=e.data
+	if mess.type is "assets"
+		console.log mess.data
 	return
-
-#listen chunk sending (cellSize+2)^3 and response array of uvs,normals,positions
-

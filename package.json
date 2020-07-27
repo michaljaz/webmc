@@ -4,7 +4,8 @@
   "description": "Render Minecrafta w przegladarce",
   "scripts": {
     "start": "node start.js",
-    "coffee":"./src/coffee-compile.sh"
+    "coffee": "coffee -o client/ -cw coffee/",
+    "atlas": "node atlas.js"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,7 @@
   },
   "homepage": "https://github.com/michaljaz/",
   "dependencies": {
+    "canvas": "^2.6.1",
     "child_process": "^1.0.2",
     "express": "^4.17.1",
     "http": "0.0.1-security",

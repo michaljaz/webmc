@@ -18,6 +18,26 @@ FPC=null
 socket=null
 stats=null
 
+
+class UvManager
+	constructor: (options)->
+		@width=options.width
+		@height=options.height
+		@qx=1/@width
+		@qy=1/@height
+	getToxel: (x,y)->
+		x-=1
+		y-=1
+		x1=@qx*x
+		y1=1-@qy*y-@qy
+		x2=@qx*x+@qx
+		y2=1-@qy*y
+		return [
+			[x1,y1]
+			[x1,y2]
+			[x2,y1]
+			[x2,y2]
+		]
 class Terrain	
 	constructor: (options) ->
 		@cellSize=options.cellSize
@@ -29,8 +49,12 @@ class Terrain
 		@models={}
 		@camera=options.camera
 		@scene=options.scene
-		@toxelSize=27
+		@toxelSize=options.toxelSize
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+		@uvm=new UvManager {
+			width:@toxelSize
+			height:@toxelSize
+		}
 	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
 		x=voxelX %% @cellSize|0
 		y=voxelY %% @cellSize|0
@@ -156,18 +180,13 @@ class Terrain
 	genBlockFace: (type,voxel) ->
 		blockName=@blocks[voxel]["faces"][type]
 		try
-			toxX=@blocksMapping[blockName]["x"]-1
-			toxY=@blocksMapping[blockName]["y"]-1
+			toxX=@blocksMapping[blockName]["x"]
+			toxY=@blocksMapping[blockName]["y"]
 		catch error
-			toxX=@blocksMapping["debug"]["x"]-1
-			toxY=27-@blocksMapping["debug"]["y"]
+			toxX=@blocksMapping["debug"]["x"]
+			toxY=28-@blocksMapping["debug"]["y"]
 		
-		q=1/@toxelSize
-		x1=q*toxX
-		y1=1-q*toxY-q
-		x2=x1+q
-		y2=y1+q
-		uv=[[x1,y1],[x1,y2],[x2,y1],[x2,y2]]
+		uv=@uvm.getToxel toxX,toxY
 		switch type
 			when "pz"
 				return [
@@ -307,9 +326,9 @@ class Terrain
 		intersection = @intersectsRay start, end
 		if intersection
 			posPlace = intersection.position.map (v, ndx) ->
-				return v + intersection.normal[ndx] * 0.5
+				return (v + intersection.normal[ndx] * 0.5)
 			posBreak = intersection.position.map (v, ndx) ->
-				return v + intersection.normal[ndx] *-0.5
+				return (v + intersection.normal[ndx] *-0.5)
 			return {posPlace,posBreak}
 		else
 			return false
@@ -405,9 +424,9 @@ class FirstPersonControls
 	updatePosition: (e)->
 		FPC.camera.rotation.x -= THREE.MathUtils.degToRad e.movementY / 10
 		FPC.camera.rotation.y -= THREE.MathUtils.degToRad e.movementX / 10
-		if THREE.MathUtils.radToDeg FPC.camera.rotation.x < -90
+		if THREE.MathUtils.radToDeg( FPC.camera.rotation.x ) < -90
 			FPC.camera.rotation.x = THREE.MathUtils.degToRad -90
-		if THREE.MathUtils.radToDeg FPC.camera.rotation.x > 90
+		if THREE.MathUtils.radToDeg( FPC.camera.rotation.x ) > 90
 			FPC.camera.rotation.x = THREE.MathUtils.degToRad 90
 		return
 	lockChangeAlert: ->
@@ -423,7 +442,7 @@ class FirstPersonControls
 		return
 	listen: ->
 		_this=this
-		$(document).keydown	(z) ->
+		$(window).keydown (z) ->
 			_this.keys[z.keyCode] = true
 			return
 		$(document).keyup (z) ->
@@ -565,16 +584,31 @@ class TextureAtlasCreator
 		col=Math.ceil(tick/h)-1
 		row=(tick-1)%h;
 		return {row,col}  
+class TerrainWorker
+	constructor: (options)->
+		@worker=new Worker "workers/terrain.js", {type:'module'}
+		@worker.postMessage {
+			type:'assets'
+			data:{
+				models:{
+					anvil:{
+						al.get("anvil").children[0].geometry.attributes...
+					}
+				}
+				blocks: al.get "blocks"
+				blocksMapping: al.get "blocksMapping"
+				toxelSize: 27
+			}
+		}
 init = ()->
 	#Terrain worker
-	worker=new Worker "workers/terrain.js"
-	worker.postMessage 'hi'
+	worker=new TerrainWorker
 
 	canvas=document.querySelector '#c'
-	renderer=new THREE.WebGLRenderer({
+	renderer=new THREE.WebGLRenderer {
 		canvas
 		PixelRatio:window.devicePixelRatio
-		})
+	}
 	scene=new THREE.Scene
 	scene.background=new THREE.Color "lightblue"
 	camera = new THREE.PerspectiveCamera 75, 2, 0.1, 64*5
@@ -668,8 +702,8 @@ init = ()->
 		map:null
 	})    
 	atlasCreator=new TextureAtlasCreator({
-		textureX:al.get "textureAtlasX"
-		textureMapping:al.get "textureMappingX"
+		textureX:al.get "blocksAtlasFull"
+		textureMapping:al.get "blocksMappingFull"
 	})
 	savedTextures=[]
 	for i in [0..9]
@@ -687,9 +721,10 @@ init = ()->
 	,100)
 	#setup terrain
 	terrain=new Terrain({
+		toxelSize:27
 		cellSize:16
 		blocks:al.get "blocks"
-		blocksMapping:al.get "textureMappingJson"
+		blocksMapping:al.get "blocksMapping"
 		material:worldMaterial
 		scene
 		camera

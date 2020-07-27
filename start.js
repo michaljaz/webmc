@@ -25,7 +25,6 @@ var serverPort=25565;
       }
     }
   }
-
   var players={};
 
   io.sockets.on("connection", function(socket) {
