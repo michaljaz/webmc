@@ -19,5 +19,8 @@ handlers={
 		console.log "WORKER: Voxel saved!",State.world
 	genCellGeo:(data)->
 		console.log "Ready to generate cell geometry"
+		positions=[]
+		normals=[]
+		uvs=[]
 		return
 }

@@ -26,7 +26,11 @@
       return console.log("WORKER: Voxel saved!", State.world);
     },
     genCellGeo: function(data) {
+      var normals, positions, uvs;
       console.log("Ready to generate cell geometry");
+      positions = [];
+      normals = [];
+      uvs = [];
     }
   };
 
