@@ -17,28 +17,10 @@ cursor=null
 FPC=null
 socket=null
 stats=null
+worker=null
+server=null
 
-
-class UvManager
-	constructor: (options)->
-		@width=options.width
-		@height=options.height
-		@qx=1/@width
-		@qy=1/@height
-	getToxel: (x,y)->
-		x-=1
-		y-=1
-		x1=@qx*x
-		y1=1-@qy*y-@qy
-		x2=@qx*x+@qx
-		y2=1-@qy*y
-		return [
-			[x1,y1]
-			[x1,y2]
-			[x2,y1]
-			[x2,y2]
-		]
-class Terrain	
+class Terrain
 	constructor: (options) ->
 		@cellSize=options.cellSize
 		@cellsData={}
@@ -51,10 +33,6 @@ class Terrain
 		@scene=options.scene
 		@toxelSize=options.toxelSize
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-		@uvm=new UvManager {
-			width:@toxelSize
-			height:@toxelSize
-		}
 	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
 		x=voxelX %% @cellSize|0
 		y=voxelY %% @cellSize|0
@@ -74,6 +52,7 @@ class Terrain
 			z=parseInt z
 		return "#{x}:#{y}:#{z}"
 	setVoxel: (voxelX,voxelY,voxelZ,value) ->
+		worker.setVoxel voxelX,voxelY,voxelZ,value
 		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
 		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
 		cellId=@vec3(cell...)
@@ -93,6 +72,7 @@ class Terrain
 		@cellsData[cellId].needsUpdate=true
 		return
 	getVoxel: (voxelX,voxelY,voxelZ) ->
+
 		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
 		cellId=@vec3(cell...)
 		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
@@ -106,142 +86,27 @@ class Terrain
 		_this=@
 		Object.keys(@cellsData).forEach (id)->
 			if _this.cellsData[id].needsUpdate
-				_this.updateCellMesh id.split(":")...
+				worker.genCellGeo id.split(":")...
 			return 
 		return
-	updateCellMesh: (cellX,cellY,cellZ) ->
-		console.warn "Updating cell: #{cellX}:#{cellY}:#{cellZ}" 
-		cellId=@vec3(cellX,cellY,cellZ)
-		if @cellsData[cellId].needsUpdate
-			mesh=@cells[cellId]
-			geometry=@generateCellGeometry cellX,cellY,cellZ
-			if mesh is undefined
-				@cells[cellId]=new THREE.Mesh geometry,@material
-				@scene.add @cells[cellId]
-			else
-				@cells[cellId].geometry=geometry
-			@cellsData[cellId].needsUpdate=false;
+	updateCell: (data)->
+		# console.warn "SENDING  cell: #{data.info}" 
+		cellId=@vec3 data.info...
+		cell=data.cell
+		if @cellsData[cellId]!=undefined
+			if @cellsData[cellId].needsUpdate
+				mesh=@cells[cellId]
+				geometry=new THREE.BufferGeometry;
+				geometry.setAttribute 'position',new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
+				geometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
+				geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
+				if mesh is undefined
+					@cells[cellId]=new THREE.Mesh geometry,@material
+					@scene.add @cells[cellId]
+				else
+					@cells[cellId].geometry=geometry
+				@cellsData[cellId].needsUpdate=false
 		return
-	generateCellGeometry: (cellX,cellY,cellZ) ->
-		positions=[]
-		normals=[]
-		uvs=[]
-		_this=@
-		addFace=(type,pos,voxel)->
-			faceVertex=_this.genBlockFace type,voxel
-			for vertex in faceVertex
-				vertex.pos[0]+=pos[0]
-				vertex.pos[1]+=pos[1]
-				vertex.pos[2]+=pos[2]
-				positions.push vertex.pos... 
-				normals.push vertex.norm...
-				uvs.push vertex.uv... 
-			return
-		addGeo=(geo,pos)->
-			posi=geo.attributes.position.array
-			norm=geo.attributes.normal.array
-			uv=geo.attributes.uv.array
-			for i in [0..posi.length-1]
-				positions.push posi[i]+pos[i%3]
-			normals.push norm...
-			uvs.push uv...
-			return 
-		for i in [0..@cellSize-1]
-			for j in [0..@cellSize-1]
-				for k in [0..@cellSize-1]
-					pos=[cellX*@cellSize+i,cellY*@cellSize+j,cellZ*@cellSize+k]
-					voxel=@getVoxel pos...
-					if voxel
-						if @blocks[voxel].isBlock
-							if not @blocks[@getVoxel(pos[0]+1,pos[1],pos[2])].isBlock
-								addFace "nx",pos,voxel
-							if not @blocks[@getVoxel(pos[0]-1,pos[1],pos[2])].isBlock
-								addFace "px",pos,voxel
-							if not @blocks[@getVoxel(pos[0],pos[1]-1,pos[2])].isBlock
-								addFace "ny",pos,voxel 
-							if not @blocks[@getVoxel(pos[0],pos[1]+1,pos[2])].isBlock
-								addFace "py",pos,voxel 
-							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]+1)].isBlock
-								addFace "pz",pos,voxel 
-							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]-1)].isBlock
-								addFace "nz",pos,voxel 
-						else
-							geo=al.get(@blocks[voxel].model).children[0].geometry.clone()
-							if @blocks[voxel].model is "anvil"
-								geo.rotateX -Math.PI/2
-								geo.translate 0,0.17,0 
-								geo.translate 0,-0.25,0 
-							addGeo geo,pos
-		cellGeometry=new THREE.BufferGeometry;
-		cellGeometry.setAttribute 'position',new THREE.BufferAttribute(new Float32Array(positions), 3)
-		cellGeometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(normals), 3)
-		cellGeometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(uvs), 2)
-		return cellGeometry
-	genBlockFace: (type,voxel) ->
-		blockName=@blocks[voxel]["faces"][type]
-		try
-			toxX=@blocksMapping[blockName]["x"]
-			toxY=@blocksMapping[blockName]["y"]
-		catch error
-			toxX=@blocksMapping["debug"]["x"]
-			toxY=28-@blocksMapping["debug"]["y"]
-		
-		uv=@uvm.getToxel toxX,toxY
-		switch type
-			when "pz"
-				return [
-					{ pos: [-0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[0], },
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[2], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[1], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[1], },
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[2], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[3], }
-				]
-			when "nx"
-				return [
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 1,  0,  0], uv: uv[0], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 1,  0,  0], uv: uv[2], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 1,  0,  0], uv: uv[1], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 1,  0,  0], uv: uv[1], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 1,  0,  0], uv: uv[2], },
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 1,  0,  0], uv: uv[3], }
-				]
-			when "nz"
-				return [
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[0], },
-					{ pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], }, 
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
-					{ pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[3], }
-				]
-			when "px"
-				return [
-					{ pos: [-0.5, -0.5, -0.5], norm: [-1,  0,  0], uv: uv[0], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [-1,  0,  0], uv: uv[2], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [-1,  0,  0], uv: uv[1], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [-1,  0,  0], uv: uv[1], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [-1,  0,  0], uv: uv[2], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [-1,  0,  0], uv: uv[3], },
-				]
-			when "py"
-				return [
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[0], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[2], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[1], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[1], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[2], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[3], }
-				]
-			when "ny"
-				return [
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[0], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[2], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[1], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[1], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[2], },
-					{ pos: [-0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[3], }
-				]
 	intersectsRay: (start,end) ->
 		start.x+=0.5
 		start.y+=0.5
@@ -584,9 +449,25 @@ class TextureAtlasCreator
 		col=Math.ceil(tick/h)-1
 		row=(tick-1)%h;
 		return {row,col}  
+class Server
+	constructor:(options)->
+		@terrain=options.terrain
+		@socket=io.connect options.ip
+		@socket.on "connect",()->
+			console.log "Połączono z serverem!"
+			return
+		@socket.on "blockUpdate",(block)->
+			terrain.setVoxel block...
+			return
+	onChunkUpdate: (f)->
+		@socket.on "chunkUpdate", (chunk)->
+			f(chunk)
 class TerrainWorker
 	constructor: (options)->
 		@worker=new Worker "workers/terrain.js", {type:'module'}
+		@worker.onmessage=(message)->
+			terrain.updateCell message.data
+			console.warn "RECIEVED CELL:",message.data.info
 		@worker.postMessage {
 			type:'init'
 			data:{
@@ -598,30 +479,26 @@ class TerrainWorker
 				blocks: al.get "blocks"
 				blocksMapping: al.get "blocksMapping"
 				toxelSize: 27
+				cellSize: 16
 			}
 		}
 	setVoxel: (voxelX,voxelY,voxelZ,value)->
 		@worker.postMessage {
 			type:"setVoxel"
-			data:{
-				voxelX
-				voxelY
-				voxelZ
-				value
-			}
+			data:[voxelX,voxelY,voxelZ,value]
 		}
 	genCellGeo: (cellX,cellY,cellZ)->
+		cellX=parseInt cellX
+		cellY=parseInt cellY
+		cellZ=parseInt cellZ
 		@worker.postMessage {
 			type:"genCellGeo"
-			data:{
-				cellX,cellY,cellZ
-			}
+			data:[cellX,cellY,cellZ]
 		}
 init = ()->
 	#Terrain worker
 	worker=new TerrainWorker
-	worker.setVoxel(0,0,0,2)
-	worker.genCellGeo(0,0,0)
+	
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
 		canvas
@@ -747,21 +624,21 @@ init = ()->
 		scene
 		camera
 	})
+	
 	#Socket.io setup
-	socket=io.connect "http://localhost:35565"
-	socket.on "connect",()->
-		console.log "Połączono z serverem!"
-		return
-	socket.on "blockUpdate",(block)->
-		terrain.setVoxel block...
-		return
+	server=new Server {
+		ip:"http://localhost:35565"
+		terrain
+	}
+	server.onChunkUpdate (chunk)->
+		console.log chunk
 	#Socket.io players
 	playersx={}
-	socket.on "playerUpdate",(players)->
+	server.socket.on "playerUpdate",(players)->
 		sockets={}
 		Object.keys(players).forEach (p)->
 			sockets[p]=true
-			if playersx[p] is undefined and p isnt socket.id
+			if playersx[p] is undefined and p isnt server.socket.id
 				playersx[p]=SkeletonUtils.clone playerObject
 				scene.add playersx[p]
 			try
@@ -776,9 +653,10 @@ init = ()->
 			return
 		return
 	#Socket.io first world load
-	socket.on "firstLoad",(v)->
+	server.socket.on "firstLoad",(v)->
 		console.log "Otrzymano pakiet świata!"
 		terrain.replaceWorld v
+		worker.genCellGeo(0,0,0)
 		$(".initLoading").css "display","none"
 		stats = new Stats();
 		stats.showPanel(0);
@@ -830,7 +708,7 @@ init = ()->
 				else
 					voxelId=inv_bar.activeBox
 					pos=rayBlock.posPlace
-				socket.emit "blockUpdate",[pos...,voxelId]
+				server.socket.emit "blockUpdate",[pos...,voxelId]
 		return
 	animate()
 	return
@@ -854,7 +732,7 @@ render = ->
 		camera.aspect = width / height
 		camera.updateProjectionMatrix()
 	if gameState is "game"
-		socket.emit "playerUpdate", {
+		server.socket.emit "playerUpdate", {
 			x:camera.position.x
 			y:camera.position.y
 			z:camera.position.z
@@ -888,6 +766,9 @@ al=new AssetLoader
 $.get "assets/assetLoader.json?#{THREE.MathUtils.generateUUID()}", (assets)->
 	al.load assets,()->
 		console.log "AssetLoader: done loading!"
+		al.get("anvil").children[0].geometry.rotateX -Math.PI/2
+		al.get("anvil").children[0].geometry.translate 0,0.17,0 
+		al.get("anvil").children[0].geometry.translate 0,-0.25,0 
 		init()
 		return
 	,al
