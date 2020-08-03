@@ -2,24 +2,26 @@
 <i>"Render minecrafta w przeglądarce"</i><br><br>
 Zalecamy instalację:<br>
 <li>
-	<a href="https://phoenixnap.com/kb/update-node-js-version">najnowszej wersji node.js</a>
+	<a href="#">Najnowszej wersji Node.js</a>
 </li>
 <li>
-	<a href="https://coffeescript.org/#installation">CoffeeScript</a>
+	<a href="#">CoffeeScript</a>
 </li>
-<h1>Uruchamianie gry:</h1>
+<h1>Instalacja repozytorium</h1>
 
 ```bash
+
 #Instalacja repozytorium
 git clone https://github.com/michaljaz/web-minecraft
 cd web-minecraft
+npm install
 
-#Utworzenie serwera i uruchomienie przeglądarki
+#Uruchamianie serwera i przeglądarki
 npm start
 
 ```
 
-<h1>Przydatne narzędzia:</h1>
+<h1>Użyteczne narzędzia:</h1>
 
 ```bash
 
