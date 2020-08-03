@@ -19,10 +19,60 @@ socket=null
 stats=null
 worker=null
 server=null
+playerObject=null
+inv_bar=null
 
+class CellTerrain
+	constructor: (options)->
+		@cellSize=options.cellSize
+		@cells={}
+		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+	vec3: (x,y,z)->
+		return "#{x}:#{y}:#{z}"
+	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
+		x=voxelX %% @cellSize|0
+		y=voxelY %% @cellSize|0
+		z=voxelZ %% @cellSize|0
+		return y*@cellSize*@cellSize+z*@cellSize+x;
+	computeCellForVoxel: (voxelX,voxelY,voxelZ) ->
+		cellX = Math.floor voxelX / @cellSize
+		cellY = Math.floor voxelY / @cellSize
+		cellZ = Math.floor voxelZ / @cellSize
+		return [cellX,cellY,cellZ]
+	addCellForVoxel:(voxelX,voxelY,voxelZ)->
+		cellId=@vec3(@computeCellForVoxel(voxelX,voxelY,voxelZ)...)
+		cell=@cells[cellId]
+		if not cell
+			cell=new Uint8Array(@cellSize*@cellSize*@cellSize)
+			@cells[cellId]=cell
+		return cell
+	getCellForVoxel:(voxelX,voxelY,voxelZ)->
+		cellId=@vec3(@computeCellForVoxel(voxelX, voxelY, voxelZ)...)
+		return @cells[cellId]
+	setVoxel: (voxelX,voxelY,voxelZ,value)->
+		cell=@getCellForVoxel voxelX,voxelY,voxelZ
+		if not cell 
+			cell=@addCellForVoxel voxelX,voxelY,voxelZ
+		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
+		cell[voff]=value
+		return
+	getVoxel: (voxelX,voxelY,voxelZ)->
+		cell=@getCellForVoxel voxelX,voxelY,voxelZ
+		if not cell 
+			return 0
+		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
+		return cell[voff]
+	getBuffer:(x,y,z)->
+		console.log(@cells[@vec3(x,y,z)])
+		return
 class Terrain
 	constructor: (options) ->
 		@cellSize=options.cellSize
+		@cellTerrain=new CellTerrain {
+			cellSize:@cellSize
+		}
+		@cellTerrain.setVoxel(0,0,0,2)
+		# @cellTerrain.getBuffer(0,0,0)
 		@cellsData={}
 		@blocks=options.blocks
 		@blocksMapping=options.blocksMapping
@@ -44,12 +94,9 @@ class Terrain
 		cellZ = Math.floor voxelZ / @cellSize
 		return [cellX,cellY,cellZ]
 	vec3: (x,y,z) ->
-		if typeof x is "string"
-			x=parseInt x
-		if typeof y is "string"
-			y=parseInt y
-		if typeof z is "string"
-			z=parseInt z
+		x=parseInt x
+		y=parseInt y
+		z=parseInt z
 		return "#{x}:#{y}:#{z}"
 	setVoxel: (voxelX,voxelY,voxelZ,value) ->
 		worker.setVoxel voxelX,voxelY,voxelZ,value
@@ -72,7 +119,6 @@ class Terrain
 		@cellsData[cellId].needsUpdate=true
 		return
 	getVoxel: (voxelX,voxelY,voxelZ) ->
-
 		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
 		cellId=@vec3(cell...)
 		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
@@ -135,11 +181,9 @@ class Terrain
 		xDist = if stepX > 0 then ix + 1 - start.x else start.x - ix
 		yDist = if stepY > 0 then iy + 1 - start.y else start.y - iy
 		zDist = if stepZ > 0 then iz + 1 - start.z else start.z - iz
-
 		txMax = if txDelta < Infinity then txDelta * xDist else Infinity
 		tyMax = if tyDelta < Infinity then tyDelta * yDist else Infinity
 		tzMax = if tzDelta < Infinity then tzDelta * zDist else Infinity
-
 		steppedIndex = -1
 		while t <= len
 			voxel = @getVoxel ix, iy, iz
@@ -324,28 +368,21 @@ class InventoryBar
 		@boxSize=options.boxSize
 		@div=options.div
 		@padding=options.padding
-		@boxes=options.boxes
-		@activeBox=options.activeBox
-		@setup()
-	setup: ->
-		result=""
-		for i in [0..@boxes]
-			result+="<img src='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=' width=#{@boxSize} height=#{@boxSize} class='inv_box_#{i}' style='border:1px solid black' alt=''>"
+		@boxes=9
+		@activeBox=1
 		document.querySelector(@div).style="position:fixed;bottom:3px;left:50%;width:#{(@boxSize+2)*@boxes}px;margin-left:-#{@boxSize*@boxes/2}px;height:#{@boxSize}px;"
-		document.querySelector(@div).innerHTML=result
-		return
 	setBox: (number,imageSrc)->
 		if imageSrc is null
 			imageSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-		document.querySelector(".inv_box_#{number-1}").src=imageSrc
+		document.querySelector(".inv_box_#{number}").src=imageSrc
 		return
 	setFocus: (number,state)->
 		if state
-			document.querySelector(".inv_box_#{number-1}").style.background="rgba(0,0,0,0.7)"
-			document.querySelector(".inv_box_#{number-1}").style.border="1px solid black"
+			document.querySelector(".inv_box_#{number}").style.background="rgba(0,0,0,0.7)"
+			document.querySelector(".inv_box_#{number}").style.border="1px solid black"
 		else
-			document.querySelector(".inv_box_#{number-1}").style.background="rgba(54,54,54,0.5)"
-			document.querySelector(".inv_box_#{number-1}").style.border="1px solid #363636"
+			document.querySelector(".inv_box_#{number}").style.background="rgba(54,54,54,0.5)"
+			document.querySelector(".inv_box_#{number}").style.border="1px solid #363636"
 		return
 	setFocusOnly: (number)->
 		for i in [1..@boxes]
@@ -401,17 +438,14 @@ class TextureAtlasCreator
 		ctx=canvasx.getContext "2d"
 		canvasx.width=@willSize*16
 		canvasx.height=@willSize*16
-
 		toxelX=1
 		toxelY=1
-		
 		for i of @textureMapping	
 			if i.includes "@"
 				xd=@decodeName i
 				if multi[xd.pref].loaded is undefined
 					multi[xd.pref].loaded=true
 					lol=@getToxelForTick tick,multi[xd.pref].x+1,multi[xd.pref].y+1
-
 					texmap=@textureMapping["#{xd.pref}@#{lol.col}@#{lol.row}"]
 					ctx.drawImage @textureX,(texmap.x-1)*16,(texmap.y-1)*16,16,16,(toxelX-1)*16,(toxelY-1)*16,16,16
 					toxelX++
@@ -499,266 +533,308 @@ init = ()->
 	#Terrain worker
 	worker=new TerrainWorker
 	
-	canvas=document.querySelector '#c'
-	renderer=new THREE.WebGLRenderer {
-		canvas
-		PixelRatio:window.devicePixelRatio
-	}
-	scene=new THREE.Scene
-	scene.background=new THREE.Color "lightblue"
-	camera = new THREE.PerspectiveCamera 75, 2, 0.1, 64*5
-	camera.rotation.order = "YXZ"
-	camera.position.set 26, 26, 26
-	#Lights
-	ambientLight=new THREE.AmbientLight 0xcccccc
-	scene.add ambientLight
-	directionalLight = new THREE.DirectionalLight 0x333333, 2
-	directionalLight.position.set(1, 1, 0.5).normalize()
-	scene.add directionalLight 
-	gameState="menu"
-	#Snowflakes
-	geometry = new THREE.BufferGeometry
-	vertices = []
-	materials=[]
-	sprite1 = al.get "snowflake1" 
-	sprite2 = al.get "snowflake2" 
-	sprite3 = al.get "snowflake3" 
-	sprite4 = al.get "snowflake4" 
-	sprite5 = al.get "snowflake5" 
-	for i in [0..1000]
-		x = Math.random() * 2000 - 1000
-		y = Math.random() * 2000 - 1000
-		z = Math.random() * 2000 - 1000
-		vertices.push x, y, z
-	geometry.setAttribute 'position', new THREE.Float32BufferAttribute( vertices, 3 )
-	parameters = [
-		[[ 1.0, 0.2, 0.5 ], sprite2, 20 ],
-		[[ 0.95, 0.1, 0.5 ], sprite3, 15 ],
-		[[ 0.90, 0.05, 0.5 ], sprite1, 10 ],
-		[[ 0.85, 0, 0.5 ], sprite5, 8 ],
-		[[ 0.80, 0, 0.5 ], sprite4, 5 ]
-	]
-	for i in [0..parameters.length-1]
-		color=parameters[ i ][ 0 ]
-		sprite = parameters[ i ][ 1 ]
-		size = parameters[ i ][ 2 ]
-		materials[ i ] = new THREE.PointsMaterial { 
-			size: size
-			map: sprite
-			blending: THREE.AdditiveBlending
-			depthTest: false
-			transparent: true 
+	#canvas,renderer,camera,lights
+	(()->
+		canvas=document.querySelector '#c'
+		renderer=new THREE.WebGLRenderer {
+			canvas
+			PixelRatio:window.devicePixelRatio
 		}
-		materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] )
-		particles = new THREE.Points geometry, materials[ i ]
-		particles.rotation.x = Math.random() * 6
-		particles.rotation.y = Math.random() * 6
-		particles.rotation.z = Math.random() * 6
-		scene.add particles
-	for i in [0..materials.length-1]
-		materials[ i ].map = parameters[ i ][ 1 ]
-		materials[ i ].needsUpdate = true
-	#Clouds
-	clouds=al.get "clouds"
-	clouds.scale.x=0.1
-	clouds.scale.y=0.1
-	clouds.scale.z=0.1
-	clouds.position.y=100
-	scene.add clouds
-	#Ghast1
-	ghast=al.get "ghastF"
-	texturex1 = al.get "ghast"
-	texturex1.magFilter = THREE.NearestFilter
-	ghast.children[1].material.map=texturex1
-	ghast.children[0].children[0].scale.set 0.01,0.01,0.01 
-	ghast.children[1].material.color=new THREE.Color 0xffffff
-	mat=ghast.children[1].material.clone()
-	scene.add ghast
-	#Ghast2
-	ghast2=SkeletonUtils.clone ghast
-	texturex2 = al.get "ghastS"
-	texturex2.magFilter = THREE.NearestFilter
-	ghast2.children[1].material=mat
-	ghast2.children[1].material.map=texturex2
-	ghast2.position.set 3,0,0
-	scene.add ghast2
-	#Player
-	playerObject=al.get "player"
-	texturex = al.get "steve"
-	texturex.magFilter = THREE.NearestFilter
-	playerObject.children[1].scale.set 1,1,1
-	playerObject.children[1].position.set 25,25,25
-	playerObject.children[0].material.map=texturex
-	playerObject.children[0].material.color=new THREE.Color 0xffffff
-	playerObject.children[1].scale.set 0.5,0.5,0.5
+		scene=new THREE.Scene
+		scene.background=new THREE.Color "lightblue"
+		camera = new THREE.PerspectiveCamera 75, 2, 0.1, 64*5
+		camera.rotation.order = "YXZ"
+		camera.position.set 26, 26, 26
+		#Lights
+		ambientLight=new THREE.AmbientLight 0xcccccc
+		scene.add ambientLight
+		directionalLight = new THREE.DirectionalLight 0x333333, 2
+		directionalLight.position.set(1, 1, 0.5).normalize()
+		scene.add directionalLight 
+		gameState="menu"
+	)()
+	
+	#Snowflakes
+	(()->
+		geometry = new THREE.BufferGeometry
+		vertices = []
+		materials=[]
+		sprite1 = al.get "snowflake1" 
+		sprite2 = al.get "snowflake2" 
+		sprite3 = al.get "snowflake3" 
+		sprite4 = al.get "snowflake4" 
+		sprite5 = al.get "snowflake5" 
+		for i in [0..1000]
+			x = Math.random() * 2000 - 1000
+			y = Math.random() * 2000 - 1000
+			z = Math.random() * 2000 - 1000
+			vertices.push x, y, z
+		geometry.setAttribute 'position', new THREE.Float32BufferAttribute( vertices, 3 )
+		parameters = [
+			[[ 1.0, 0.2, 0.5 ], sprite2, 20 ],
+			[[ 0.95, 0.1, 0.5 ], sprite3, 15 ],
+			[[ 0.90, 0.05, 0.5 ], sprite1, 10 ],
+			[[ 0.85, 0, 0.5 ], sprite5, 8 ],
+			[[ 0.80, 0, 0.5 ], sprite4, 5 ]
+		]
+		for i in [0..parameters.length-1]
+			color=parameters[ i ][ 0 ]
+			sprite = parameters[ i ][ 1 ]
+			size = parameters[ i ][ 2 ]
+			materials[ i ] = new THREE.PointsMaterial { 
+				size: size
+				map: sprite
+				blending: THREE.AdditiveBlending
+				depthTest: false
+				transparent: true 
+			}
+			materials[ i ].color.setHSL( color[ 0 ], color[ 1 ], color[ 2 ] )
+			particles = new THREE.Points geometry, materials[ i ]
+			particles.rotation.x = Math.random() * 6
+			particles.rotation.y = Math.random() * 6
+			particles.rotation.z = Math.random() * 6
+			scene.add particles
+		for i in [0..materials.length-1]
+			materials[ i ].map = parameters[ i ][ 1 ]
+			materials[ i ].needsUpdate = true
+	)()
+	
+	#Static objects
+	(()->
+		#Clouds
+		clouds=al.get "clouds"
+		clouds.scale.x=0.1
+		clouds.scale.y=0.1
+		clouds.scale.z=0.1
+		clouds.position.y=100
+		scene.add clouds
+		#Ghast1
+		ghast=al.get "ghastF"
+		texturex1 = al.get "ghast"
+		texturex1.magFilter = THREE.NearestFilter
+		ghast.children[1].material.map=texturex1
+		ghast.children[0].children[0].scale.set 0.01,0.01,0.01 
+		ghast.children[1].material.color=new THREE.Color 0xffffff
+		mat=ghast.children[1].material.clone()
+		scene.add ghast
+		#Ghast2
+		ghast2=SkeletonUtils.clone ghast
+		texturex2 = al.get "ghastS"
+		texturex2.magFilter = THREE.NearestFilter
+		ghast2.children[1].material=mat
+		ghast2.children[1].material.map=texturex2
+		ghast2.position.set 3,0,0
+		scene.add ghast2
+		#Player
+		playerObject=al.get "player"
+		texturex = al.get "steve"
+		texturex.magFilter = THREE.NearestFilter
+		playerObject.children[1].scale.set 1,1,1
+		playerObject.children[1].position.set 25,25,25
+		playerObject.children[0].material.map=texturex
+		playerObject.children[0].material.color=new THREE.Color 0xffffff
+		playerObject.children[1].scale.set 0.5,0.5,0.5
+	)()
+	
 	#Animated Material
-	worldMaterial=new THREE.MeshStandardMaterial({
-		side: 0
-		map:null
-	})    
-	atlasCreator=new TextureAtlasCreator({
-		textureX:al.get "blocksAtlasFull"
-		textureMapping:al.get "blocksMappingFull"
-	})
-	savedTextures=[]
-	for i in [0..9]
-		t=atlasCreator.gen(i).toDataURL()
-		tekstura=new THREE.TextureLoader().load t
-		tekstura.magFilter = THREE.NearestFilter
-		savedTextures.push tekstura
-	tickq=0
-	setInterval(()->
-		tickq++
-		tekst=savedTextures[tickq%9]
-		worldMaterial.map=tekst
-		worldMaterial.map.needsUpdate=true
-		return
-	,100)
-	#setup terrain
-	terrain=new Terrain({
-		toxelSize:27
-		cellSize:16
-		blocks:al.get "blocks"
-		blocksMapping:al.get "blocksMapping"
-		material:worldMaterial
-		scene
-		camera
-	})
+	(()->
+		worldMaterial=new THREE.MeshStandardMaterial({
+			side: 0
+			map:null
+		})    
+		atlasCreator=new TextureAtlasCreator({
+			textureX:al.get "blocksAtlasFull"
+			textureMapping:al.get "blocksMappingFull"
+		})
+		savedTextures=[]
+		for i in [0..9]
+			t=atlasCreator.gen(i).toDataURL()
+			tekstura=new THREE.TextureLoader().load t
+			tekstura.magFilter = THREE.NearestFilter
+			savedTextures.push tekstura
+		tickq=0
+		setInterval(()->
+			tickq++
+			tekst=savedTextures[tickq%9]
+			worldMaterial.map=tekst
+			worldMaterial.map.needsUpdate=true
+			return
+		,100)
+		#setup terrain
+		terrain=new Terrain({
+			toxelSize:27
+			cellSize:16
+			blocks:al.get "blocks"
+			blocksMapping:al.get "blocksMapping"
+			material:worldMaterial
+			scene
+			camera
+		})
+	)()
 	
 	#Socket.io setup
-	server=new Server {
-		ip:"http://localhost:35565"
-		terrain
-	}
-	server.onChunkUpdate (chunk)->
-		console.log chunk
-	#Socket.io players
-	playersx={}
-	server.socket.on "playerUpdate",(players)->
-		sockets={}
-		Object.keys(players).forEach (p)->
-			sockets[p]=true
-			if playersx[p] is undefined and p isnt server.socket.id
-				playersx[p]=SkeletonUtils.clone playerObject
-				scene.add playersx[p]
-			try
-				playersx[p].children[1].position.set players[p].x,players[p].y-0.5,players[p].z
-				playersx[p].children[1].children[0].children[0].children[0].children[2].rotation.x=players[p].xyaw
-				playersx[p].children[1].children[0].rotation.z=players[p].zyaw
-			return
-		Object.keys(playersx).forEach (p)->
-			if sockets[p] is undefined
-				scene.remove playersx[p]
-				delete playersx[p]
-			return
-		return
-	#Socket.io first world load
-	server.socket.on "firstLoad",(v)->
-		console.log "Otrzymano pakiet świata!"
-		terrain.replaceWorld v
-		worker.genCellGeo(0,0,0)
-		$(".initLoading").css "display","none"
-		stats = new Stats();
-		stats.showPanel(0);
-		document.body.appendChild stats.dom
-		return
-	#Inventory Bar
-	inv_bar = new InventoryBar({
-		boxSize: 60
-		boxes: 9
-		padding: 4
-		div: ".inventoryBar"
-		activeBox: 1
-	}).setBoxes([
-		"assets/images/grass_block.png",
-		"assets/images/stone.png",
-		"assets/images/oak_planks.png",
-		"assets/images/smoker.gif",
-		"assets/images/anvil.png",
-		"assets/images/brick.png",
-		"assets/images/furnace.png",
-		"assets/images/bookshelf.png",
-		"assets/images/tnt.png"
-	]).setFocusOnly(1).listen()
-	#First Person Controls
-	FPC = new FirstPersonControls({
-		canvas: document.querySelector("#c")
-		camera
-		micromove: 0.3
-	}).listen()
-	#Raycast cursor
-	cursor=new THREE.LineSegments(
-		new THREE.EdgesGeometry(
-			new THREE.BoxGeometry 1, 1, 1
-		),
-		new THREE.LineBasicMaterial {
-			color: 0x000000,
-			linewidth: 0.5
+	(()->
+		server=new Server {
+			ip:"http://localhost:35565"
+			terrain
 		}
-	)
-	scene.add cursor
+		server.onChunkUpdate (chunk)->
+			console.log chunk
+		#Socket.io players
+		playersx={}
+		server.socket.on "playerUpdate",(players)->
+			sockets={}
+			Object.keys(players).forEach (p)->
+				sockets[p]=true
+				if playersx[p] is undefined and p isnt server.socket.id
+					playersx[p]=SkeletonUtils.clone playerObject
+					scene.add playersx[p]
+				try
+					playersx[p].children[1].position.set players[p].x,players[p].y-0.5,players[p].z
+					playersx[p].children[1].children[0].children[0].children[0].children[2].rotation.x=players[p].xyaw
+					playersx[p].children[1].children[0].rotation.z=players[p].zyaw
+				return
+			Object.keys(playersx).forEach (p)->
+				if sockets[p] is undefined
+					scene.remove playersx[p]
+					delete playersx[p]
+				return
+			return
+		#Socket.io first world load
+		server.socket.on "firstLoad",(v)->
+			console.log "Otrzymano pakiet świata!"
+			terrain.replaceWorld v
+			worker.genCellGeo(0,0,0)
+			$(".initLoading").css "display","none"
+			stats = new Stats();
+			stats.showPanel(0);
+			document.body.appendChild stats.dom
+			return
+	)()
+	
+	#Inventory Bar
+	(()->
+		inv_bar = new InventoryBar({
+			boxSize: 60
+			padding: 4
+			div: ".inventoryBar"
+		}).setBoxes([
+			"assets/images/grass_block.png",
+			"assets/images/stone.png",
+			"assets/images/oak_planks.png",
+			"assets/images/smoker.gif",
+			"assets/images/anvil.png",
+			"assets/images/brick.png",
+			"assets/images/furnace.png",
+			"assets/images/bookshelf.png",
+			"assets/images/tnt.png"
+		]).setFocusOnly(1).listen()
+	)()
+	
+	#First Person Controls
+	(()->
+		FPC = new FirstPersonControls({
+			canvas: document.querySelector("#c")
+			camera
+			micromove: 0.3
+		}).listen()
+	)()
+	
+	#Raycast cursor
+	(()->
+		cursor=new THREE.LineSegments(
+			new THREE.EdgesGeometry(
+				new THREE.BoxGeometry 1, 1, 1
+			),
+			new THREE.LineBasicMaterial {
+				color: 0x000000,
+				linewidth: 0.5
+			}
+		)
+		scene.add cursor
+	)()
+	
 	#jquery events
-	$(document).mousedown (e)->
-		if gameState is "game"
-			rayBlock=terrain.getRayBlock()
-			if rayBlock
-				if e.which is 1
-					voxelId=0
-					pos=rayBlock.posBreak
-				else
-					voxelId=inv_bar.activeBox
-					pos=rayBlock.posPlace
-				server.socket.emit "blockUpdate",[pos...,voxelId]
-		return
+	(()->
+		$(document).mousedown (e)->
+			if gameState is "game"
+				rayBlock=terrain.getRayBlock()
+				if rayBlock
+					if e.which is 1
+						voxelId=0
+						pos=rayBlock.posBreak
+					else
+						voxelId=inv_bar.activeBox
+						pos=rayBlock.posPlace
+					server.socket.emit "blockUpdate",[pos...,voxelId]
+			return
+	)()
+	
 	animate()
+
 	return
 render = ->
-	time = Date.now() * 0.00005
-	for i in [0..scene.children.length-1]
-		object = scene.children[ i ]
-		if object instanceof THREE.Points
-			object.rotation.y = time * ( if i < 4 then i + 1 else - ( i + 1 ) )
-	for i in [0..materials.length-1]
-		color = parameters[ i ][ 0 ]
-		h = ( 360 * ( color[ 0 ] + time ) % 360 ) / 360
-		materials[ i ].color.setHSL h, color[ 1 ], color[ 2 ]
-	#Resize canvas
-	width=window.innerWidth
-	height=window.innerHeight
-	if canvas.width isnt width or canvas.height isnt height
-		canvas.width=width
-		canvas.height=height
-		renderer.setSize width,height,false
-		camera.aspect = width / height
-		camera.updateProjectionMatrix()
-	if gameState is "game"
-		server.socket.emit "playerUpdate", {
-			x:camera.position.x
-			y:camera.position.y
-			z:camera.position.z
-			xyaw:-camera.rotation.x
-			zyaw:camera.rotation.y+Math.PI
-		}
-		FPC.camMicroMove()
+
+	#Snowflakes animation
+	(()->
+		time = Date.now() * 0.00005
+		for i in [0..scene.children.length-1]
+			object = scene.children[ i ]
+			if object instanceof THREE.Points
+				object.rotation.y = time * ( if i < 4 then i + 1 else - ( i + 1 ) )
+		for i in [0..materials.length-1]
+			color = parameters[ i ][ 0 ]
+			h = ( 360 * ( color[ 0 ] + time ) % 360 ) / 360
+			materials[ i ].color.setHSL h, color[ 1 ], color[ 2 ]
+	)()
+
+	#Autoresize canvas
+	(()->
+		width=window.innerWidth
+		height=window.innerHeight
+		if canvas.width isnt width or canvas.height isnt height
+			canvas.width=width
+			canvas.height=height
+			renderer.setSize width,height,false
+			camera.aspect = width / height
+			camera.updateProjectionMatrix()
+	)()
+	
+	#Player movement
+	(()->
+		if gameState is "game"
+			server.socket.emit "playerUpdate", {
+				x:camera.position.x
+				y:camera.position.y
+				z:camera.position.z
+				xyaw:-camera.rotation.x
+				zyaw:camera.rotation.y+Math.PI
+			}
+			FPC.camMicroMove()
+	)()
+	
+	#Update cursor
+	(()->
+		rayBlock=terrain.getRayBlock()
+		if rayBlock
+			pos=rayBlock.posBreak
+			pos[0]=Math.floor pos[0]
+			pos[1]=Math.floor pos[1]
+			pos[2]=Math.floor pos[2]
+			cursor.position.set pos...
+			cursor.visible=true
+		else
+			cursor.visible=false
+	)()
+	
 	renderer.render scene, camera
 	terrain.updateCells()
-	#update cursor
-	rayBlock=terrain.getRayBlock()
-	if rayBlock
-		pos=rayBlock.posBreak
-		pos[0]=Math.floor pos[0]
-		pos[1]=Math.floor pos[1]
-		pos[2]=Math.floor pos[2]
-		cursor.position.set pos...
-		cursor.visible=true
-	else
-		cursor.visible=false
+
 	return
 animate = ->
 	try
 		stats.begin()
-	render()
-	try
+		render()
 		stats.end()
 	requestAnimationFrame animate
 	return

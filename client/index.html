@@ -3,32 +3,42 @@
   <head>
     <title>Web-Minecraft</title>
 
+    <!-- ICON -->
     <link rel="icon" href="assets/images/grass_block.png">
 
-    <div css>
-      <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
-      <link rel="stylesheet" href="cdn/css/googleapis.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
-      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
-      <link rel="stylesheet" href="cdn/css/main.css">
-    </div>
-
-    <div js>
-      <script type="text/javascript" src="cdn/js/jq.js?1234"></script>
-      <script type="text/javascript" src="cdn/js/popper.min.js?1234"></script>
-      <script type="text/javascript" src="cdn/js/bootstrap.min.js?1234"></script>
-      <script type="text/javascript" src="cdn/js/mdb.min.js?1234"></script>
-      <script type="text/javascript" src="cdn/js/socket.io.js?1234"></script>
-    </div>
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="cdn/css/googleapis.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
+    <link rel="stylesheet" href="cdn/css/main.css">
+    
+    <!-- JS -->
+    <script type="text/javascript" src="cdn/js/jq.js?1234"></script>
+    <script type="text/javascript" src="cdn/js/popper.min.js?1234"></script>
+    <script type="text/javascript" src="cdn/js/bootstrap.min.js?1234"></script>
+    <script type="text/javascript" src="cdn/js/mdb.min.js?1234"></script>
+    <script type="text/javascript" src="cdn/js/socket.io.js?1234"></script>
 
   </head>
   <body>
+    <!-- RENDER CANVAS -->
     <canvas id="c"></canvas>
+
+    <!-- LOADING SCREEN -->
     <div class="initLoading">
       <img src="assets/images/loadingx.gif" class="loadingBar">
     </div>
+
+    <!-- GUI -->
     <div class="gui">
-      <div class="inventoryBar"></div>
+
+      <!-- INVENTORY BAR -->
+      <div class="inventoryBar">
+        <img class='inv_box inv_box_1'><img class='inv_box inv_box_2'><img class='inv_box inv_box_3'><img class='inv_box inv_box_4'><img class='inv_box inv_box_5'><img class='inv_box inv_box_6'><img class='inv_box inv_box_7'><img class='inv_box inv_box_8'><img class='inv_box inv_box_9'>
+      </div>
+
+      <!-- GAME MENU -->
       <div class="gameMenu">
         <div class="row">
           <div class="col-4 pl-5 pt-4">
@@ -66,10 +76,11 @@
             <li>
               Klawisze 1,2,3: Zmiana trzymającego itemu
             </li>
-
           </div>
         </div>
       </div>
+
+      <!-- VIEW CROSS -->
       <div class="cross">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <line x1="15" y1="0" x2="15" y2="30" stroke="black" stroke-width="1" />
@@ -78,6 +89,8 @@
       </div>
     </div>
 
+    <!-- GAME BUNDLE -->
     <script type="module" src="bundle.js"></script>
+    
   </body>
 </html>
