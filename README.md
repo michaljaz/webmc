@@ -14,6 +14,8 @@ Zalecamy instalację:<br>
 #Instalacja repozytorium
 git clone https://github.com/michaljaz/web-minecraft
 cd web-minecraft
+
+#Instalacja niezbędnych bibliotek
 npm install
 
 #Uruchamianie serwera i przeglądarki

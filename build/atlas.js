@@ -1,4 +1,3 @@
-
 const path = require('path');
 const fs = require('fs');
 const { createCanvas, loadImage } = require('canvas')
@@ -14,9 +13,9 @@ var loadedImages=0;
 var atlasSize=36
 var miniAtlasSize=27
 
-var path1=path.join(__dirname, "client/assets/blocks/blocksAtlas-full.png");
-var path2=path.join(__dirname, "client/assets/blocks/blocksMapping-full.json");
-var path3=path.join(__dirname, "client/assets/blocks/blocksMapping.json");
+var path1=path.join(__dirname, "../client/assets/blocks/blocksAtlas-full.png");
+var path2=path.join(__dirname, "../client/assets/blocks/blocksMapping-full.json");
+var path3=path.join(__dirname, "../client/assets/blocks/blocksMapping.json");
 
 firstLoad()
 
@@ -41,11 +40,11 @@ function NWW(a,b){
     return a*b/NWD(a,b)
 }
 function firstLoad(){
-    folderName="client/assets/blocks/images";
+    folderName="../client/assets/blocks/images";
     const directoryPath = path.join(__dirname, folderName);
     fs.readdir(directoryPath, function (err, files) {
         files.forEach(function (file) {
-            filePath=`${folderName}/${file}`
+            filePath=`${__dirname}/${folderName}/${file}`
             if(path.extname(file)==".png"){
                 addImageToLoad(filePath,file)
             }
