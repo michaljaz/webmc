@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node start.js",
     "coffee": "coffee -o client/ -cw build/coffee/",
-    "atlas": "node build/atlas.js"
+    "atlas": "node build/atlas.js",
+    "gitignore":"node build/gitignore.js"
   },
   "repository": {
     "type": "git",

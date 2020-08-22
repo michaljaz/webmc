@@ -1,13 +1,26 @@
 # web-minecraft
-<i>"Render minecrafta w przeglądarce"</i><br><br>
-Zalecamy instalację:<br>
+<i>Minecraft w przeglądarce!</i>
+
+> **Pro tip:** Przy uruchamianiu na lokalnej maszynie potrzebna jest najnowsza wersja node.js i npm.<br>
+>  Instalacja CoffeeScripta nie jest wymagana do włączenia gry.<br>
+>  Zalecam grę włączać na przeglądarce Google Chrome</u>.<br>
+
+<h4>Szykujące się updaty:</h4>
 <li>
-	<a href="#">Najnowszej wersji Node.js</a>
+	Dynamiczne ładowanie i odładowywanie chunków
 </li>
 <li>
-	<a href="#">CoffeeScript</a>
+	Generowanie nieskończonego terenu
 </li>
-<h1>Instalacja repozytorium</h1>
+<li>
+	Połączenie z prawdziwym serwerem minecraftowym
+</li>
+
+
+
+<i>
+</i>
+<h3>Instalacja repozytorium</h3>
 
 ```bash
 
@@ -20,7 +33,7 @@ npm install
 
 ```
 
-<h1>Uruchamianie gry</h1>
+<h3>Uruchamianie gry</h3>
 
 ```bash
 
@@ -29,12 +42,31 @@ npm start
 
 ```
 
-Po uruchomieniu serwera gra zostanie hostowana pod linkiem <a href="http://localhost:8080">http://localhost:8080</a>
-<h1>DEMO</h1>
+Po uruchomieniu serwera gra zostanie hostowana pod linkiem: <a href="http://localhost:8080">http://localhost:8080</a>
 
-DEMO gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a><br><br><br><br>
+
+
+<h3>DEMO</h3>
+
+DEMO gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a>
+
+<h3>Przydatne narzędzia:</h3>
+
+```bash
+
+#Komilator coffeeScript
+npm run coffee
+
+#Ignorowanie folderu node_modules
+npm run gitignore
+
+#Generowanie atlasu tekstur
+npm run atlas
+
+```
+
 <img src="src/screenshot.png"
      alt="screenshot"
      style="float: left; margin-right: 10px;" />
-     <br><br><br>
+
 
