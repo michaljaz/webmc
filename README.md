@@ -30,20 +30,11 @@ npm start
 ```
 
 Po uruchomieniu serwera gra zostanie hostowana pod linkiem <a href="http://localhost:8080">http://localhost:8080</a>
+<h1>DEMO</h1>
 
-<h1>Użyteczne narzędzia:</h1>
-
-```bash
-
-#Automatyczny komilator CoffeeScript
-npm run coffee
-
-#Generowanie atlasu tekstur
-npm run atlas
-
-```
-
+DEMO gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a><br><br><br><br>
 <img src="src/screenshot.png"
      alt="screenshot"
      style="float: left; margin-right: 10px;" />
-     <br><br>
+     <br><br><br>
+
