@@ -552,6 +552,8 @@ init = ()->
 		directionalLight.position.set(1, 1, 0.5).normalize()
 		scene.add directionalLight 
 		gameState="menu"
+		gpu=gpuInfo()
+		console.warn gpu.renderer
 	)()
 	
 	#Snowflakes
@@ -838,6 +840,21 @@ animate = ->
 		stats.end()
 	requestAnimationFrame animate
 	return
+gpuInfo = ->
+	gl = document.createElement('canvas').getContext('webgl')
+	if not gl
+		return {
+			error: "no webgl"
+		}
+	debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
+	if debugInfo
+		return {
+			vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
+			renderer:  gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
+		}
+	return {
+		error: "no WEBGL_debug_renderer_info"
+	}
 al=new AssetLoader
 $.get "assets/assetLoader.json?#{THREE.MathUtils.generateUUID()}", (assets)->
 	al.load assets,()->
