@@ -29,7 +29,7 @@ npm start
 
 ```
 
-Po uruchomieniu serwera gra zostanie hostowana pod linkiem <a href="http://localhost:25565">http://localhost:25565</a>
+Po uruchomieniu serwera gra zostanie hostowana pod linkiem <a href="http://localhost:8080">http://localhost:8080</a>
 
 <h1>Użyteczne narzędzia:</h1>
 
