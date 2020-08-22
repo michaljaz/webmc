@@ -1,4 +1,5 @@
-module.exports = function(port) {
+module.exports = function(config) {
+  var port=config["websocket-port"]
   const http = require('http');
   const fs = require('fs');
 

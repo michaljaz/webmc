@@ -675,7 +675,7 @@ init = ()->
 	#Socket.io setup
 	(()->
 		server=new Server {
-			ip:"http://localhost:35565"
+			ip:"#{al.get("host")}:#{al.get("websocket-port")}"
 			terrain
 		}
 		server.onChunkUpdate (chunk)->

@@ -1,6 +1,7 @@
-var opn = require('opn');
+const fs = require('fs');
 
-require("./server/websocket.js")(35565)
-require("./server/express.js")(25565)
+var rawdata = fs.readFileSync(__dirname+'/config.json');
+var config = JSON.parse(rawdata);
 
-opn(`http://localhost:25565`)
+require("./server/websocket.js")(config)
+require("./server/express.js")(config)

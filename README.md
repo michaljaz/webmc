@@ -18,10 +18,18 @@ cd web-minecraft
 #Instalacja niezbędnych bibliotek
 npm install
 
-#Uruchamianie serwera i przeglądarki
+```
+
+<h1>Uruchamianie gry</h1>
+
+```bash
+
+#Uruchamianie serwera express i websocket
 npm start
 
 ```
+
+Po uruchomieniu serwera gra zostanie hostowana pod linkiem <a href="http://localhost:25565">http://localhost:25565</a>
 
 <h1>Użyteczne narzędzia:</h1>
 

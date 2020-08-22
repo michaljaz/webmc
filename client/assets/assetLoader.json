@@ -63,5 +63,13 @@
   "anvil":{
     "path":"assets/models/anvil/anvil.fbx",
     "type":"fbx"
+  },
+  "websocket-port":{
+    "path":"/websocket/",
+    "type":"text"
+  },
+  "host":{
+    "path":"/host/",
+    "type":"text"
   }
 }

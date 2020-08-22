@@ -1,0 +1,5 @@
+{
+	"websocket-port":35565,
+	"express-port":8080,
+	"host":"localhost"
+}
