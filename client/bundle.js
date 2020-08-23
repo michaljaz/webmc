@@ -952,7 +952,7 @@ init = function() {
     //First Person Controls
   (function() {
     return FPC = new FirstPersonControls({
-      canvas: document.querySelector("#c"),
+      canvas,
       camera,
       micromove: 0.3
     }).listen();

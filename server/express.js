@@ -15,6 +15,6 @@ module.exports = function(config) {
 		res.send(String(config["host"]))
 	})
 	app.listen(port, () => {
-	  console.log(`Running: \x1b[35m\x1b[4mhttp://${config["host"]}:${port}\x1b[0m`);
+	  // console.log(`Running: \x1b[35m\x1b[4mhttp://${config["host"]}:${port}\x1b[0m`);
 	});
 }

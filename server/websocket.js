@@ -16,7 +16,7 @@ module.exports = function(config) {
   var players={};
 
   io.sockets.on("connection", function(socket) {
-    console.log("[\x1b[32m+\x1b[0m] "+socket.id)
+    // console.log("[\x1b[32m+\x1b[0m] "+socket.id)
     socket.emit("firstLoad",world)
     socket.on("playerUpdate",function (data){
       players[socket.id]=data
@@ -37,7 +37,7 @@ module.exports = function(config) {
       saveWorld()
     })
     socket.on("disconnect", function() {
-      console.log("[\x1b[31m-\x1b[0m] " + socket.id);
+      // console.log("[\x1b[31m-\x1b[0m] " + socket.id);
       delete players[socket.id]
     });
   });

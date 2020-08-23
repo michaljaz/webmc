@@ -6,7 +6,7 @@
     "start": "node start.js",
     "coffee": "coffee -o client/ -cw build/coffee/",
     "atlas": "node build/atlas.js",
-    "gitignore":"node build/gitignore.js"
+    "gitignore": "node build/gitignore.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,8 @@
     "http": "0.0.1-security",
     "opn": "^6.0.0",
     "path": "^0.12.7",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "strip-eof": "^2.0.0",
+    "terminal-kit": "^1.42.0"
   }
 }

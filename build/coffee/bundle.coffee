@@ -49,14 +49,14 @@ class CellTerrain
 	getCellForVoxel:(voxelX,voxelY,voxelZ)->
 		cellId=@vec3(@computeCellForVoxel(voxelX, voxelY, voxelZ)...)
 		return @cells[cellId]
-	setVoxel: (voxelX,voxelY,voxelZ,value)->
+	setVoxel:(voxelX,voxelY,voxelZ,value)->
 		cell=@getCellForVoxel voxelX,voxelY,voxelZ
 		if not cell 
 			cell=@addCellForVoxel voxelX,voxelY,voxelZ
 		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
 		cell[voff]=value
 		return
-	getVoxel: (voxelX,voxelY,voxelZ)->
+	getVoxel:(voxelX,voxelY,voxelZ)->
 		cell=@getCellForVoxel voxelX,voxelY,voxelZ
 		if not cell 
 			return 0
@@ -736,7 +736,7 @@ init = ()->
 	#First Person Controls
 	(()->
 		FPC = new FirstPersonControls({
-			canvas: document.querySelector("#c")
+			canvas
 			camera
 			micromove: 0.3
 		}).listen()
