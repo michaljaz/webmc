@@ -12,7 +12,7 @@ require("./server/express.js")(config)
 const stripEof = require('strip-eof');
 var term = require( 'terminal-kit' ).terminal ;
 term.clear()
-term.green((fs.readFileSync(__dirname+'/asciiLogo')))
+term.green((fs.readFileSync(__dirname+'/src/asciiLogo')))
 info()
 // // Get some user input
 

@@ -50,23 +50,21 @@ Po uruchomieniu serwera gra zostanie hostowana pod linkiem: <a href="http://loca
 
 DEMO gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a>
 
-<h3>Przydatne narzędzia:</h3>
+<h3>Screenshoty:</h3>
 
-```bash
-
-#Komilator coffeeScript
-npm run coffee
-
-#Ignorowanie folderu node_modules
-npm run gitignore
-
-#Generowanie atlasu tekstur
-npm run atlas
-
-```
-
-<img src="src/screenshot.png"
+<img src="src/screen1.png"
      alt="screenshot"
      style="float: left; margin-right: 10px;" />
+<img src="src/screen2.png"
+     alt="screenshot"
+     style="float: left; margin-right: 10px;" />
+<img src="src/screen3.png"
+     alt="screenshot"
+     style="float: left; margin-right: 10px;" />
+<img src="src/screen4.png"
+     alt="screenshot"
+     style="float: left; margin-right: 10px;" />
+
+
 
 
