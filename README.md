@@ -37,12 +37,12 @@ npm install
 
 ```bash
 
-#Uruchamianie serwera express i websocket
+#Uruchamianie konsoli
 npm start
 
 ```
 
-Po uruchomieniu serwera gra zostanie hostowana pod linkiem: <a href="http://localhost:8080">http://localhost:8080</a>
+Po uruchomieniu serwera gra zostanie (z defaultu) hostowana pod linkiem: <a href="http://localhost:8080">http://localhost:8080</a>
 
 
 

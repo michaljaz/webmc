@@ -9,7 +9,6 @@ require("./server/websocket.js")(config)
 require("./server/express.js")(config)
 
 // opn(`http://${config["host"]}:${config["express-port"]}`)
-const stripEof = require('strip-eof');
 var term = require( 'terminal-kit' ).terminal ;
 term.clear()
 term.green((fs.readFileSync(__dirname+'/src/asciiLogo')))
@@ -27,6 +26,7 @@ function help(){
 help\t- pomoc
 stop\t- zatrzymanie serwera
 open\t- uruchomienie przeglądarki pod adresem serwera
+list\t- wypisuje wszystkich aktywnych użytkowników
 clear\t- czyści consolę
 info\t- wypisuje informacje o serwerze
 `)
@@ -43,6 +43,8 @@ function com(command){
 		help()
 	}else if(command=="clear"){
 		term.clear()
+	}else if(command=="list"){
+		term("\nHERE WILL BE LIST OF USERS")
 	}else if(command=="open"){
 		opn(`http://${config["host"]}:${config["express-port"]}`)
 	}else if(command=="info"){
@@ -62,7 +64,8 @@ function incon(){
 				'?',
 				'open',
 				'clear',
-				'info'
+				'info',
+				'list'
 			] ,
 			autoCompleteHint: true ,
 			autoCompleteMenu: true ,

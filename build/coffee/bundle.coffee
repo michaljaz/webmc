@@ -1,9 +1,12 @@
 #Bundle.js
 
-import * as THREE from './module/build/three.module.js'
-import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js'
-import {FBXLoader} from './module/jsm/loaders/FBXLoader.js'
-import Stats from './module/jsm/libs/stats.module.js'
+import * as THREE from './../module/build/three.module.js'
+import {SkeletonUtils} from './../module/jsm/utils/SkeletonUtils.js'
+import {FBXLoader} from './../module/jsm/loaders/FBXLoader.js'
+import Stats from './../module/jsm/libs/stats.module.js'
+import {Terrain} from './mod/Terrain.js'
+import {FirstPersonControls} from './mod/FirstPersonControls.js'
+import {gpuInfo} from './mod/gpuInfo.js'
 
 scene=null
 materials=null
@@ -11,7 +14,6 @@ parameters=null
 canvas=null
 renderer=null
 camera=null
-gameState=null
 terrain=null
 cursor=null
 FPC=null
@@ -22,225 +24,10 @@ server=null
 playerObject=null
 inv_bar=null
 
-class CellTerrain
-	constructor: (options)->
-		@cellSize=options.cellSize
-		@cells={}
-		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-	vec3: (x,y,z)->
-		return "#{x}:#{y}:#{z}"
-	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
-		x=voxelX %% @cellSize|0
-		y=voxelY %% @cellSize|0
-		z=voxelZ %% @cellSize|0
-		return y*@cellSize*@cellSize+z*@cellSize+x;
-	computeCellForVoxel: (voxelX,voxelY,voxelZ) ->
-		cellX = Math.floor voxelX / @cellSize
-		cellY = Math.floor voxelY / @cellSize
-		cellZ = Math.floor voxelZ / @cellSize
-		return [cellX,cellY,cellZ]
-	addCellForVoxel:(voxelX,voxelY,voxelZ)->
-		cellId=@vec3(@computeCellForVoxel(voxelX,voxelY,voxelZ)...)
-		cell=@cells[cellId]
-		if not cell
-			cell=new Uint8Array(@cellSize*@cellSize*@cellSize)
-			@cells[cellId]=cell
-		return cell
-	getCellForVoxel:(voxelX,voxelY,voxelZ)->
-		cellId=@vec3(@computeCellForVoxel(voxelX, voxelY, voxelZ)...)
-		return @cells[cellId]
-	setVoxel:(voxelX,voxelY,voxelZ,value)->
-		cell=@getCellForVoxel voxelX,voxelY,voxelZ
-		if not cell 
-			cell=@addCellForVoxel voxelX,voxelY,voxelZ
-		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
-		cell[voff]=value
-		return
-	getVoxel:(voxelX,voxelY,voxelZ)->
-		cell=@getCellForVoxel voxelX,voxelY,voxelZ
-		if not cell 
-			return 0
-		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
-		return cell[voff]
-	getBuffer:(x,y,z)->
-		console.log(@cells[@vec3(x,y,z)])
-		return
-class Terrain
-	constructor: (options) ->
-		@cellSize=options.cellSize
-		@cellTerrain=new CellTerrain {
-			cellSize:@cellSize
-		}
-		@cellTerrain.setVoxel(0,0,0,2)
-		# @cellTerrain.getBuffer(0,0,0)
-		@cellsData={}
-		@blocks=options.blocks
-		@blocksMapping=options.blocksMapping
-		@material=options.material
-		@cells={}
-		@models={}
-		@camera=options.camera
-		@scene=options.scene
-		@toxelSize=options.toxelSize
-		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
-		x=voxelX %% @cellSize|0
-		y=voxelY %% @cellSize|0
-		z=voxelZ %% @cellSize|0
-		return [x,y,z]
-	computeCellForVoxel: (voxelX,voxelY,voxelZ) ->
-		cellX = Math.floor voxelX / @cellSize
-		cellY = Math.floor voxelY / @cellSize
-		cellZ = Math.floor voxelZ / @cellSize
-		return [cellX,cellY,cellZ]
-	vec3: (x,y,z) ->
-		x=parseInt x
-		y=parseInt y
-		z=parseInt z
-		return "#{x}:#{y}:#{z}"
-	setVoxel: (voxelX,voxelY,voxelZ,value) ->
-		worker.setVoxel voxelX,voxelY,voxelZ,value
-		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
-		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
-		cellId=@vec3(cell...)
-		if @cellsData[cellId] is undefined
-			@cellsData[cellId]={
-				[@vec3 voff...]:value
-			}
-		else
-			prevVox=@cellsData[cellId][@vec3(voff...)]
-			if prevVox isnt value
-				@cellsData[cellId][@vec3(voff...)]=value
-				@cellsData[cellId].needsUpdate=true
-				for nei in @neighbours
-					neiCellId=@vec3 @computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2])...
-					try
-						@cellsData[neiCellId].needsUpdate=true
-		@cellsData[cellId].needsUpdate=true
-		return
-	getVoxel: (voxelX,voxelY,voxelZ) ->
-		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
-		cellId=@vec3(cell...)
-		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
-		voxId=@vec3(voff...)
-		if @cellsData[cellId] isnt undefined
-			voxel=@cellsData[cellId][voxId]
-			if voxel isnt undefined
-				return voxel
-		return 0;
-	updateCells: ->
-		_this=@
-		Object.keys(@cellsData).forEach (id)->
-			if _this.cellsData[id].needsUpdate
-				worker.genCellGeo id.split(":")...
-			return 
-		return
-	updateCell: (data)->
-		# console.warn "SENDING  cell: #{data.info}" 
-		cellId=@vec3 data.info...
-		cell=data.cell
-		if @cellsData[cellId]!=undefined
-			if @cellsData[cellId].needsUpdate
-				mesh=@cells[cellId]
-				geometry=new THREE.BufferGeometry;
-				geometry.setAttribute 'position',new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
-				geometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
-				geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
-				if mesh is undefined
-					@cells[cellId]=new THREE.Mesh geometry,@material
-					@scene.add @cells[cellId]
-				else
-					@cells[cellId].geometry=geometry
-				@cellsData[cellId].needsUpdate=false
-		return
-	intersectsRay: (start,end) ->
-		start.x+=0.5
-		start.y+=0.5
-		start.z+=0.5
-		end.x+=0.5
-		end.y+=0.5
-		end.z+=0.5
-		dx = end.x - start.x
-		dy = end.y - start.y
-		dz = end.z - start.z
-		lenSq = dx * dx + dy * dy + dz * dz
-		len = Math.sqrt lenSq
-		dx /= len
-		dy /= len
-		dz /= len
-		t = 0.0;
-		ix = Math.floor start.x
-		iy = Math.floor start.y
-		iz = Math.floor start.z
-		stepX = if dx > 0 then 1 else -1
-		stepY = if dy > 0 then 1 else -1
-		stepZ = if dz > 0 then 1 else -1
-		txDelta = Math.abs(1 / dx)
-		tyDelta = Math.abs(1 / dy)
-		tzDelta = Math.abs(1 / dz)
-		xDist = if stepX > 0 then ix + 1 - start.x else start.x - ix
-		yDist = if stepY > 0 then iy + 1 - start.y else start.y - iy
-		zDist = if stepZ > 0 then iz + 1 - start.z else start.z - iz
-		txMax = if txDelta < Infinity then txDelta * xDist else Infinity
-		tyMax = if tyDelta < Infinity then tyDelta * yDist else Infinity
-		tzMax = if tzDelta < Infinity then tzDelta * zDist else Infinity
-		steppedIndex = -1
-		while t <= len
-			voxel = @getVoxel ix, iy, iz
-			if voxel
-				return {
-					position: [
-						start.x + t * dx,
-						start.y + t * dy,
-						start.z + t * dz,
-					],
-					normal: [
-						if steppedIndex is 0 then -stepX else 0,
-						if steppedIndex is 1 then -stepY else 0,
-						if steppedIndex is 2 then -stepZ else 0,
-					],
-					voxel,
-				}
-			if txMax < tyMax
-				if txMax < tzMax
-					ix += stepX
-					t = txMax
-					txMax += txDelta
-					steppedIndex = 0
-				else
-					iz += stepZ
-					t = tzMax
-					tzMax += tzDelta
-					steppedIndex = 2
-			else
-				if tyMax < tzMax
-					iy += stepY
-					t = tyMax
-					tyMax += tyDelta
-					steppedIndex = 1
-				else
-					iz += stepZ
-					t = tzMax
-					tzMax += tzDelta
-					steppedIndex = 2
-		return null
-	replaceWorld: (voxels)->
-		_this=@
-		Object.keys(voxels).forEach (id)->
-			if voxels[id] isnt _this.getVoxel id.split(":")...
-				_this.setVoxel id.split(":")...,voxels[id]
-	getRayBlock: ->
-		start = new THREE.Vector3().setFromMatrixPosition(@camera.matrixWorld)
-		end = new THREE.Vector3().set(0,0, 1).unproject(@camera)
-		intersection = @intersectsRay start, end
-		if intersection
-			posPlace = intersection.position.map (v, ndx) ->
-				return (v + intersection.normal[ndx] * 0.5)
-			posBreak = intersection.position.map (v, ndx) ->
-				return (v + intersection.normal[ndx] *-0.5)
-			return {posPlace,posBreak}
-		else
-			return false
+getNick=->
+	if document.location.search is ""
+		return false
+	return document.location.search.substring(1,document.location.search.length)
 class AssetLoader
 	constructor: (options)->
 		@assets={}
@@ -287,82 +74,6 @@ class AssetLoader
 		return this;
 	get: (assetName)->
 		return @assets[assetName]
-class FirstPersonControls
-	constructor: (options)->
-		@kc={
-			"w": 87,
-			"s": 83,
-			"a": 65,
-			"d": 68,
-			"space": 32,
-			"shift": 16
-		}
-		@keys={}
-		@canvas=options.canvas
-		@camera=options.camera
-		@micromove=options.micromove
-	ac: (qx, qy, qa, qf)->
-		m_x = -Math.sin(qa) * qf;
-		m_y = -Math.cos(qa) * qf;
-		r_x = qx - m_x;
-		r_y = qy - m_y;
-		return {
-			x: r_x,
-			y: r_y
-		}
-	camMicroMove: ->
-		if @keys[@kc["w"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(180), @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(180), @micromove).y
-		if @keys[@kc["s"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y, @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y, @micromove).y
-		if @keys[@kc["a"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y - THREE.MathUtils.degToRad(90), @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y - THREE.MathUtils.degToRad(90), @micromove).y
-		if @keys[@kc["d"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(90), @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(90), @micromove).y
-		if @keys[@kc["space"]]
-			@camera.position.y += @micromove
-		if @keys[@kc["shift"]]
-			@camera.position.y -= @micromove
-	lockPointer: ->
-		@canvas.requestPointerLock()
-		return
-	updatePosition: (e)->
-		FPC.camera.rotation.x -= THREE.MathUtils.degToRad e.movementY / 10
-		FPC.camera.rotation.y -= THREE.MathUtils.degToRad e.movementX / 10
-		if THREE.MathUtils.radToDeg( FPC.camera.rotation.x ) < -90
-			FPC.camera.rotation.x = THREE.MathUtils.degToRad -90
-		if THREE.MathUtils.radToDeg( FPC.camera.rotation.x ) > 90
-			FPC.camera.rotation.x = THREE.MathUtils.degToRad 90
-		return
-	lockChangeAlert: ->
-		if document.pointerLockElement is canvas or document.mozPointerLockElement is canvas
-			document.addEventListener "mousemove", FPC.updatePosition, false
-			$(".gameMenu").css "display", "none"
-			gameState="game"
-
-		else
-			document.removeEventListener "mousemove", FPC.updatePosition, false
-			$(".gameMenu").css "display", "block"
-			gameState="menu"
-		return
-	listen: ->
-		_this=this
-		$(window).keydown (z) ->
-			_this.keys[z.keyCode] = true
-			return
-		$(document).keyup (z) ->
-			delete _this.keys[z.keyCode]
-			return
-		$(".gameOn").click ->
-			_this.lockPointer()
-			return
-		document.addEventListener 'pointerlockchange', _this.lockChangeAlert, false
-		document.addEventListener 'mozpointerlockchange', _this.lockChangeAlert, false
-		return @
 class InventoryBar
 	constructor: (options)->
 		@boxSize=options.boxSize
@@ -501,7 +212,7 @@ class TerrainWorker
 		@worker=new Worker "workers/terrain.js", {type:'module'}
 		@worker.onmessage=(message)->
 			terrain.updateCell message.data
-			console.warn "RECIEVED CELL:",message.data.info
+			# console.warn "RECIEVED CELL:",message.data.info
 		@worker.postMessage {
 			type:'init'
 			data:{
@@ -551,7 +262,6 @@ init = ()->
 		directionalLight = new THREE.DirectionalLight 0x333333, 2
 		directionalLight.position.set(1, 1, 0.5).normalize()
 		scene.add directionalLight 
-		gameState="menu"
 		gpu=gpuInfo()
 		console.warn gpu.renderer
 	)()
@@ -671,6 +381,7 @@ init = ()->
 			material:worldMaterial
 			scene
 			camera
+			worker
 		})
 	)()
 	
@@ -759,7 +470,7 @@ init = ()->
 	#jquery events
 	(()->
 		$(document).mousedown (e)->
-			if gameState is "game"
+			if FPC.gameState is "game"
 				rayBlock=terrain.getRayBlock()
 				if rayBlock
 					if e.which is 1
@@ -804,7 +515,7 @@ render = ->
 	
 	#Player movement
 	(()->
-		if gameState is "game"
+		if FPC.gameState is "game"
 			server.socket.emit "playerUpdate", {
 				x:camera.position.x
 				y:camera.position.y
@@ -840,21 +551,7 @@ animate = ->
 		stats.end()
 	requestAnimationFrame animate
 	return
-gpuInfo = ->
-	gl = document.createElement('canvas').getContext('webgl')
-	if not gl
-		return {
-			error: "no webgl"
-		}
-	debugInfo = gl.getExtension('WEBGL_debug_renderer_info')
-	if debugInfo
-		return {
-			vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),
-			renderer:  gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL)
-		}
-	return {
-		error: "no WEBGL_debug_renderer_info"
-	}
+
 al=new AssetLoader
 $.get "assets/assetLoader.json?#{THREE.MathUtils.generateUUID()}", (assets)->
 	al.load assets,()->
