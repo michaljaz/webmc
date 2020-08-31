@@ -8,15 +8,13 @@
     <meta charset="utf-8">
 
     <!-- ICON -->
-    <link rel="icon" href="/assets/images/grass_block.png">
+    <link rel="icon" href="/game/assets/images/grass_block.png">
 
     <!-- CSS -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" href="/cdn/css/googleapis.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
-    <link rel="stylesheet" href="/cdn/css/main.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
     
     <!-- JS -->
     <script type="text/javascript" src="/cdn/js/jq.js?1234"></script>
@@ -27,24 +25,27 @@
 </head>
 <body>
 	<div class="container">
-		
 		<div class="row w-100">
 			<div class="col-lg-3 col-0 col-md-2">
 			</div>
 			<div class="col-lg-6 col-12 col-md-8">
-				<form class="p-5 text-center" action="/game/">
-
-				    <p class="h4 mb-4">Zaloguj się</p>
-				    <input type="text" id="defaultLoginFormEmail" class="form-control mb-4" placeholder="Nick" name="nick">
-				    <button class="btn btn-info btn-block my-4" type="submit">Dalej</button>
-
+				<form onsubmit="return handle(event)">
+					<div class="text-center p-5">
+					    <p class="h4 mb-4">Zaloguj się</p>
+					    <input type="text" id="loginVar" class="form-control mb-4" placeholder="Nick">
+					    <button class="btn btn-info btn-block my-4" type="submit">Dalej</button>
+					</div>
 				</form>
 			</div>
-			<div class="col-md-6">
-				<!-- HOW TO CONNECT TO REAL SERVER -->
-			</div>
 		</div>
-
 	</div>
+	<script>
+function handle(event){
+	event.preventDefault()
+	document.location.href=`/game/?${loginVar.value}`
+	return false;
+}
+
+	</script>
 </body>
 </html>

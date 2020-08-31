@@ -13,4 +13,5 @@ gpuInfo = ->
 	return {
 		error: "no WEBGL_debug_renderer_info"
 	}
+	
 export {gpuInfo}

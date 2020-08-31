@@ -41,4 +41,5 @@ class CellTerrain
 	getBuffer:(x,y,z)->
 		console.log(@cells[@vec3(x,y,z)])
 		return
+		
 export {CellTerrain}

@@ -1,24 +1,4 @@
 {
-  "snowflake1":{
-    "path":"assets/images/snowflakes/snowflake1.png",
-    "type":"texture"
-  },
-  "snowflake2":{
-    "path":"assets/images/snowflakes/snowflake2.png",
-    "type":"texture"
-  },
-  "snowflake3":{
-    "path":"assets/images/snowflakes/snowflake3.png",
-    "type":"texture"
-  },
-  "snowflake4":{
-    "path":"assets/images/snowflakes/snowflake4.png",
-    "type":"texture"
-  },
-  "snowflake5":{
-    "path":"assets/images/snowflakes/snowflake5.png",
-    "type":"texture"
-  },
   "steve":{
     "path":"assets/textures/steve.png",
     "type":"texture"

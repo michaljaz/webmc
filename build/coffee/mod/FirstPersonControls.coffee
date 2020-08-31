@@ -1,4 +1,5 @@
 import * as THREE from './../../module/build/three.module.js'
+
 class FirstPersonControls
 	constructor: (options)->
 		@kc={
@@ -83,4 +84,5 @@ class FirstPersonControls
 			_this.updatePosition(e)
 		, false
 		return @
+
 export {FirstPersonControls}

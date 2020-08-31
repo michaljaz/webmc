@@ -1,5 +1,6 @@
 import * as THREE from './../../module/build/three.module.js'
 import {CellTerrain} from './CellTerrain.js'
+
 class Terrain
 	constructor: (options) ->
 		@cellSize=options.cellSize
@@ -176,4 +177,5 @@ class Terrain
 			return {posPlace,posBreak}
 		else
 			return false
+
 export {Terrain}

@@ -1,5 +1,9 @@
 {
 	"websocket-port":35565,
 	"express-port":8080,
-	"host":"localhost"
+	"host":"localhost",
+	"realServer":{
+		"ip":"mc.grok.eu",
+		"port":25565
+	}
 }
