@@ -4,10 +4,21 @@ const http = require('http');
 var server = http.createServer();
 var io = require("socket.io")(server);
 
+function exec(cmd) {
+ const exec = require('child_process').exec;
+ return new Promise((resolve, reject) => {
+  exec(cmd, (error, stdout, stderr) => {
+   if (error) {
+    console.warn(error);
+   }
+   resolve(stdout? stdout : stderr);
+  });
+ });
+}
+
 var config = JSON.parse(fs.readFileSync(__dirname+'/config.json'))
 
 require("./server/express.js")(config)
-opn(`http://${config["host"]}:${config["express-port"]}`)
 
 //WebSocket
 	var world={};
@@ -52,13 +63,16 @@ opn(`http://${config["host"]}:${config["express-port"]}`)
 
 //Terminal client
 	var term = require( 'terminal-kit' ).terminal ;
+	term.windowTitle( "web-minecraft console" )
 	term.clear()
 	term.green((fs.readFileSync(__dirname+'/src/asciiLogo')))
 	info()
 	// // Get some user input
 
 	incon()
-
+	function log(message){
+		term(`\n${message}\n`)
+	}
 	function stop(){
 		term.brightGreen("\nServer stopped!\n")
 			process.exit()
@@ -68,6 +82,7 @@ opn(`http://${config["host"]}:${config["express-port"]}`)
 help\t- pomoc
 stop\t- zatrzymanie serwera
 open\t- uruchomienie przeglądarki pod adresem serwera
+copen\t- uruchamianie gry w przeglądarce chrome w wersji 'app'
 list\t- wypisuje wszystkich aktywnych użytkowników
 clear\t- czyści consolę
 info\t- wypisuje informacje o serwerze
@@ -91,6 +106,8 @@ info\t- wypisuje informacje o serwerze
 			})
 		}else if(command=="open"){
 			opn(`http://${config["host"]}:${config["express-port"]}`)
+		}else if(command=="copen"){
+			exec(`google-chrome --app=http://${config["host"]}:${config["express-port"]}`)
 		}else if(command=="info"){
 			info()
 		}else if(command!=""){
@@ -109,7 +126,8 @@ info\t- wypisuje informacje o serwerze
 					'open',
 					'clear',
 					'info',
-					'list'
+					'list',
+					'copen'
 				] ,
 				autoCompleteHint: true ,
 				autoCompleteMenu: true ,
