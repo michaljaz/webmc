@@ -18,15 +18,15 @@ function exec(cmd) {
 
 var config = JSON.parse(fs.readFileSync(__dirname+'/config.json'))
 
-require("./server/express.js")(config)
+require("./express.js")(config)
 
 //WebSocket
 	var world={};
 	function saveWorld(){
-		fs.writeFile(__dirname+"/server/savedWorld.json",JSON.stringify(world),function (callback){})
+		fs.writeFile(__dirname+"/savedWorld.json",JSON.stringify(world),function (callback){})
 	}
 	function restoreWorld(){
-		world=JSON.parse(fs.readFileSync(__dirname+'/server/savedWorld.json'))
+		world=JSON.parse(fs.readFileSync(__dirname+'/savedWorld.json'))
 	}
 	restoreWorld()
 	var players={};
@@ -65,7 +65,7 @@ require("./server/express.js")(config)
 	var term = require( 'terminal-kit' ).terminal ;
 	term.windowTitle( "web-minecraft console" )
 	term.clear()
-	term.green((fs.readFileSync(__dirname+'/src/asciiLogo')))
+	term.green((fs.readFileSync(__dirname+'/../src/asciiLogo')))
 	info()
 	// // Get some user input
 
