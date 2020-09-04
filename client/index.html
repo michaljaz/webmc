@@ -1,3 +1,108 @@
-<script>
-document.location.href='/game/'
-</script>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web-Minecraft</title>
+
+    <!-- META TAGS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <!-- ICON -->
+    <link rel="icon" href="/game/assets/images/grass_block.png">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <link rel="stylesheet" href="/cdn/css/googleapis.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.0/css/mdb.min.css">
+    <link rel="stylesheet" href="/cdn/css/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.3/gh-fork-ribbon.min.css" />
+    
+    <!-- JS -->
+    <script type="text/javascript" src="/cdn/js/jq.js?1234"></script>
+    <script type="text/javascript" src="/cdn/js/popper.min.js?1234"></script>
+    <script type="text/javascript" src="/cdn/js/bootstrap.min.js?1234"></script>
+    <script type="text/javascript" src="/cdn/js/mdb.min.js?1234"></script>
+    <script type="text/javascript" src="/cdn/js/socket.io.js?1234"></script>
+
+  </head>
+  <body>
+    <!-- RENDER CANVAS -->
+    <canvas id="c"></canvas>
+
+    <!-- LOADING SCREEN -->
+    <div class="initLoading">
+      <div class="loadingBar text-center">
+        <h1>Web-minecraft</h1>
+        <div class="status"></div>
+        <img src="assets/images/loadingx.gif">
+      </div>
+    </div>
+
+    <!-- GUI -->
+    <div class="gui">
+
+      <!-- INVENTORY BAR -->
+      <div class="inventoryBar">
+        <img class='inv_box inv_box_1'><img class='inv_box inv_box_2'><img class='inv_box inv_box_3'><img class='inv_box inv_box_4'><img class='inv_box inv_box_5'><img class='inv_box inv_box_6'><img class='inv_box inv_box_7'><img class='inv_box inv_box_8'><img class='inv_box inv_box_9'>
+      </div>
+
+      <!-- GAME MENU -->
+      <div class="gameMenu">
+        <div class="row">
+          <div class="col-4 pl-5 pt-4">
+            Web-minecraft v.1.0
+          </div>
+          <div class="col-4 text-center p-3">
+            <h3>Gra zatrzymana</h3>
+            <button class="gameOn btn btn-dark w-100">
+              Graj
+            </button>
+            <button class="btn btn-dark w-100" onclick="document.location.reload()">
+             Restart
+            </button>
+          </div>
+          <div class="col-4 p-3">
+            Kontrolki
+            <li>
+              W: do przodu
+            </li>
+            <li>
+              S: do tyłu
+            </li>
+            <li>
+              A: w lewo
+            </li>
+            <li>
+              D: w prawo
+            </li>
+            <li>
+              Spacja: do góry
+            </li>
+            <li>
+              Left Shift: do dołu
+            </li>
+            <li>
+              Klawisze 1,2,3: Zmiana trzymającego itemu
+            </li>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW CROSS -->
+      <div class="cross">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <line x1="15" y1="0" x2="15" y2="30" stroke="black" stroke-width="1" />
+          <line x1="0" y1="15" x2="30" y2="15" stroke="black" stroke-width="1" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- GITHUB RIBBON -->
+    <a href="https://github.com/michaljaz/web-minecraft"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_darkblue_121621.png" alt="Fork me on GitHub"></a>
+
+    <!-- GAME BUNDLE -->
+    <script type="module" src="bundle.js"></script>
+    
+  </body>
+</html>

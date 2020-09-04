@@ -1,14 +1,14 @@
 #Bundle.js
-import * as THREE from './../module/build/three.module.js'
-import {SkeletonUtils} from './../module/jsm/utils/SkeletonUtils.js'
-import Stats from './../module/jsm/libs/stats.module.js'
-import {Terrain} from './mod/Terrain.js'
-import {FirstPersonControls} from './mod/FirstPersonControls.js'
-import {gpuInfo} from './mod/gpuInfo.js'
-import {AssetLoader} from './mod/AssetLoader.js'
-import {InventoryBar} from './mod/InventoryBar.js'
-import {AnimatedTextureAtlas} from './mod/AnimatedTextureAtlas.js'
-import {Players} from './mod/Players.js'
+import * as THREE from './module/build/three.module.js'
+import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js'
+import Stats from './module/jsm/libs/stats.module.js'
+import {Terrain} from './module/Terrain.js'
+import {FirstPersonControls} from './module/FirstPersonControls.js'
+import {gpuInfo} from './module/gpuInfo.js'
+import {AssetLoader} from './module/AssetLoader.js'
+import {InventoryBar} from './module/InventoryBar.js'
+import {AnimatedTextureAtlas} from './module/AnimatedTextureAtlas.js'
+import {Players} from './module/Players.js'
 
 scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
 
@@ -50,7 +50,7 @@ class TerrainWorker
 
 init = ()->
 	if getNick() is "" or getNick() is "?"
-		document.location.href="/lobby/"
+		document.location.href="?"+prompt("Enter your nick:")
 	#Terrain worker
 	worker=new TerrainWorker
 	

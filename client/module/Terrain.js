@@ -2,7 +2,7 @@
 var Terrain,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
-import * as THREE from './../../module/build/three.module.js';
+import * as THREE from './../module/build/three.module.js';
 
 import {
   CellTerrain

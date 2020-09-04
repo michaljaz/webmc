@@ -1,5 +1,5 @@
-import {SkeletonUtils} from './../../module/jsm/utils/SkeletonUtils.js'
-import * as THREE from './../../module/build/three.module.js'
+import {SkeletonUtils} from './../module/jsm/utils/SkeletonUtils.js'
+import * as THREE from './../module/build/three.module.js'
 
 class Player
 	constructor: (options)->

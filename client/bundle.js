@@ -2,41 +2,41 @@
 //Bundle.js
 var FPC, TerrainWorker, al, animate, camera, canvas, cursor, getNick, init, inv_bar, materials, parameters, playerObject, render, renderer, scene, socket, stats, terrain, worker;
 
-import * as THREE from './../module/build/three.module.js';
+import * as THREE from './module/build/three.module.js';
 
 import {
   SkeletonUtils
-} from './../module/jsm/utils/SkeletonUtils.js';
+} from './module/jsm/utils/SkeletonUtils.js';
 
-import Stats from './../module/jsm/libs/stats.module.js';
+import Stats from './module/jsm/libs/stats.module.js';
 
 import {
   Terrain
-} from './mod/Terrain.js';
+} from './module/Terrain.js';
 
 import {
   FirstPersonControls
-} from './mod/FirstPersonControls.js';
+} from './module/FirstPersonControls.js';
 
 import {
   gpuInfo
-} from './mod/gpuInfo.js';
+} from './module/gpuInfo.js';
 
 import {
   AssetLoader
-} from './mod/AssetLoader.js';
+} from './module/AssetLoader.js';
 
 import {
   InventoryBar
-} from './mod/InventoryBar.js';
+} from './module/InventoryBar.js';
 
 import {
   AnimatedTextureAtlas
-} from './mod/AnimatedTextureAtlas.js';
+} from './module/AnimatedTextureAtlas.js';
 
 import {
   Players
-} from './mod/Players.js';
+} from './module/Players.js';
 
 scene = null;
 
@@ -115,7 +115,7 @@ TerrainWorker = class TerrainWorker {
 init = function() {
   var ATA, ambientLight, clouds, directionalLight, players;
   if (getNick() === "" || getNick() === "?") {
-    document.location.href = "/lobby/";
+    document.location.href = "?" + prompt("Enter your nick:");
   }
   //Terrain worker
   worker = new TerrainWorker();

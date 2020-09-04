@@ -3,9 +3,9 @@ var Player, Players;
 
 import {
   SkeletonUtils
-} from './../../module/jsm/utils/SkeletonUtils.js';
+} from './../module/jsm/utils/SkeletonUtils.js';
 
-import * as THREE from './../../module/build/three.module.js';
+import * as THREE from './../module/build/three.module.js';
 
 Player = class Player {
   constructor(options) {

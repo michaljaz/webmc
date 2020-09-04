@@ -1,4 +1,4 @@
-import * as THREE from './../../module/build/three.module.js'
+import * as THREE from './../module/build/three.module.js'
 import {CellTerrain} from './CellTerrain.js'
 
 class Terrain
