@@ -15,9 +15,6 @@ class AssetLoader
 		Object.keys(assets).forEach (p)->
 			type=assets[p].type
 			path=assets[p].path
-			dynamic=assets[p].dynamic;
-			if dynamic
-				path+="?"+THREE.MathUtils.generateUUID()
 			if type is "texture"
 				textureLoader.load path,(texture)->
 					_this.assets[p]=texture

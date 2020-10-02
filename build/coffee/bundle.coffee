@@ -49,8 +49,6 @@ class TerrainWorker
 		}
 
 init = ()->
-	if getNick() is "" or getNick() is "?"
-		document.location.href="?"+prompt("Enter your nick:")
 	#Terrain worker
 	worker=new TerrainWorker
 	
@@ -104,6 +102,7 @@ init = ()->
 
 	socket.on "connect",()->
 		console.log "Połączono z serverem!"
+		$('.loadingText').text "Wczytywanie terenu..."
 		socket.emit "initClient", {
 			nick:getNick()
 		}

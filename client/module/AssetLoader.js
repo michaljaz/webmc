@@ -23,13 +23,9 @@ AssetLoader = class AssetLoader {
       return assetsNumber++;
     });
     Object.keys(assets).forEach(function(p) {
-      var dynamic, img, path, type;
+      var img, path, type;
       type = assets[p].type;
       path = assets[p].path;
-      dynamic = assets[p].dynamic;
-      if (dynamic) {
-        path += "?" + THREE.MathUtils.generateUUID();
-      }
       if (type === "texture") {
         textureLoader.load(path, function(texture) {
           _this.assets[p] = texture;

@@ -17,8 +17,7 @@
   },
   "blocks":{
     "path":"assets/blocks/blocks.json",
-    "type":"text",
-    "dynamic":true
+    "type":"text"
   },
   "blocksAtlasFull":{
     "path":"assets/blocks/blocksAtlas-full.png",

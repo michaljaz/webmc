@@ -57,10 +57,6 @@ FirstPersonControls = class FirstPersonControls {
     }
   }
 
-  lockPointer() {
-    this.canvas.requestPointerLock();
-  }
-
   updatePosition(e) {
     if (this.gameState === "game") {
       this.camera.rotation.x -= THREE.MathUtils.degToRad(e.movementY / 10);
@@ -90,7 +86,8 @@ FirstPersonControls = class FirstPersonControls {
       delete _this.keys[z.keyCode];
     });
     $(".gameOn").click(function() {
-      _this.lockPointer();
+      console.log("clicked!");
+      _this.canvas.requestPointerLock();
     });
     document.addEventListener('pointerlockchange', function() {
       return _this.lockChangeAlert();

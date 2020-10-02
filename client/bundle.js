@@ -114,9 +114,6 @@ TerrainWorker = class TerrainWorker {
 
 init = function() {
   var ATA, ambientLight, clouds, directionalLight, players;
-  if (getNick() === "" || getNick() === "?") {
-    document.location.href = "?" + prompt("Enter your nick:");
-  }
   //Terrain worker
   worker = new TerrainWorker();
   
@@ -163,6 +160,7 @@ init = function() {
   socket = io.connect(`${al.get("host")}:${al.get("websocket-port")}`);
   socket.on("connect", function() {
     console.log("Połączono z serverem!");
+    $('.loadingText').text("Wczytywanie terenu...");
     socket.emit("initClient", {
       nick: getNick()
     });

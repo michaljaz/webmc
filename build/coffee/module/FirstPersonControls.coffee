@@ -41,9 +41,6 @@ class FirstPersonControls
 			@camera.position.y += @micromove
 		if @keys[@kc["shift"]]
 			@camera.position.y -= @micromove
-	lockPointer: ->
-		@canvas.requestPointerLock()
-		return
 	updatePosition: (e)->
 		if @gameState is "game"
 			@camera.rotation.x -= THREE.MathUtils.degToRad e.movementY / 10
@@ -72,7 +69,8 @@ class FirstPersonControls
 			delete _this.keys[z.keyCode]
 			return
 		$(".gameOn").click ->
-			_this.lockPointer()
+			console.log "clicked!"
+			_this.canvas.requestPointerLock()
 			return
 		document.addEventListener 'pointerlockchange', ()->
 			_this.lockChangeAlert()
