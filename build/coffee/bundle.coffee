@@ -13,7 +13,22 @@ import {Players} from './module/Players.js'
 scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
 
 getNick=->
-	return document.location.search.substring(1,document.location.search.length)
+	nameList = ['Time','Past','Future','Dev','Fly','Flying','Soar','Soaring','Power','Falling','Fall','Jump','Cliff','Mountain','Rend','Red','Blue','Green','Yellow','Gold','Demon','Demonic','Panda','Cat','Kitty','Kitten','Zero','Memory','Trooper','XX','Bandit','Fear','Light','Glow','Tread','Deep','Deeper','Deepest','Mine','Your','Worst','Enemy','Hostile','Force','Video','Game','Donkey','Mule','Colt','Cult','Cultist','Magnum','Gun','Assault','Recon','Trap','Trapper','Redeem','Code','Script','Writer','Near','Close','Open','Cube','Circle','Geo','Genome','Germ','Spaz','Shot','Echo','Beta','Alpha','Gamma','Omega','Seal','Squid','Money','Cash','Lord','King','Duke','Rest','Fire','Flame','Morrow','Break','Breaker','Numb','Ice','Cold','Rotten','Sick','Sickly','Janitor','Camel','Rooster','Sand','Desert','Dessert','Hurdle','Racer','Eraser','Erase','Big','Small','Short','Tall','Sith','Bounty','Hunter','Cracked','Broken','Sad','Happy','Joy','Joyful','Crimson','Destiny','Deceit','Lies','Lie','Honest','Destined','Bloxxer','Hawk','Eagle','Hawker','Walker','Zombie','Sarge','Capt','Captain','Punch','One','Two','Uno','Slice','Slash','Melt','Melted','Melting','Fell','Wolf','Hound','Legacy','Sharp','Dead','Mew','Chuckle','Bubba','Bubble','Sandwich','Smasher','Extreme','Multi','Universe','Ultimate','Death','Ready','Monkey','Elevator','Wrench','Grease','Head','Theme','Grand','Cool','Kid','Boy','Girl','Vortex','Paradox']
+
+	finalName = ""
+
+	randName=()->
+		finalName = nameList[Math.floor( Math.random() * nameList.length )]
+		finalName += nameList[Math.floor( Math.random() * nameList.length )]
+		if Math.random() > 0.5
+			finalName += nameList[Math.floor( Math.random() * nameList.length )]
+		return finalName
+	nick=document.location.hash.substring(1,document.location.hash.length)
+	if nick is ""
+		# nick="WebmcPlayer#{Math.floor(10000+Math.random()*10000)}"
+		nick=randName()
+	document.location.href="\##{nick}"
+	return nick
 class TerrainWorker
 	constructor: (options)->
 		@worker=new Worker "workers/terrain.js", {type:'module'}
@@ -103,8 +118,10 @@ init = ()->
 	socket.on "connect",()->
 		console.log "Połączono z serverem!"
 		$('.loadingText').text "Wczytywanie terenu..."
+		nick=getNick()
+		console.log "User nick: 	#{nick}"
 		socket.emit "initClient", {
-			nick:getNick()
+			nick
 		}
 		return
 	socket.on "blockUpdate",(block)->

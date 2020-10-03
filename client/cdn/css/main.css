@@ -63,3 +63,6 @@ canvas {
   width:60px;
   height:60px;
 }
+.githubRibbon{
+  position: absolute; top: 0; right: 0; border: 0;
+}
