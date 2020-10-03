@@ -53,8 +53,10 @@ var config = JSON.parse(fs.readFileSync(__dirname+'/config.json'))
 	io.sockets.on("connection", function(socket) {
 		// console.log("[\x1b[32m+\x1b[0m] "+socket.id)
 		socket.emit("firstLoad",world)
+
 		socket.on("initClient",function (data){
 			socketInfo[socket.id]=data
+			dolaczGracza(socket.id);
 		})
 		socket.on("playerUpdate",function (data){
 		  	players[socket.id]=data
@@ -73,6 +75,7 @@ var config = JSON.parse(fs.readFileSync(__dirname+'/config.json'))
 		})
 		socket.on("disconnect", function() {
 		  	// console.log("[\x1b[31m-\x1b[0m] " + socket.id);
+		  	odlaczGracza(socket.id);
 		  	delete players[socket.id]
 		  	delete socketInfo[socket.id]
 		});
@@ -160,4 +163,24 @@ info\t- wypisuje informacje o serwerze
 			stop() 
 		}
 	});
+
+//Łączenie z serwerem minecraftowym
+	const mineflayer = require('mineflayer')
+	function dolaczGracza(socketid){
+		socketInfo[socketid].bot = mineflayer.createBot({
+		  	host: config.realServer.ip,
+		  	port: config.realServer.port,
+		  	username: socketInfo[socketid].nick,
+		})
+
+		socketInfo[socketid].bot.on('chat', (username, message) => {
+		  	if (username === socketInfo[socketid].bot.username) return
+		  	socketInfo[socketid].bot.chat(message)
+		})
+	}
+
+	function odlaczGracza(socketid){
+		socketInfo[socketid].bot.end();
+	}
+
 

@@ -1,0 +1,11 @@
+[INFO]: Started logging...
+[Warning] onItemPlace handler was registered twice for redstone_torch
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for repeater
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for oak_sign
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for spruce_sign
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for birch_sign
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for acacia_sign
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for jungle_sign
+October 3rd 2020, 09:17:19 [Warning] onItemPlace handler was registered twice for dark_oak_sign
+October 3rd 2020, 09:17:19 [[32mINFO[39m]: Server listening on port 25565
+October 3rd 2020, 09:17:19 seed: 38015920
