@@ -7,7 +7,8 @@
     "coffee": "coffee -o client/ -cw build/coffee/",
     "atlas": "node build/atlas.js",
     "gitignore": "node build/gitignore.js",
-    "mcserver": "node server/mcserver.js"
+    "mcserver": "node server/mcserver.js",
+    "diagram": "drawio web-minecraft.xml"
   },
   "repository": {
     "type": "git",
