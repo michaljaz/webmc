@@ -173,6 +173,10 @@ info\t- wypisuje informacje o serwerze
 		  	username: socketInfo[socketid].nick,
 		})
 
+		socketInfo[socketid].bot._client.on("map_chunk", function(data) {
+	        io.to(socketid).emit("mapChunk",data)
+		});
+
 		socketInfo[socketid].bot.on('chat', (username, message) => {
 		  	if (username === socketInfo[socketid].bot.username) return
 		  	socketInfo[socketid].bot.chat(message)
@@ -182,5 +186,7 @@ info\t- wypisuje informacje o serwerze
 	function odlaczGracza(socketid){
 		socketInfo[socketid].bot.end();
 	}
+
+	
 
 

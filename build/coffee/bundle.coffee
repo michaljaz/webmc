@@ -123,6 +123,8 @@ init = ()->
 	socket.on "blockUpdate",(block)->
 		terrain.setVoxel block...
 		return
+	socket.on "mapChunk", (chunk)->
+		console.log chunk
 	players=new Players {socket,scene,al}
 	socket.on "playerUpdate",(data)->
 		players.update data
