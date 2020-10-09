@@ -110,8 +110,23 @@ info\t- wypisuje informacje o serwerze
 	`)
 	}
 	function info(){
-		term.gray(`\nSerwer websocket działa pod adresem: http://${config["host"]}:${config["websocket-port"]}\n`)
-		term.bold.magenta(`Serwer WWW działa pod adresem: http://${config["host"]}:${config["express-port"]}\n`)
+		term("\n")
+		term.table( [
+				[ 'Typ serwera' , `Adres serwera` ] ,
+				[ 'Serwer websocket' , `${config.host}:${config["websocket-port"]}` ] ,
+				[ 'Serwer express' , `${config.host}:${config["express-port"]}` ] ,
+				[ 'Serwer minecraftowy' , `${config.realServer.ip}:${config.realServer.port}` ] ,
+			] , {
+				hasBorder: true ,
+				contentHasMarkup: true ,
+				borderChars: 'lightRounded' ,
+				borderAttr: { color: 'blue' } ,
+				textAttr: { bgColor: 'default' } ,
+				firstRowTextAttr: { bgColor: 'blue' } ,
+				width: 60 ,
+				fit: true   // Activate all expand/shrink + wordWrap
+			}
+		) ;
 	}
 
 	function com(command){
