@@ -1,4 +1,7 @@
 # web-minecraft
+
+[![Join the chat at https://gitter.im/web-minecraft/community](https://badges.gitter.im/web-minecraft/community.svg)](https://gitter.im/web-minecraft/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 <i>Minecraft w przeglądarce!</i>
 
 > **Pro tip:** Przy uruchamianiu na lokalnej maszynie potrzebna jest najnowsza wersja node.js i npm.<br>
