@@ -65,7 +65,7 @@ server.listen config["websocket-port"]
 
 term.windowTitle "web-minecraft console"
 term.clear()
-term.green (fs.readFileSync(__dirname+'/../src/asciiLogo'))
+term.green (fs.readFileSync(__dirname+'/asciiLogo'))
 
 log=(message)->
 	term("\n#{message}\n")
