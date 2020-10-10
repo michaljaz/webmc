@@ -4,7 +4,7 @@
 
   fs = require("fs");
 
-  fs.writeFile(`${__dirname}/../.gitignore`, '.gitignore\nnode_modules\nminecraft/*', function(err) {
+  fs.writeFile(`${__dirname}/../.gitignore`, '.gitignore\nnode_modules\nminecraft/*\n!minecraft/server.properties\n!minecraft/eula.txt', function(err) {
     if (err) {
       return console.log(err);
     }

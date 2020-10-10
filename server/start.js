@@ -102,7 +102,7 @@
 
   term.clear();
 
-  term.green(fs.readFileSync(__dirname + '/asciiLogo'));
+  term.green(fs.readFileSync(__dirname + '/../src/asciiLogo'));
 
   log = function(message) {
     term(`\n${message}\n`);
