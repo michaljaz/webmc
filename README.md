@@ -23,19 +23,18 @@ cd web-minecraft
 npm install
 
 ```
-<h3>Uruchamianie gry</h3>
-
-```bash
-
-#Uruchamianie konsoli
-npm start
-
-#Po uruchomieniu serwera gra zostanie (z defaultu) hostowana pod linkiem: http://localhost:8080
-```
-
+<h3>Defaultowa konfiguracja:</h3>
+<img src="src/config.png"
+     alt="screenshot"
+     style="margin-right: 10px;" />
+<br>
+Można zmieniać konfigurację edytując plik <b>server/config.json</b>.
 <h3>Dla deweloperów</h3>
 
 ```bash
+
+#Uruchamianie konsoli i serwera node.js (Gra z defaultu hostowana pod linkiem: http://localhost:8080) 
+npm start
 
 #Generowanie atlasu tekstur
 npm run atlas
@@ -43,33 +42,30 @@ npm run atlas
 #Uruchamianie kompilatora coffeescript
 npm run coffee
 
-#Instalacja i uruchamianie serwera minecraftowego
+#Instalacja i uruchamianie serwera minecraftowego (Możesz też użyć swojego)
 npm run mcserver
 
 #Model gry
 npm run diagram
 ```
 
-
-
 <h3>DEMO</h3>
 
 Demonstracja gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a>
 
 <h3>Screenshoty:</h3>
-
 <img src="src/screen1.png"
      alt="screenshot"
-     style="float: left; margin-right: 10px;" />
+     style="margin-right: 10px;" />
 <img src="src/screen2.png"
      alt="screenshot"
-     style="float: left; margin-right: 10px;" />
+     style="margin-right: 10px;" />
 <img src="src/screen3.png"
      alt="screenshot"
      style="float: left; margin-right: 10px;" />
 <img src="src/screen4.png"
      alt="screenshot"
-     style="float: left; margin-right: 10px;" />
+     style="margin-right: 10px;" />
 
 
 
