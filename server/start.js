@@ -114,7 +114,7 @@
   };
 
   help = function() {
-    term.brightGreen("help\t- pomoc stop\t- zatrzymanie serwera open\t- uruchomienie przeglądarki pod adresem serwera copen\t- uruchamianie gry w przeglądarce chrome w wersji 'app' list\t- wypisuje wszystkich aktywnych użytkowników clear\t- czyści consolę info\t- wypisuje informacje o serwerze");
+    term.brightGreen("\n help\t- pomoc\n stop\t- zatrzymanie serwera\n open\t- uruchomienie przeglądarki pod adresem serwera\n copen\t- uruchamianie gry w przeglądarce chrome w wersji 'app'\n list\t- wypisuje wszystkich aktywnych użytkowników\n clear\t- czyści consolę\n info\t- wypisuje informacje o serwerze\n");
   };
 
   info = function() {
