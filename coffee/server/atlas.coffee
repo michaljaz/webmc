@@ -1,4 +1,3 @@
-
 path=require "path"
 fs=require "fs"
 Canvas=require "canvas"
@@ -27,13 +26,6 @@ ctx=canvas.getContext '2d'
 images={}
 textureMapping={}
 miniMapping={}
-
-NWD=(a,b)->
-    if b isnt 0
-        return NWD b,a%b
-    return a
-NWW=(a,b)->
-    return a*b/NWD a,b
 
 firstLoad=->
     folderName="../client/assets/blocks/images"

@@ -4,7 +4,7 @@
 
   fs = require("fs");
 
-  fs.writeFile(__dirname + "/../.gitignore", '.gitignore\nnode_modules', function(err) {
+  fs.writeFile(`${__dirname}/../.gitignore`, '.gitignore\nnode_modules\nminecraft/*', function(err) {
     if (err) {
       return console.log(err);
     }

@@ -8,18 +8,6 @@
 >  Instalacja CoffeeScripta nie jest wymagana do włączenia gry.<br>
 >  Zalecam grę włączać na przeglądarce Google Chrome</u>.<br>
 
-<h4>Szykujące się updaty:</h4>
-<li>
-	Dynamiczne ładowanie i odładowywanie chunków
-</li>
-<li>
-	Generowanie nieskończonego terenu
-</li>
-<li>
-	Połączenie z prawdziwym serwerem minecraftowym
-</li>
-
-
 
 <i>
 </i>
@@ -35,7 +23,6 @@ cd web-minecraft
 npm install
 
 ```
-
 <h3>Uruchamianie gry</h3>
 
 ```bash
@@ -43,15 +30,31 @@ npm install
 #Uruchamianie konsoli
 npm start
 
+#Po uruchomieniu serwera gra zostanie (z defaultu) hostowana pod linkiem: http://localhost:8080
 ```
 
-Po uruchomieniu serwera gra zostanie (z defaultu) hostowana pod linkiem: <a href="http://localhost:8080">http://localhost:8080</a>
+<h3>Dla deweloperów</h3>
+
+```bash
+
+#Generowanie atlasu tekstur
+npm run atlas
+
+#Uruchamianie kompilatora coffeescript
+npm run coffee
+
+#Instalacja i uruchamianie serwera minecraftowego
+npm run mcserver
+
+#Model gry
+npm run diagram
+```
 
 
 
 <h3>DEMO</h3>
 
-DEMO gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a>
+Demonstracja gry znajduje się pod adresem: <a href="http://mc.grok.eu">http://mc.grok.eu</a>
 
 <h3>Screenshoty:</h3>
 
