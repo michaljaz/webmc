@@ -8,7 +8,7 @@ app=express();
 term=require( 'terminal-kit' ).terminal
 mineflayer = require 'mineflayer'
 Chunk = require('prismarine-chunk')("1.16.1")
-
+vec3=require "vec3"
 exec=(cmd)->
 	exec = require('child_process').exec;
 	return new Promise (resolve, reject) ->
@@ -156,10 +156,9 @@ dolaczGracza=(socketid)->
 	}
 
 	socketInfo[socketid].bot._client.on "map_chunk",(packet)->
-		data=packet.chunkData
 		cell=new Chunk()
-		cell.load data,bitmap=packet.bitMap,fullChunk=false
-		io.to(socketid).emit "mapChunk",cell.toJson()
+		cell.load packet.chunkData,packet.bitMap,true,false
+		io.to(socketid).emit "mapChunk", cell.sections
 		return
 
 	socketInfo[socketid].bot.on 'chat',(username, message)->
