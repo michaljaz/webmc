@@ -7,7 +7,7 @@ class TerrainManager
 		@cellSize=options.cellSize
 		@models=options.models
 		@world={}
-		console.log("WORKER: TerrainManager started!")
+		console.log "WORKER: TerrainManager started!"
 	getToxel: (x,y)->
 		x-=1
 		y-=1

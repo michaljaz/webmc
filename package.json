@@ -29,6 +29,7 @@
     "mineflayer": "^2.30.0",
     "opn": "^6.0.0",
     "path": "^0.12.7",
+    "prismarine-chunk": "^1.20.3",
     "socket.io": "^2.3.0",
     "terminal-kit": "^1.43.0"
   }

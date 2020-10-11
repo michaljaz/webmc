@@ -3,10 +3,11 @@ opn=require "opn"
 http=require "http"
 server=http.createServer()
 io=require("socket.io")(server)
-express=require('express')
+express=require 'express' 
 app=express();
 term=require( 'terminal-kit' ).terminal
-mineflayer = require('mineflayer')
+mineflayer = require 'mineflayer'
+Chunk = require('prismarine-chunk')("1.16.1")
 
 exec=(cmd)->
 	exec = require('child_process').exec;
@@ -114,9 +115,9 @@ com=(command)->
 		Object.keys(socketInfo).forEach (p)->
 			term "\n#{p} (#{socketInfo[p].nick})"
 	else if command is "open"
-		opn("http://#{config["host"]}:#{config["express-port"]}")
+		opn "http://#{config["host"]}:#{config["express-port"]}"
 	else if command is "copen"
-		exec("google-chrome --app=http://#{config["host"]}:#{config["express-port"]}")
+		exec "google-chrome --app=http://#{config["host"]}:#{config["express-port"]}"
 	else if command is "info"
 		info()
 	else if command isnt ""
@@ -154,8 +155,11 @@ dolaczGracza=(socketid)->
 		username: socketInfo[socketid].nick
 	}
 
-	socketInfo[socketid].bot._client.on "map_chunk",(data)->
-		io.to(socketid).emit "mapChunk",data
+	socketInfo[socketid].bot._client.on "map_chunk",(packet)->
+		data=packet.chunkData
+		cell=new Chunk()
+		cell.load data,bitmap=packet.bitMap,fullChunk=false
+		io.to(socketid).emit "mapChunk",cell.toJson()
 		return
 
 	socketInfo[socketid].bot.on 'chat',(username, message)->
