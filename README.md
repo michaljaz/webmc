@@ -42,9 +42,6 @@ npm run atlas
 #Uruchamianie kompilatora coffeescript
 npm run coffee
 
-#Instalacja i uruchamianie serwera minecraftowego (Możesz też użyć swojego)
-npm run mcserver
-
 #Model gry
 npm run diagram
 ```
