@@ -24,9 +24,9 @@ npm start
 <br>
 <h4>Screenshoty:</h4>
 
-[<img src="https://i.ibb.co/kmhv1tF/screen1.png" alt="screen1" width="260">](https://www.youtube.com/watch?v=ltWosy4Z0Kw)
-[<img src="https://i.ibb.co/Q9WCSXR/screen2.png" alt="screen2" width="260">](https://www.youtube.com/watch?v=UWGSf08wQSc)
-[<img src="https://i.ibb.co/HKwR1kK/screen3.png" alt="screen3" width="260">](https://www.youtube.com/watch?v=ssWE0kXDGJE)
+[<img src="https://i.ibb.co/kmhv1tF/screen1.png" alt="screen1" width="260">](https://i.ibb.co/kmhv1tF/screen1.png)
+[<img src="https://i.ibb.co/Q9WCSXR/screen2.png" alt="screen2" width="260">](https://i.ibb.co/Q9WCSXR/screen2.png)
+[<img src="https://i.ibb.co/HKwR1kK/screen3.png" alt="screen3" width="260">](https://i.ibb.co/HKwR1kK/screen3.png)
 
 
 

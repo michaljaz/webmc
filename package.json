@@ -6,8 +6,7 @@
   "scripts": {
     "start": "node src/server/start.js",
     "coffee": "coffee -o src/ -cw src/coffee/",
-    "atlas": "node server/atlas.js",
-    "gitignore": "node server/gitignore.js",
+    "atlas": "node src/server/atlas.js",
     "diagram": "drawio web-minecraft.xml"
   },
   "repository": {
