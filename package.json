@@ -2,9 +2,8 @@
   "name": "web-minecraft",
   "version": "1.0.0",
   "description": "Render Minecrafta w przegladarce",
-  "main": "src/index.js",
   "scripts": {
-    "start": "node src/server/start.js",
+    "start": "node index.js",
     "coffee": "coffee -o src/ -cw src/coffee/",
     "atlas": "node src/server/atlas.js",
     "diagram": "drawio web-minecraft.xml"
