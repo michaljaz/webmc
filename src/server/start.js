@@ -6,11 +6,13 @@
 
   mineflayer = require('mineflayer');
 
-  Chunk = require('prismarine-chunk')("1.16.1");
-
   vec3 = require("vec3");
 
   fs = require("fs");
+
+  Chunk = require("prismarine-chunk")("1.16.1");
+
+  vec3 = require("vec3");
 
   world = {};
 
@@ -39,7 +41,6 @@
 
   webmc.on("join", function(socketid, data) {
     console.log("NEW: " + socketid);
-    webmc.send(socketid, "mapChunk", 123);
     //init socketInfo
     socketInfo[socketid] = data;
     //socketInfo add Bot
@@ -49,11 +50,12 @@
       username: socketInfo[socketid].nick
     });
     socketInfo[socketid].bot._client.on("map_chunk", function(packet) {
-      var cell;
-      cell = new Chunk();
-      cell.load(packet.chunkData, packet.bitMap, true, false);
-      webmc.send(socketid, "mapChunk", cell.sections);
+      // cell=new Chunk()
+      // cell.load packet.chunkData,packet.bitMap,false,true
+      // console.log cell.fromJson
+      webmc.send(socketid, "mapChunk", packet);
     });
+    // console.log packet
     socketInfo[socketid].bot.on('chat', function(username, message) {
       if (username === socketInfo[socketid].bot.username) {
         return;

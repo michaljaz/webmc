@@ -1,8 +1,9 @@
 webmc=require "./webmc"
 mineflayer = require 'mineflayer'
-Chunk = require('prismarine-chunk')("1.16.1")
 vec3=require "vec3"
 fs=require "fs"
+Chunk = require("prismarine-chunk")("1.16.1")
+vec3=require "vec3"
 
 world={}
 
@@ -24,7 +25,6 @@ webmc.on "blockUpdate", (x,y,z,v)->
 
 webmc.on "join", (socketid,data)->
 	console.log "NEW: "+socketid
-	webmc.send socketid, "mapChunk",123
 	#init socketInfo
 	socketInfo[socketid]=data
 
@@ -34,11 +34,15 @@ webmc.on "join", (socketid,data)->
 		port: webmc.config.realServer.port
 		username: socketInfo[socketid].nick
 	}
-	
+
 	socketInfo[socketid].bot._client.on "map_chunk",(packet)->
-		cell=new Chunk()
-		cell.load packet.chunkData,packet.bitMap,true,false
-		webmc.send socketid,"mapChunk", cell.sections
+
+		# cell=new Chunk()
+		# cell.load packet.chunkData,packet.bitMap,false,true
+		# console.log cell.fromJson
+		webmc.send socketid, "mapChunk", packet
+
+		# console.log packet
 		return
 	socketInfo[socketid].bot.on 'chat',(username, message)->
 		if username is socketInfo[socketid].bot.username
@@ -47,7 +51,7 @@ webmc.on "join", (socketid,data)->
 		return
 	#first world load
 	webmc.send socketid,"firstLoad",world
-	
+
 
 	return
 webmc.on "leave", (socketid)->

@@ -1,4 +1,5 @@
 #Bundle.js
+scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
 import * as THREE from './module/build/three.module.js'
 import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js'
 import Stats from './module/jsm/libs/stats.module.js'
@@ -9,28 +10,14 @@ import {AssetLoader} from './module/AssetLoader.js'
 import {InventoryBar} from './module/InventoryBar.js'
 import {AnimatedTextureAtlas} from './module/AnimatedTextureAtlas.js'
 import {Players} from './module/Players.js'
+import {RandomNick} from './module/RandomNick.js'
 
-scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
 
-getNick=->
-	nameList = ['Time','Past','Future','Dev','Fly','Flying','Soar','Soaring','Power','Falling','Fall','Jump','Cliff','Mountain','Rend','Red','Blue','Green','Yellow','Gold','Panda','Cat','Kitty','Kitten','Zero','Memory','Trooper','XX','Bandit','Fear','Light','Glow','Tread','Deep','Deeper','Deepest','Mine','Your','Worst','Enemy','Hostile','Force','Video','Game','Donkey','Mule','Colt','Cult','Cultist','Magnum','Gun','Assault','Recon','Trap','Trapper','Redeem','Code','Script','Writer','Near','Close','Open','Cube','Circle','Geo','Genome','Germ','Spaz','Shot','Echo','Beta','Alpha','Gamma','Omega','Seal','Squid','Money','Cash','Lord','King','Duke','Rest','Fire','Flame','Morrow','Break','Breaker','Numb','Ice','Cold','Rotten','Sick','Sickly','Janitor','Camel','Rooster','Sand','Desert','Dessert','Hurdle','Racer','Eraser','Erase','Big','Small','Short','Tall','Sith','Bounty','Hunter','Cracked','Broken','Sad','Happy','Joy','Joyful','Crimson','Destiny','Deceit','Lies','Lie','Honest','Destined','Bloxxer','Hawk','Eagle','Hawker','Walker','Zombie','Sarge','Capt','Captain','Punch','One','Two','Uno','Slice','Slash','Melt','Melted','Melting','Fell','Wolf','Hound','Legacy','Sharp','Dead','Mew','Chuckle','Bubba','Bubble','Sandwich','Smasher','Extreme','Multi','Universe','Ultimate','Death','Ready','Monkey','Elevator','Wrench','Grease','Head','Theme','Grand','Cool','Kid','Boy','Girl','Vortex','Paradox']
-	finalName = ""
-	nick=document.location.hash.substring(1,document.location.hash.length)
-	if nick is ""
-		# nick="WebmcPlayer#{Math.floor(10000+Math.random()*10000)}"
-		finalName = nameList[Math.floor( Math.random() * nameList.length )]
-		finalName += nameList[Math.floor( Math.random() * nameList.length )]
-		if Math.random() > 0.5
-			finalName += nameList[Math.floor( Math.random() * nameList.length )]
-		nick=finalName
-	document.location.href="\##{nick}"
-	return nick
 class TerrainWorker
 	constructor: (options)->
-		@worker=new Worker "workers/terrain.js", {type:'module'}
+		@worker=new Worker "module/TerrainWorker.js", {type:'module'}
 		@worker.onmessage=(message)->
 			terrain.updateCell message.data
-			# console.warn "RECIEVED CELL:",message.data.info
 		@worker.postMessage {
 			type:'init'
 			data:{
@@ -62,7 +49,7 @@ class TerrainWorker
 init = ()->
 	#Terrain worker
 	worker=new TerrainWorker
-	
+
 	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
@@ -80,7 +67,7 @@ init = ()->
 	scene.add ambientLight
 	directionalLight = new THREE.DirectionalLight 0x333333, 2
 	directionalLight.position.set(1, 1, 0.5).normalize()
-	scene.add directionalLight 
+	scene.add directionalLight
 	console.warn gpuInfo()
 
 	#Clouds
@@ -107,14 +94,16 @@ init = ()->
 		camera
 		worker
 	})
-	
+
 	#Socket.io setup
 	socket=io.connect "#{al.get("host")}:#{al.get("websocket-port")}"
-
 	socket.on "connect",()->
 		console.log "Połączono z serverem!"
 		$('.loadingText').text "Wczytywanie terenu..."
-		nick=getNick()
+		nick=document.location.hash.substring(1,document.location.hash.length)
+		if nick is ""
+			nick=RandomNick()
+			document.location.href="\##{nick}"
 		console.log "User nick: 	#{nick}"
 		socket.emit "initClient", {
 			nick:nick
@@ -138,7 +127,7 @@ init = ()->
 		stats.showPanel(0);
 		document.body.appendChild stats.dom
 		return
-	
+
 	#Inventory Bar
 	inv_bar = new InventoryBar({
 		boxSize: 60
@@ -155,13 +144,13 @@ init = ()->
 		"assets/images/bookshelf.png",
 		"assets/images/tnt.png"
 	]).setFocusOnly(1).listen()
-	
+
 	#First Person Controls
 	FPC = new FirstPersonControls({
 		canvas
 		camera
 		micromove: 0.3
-	}).listen()	
+	}).listen()
 
 	#Raycast cursor
 	cursor=new THREE.LineSegments(
@@ -174,7 +163,7 @@ init = ()->
 		}
 	)
 	scene.add cursor
-	
+
 	#jquery events
 	$(document).mousedown (e)->
 		if FPC.gameState is "game"
@@ -186,12 +175,12 @@ init = ()->
 				else
 					voxelId=inv_bar.activeBox
 					pos=rayBlock.posPlace
-				pos[0]=Math.floor pos[0] 
-				pos[1]=Math.floor pos[1] 
-				pos[2]=Math.floor pos[2] 
+				pos[0]=Math.floor pos[0]
+				pos[1]=Math.floor pos[1]
+				pos[2]=Math.floor pos[2]
 				socket.emit "blockUpdate",[pos...,voxelId]
 		return
-	
+
 	animate()
 	return
 render = ->
@@ -204,7 +193,7 @@ render = ->
 		renderer.setSize width,height,false
 		camera.aspect = width / height
 		camera.updateProjectionMatrix()
-	
+
 	#Player movement
 	if FPC.gameState is "game"
 		socket.emit "playerUpdate", {
@@ -215,7 +204,7 @@ render = ->
 			zyaw:camera.rotation.y+Math.PI
 		}
 		FPC.camMicroMove()
-	
+
 	#Update cursor
 	rayBlock=terrain.getRayBlock()
 	if rayBlock
@@ -227,10 +216,10 @@ render = ->
 		cursor.visible=true
 	else
 		cursor.visible=false
-	
+
+	#Rendering
 	renderer.render scene, camera
 	terrain.updateCells()
-
 	return
 animate = ->
 	try
@@ -245,8 +234,8 @@ $.get "assets/assetLoader.json", (assets)->
 	al.load assets,()->
 		console.log "AssetLoader: done loading!"
 		al.get("anvil").children[0].geometry.rotateX -Math.PI/2
-		al.get("anvil").children[0].geometry.translate 0,0.17,0 
-		al.get("anvil").children[0].geometry.translate 0,-0.25,0 
+		al.get("anvil").children[0].geometry.translate 0,0.17,0
+		al.get("anvil").children[0].geometry.translate 0,-0.25,0
 		init()
 		return
 	,al

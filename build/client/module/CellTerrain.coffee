@@ -19,7 +19,7 @@ class CellTerrain
 		cellId=@vec3(@computeCellForVoxel(voxelX,voxelY,voxelZ)...)
 		cell=@cells[cellId]
 		if not cell
-			cell=new Uint8Array(@cellSize*@cellSize*@cellSize)
+			cell=new Uint8Array @cellSize*@cellSize*@cellSize
 			@cells[cellId]=cell
 		return cell
 	getCellForVoxel:(voxelX,voxelY,voxelZ)->

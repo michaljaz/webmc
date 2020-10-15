@@ -61,7 +61,7 @@ class TerrainManager
 				return [
 					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[0], },
 					{ pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], }, 
+					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
 					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
 					{ pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
 					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[3], }
@@ -104,9 +104,9 @@ class TerrainManager
 				vertex.pos[0]+=pos[0]
 				vertex.pos[1]+=pos[1]
 				vertex.pos[2]+=pos[2]
-				positions.push vertex.pos... 
+				positions.push vertex.pos...
 				normals.push vertex.norm...
-				uvs.push vertex.uv... 
+				uvs.push vertex.uv...
 			return
 		addGeo=(geo,pos)->
 			posi=geo.position.array
@@ -116,7 +116,7 @@ class TerrainManager
 				positions.push posi[i]+pos[i%3]
 			normals.push norm...
 			uvs.push uv...
-			return 
+			return
 		for i in [0..@cellSize-1]
 			for j in [0..@cellSize-1]
 				for k in [0..@cellSize-1]
@@ -129,13 +129,13 @@ class TerrainManager
 							if not @blocks[@getVoxel(pos[0]-1,pos[1],pos[2])].isBlock
 								addFace "px",pos,voxel
 							if not @blocks[@getVoxel(pos[0],pos[1]-1,pos[2])].isBlock
-								addFace "ny",pos,voxel 
+								addFace "ny",pos,voxel
 							if not @blocks[@getVoxel(pos[0],pos[1]+1,pos[2])].isBlock
-								addFace "py",pos,voxel 
+								addFace "py",pos,voxel
 							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]+1)].isBlock
-								addFace "pz",pos,voxel 
+								addFace "pz",pos,voxel
 							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]-1)].isBlock
-								addFace "nz",pos,voxel 
+								addFace "nz",pos,voxel
 						else
 							geo=@models[@blocks[voxel].model]
 							addGeo geo,pos

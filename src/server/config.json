@@ -3,7 +3,7 @@
 	"express-port":8080,
 	"host":"localhost",
 	"realServer":{
-		"ip":"localhost",
+		"ip":"mc.grok.eu",
 		"port":25565
 	}
 }
