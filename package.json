@@ -5,7 +5,7 @@
   "scripts": {
     "start": "electron .",
     "coffee": "coffee -o src/ -cw coffee/",
-    "atlas": "node src/server/atlas.js"
+    "atlas": "node src/atlas.js"
   },
   "main":"src/index.js",
   "repository": {
