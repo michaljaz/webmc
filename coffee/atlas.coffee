@@ -14,9 +14,9 @@ loadedImages=0
 atlasSize=36
 miniAtlasSize=27
 
-path1=__dirname+"/../client/assets/blocks/blocksAtlas-full.png"
-path2=__dirname+"/../client/assets/blocks/blocksMapping-full.json"
-path3=__dirname+"/../client/assets/blocks/blocksMapping.json"
+path1=__dirname+"/client/assets/blocks/blocksAtlas-full.png"
+path2=__dirname+"/client/assets/blocks/blocksMapping-full.json"
+path3=__dirname+"/client/assets/blocks/blocksMapping.json"
 
 
 
@@ -28,7 +28,7 @@ textureMapping={}
 miniMapping={}
 
 firstLoad=->
-    folderName="../client/assets/blocks/images"
+    folderName="client/assets/blocks/images"
     directoryPath=__dirname+"/"+folderName
     fs.readdir directoryPath, (err, files)->
         files.forEach (file)->
@@ -49,7 +49,7 @@ addImageToLoad=(filePath,name)->
 forEachToxel=->
     Object.keys(images).forEach (name)->
         img=images[name]
-        addToxelToAtlas img,name 
+        addToxelToAtlas img,name
     updateAtlas()
 addToxelToAtlas=(img,name)->
     w=img.width/16

@@ -30,11 +30,11 @@
 
   miniAtlasSize = 27;
 
-  path1 = __dirname + "/../client/assets/blocks/blocksAtlas-full.png";
+  path1 = __dirname + "/client/assets/blocks/blocksAtlas-full.png";
 
-  path2 = __dirname + "/../client/assets/blocks/blocksMapping-full.json";
+  path2 = __dirname + "/client/assets/blocks/blocksMapping-full.json";
 
-  path3 = __dirname + "/../client/assets/blocks/blocksMapping.json";
+  path3 = __dirname + "/client/assets/blocks/blocksMapping.json";
 
   canvas = createCanvas(atlasSize * 16, atlasSize * 16);
 
@@ -48,7 +48,7 @@
 
   firstLoad = function() {
     var directoryPath, folderName;
-    folderName = "../client/assets/blocks/images";
+    folderName = "client/assets/blocks/images";
     directoryPath = __dirname + "/" + folderName;
     fs.readdir(directoryPath, function(err, files) {
       files.forEach(function(file) {
