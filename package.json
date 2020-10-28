@@ -4,7 +4,7 @@
   "description": "Render Minecrafta w przegladarce",
   "scripts": {
     "start": "electron .",
-    "coffee": "coffee -o src/ -cw build/",
+    "coffee": "coffee -o src/ -cw coffee/",
     "atlas": "node src/server/atlas.js"
   },
   "main":"src/index.js",
