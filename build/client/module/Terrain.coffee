@@ -7,7 +7,6 @@ class Terrain
 		@cellTerrain=new CellTerrain {
 			cellSize:@cellSize
 		}
-		# @cellTerrain.getBuffer(0,0,0)
 		@cellsData={}
 		@blocks=options.blocks
 		@blocksMapping=options.blocksMapping
@@ -69,10 +68,10 @@ class Terrain
 		Object.keys(@cellsData).forEach (id)->
 			if _this.cellsData[id].needsUpdate
 				_this.worker.genCellGeo id.split(":")...
-			return 
+			return
 		return
 	updateCell: (data)->
-		# console.warn "SENDING  cell: #{data.info}" 
+		# console.warn "SENDING  cell: #{data.info}"
 		cellId=@vec3 data.info...
 		cell=data.cell
 		if @cellsData[cellId]!=undefined

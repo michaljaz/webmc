@@ -50,20 +50,18 @@ class FirstPersonControls
 			if THREE.MathUtils.radToDeg( @camera.rotation.x ) > 90
 				@camera.rotation.x = THREE.MathUtils.degToRad 90
 		return
-	lockChangeAlert: ->
-		_this=@
-		@handler=
-		if document.pointerLockElement is @canvas or document.mozPointerLockElement is @canvas
-			$(".gameMenu").css "display", "none"
-			@gameState="game"
-		else
-			$(".gameMenu").css "display", "block"
-			@gameState="menu"
-		return
 	listen: ->
 		_this=@
 		$(window).keydown (z) ->
 			_this.keys[z.keyCode] = true
+			#If click escape
+			if z.keyCode is 27
+				console.log _this.gameState
+				if _this.gameState is "menu"
+					_this.canvas.requestPointerLock()
+				else
+					document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock;
+					document.exitPointerLock();
 			return
 		$(document).keyup (z) ->
 			delete _this.keys[z.keyCode]
@@ -72,12 +70,18 @@ class FirstPersonControls
 			console.log "clicked!"
 			_this.canvas.requestPointerLock()
 			return
-		document.addEventListener 'pointerlockchange', ()->
-			_this.lockChangeAlert()
-		, false
-		document.addEventListener 'mozpointerlockchange', ()->
-			_this.lockChangeAlert()
-		, false
+		lockChangeAlert=()->
+			if document.pointerLockElement is _this.canvas or document.mozPointerLockElement is _this.canvas
+				_this.gameState="game"
+				$(".gameMenu").css "display", "none"
+				console.log("GAME")
+			else
+				_this.gameState="menu"
+				$(".gameMenu").css "display", "block"
+				console.log("MENU")
+			return
+		document.addEventListener 'pointerlockchange', lockChangeAlert, false
+		document.addEventListener 'mozpointerlockchange', lockChangeAlert, false
 		document.addEventListener "mousemove", (e)->
 			_this.updatePosition(e)
 		, false

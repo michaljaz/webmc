@@ -14,7 +14,6 @@ Terrain = class Terrain {
     this.cellTerrain = new CellTerrain({
       cellSize: this.cellSize
     });
-    // @cellTerrain.getBuffer(0,0,0)
     this.cellsData = {};
     this.blocks = options.blocks;
     this.blocksMapping = options.blocksMapping;
@@ -106,7 +105,7 @@ Terrain = class Terrain {
 
   updateCell(data) {
     var cell, cellId, geometry, mesh;
-    // console.warn "SENDING  cell: #{data.info}" 
+    // console.warn "SENDING  cell: #{data.info}"
     cellId = this.vec3(...data.info);
     cell = data.cell;
     if (this.cellsData[cellId] !== void 0) {

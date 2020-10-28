@@ -172,9 +172,8 @@ init = function() {
   socket.on("blockUpdate", function(block) {
     terrain.setVoxel(...block);
   });
-  socket.on("mapChunk", function(chunk) {
-    return console.log(chunk);
-  });
+  socket.on("mapChunk", function(chunk) {});
+  // console.log chunk
   players = new Players({socket, scene, al});
   socket.on("playerUpdate", function(data) {
     players.update(data);

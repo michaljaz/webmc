@@ -70,17 +70,21 @@ FirstPersonControls = class FirstPersonControls {
     }
   }
 
-  lockChangeAlert() {
-    var _this;
-    _this = this;
-    this.handler = document.pointerLockElement === this.canvas || document.mozPointerLockElement === this.canvas ? ($(".gameMenu").css("display", "none"), this.gameState = "game") : ($(".gameMenu").css("display", "block"), this.gameState = "menu");
-  }
-
   listen() {
-    var _this;
+    var _this, lockChangeAlert;
     _this = this;
     $(window).keydown(function(z) {
       _this.keys[z.keyCode] = true;
+      //If click escape
+      if (z.keyCode === 27) {
+        console.log(_this.gameState);
+        if (_this.gameState === "menu") {
+          _this.canvas.requestPointerLock();
+        } else {
+          document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+          document.exitPointerLock();
+        }
+      }
     });
     $(document).keyup(function(z) {
       delete _this.keys[z.keyCode];
@@ -89,12 +93,19 @@ FirstPersonControls = class FirstPersonControls {
       console.log("clicked!");
       _this.canvas.requestPointerLock();
     });
-    document.addEventListener('pointerlockchange', function() {
-      return _this.lockChangeAlert();
-    }, false);
-    document.addEventListener('mozpointerlockchange', function() {
-      return _this.lockChangeAlert();
-    }, false);
+    lockChangeAlert = function() {
+      if (document.pointerLockElement === _this.canvas || document.mozPointerLockElement === _this.canvas) {
+        _this.gameState = "game";
+        $(".gameMenu").css("display", "none");
+        console.log("GAME");
+      } else {
+        _this.gameState = "menu";
+        $(".gameMenu").css("display", "block");
+        console.log("MENU");
+      }
+    };
+    document.addEventListener('pointerlockchange', lockChangeAlert, false);
+    document.addEventListener('mozpointerlockchange', lockChangeAlert, false);
     document.addEventListener("mousemove", function(e) {
       return _this.updatePosition(e);
     }, false);
