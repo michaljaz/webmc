@@ -112,9 +112,12 @@ TerrainWorker = class TerrainWorker {
 };
 
 init = function() {
-  var ATA, ambientLight, clouds, directionalLight, players;
+  var ATA, ambientLight, chunkWorker, clouds, directionalLight, players;
   //Terrain worker
   worker = new TerrainWorker();
+  chunkWorker = new Worker("module/ChunkWorker.js", {
+    type: 'module'
+  });
   //canvas,renderer,camera,lights
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -172,8 +175,13 @@ init = function() {
   socket.on("blockUpdate", function(block) {
     terrain.setVoxel(...block);
   });
-  socket.on("mapChunk", function(chunk) {});
-  // console.log chunk
+  socket.on("mapChunk", function(sections, x, z) {
+    // console.log("Recieved mapChunk "+x+" "+z)
+    return chunkWorker.postMessage({
+      type: "computeSections",
+      data: {sections, x, z}
+    });
+  });
   players = new Players({socket, scene, al});
   socket.on("playerUpdate", function(data) {
     players.update(data);

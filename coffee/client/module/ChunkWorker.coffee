@@ -1,0 +1,82 @@
+class BitArray
+  constructor: (options)->
+    if options is null
+      return
+    if not options.bitsPerValue > 0
+      console.error 'bits per value must at least 1'
+    if not (options.bitsPerValue <= 32)
+      console.error 'bits per value exceeds 32'
+    valuesPerLong = Math.floor 64 / options.bitsPerValue
+    length = Math.ceil(options.capacity / valuesPerLong)
+    if not options.data
+      options.data = Array(length * 2).fill(0)
+    valueMask = (1 << options.bitsPerValue) - 1
+
+    @data = options.data
+    @capacity = options.capacity
+    @bitsPerValue = options.bitsPerValue
+    @valuesPerLong = valuesPerLong
+    @valueMask = valueMask
+    return
+  get:(index)->
+    if not (index >= 0 && index < @capacity)
+      console.error 'index is out of bounds'
+    startLongIndex = Math.floor index / @valuesPerLong
+    indexInLong = (index - startLongIndex * @valuesPerLong) * @bitsPerValue
+    if indexInLong >= 32
+      indexInStartLong = indexInLong - 32
+      startLong = @data[startLongIndex * 2 + 1]
+      return (startLong >>> indexInStartLong) & @valueMask
+    startLong = @data[startLongIndex * 2]
+    indexInStartLong = indexInLong
+    result = startLong >>> indexInStartLong
+    endBitOffset = indexInStartLong + @bitsPerValue
+    if endBitOffset > 32
+      endLong = @data[startLongIndex * 2 + 1]
+      result |= endLong << (32 - indexInStartLong)
+    return result & @valueMask
+  length: () ->
+    return @data.length / 2
+  getBitsPerValue: ()->
+    return @bitsPerValue
+
+class ChunkDecoder
+  constructor: (options)->
+    #NOTHING
+  getBlockIndex: (pos)->
+    return (pos.y << 8) | (pos.z << 4) | pos.x
+  computeSections: (packet)->
+    sections=packet.sections
+    num=0
+    for i in sections
+      num+=1
+      if i isnt null
+        solidBlockCount=i.solidBlockCount
+        palette=i.palette
+        data=new BitArray i.data
+        pos={
+          x:0
+          y:0
+          z:0
+        }
+        base=[]
+        for x in [0..15]
+          for y in [0..15]
+            for z in [0..255]
+              base.push(data.get(@getBlockIndex({x,y,z})))
+        console.log "Computed chunk section "+packet.x+" "+packet.z+" "+num
+
+
+addEventListener "message", (e)->
+	fn = handlers[e.data.type]
+	if not fn
+		throw new Error('no handler for type: ' + e.data.type)
+	fn(e.data.data)
+	return
+
+cd=new ChunkDecoder
+
+handlers={
+  computeSections:(data)->
+    cd.computeSections data
+}

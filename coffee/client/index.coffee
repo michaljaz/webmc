@@ -12,7 +12,6 @@ import {AnimatedTextureAtlas} from './module/AnimatedTextureAtlas.js'
 import {Players} from './module/Players.js'
 import {RandomNick} from './module/RandomNick.js'
 
-
 class TerrainWorker
 	constructor: (options)->
 		@worker=new Worker "module/TerrainWorker.js", {type:'module'}
@@ -47,8 +46,11 @@ class TerrainWorker
 		}
 
 init = ()->
+
 	#Terrain worker
 	worker=new TerrainWorker
+
+	chunkWorker=new Worker "module/ChunkWorker.js", {type:'module'}
 
 	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
@@ -112,8 +114,14 @@ init = ()->
 	socket.on "blockUpdate",(block)->
 		terrain.setVoxel block...
 		return
-	socket.on "mapChunk", (chunk)->
-		# console.log chunk
+	socket.on "mapChunk", (sections,x,z)->
+		# console.log("Recieved mapChunk "+x+" "+z)
+		chunkWorker.postMessage {
+			type:"computeSections"
+			data:{
+				sections,x,z
+			}
+		}
 	players=new Players {socket,scene,al}
 	socket.on "playerUpdate",(data)->
 		players.update data

@@ -54,10 +54,9 @@ module.exports=(config)->
 			#On recieve real Map Chunk
 			socketInfo[socket.id].bot._client.on "map_chunk",(packet)->
 
-				# cell=new Chunk()
-				# cell.load packet.chunkData,packet.bitMap,false,true
-				# console.log cell.fromJson
-				io.to(socket.id).emit "mapChunk", packet
+				cell=new Chunk()
+				cell.load packet.chunkData,packet.bitMap,false,true
+				io.to(socket.id).emit "mapChunk", cell.sections,packet.x,packet.z
 
 				# console.log packet
 				return
