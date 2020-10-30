@@ -62,9 +62,9 @@ class ChunkDecoder
         base=[]
         for x in [0..15]
           for y in [0..15]
-            for z in [0..255]
+            for z in [0..15]
               base.push(data.get(@getBlockIndex({x,y,z})))
-        console.log "Computed chunk section "+packet.x+" "+packet.z+" "+num
+        console.log "Computed chunk section "+packet.x+" "+packet.z+" "+num, base
 
 
 addEventListener "message", (e)->

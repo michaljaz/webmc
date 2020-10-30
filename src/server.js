@@ -69,7 +69,7 @@
       });
       socket.on("playerUpdate", function(data) {
         players[socket.id] = data;
-        return io.sockets.emit("playerUpdate", data);
+        return io.sockets.emit("playerUpdate", players);
       });
       socket.on("blockUpdate", function(block) {
         world[`${block[0]}:${block[1]}:${block[2]}`] = block[3];

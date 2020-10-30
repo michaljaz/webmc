@@ -3,21 +3,38 @@ import {CellTerrain} from './CellTerrain.js'
 
 class Terrain
 	constructor: (options) ->
-		@cellSize=options.cellSize
-		@cellTerrain=new CellTerrain {
-			cellSize:@cellSize
-		}
 		@cellsData={}
-		@blocks=options.blocks
-		@blocksMapping=options.blocksMapping
-		@material=options.material
 		@cells={}
 		@models={}
+		@cellSize=options.cellSize
+		@material=options.material
 		@camera=options.camera
 		@scene=options.scene
 		@toxelSize=options.toxelSize
+		@al=options.al
+		@cellTerrain=new CellTerrain {
+			cellSize:@cellSize
+		}
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-		@worker=options.worker
+		_this=@
+		@worker=new Worker "./module/TerrainWorker.js", {type:'module'}
+		console.log @worker
+		@worker.onmessage=(message)->
+			_this.updateCell message.data
+		@worker.postMessage {
+			type:'init'
+			data:{
+				models:{
+					anvil:{
+						@al.get("anvil").children[0].geometry.attributes...
+					}
+				}
+				blocks: @al.get "blocks"
+				blocksMapping: @al.get "blocksMapping"
+				toxelSize: @toxelSize
+				cellSize: @cellSize
+			}
+		}
 	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
 		x=voxelX %% @cellSize|0
 		y=voxelY %% @cellSize|0
@@ -34,7 +51,7 @@ class Terrain
 		z=parseInt z
 		return "#{x}:#{y}:#{z}"
 	setVoxel: (voxelX,voxelY,voxelZ,value) ->
-		@worker.setVoxel voxelX,voxelY,voxelZ,value
+		@_setVoxel voxelX,voxelY,voxelZ,value
 		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
 		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
 		cellId=@vec3(cell...)
@@ -67,7 +84,7 @@ class Terrain
 		_this=@
 		Object.keys(@cellsData).forEach (id)->
 			if _this.cellsData[id].needsUpdate
-				_this.worker.genCellGeo id.split(":")...
+				_this._genCellGeo id.split(":")...
 			return
 		return
 	updateCell: (data)->
@@ -176,5 +193,17 @@ class Terrain
 			return {posPlace,posBreak}
 		else
 			return false
-
+	_setVoxel: (voxelX,voxelY,voxelZ,value)->
+		@worker.postMessage {
+			type:"setVoxel"
+			data:[voxelX,voxelY,voxelZ,value]
+		}
+	_genCellGeo: (cellX,cellY,cellZ)->
+		cellX=parseInt cellX
+		cellY=parseInt cellY
+		cellZ=parseInt cellZ
+		@worker.postMessage {
+			type:"genCellGeo"
+			data:[cellX,cellY,cellZ]
+		}
 export {Terrain}

@@ -89,12 +89,12 @@
           base = [];
           for (x = k = 0; k <= 15; x = ++k) {
             for (y = l = 0; l <= 15; y = ++l) {
-              for (z = m = 0; m <= 255; z = ++m) {
+              for (z = m = 0; m <= 15; z = ++m) {
                 base.push(data.get(this.getBlockIndex({x, y, z})));
               }
             }
           }
-          results.push(console.log("Computed chunk section " + packet.x + " " + packet.z + " " + num));
+          results.push(console.log("Computed chunk section " + packet.x + " " + packet.z + " " + num, base));
         } else {
           results.push(void 0);
         }

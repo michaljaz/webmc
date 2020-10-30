@@ -71,7 +71,7 @@ module.exports=(config)->
 			return
 		socket.on "playerUpdate",(data)->
 			players[socket.id]=data
-			io.sockets.emit "playerUpdate", data
+			io.sockets.emit "playerUpdate", players
 		socket.on "blockUpdate",(block)->
 			world["#{block[0]}:#{block[1]}:#{block[2]}"]=block[3]
 			if block[3] is 0

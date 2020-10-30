@@ -10,21 +10,40 @@ import {
 
 Terrain = class Terrain {
   constructor(options) {
-    this.cellSize = options.cellSize;
-    this.cellTerrain = new CellTerrain({
-      cellSize: this.cellSize
-    });
+    var _this;
     this.cellsData = {};
-    this.blocks = options.blocks;
-    this.blocksMapping = options.blocksMapping;
-    this.material = options.material;
     this.cells = {};
     this.models = {};
+    this.cellSize = options.cellSize;
+    this.material = options.material;
     this.camera = options.camera;
     this.scene = options.scene;
     this.toxelSize = options.toxelSize;
+    this.al = options.al;
+    this.cellTerrain = new CellTerrain({
+      cellSize: this.cellSize
+    });
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
-    this.worker = options.worker;
+    _this = this;
+    this.worker = new Worker("./module/TerrainWorker.js", {
+      type: 'module'
+    });
+    console.log(this.worker);
+    this.worker.onmessage = function(message) {
+      return _this.updateCell(message.data);
+    };
+    this.worker.postMessage({
+      type: 'init',
+      data: {
+        models: {
+          anvil: {...this.al.get("anvil").children[0].geometry.attributes}
+        },
+        blocks: this.al.get("blocks"),
+        blocksMapping: this.al.get("blocksMapping"),
+        toxelSize: this.toxelSize,
+        cellSize: this.cellSize
+      }
+    });
   }
 
   computeVoxelOffset(voxelX, voxelY, voxelZ) {
@@ -52,7 +71,7 @@ Terrain = class Terrain {
 
   setVoxel(voxelX, voxelY, voxelZ, value) {
     var cell, cellId, i, len1, nei, neiCellId, prevVox, ref, voff;
-    this.worker.setVoxel(voxelX, voxelY, voxelZ, value);
+    this._setVoxel(voxelX, voxelY, voxelZ, value);
     voff = this.computeVoxelOffset(voxelX, voxelY, voxelZ);
     cell = this.computeCellForVoxel(voxelX, voxelY, voxelZ);
     cellId = this.vec3(...cell);
@@ -98,7 +117,7 @@ Terrain = class Terrain {
     _this = this;
     Object.keys(this.cellsData).forEach(function(id) {
       if (_this.cellsData[id].needsUpdate) {
-        _this.worker.genCellGeo(...id.split(":"));
+        _this._genCellGeo(...id.split(":"));
       }
     });
   }
@@ -223,6 +242,23 @@ Terrain = class Terrain {
     } else {
       return false;
     }
+  }
+
+  _setVoxel(voxelX, voxelY, voxelZ, value) {
+    return this.worker.postMessage({
+      type: "setVoxel",
+      data: [voxelX, voxelY, voxelZ, value]
+    });
+  }
+
+  _genCellGeo(cellX, cellY, cellZ) {
+    cellX = parseInt(cellX);
+    cellY = parseInt(cellY);
+    cellZ = parseInt(cellZ);
+    return this.worker.postMessage({
+      type: "genCellGeo",
+      data: [cellX, cellY, cellZ]
+    });
   }
 
 };

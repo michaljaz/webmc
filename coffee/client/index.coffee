@@ -1,4 +1,4 @@
-#Bundle.js
+
 scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
 import * as THREE from './module/build/three.module.js'
 import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js'
@@ -12,45 +12,9 @@ import {AnimatedTextureAtlas} from './module/AnimatedTextureAtlas.js'
 import {Players} from './module/Players.js'
 import {RandomNick} from './module/RandomNick.js'
 
-class TerrainWorker
-	constructor: (options)->
-		@worker=new Worker "module/TerrainWorker.js", {type:'module'}
-		@worker.onmessage=(message)->
-			terrain.updateCell message.data
-		@worker.postMessage {
-			type:'init'
-			data:{
-				models:{
-					anvil:{
-						al.get("anvil").children[0].geometry.attributes...
-					}
-				}
-				blocks: al.get "blocks"
-				blocksMapping: al.get "blocksMapping"
-				toxelSize: 27
-				cellSize: 16
-			}
-		}
-	setVoxel: (voxelX,voxelY,voxelZ,value)->
-		@worker.postMessage {
-			type:"setVoxel"
-			data:[voxelX,voxelY,voxelZ,value]
-		}
-	genCellGeo: (cellX,cellY,cellZ)->
-		cellX=parseInt cellX
-		cellY=parseInt cellY
-		cellZ=parseInt cellZ
-		@worker.postMessage {
-			type:"genCellGeo"
-			data:[cellX,cellY,cellZ]
-		}
-
 init = ()->
 
-	#Terrain worker
-	worker=new TerrainWorker
-
-	chunkWorker=new Worker "module/ChunkWorker.js", {type:'module'}
+	chunkWorker=new Worker "./module/ChunkWorker.js", {type:'module'}
 
 	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
@@ -89,12 +53,10 @@ init = ()->
 	terrain=new Terrain({
 		toxelSize:27
 		cellSize:16
-		blocks:al.get "blocks"
-		blocksMapping:al.get "blocksMapping"
 		material:ATA.material
 		scene
 		camera
-		worker
+		al
 	})
 
 	#Socket.io setup
@@ -129,7 +91,7 @@ init = ()->
 	socket.on "firstLoad",(v)->
 		console.log "Otrzymano pakiet świata!"
 		terrain.replaceWorld v
-		worker.genCellGeo(0,0,0)
+		terrain._genCellGeo(0,0,0)
 		$(".initLoading").css "display","none"
 		stats = new Stats();
 		stats.showPanel(0);
