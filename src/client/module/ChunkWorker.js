@@ -70,10 +70,10 @@
     }
 
     computeSections(packet) {
-      var base, data, i, j, k, l, len, m, num, palette, pos, results, sections, solidBlockCount, x, y, z;
+      var base, data, i, j, k, l, len, m, num, palette, pos, result, sections, solidBlockCount, x, y, z;
       sections = packet.sections;
       num = 0;
-      results = [];
+      result = [];
       for (j = 0, len = sections.length; j < len; j++) {
         i = sections[j];
         num += 1;
@@ -90,16 +90,21 @@
           for (x = k = 0; k <= 15; x = ++k) {
             for (y = l = 0; l <= 15; y = ++l) {
               for (z = m = 0; m <= 15; z = ++m) {
-                base.push(data.get(this.getBlockIndex({x, y, z})));
+                base.push(palette[data.get(this.getBlockIndex({x, y, z}))]);
               }
             }
           }
-          results.push(console.log("Computed chunk section " + packet.x + " " + packet.z + " " + num, base));
+          result.push({
+            x: packet.x,
+            y: num,
+            z: packet.z,
+            data: base
+          });
         } else {
-          results.push(void 0);
+          result.push(null);
         }
       }
-      return results;
+      return result;
     }
 
   };
@@ -117,7 +122,9 @@
 
   handlers = {
     computeSections: function(data) {
-      return cd.computeSections(data);
+      return postMessage({
+        result: cd.computeSections(data)
+      });
     }
   };
 

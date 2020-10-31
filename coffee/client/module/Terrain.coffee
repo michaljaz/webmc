@@ -3,8 +3,9 @@ import {CellTerrain} from './CellTerrain.js'
 
 class Terrain
 	constructor: (options) ->
-		@cellsData={}
-		@cells={}
+		_this=@
+		@cellMesh={}
+		@cellNeedsUpdate={}
 		@models={}
 		@cellSize=options.cellSize
 		@material=options.material
@@ -16,9 +17,7 @@ class Terrain
 			cellSize:@cellSize
 		}
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-		_this=@
 		@worker=new Worker "./module/TerrainWorker.js", {type:'module'}
-		console.log @worker
 		@worker.onmessage=(message)->
 			_this.updateCell message.data
 		@worker.postMessage {
@@ -35,75 +34,42 @@ class Terrain
 				cellSize: @cellSize
 			}
 		}
-	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
-		x=voxelX %% @cellSize|0
-		y=voxelY %% @cellSize|0
-		z=voxelZ %% @cellSize|0
-		return [x,y,z]
-	computeCellForVoxel: (voxelX,voxelY,voxelZ) ->
-		cellX = Math.floor voxelX / @cellSize
-		cellY = Math.floor voxelY / @cellSize
-		cellZ = Math.floor voxelZ / @cellSize
-		return [cellX,cellY,cellZ]
-	vec3: (x,y,z) ->
-		x=parseInt x
-		y=parseInt y
-		z=parseInt z
-		return "#{x}:#{y}:#{z}"
-	setVoxel: (voxelX,voxelY,voxelZ,value) ->
-		@_setVoxel voxelX,voxelY,voxelZ,value
-		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
-		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
-		cellId=@vec3(cell...)
-		if @cellsData[cellId] is undefined
-			@cellsData[cellId]={
-				[@vec3 voff...]:value
-			}
-		else
-			prevVox=@cellsData[cellId][@vec3(voff...)]
-			if prevVox isnt value
-				@cellsData[cellId][@vec3(voff...)]=value
-				@cellsData[cellId].needsUpdate=true
-				for nei in @neighbours
-					neiCellId=@vec3 @computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2])...
-					try
-						@cellsData[neiCellId].needsUpdate=true
-		@cellsData[cellId].needsUpdate=true
+		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+	setBlock: (voxelX,voxelY,voxelZ,value) ->
+		voxelX=parseInt voxelX
+		voxelY=parseInt voxelY
+		voxelZ=parseInt voxelZ
+		if (@cellTerrain.getVoxel voxelX,voxelY,voxelZ) isnt value
+			@_setVoxel voxelX,voxelY,voxelZ,value
+			@cellTerrain.setVoxel voxelX,voxelY,voxelZ,value
+			cellId=@cellTerrain.vec3 @cellTerrain.computeCellForVoxel(voxelX,voxelY,voxelZ)...
+			@cellNeedsUpdate[cellId]=true
+			for nei in @neighbours
+				neiCellId=@cellTerrain.vec3 @cellTerrain.computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2])...
+				@cellNeedsUpdate[neiCellId]=true
 		return
-	getVoxel: (voxelX,voxelY,voxelZ) ->
-		cell=@computeCellForVoxel(voxelX,voxelY,voxelZ)
-		cellId=@vec3(cell...)
-		voff=@computeVoxelOffset(voxelX,voxelY,voxelZ)
-		voxId=@vec3(voff...)
-		if @cellsData[cellId] isnt undefined
-			voxel=@cellsData[cellId][voxId]
-			if voxel isnt undefined
-				return voxel
-		return 0;
+	getBlock: (voxelX,voxelY,voxelZ) ->
+		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
 	updateCells: ->
 		_this=@
-		Object.keys(@cellsData).forEach (id)->
-			if _this.cellsData[id].needsUpdate
+		Object.keys(@cellNeedsUpdate).forEach (id)->
+			if _this.cellNeedsUpdate[id]
 				_this._genCellGeo id.split(":")...
-			return
+				delete _this.cellNeedsUpdate[id]
 		return
 	updateCell: (data)->
-		# console.warn "SENDING  cell: #{data.info}"
-		cellId=@vec3 data.info...
+		cellId=@cellTerrain.vec3 data.info...
 		cell=data.cell
-		if @cellsData[cellId]!=undefined
-			if @cellsData[cellId].needsUpdate
-				mesh=@cells[cellId]
-				geometry=new THREE.BufferGeometry;
-				geometry.setAttribute 'position',new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
-				geometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
-				geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
-				if mesh is undefined
-					@cells[cellId]=new THREE.Mesh geometry,@material
-					@scene.add @cells[cellId]
-				else
-					@cells[cellId].geometry=geometry
-				@cellsData[cellId].needsUpdate=false
+		mesh=@cellMesh[cellId]
+		geometry=new THREE.BufferGeometry;
+		geometry.setAttribute 'position',new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
+		geometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
+		geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
+		if mesh is undefined
+			@cellMesh[cellId]=new THREE.Mesh geometry,@material
+			@scene.add @cellMesh[cellId]
+		else
+			@cellMesh[cellId].geometry=geometry
 		return
 	intersectsRay: (start,end) ->
 		start.x+=0.5
@@ -138,7 +104,7 @@ class Terrain
 		tzMax = if tzDelta < Infinity then tzDelta * zDist else Infinity
 		steppedIndex = -1
 		while t <= len
-			voxel = @getVoxel ix, iy, iz
+			voxel = @getBlock ix, iy, iz
 			if voxel
 				return {
 					position: [
@@ -179,8 +145,8 @@ class Terrain
 	replaceWorld: (voxels)->
 		_this=@
 		Object.keys(voxels).forEach (id)->
-			if voxels[id] isnt _this.getVoxel id.split(":")...
-				_this.setVoxel id.split(":")...,voxels[id]
+			if voxels[id] isnt _this.getBlock id.split(":")...
+				_this.setBlock id.split(":")...,voxels[id]
 	getRayBlock: ->
 		start = new THREE.Vector3().setFromMatrixPosition(@camera.matrixWorld)
 		end = new THREE.Vector3().set(0,0, 1).unproject(@camera)

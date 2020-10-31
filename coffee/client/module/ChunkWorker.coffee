@@ -48,6 +48,7 @@ class ChunkDecoder
   computeSections: (packet)->
     sections=packet.sections
     num=0
+    result=[]
     for i in sections
       num+=1
       if i isnt null
@@ -63,8 +64,16 @@ class ChunkDecoder
         for x in [0..15]
           for y in [0..15]
             for z in [0..15]
-              base.push(data.get(@getBlockIndex({x,y,z})))
-        console.log "Computed chunk section "+packet.x+" "+packet.z+" "+num, base
+              base.push(palette[data.get(@getBlockIndex({x,y,z}))])
+        result.push {
+          x:packet.x
+          y:num
+          z:packet.z,
+          data:base
+        }
+      else
+        result.push(null)
+    return result
 
 
 addEventListener "message", (e)->
@@ -78,5 +87,7 @@ cd=new ChunkDecoder
 
 handlers={
   computeSections:(data)->
-    cd.computeSections data
+    postMessage {
+      result:cd.computeSections data
+    }
 }

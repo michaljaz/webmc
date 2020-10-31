@@ -168,7 +168,6 @@ terrain=null
 handlers={
 	init:(data)->
 		State.init=data
-		console.log(State)
 		terrain=new TerrainManager {
 			models:data.models
 			blocks:data.blocks

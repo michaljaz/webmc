@@ -74,6 +74,9 @@ init = function() {
   chunkWorker = new Worker("./module/ChunkWorker.js", {
     type: 'module'
   });
+  chunkWorker.onmessage = function(data) {};
+  // console.log "Recieved chunk column", data.data
+
   //canvas,renderer,camera,lights
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -127,7 +130,7 @@ init = function() {
     });
   });
   socket.on("blockUpdate", function(block) {
-    terrain.setVoxel(...block);
+    terrain.setBlock(...block);
   });
   socket.on("mapChunk", function(sections, x, z) {
     // console.log("Recieved mapChunk "+x+" "+z)
@@ -141,9 +144,8 @@ init = function() {
     players.update(data);
   });
   socket.on("firstLoad", function(v) {
-    console.log("Otrzymano pakiet świata!");
+    console.log("First Load packet recieved!");
     terrain.replaceWorld(v);
-    terrain._genCellGeo(0, 0, 0);
     $(".initLoading").css("display", "none");
     stats = new Stats();
     stats.showPanel(0);

@@ -56,7 +56,6 @@ class FirstPersonControls
 			_this.keys[z.keyCode] = true
 			#If click escape
 			if z.keyCode is 27
-				console.log _this.gameState
 				if _this.gameState is "menu"
 					_this.canvas.requestPointerLock()
 				else
@@ -67,18 +66,15 @@ class FirstPersonControls
 			delete _this.keys[z.keyCode]
 			return
 		$(".gameOn").click ->
-			console.log "clicked!"
 			_this.canvas.requestPointerLock()
 			return
 		lockChangeAlert=()->
 			if document.pointerLockElement is _this.canvas or document.mozPointerLockElement is _this.canvas
 				_this.gameState="game"
 				$(".gameMenu").css "display", "none"
-				console.log("GAME")
 			else
 				_this.gameState="menu"
 				$(".gameMenu").css "display", "block"
-				console.log("MENU")
 			return
 		document.addEventListener 'pointerlockchange', lockChangeAlert, false
 		document.addEventListener 'mozpointerlockchange', lockChangeAlert, false

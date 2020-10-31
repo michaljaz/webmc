@@ -77,7 +77,6 @@ FirstPersonControls = class FirstPersonControls {
       _this.keys[z.keyCode] = true;
       //If click escape
       if (z.keyCode === 27) {
-        console.log(_this.gameState);
         if (_this.gameState === "menu") {
           _this.canvas.requestPointerLock();
         } else {
@@ -90,18 +89,15 @@ FirstPersonControls = class FirstPersonControls {
       delete _this.keys[z.keyCode];
     });
     $(".gameOn").click(function() {
-      console.log("clicked!");
       _this.canvas.requestPointerLock();
     });
     lockChangeAlert = function() {
       if (document.pointerLockElement === _this.canvas || document.mozPointerLockElement === _this.canvas) {
         _this.gameState = "game";
         $(".gameMenu").css("display", "none");
-        console.log("GAME");
       } else {
         _this.gameState = "menu";
         $(".gameMenu").css("display", "block");
-        console.log("MENU");
       }
     };
     document.addEventListener('pointerlockchange', lockChangeAlert, false);

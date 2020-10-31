@@ -6,7 +6,6 @@ CellTerrain = class CellTerrain {
   constructor(options) {
     this.cellSize = options.cellSize;
     this.cells = {};
-    this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
   }
 
   vec3(x, y, z) {

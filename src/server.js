@@ -41,7 +41,7 @@
     return io.sockets.on("connection", function(socket) {
       //Trying to run special functions
       socket.on("initClient", function(data) {
-        console.log("NEW: " + socket.id);
+        console.log("[+] " + socket.id);
         //init socketInfo
         socketInfo[socket.id] = data;
         //socketInfo add Bot
@@ -80,7 +80,7 @@
         return saveWorld();
       });
       return socket.on("disconnect", function() {
-        console.log("DIS: " + socket.id);
+        console.log("[-] " + socket.id);
         //end bot session
         socketInfo[socket.id].bot.end();
         //delete socketinfo

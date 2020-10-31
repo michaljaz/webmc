@@ -16,6 +16,9 @@ init = ()->
 
 	chunkWorker=new Worker "./module/ChunkWorker.js", {type:'module'}
 
+	chunkWorker.onmessage=(data)->
+		# console.log "Recieved chunk column", data.data
+
 	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
@@ -74,7 +77,7 @@ init = ()->
 		}
 		return
 	socket.on "blockUpdate",(block)->
-		terrain.setVoxel block...
+		terrain.setBlock block...
 		return
 	socket.on "mapChunk", (sections,x,z)->
 		# console.log("Recieved mapChunk "+x+" "+z)
@@ -89,9 +92,8 @@ init = ()->
 		players.update data
 		return
 	socket.on "firstLoad",(v)->
-		console.log "Otrzymano pakiet świata!"
+		console.log "First Load packet recieved!"
 		terrain.replaceWorld v
-		terrain._genCellGeo(0,0,0)
 		$(".initLoading").css "display","none"
 		stats = new Stats();
 		stats.showPanel(0);

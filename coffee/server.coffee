@@ -41,7 +41,7 @@ module.exports=(config)->
 
 		#Trying to run special functions
 		socket.on "initClient",(data)->
-			console.log "NEW: "+socket.id
+			console.log "[+] "+socket.id
 			#init socketInfo
 			socketInfo[socket.id]=data
 
@@ -79,7 +79,7 @@ module.exports=(config)->
 			io.sockets.emit "blockUpdate",block
 			saveWorld()
 		socket.on "disconnect", ->
-			console.log "DIS: "+socket.id
+			console.log "[-] "+socket.id
 
 			#end bot session
 			socketInfo[socket.id].bot.end()
