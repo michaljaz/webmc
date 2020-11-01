@@ -38,7 +38,8 @@ class CellTerrain
 		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
 		return cell[voff]
 	getBuffer:(x,y,z)->
-		console.log(@cells[@vec3(x,y,z)])
-		return
+		return @cells[@vec3(x,y,z)]
+	setBuffer:(x,y,z,buffer)->
+		@cells[@vec3(x,y,z)]=buffer
 
 export {CellTerrain}

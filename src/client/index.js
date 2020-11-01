@@ -70,13 +70,24 @@ import {
 } from './module/RandomNick.js';
 
 init = function() {
-  var ATA, ambientLight, chunkWorker, clouds, directionalLight, players;
+  var ATA, ambientLight, chunkWorker, clouds, directionalLight, loader, players, skybox;
   chunkWorker = new Worker("./module/ChunkWorker.js", {
     type: 'module'
   });
-  chunkWorker.onmessage = function(data) {};
-  // console.log "Recieved chunk column", data.data
-
+  chunkWorker.onmessage = function(data) {
+    var i, j, len, result, results;
+    result = data.data.result;
+    results = [];
+    for (j = 0, len = result.length; j < len; j++) {
+      i = result[j];
+      if (i !== null) {
+        results.push(terrain.setCell(i.x, i.y, i.z, i.data));
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
+  };
   //canvas,renderer,camera,lights
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -84,10 +95,17 @@ init = function() {
     PixelRatio: window.devicePixelRatio
   });
   scene = new THREE.Scene();
-  scene.background = new THREE.Color("lightblue");
-  camera = new THREE.PerspectiveCamera(90, 2, 0.1, 64 * 5);
+  camera = new THREE.PerspectiveCamera(90, 2, 0.1, 1000);
   camera.rotation.order = "YXZ";
   camera.position.set(26, 26, 26);
+  //skybox
+  loader = new THREE.TextureLoader();
+  skybox = loader.load("assets/images/skybox.jpg", function() {
+    var rt;
+    rt = new THREE.WebGLCubeRenderTarget(skybox.image.height);
+    rt.fromEquirectangularTexture(renderer, skybox);
+    scene.background = rt;
+  });
   //Lights
   ambientLight = new THREE.AmbientLight(0xcccccc);
   scene.add(ambientLight);
@@ -100,7 +118,7 @@ init = function() {
   clouds.scale.x = 0.1;
   clouds.scale.y = 0.1;
   clouds.scale.z = 0.1;
-  clouds.position.y = 100;
+  clouds.position.y = 170;
   scene.add(clouds);
   //Animated Material
   ATA = new AnimatedTextureAtlas({al});
@@ -133,7 +151,6 @@ init = function() {
     terrain.setBlock(...block);
   });
   socket.on("mapChunk", function(sections, x, z) {
-    // console.log("Recieved mapChunk "+x+" "+z)
     return chunkWorker.postMessage({
       type: "computeSections",
       data: {sections, x, z}

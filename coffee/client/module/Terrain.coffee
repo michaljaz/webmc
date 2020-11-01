@@ -34,7 +34,13 @@ class Terrain
 				cellSize: @cellSize
 			}
 		}
-		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+	setCell: (cellX,cellY,cellZ,buffer)->
+		@_setCell cellX,cellY,cellZ,buffer
+		@cellTerrain.cells[@cellTerrain.vec3(cellX,cellY,cellZ)]=buffer
+		@cellNeedsUpdate[@cellTerrain.vec3(cellX,cellY,cellZ)]=true
+		for nei in @neighbours
+			neiCellId=@cellTerrain.vec3(cellX+nei[0],cellY+nei[1],cellZ+nei[2])
+			@cellNeedsUpdate[neiCellId]=true
 	setBlock: (voxelX,voxelY,voxelZ,value) ->
 		voxelX=parseInt voxelX
 		voxelY=parseInt voxelY
@@ -159,6 +165,11 @@ class Terrain
 			return {posPlace,posBreak}
 		else
 			return false
+	_setCell: (cellX,cellY,cellZ,buffer)->
+		@worker.postMessage {
+			type:"setCell"
+			data:[cellX,cellY,cellZ,buffer]
+		}
 	_setVoxel: (voxelX,voxelY,voxelZ,value)->
 		@worker.postMessage {
 			type:"setVoxel"

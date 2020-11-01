@@ -66,7 +66,11 @@ CellTerrain = class CellTerrain {
   }
 
   getBuffer(x, y, z) {
-    console.log(this.cells[this.vec3(x, y, z)]);
+    return this.cells[this.vec3(x, y, z)];
+  }
+
+  setBuffer(x, y, z, buffer) {
+    return this.cells[this.vec3(x, y, z)] = buffer;
   }
 
 };

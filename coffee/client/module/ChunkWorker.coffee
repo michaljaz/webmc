@@ -45,6 +45,11 @@ class ChunkDecoder
     #NOTHING
   getBlockIndex: (pos)->
     return (pos.y << 8) | (pos.z << 4) | pos.x
+  cvo: (voxelX,voxelY,voxelZ) ->
+    x=voxelX %% 16|0
+    y=voxelY %% 16|0
+    z=voxelZ %% 16|0
+    return y*16*16+z*16+x
   computeSections: (packet)->
     sections=packet.sections
     num=0
@@ -60,16 +65,18 @@ class ChunkDecoder
           y:0
           z:0
         }
-        base=[]
+        cell=new Uint8Array 16*16*16
         for x in [0..15]
           for y in [0..15]
             for z in [0..15]
-              base.push(palette[data.get(@getBlockIndex({x,y,z}))])
+              # ct.setVoxel packet.x+x,num+y,packet.z+z
+              cell[@cvo(x,y,z)]=palette[data.get(@getBlockIndex({x,y,z}))]
+              # base.push(palette[data.get(@getBlockIndex({x,y,z}))])
         result.push {
           x:packet.x
           y:num
           z:packet.z,
-          data:base
+          data:cell
         }
       else
         result.push(null)

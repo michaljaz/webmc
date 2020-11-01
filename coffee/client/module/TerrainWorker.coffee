@@ -1,3 +1,5 @@
+import {CellTerrain} from './CellTerrain.js'
+
 class TerrainManager
 	constructor: (options)->
 		@toxelSize=options.toxelSize
@@ -6,7 +8,9 @@ class TerrainManager
 		@blocksMapping=options.blocksMapping
 		@cellSize=options.cellSize
 		@models=options.models
-		@world={}
+		@cellTerrain=new CellTerrain {
+			cellSize:@cellSize
+		}
 		console.log "WORKER: TerrainManager started!"
 	getToxel: (x,y)->
 		x-=1
@@ -30,8 +34,9 @@ class TerrainManager
 			z=parseInt z
 		return "#{x}:#{y}:#{z}"
 	genBlockFace: (type,voxel)->
-		blockName=@blocks[voxel]["faces"][type]
+
 		try
+			blockName=@blocks[voxel]["faces"][type]
 			toxX=@blocksMapping[blockName]["x"]
 			toxY=@blocksMapping[blockName]["y"]
 		catch e
@@ -123,18 +128,18 @@ class TerrainManager
 					pos=[cellX*@cellSize+i,cellY*@cellSize+j,cellZ*@cellSize+k]
 					voxel=@getVoxel pos...
 					if voxel
-						if @blocks[voxel].isBlock
-							if not @blocks[@getVoxel(pos[0]+1,pos[1],pos[2])].isBlock
+						if @blocks[voxel] is undefined or @blocks[voxel].isBlock
+							if not (@blocks[@getVoxel(pos[0]+1,pos[1],pos[2])] is undefined or @blocks[@getVoxel(pos[0]+1,pos[1],pos[2])].isBlock)
 								addFace "nx",pos,voxel
-							if not @blocks[@getVoxel(pos[0]-1,pos[1],pos[2])].isBlock
+							if not (@blocks[@getVoxel(pos[0]-1,pos[1],pos[2])] is undefined or @blocks[@getVoxel(pos[0]-1,pos[1],pos[2])].isBlock)
 								addFace "px",pos,voxel
-							if not @blocks[@getVoxel(pos[0],pos[1]-1,pos[2])].isBlock
+							if not (@blocks[@getVoxel(pos[0],pos[1]-1,pos[2])] is undefined or @blocks[@getVoxel(pos[0],pos[1]-1,pos[2])].isBlock)
 								addFace "ny",pos,voxel
-							if not @blocks[@getVoxel(pos[0],pos[1]+1,pos[2])].isBlock
+							if not (@blocks[@getVoxel(pos[0],pos[1]+1,pos[2])] is undefined or @blocks[@getVoxel(pos[0],pos[1]+1,pos[2])].isBlock)
 								addFace "py",pos,voxel
-							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]+1)].isBlock
+							if not (@blocks[@getVoxel(pos[0],pos[1],pos[2]+1)] is undefined or @blocks[@getVoxel(pos[0],pos[1],pos[2]+1)].isBlock)
 								addFace "pz",pos,voxel
-							if not @blocks[@getVoxel(pos[0],pos[1],pos[2]-1)].isBlock
+							if not (@blocks[@getVoxel(pos[0],pos[1],pos[2]-1)] is undefined or @blocks[@getVoxel(pos[0],pos[1],pos[2]-1)].isBlock)
 								addFace "nz",pos,voxel
 						else
 							geo=@models[@blocks[voxel].model]
@@ -145,14 +150,10 @@ class TerrainManager
 			uvs
 		}
 	setVoxel: (voxelX,voxelY,voxelZ,value)->
-		@world[@vec3(voxelX,voxelY,voxelZ)]=value
+		@cellTerrain.setVoxel voxelX,voxelY,voxelZ,value
 		return
 	getVoxel: (voxelX,voxelY,voxelZ)->
-		voxel=@world[@vec3(voxelX,voxelY,voxelZ)]
-		if voxel is undefined
-			return 0
-		else
-			return voxel
+		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
 
 addEventListener "message", (e)->
 	fn = handlers[e.data.type]
@@ -183,4 +184,6 @@ handlers={
 			cell:terrain.genCellGeo data...
 			info:data
 		}
+	setCell: (data)->
+		terrain.cellTerrain.cells["#{data[0]}:#{data[1]}:#{data[2]}"]=data[3]
 }

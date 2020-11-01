@@ -42,7 +42,21 @@ Terrain = class Terrain {
         cellSize: this.cellSize
       }
     });
-    this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
+  }
+
+  setCell(cellX, cellY, cellZ, buffer) {
+    var i, len1, nei, neiCellId, ref, results;
+    this._setCell(cellX, cellY, cellZ, buffer);
+    this.cellTerrain.cells[this.cellTerrain.vec3(cellX, cellY, cellZ)] = buffer;
+    this.cellNeedsUpdate[this.cellTerrain.vec3(cellX, cellY, cellZ)] = true;
+    ref = this.neighbours;
+    results = [];
+    for (i = 0, len1 = ref.length; i < len1; i++) {
+      nei = ref[i];
+      neiCellId = this.cellTerrain.vec3(cellX + nei[0], cellY + nei[1], cellZ + nei[2]);
+      results.push(this.cellNeedsUpdate[neiCellId] = true);
+    }
+    return results;
   }
 
   setBlock(voxelX, voxelY, voxelZ, value) {
@@ -193,6 +207,13 @@ Terrain = class Terrain {
     } else {
       return false;
     }
+  }
+
+  _setCell(cellX, cellY, cellZ, buffer) {
+    return this.worker.postMessage({
+      type: "setCell",
+      data: [cellX, cellY, cellZ, buffer]
+    });
   }
 
   _setVoxel(voxelX, voxelY, voxelZ, value) {

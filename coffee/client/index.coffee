@@ -17,7 +17,10 @@ init = ()->
 	chunkWorker=new Worker "./module/ChunkWorker.js", {type:'module'}
 
 	chunkWorker.onmessage=(data)->
-		# console.log "Recieved chunk column", data.data
+		result=data.data.result
+		for i in result
+			if i isnt null
+				terrain.setCell(i.x,i.y,i.z,i.data)
 
 	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
@@ -26,11 +29,16 @@ init = ()->
 		PixelRatio:window.devicePixelRatio
 	}
 	scene=new THREE.Scene
-	scene.background=new THREE.Color "lightblue"
-	camera = new THREE.PerspectiveCamera 90, 2, 0.1, 64*5
+	camera = new THREE.PerspectiveCamera 90, 2, 0.1, 1000
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
-
+	#skybox
+	loader = new THREE.TextureLoader();
+	skybox = loader.load "assets/images/skybox.jpg", () ->
+		rt = new THREE.WebGLCubeRenderTarget skybox.image.height
+		rt.fromEquirectangularTexture renderer, skybox
+		scene.background = rt
+		return
 	#Lights
 	ambientLight=new THREE.AmbientLight 0xcccccc
 	scene.add ambientLight
@@ -44,7 +52,7 @@ init = ()->
 	clouds.scale.x=0.1
 	clouds.scale.y=0.1
 	clouds.scale.z=0.1
-	clouds.position.y=100
+	clouds.position.y=170
 	scene.add clouds
 
 	#Animated Material
@@ -80,7 +88,6 @@ init = ()->
 		terrain.setBlock block...
 		return
 	socket.on "mapChunk", (sections,x,z)->
-		# console.log("Recieved mapChunk "+x+" "+z)
 		chunkWorker.postMessage {
 			type:"computeSections"
 			data:{

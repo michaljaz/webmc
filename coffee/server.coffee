@@ -23,7 +23,6 @@ module.exports=(config)->
 	players={}
 	socketInfo={}
 
-
 	app.use express.static(__dirname + "/client/")
 	app.use (req, res, next) ->
 		res.set 'Cache-Control', 'no-store'
@@ -41,7 +40,7 @@ module.exports=(config)->
 
 		#Trying to run special functions
 		socket.on "initClient",(data)->
-			console.log "[+] "+socket.id
+			console.log "[+] "+data.nick
 			#init socketInfo
 			socketInfo[socket.id]=data
 
@@ -79,7 +78,7 @@ module.exports=(config)->
 			io.sockets.emit "blockUpdate",block
 			saveWorld()
 		socket.on "disconnect", ->
-			console.log "[-] "+socket.id
+			console.log "[-] "+socketInfo[socket.id].nick
 
 			#end bot session
 			socketInfo[socket.id].bot.end()
