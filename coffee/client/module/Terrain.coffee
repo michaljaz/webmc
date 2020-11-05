@@ -1,4 +1,4 @@
-import * as THREE from './../module/build/three.module.js'
+import * as THREE from './build/three.module.js'
 import {CellTerrain} from './CellTerrain.js'
 
 class Terrain
@@ -17,7 +17,7 @@ class Terrain
 			cellSize:@cellSize
 		}
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-		@worker=new Worker "./module/TerrainWorker.js", {type:'module'}
+		@worker=new Worker "/module/TerrainWorker.js", {type:'module'}
 		@worker.onmessage=(message)->
 			_this.updateCell message.data
 		@worker.postMessage {

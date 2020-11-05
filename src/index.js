@@ -6,7 +6,7 @@
 
   fs = require("fs");
 
-  config = JSON.parse(fs.readFileSync(__dirname + "/config.json"));
+  config = JSON.parse(fs.readFileSync(__dirname + "/../config.json"));
 
   require("./server")(config);
 

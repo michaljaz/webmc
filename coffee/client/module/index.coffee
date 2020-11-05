@@ -1,22 +1,22 @@
 
 scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
-import * as THREE from './module/build/three.module.js'
-import {SkeletonUtils} from './module/jsm/utils/SkeletonUtils.js'
-import Stats from './module/jsm/libs/stats.module.js'
-import {Terrain} from './module/Terrain.js'
-import {FirstPersonControls} from './module/FirstPersonControls.js'
-import {gpuInfo} from './module/gpuInfo.js'
-import {AssetLoader} from './module/AssetLoader.js'
-import {InventoryBar} from './module/InventoryBar.js'
-import {AnimatedTextureAtlas} from './module/AnimatedTextureAtlas.js'
-import {Players} from './module/Players.js'
-import {RandomNick} from './module/RandomNick.js'
+import * as THREE from './build/three.module.js'
+import {SkeletonUtils} from './jsm/utils/SkeletonUtils.js'
+import Stats from './jsm/libs/stats.module.js'
+import {Terrain} from './Terrain.js'
+import {FirstPersonControls} from './FirstPersonControls.js'
+import {gpuInfo} from './gpuInfo.js'
+import {AssetLoader} from './AssetLoader.js'
+import {InventoryBar} from './InventoryBar.js'
+import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
+import {Players} from './Players.js'
+import {RandomNick} from './RandomNick.js'
 
 init = ()->
 
-	chunkWorker=new Worker "./module/ChunkWorker.js", {type:'module'}
-
+	chunkWorker=new Worker "/module/ChunkWorker.js", {type:'module'}
 	chunkWorker.onmessage=(data)->
+
 		result=data.data.result
 		for i in result
 			if i isnt null
@@ -197,8 +197,8 @@ render = ->
 		cursor.visible=false
 
 	#Rendering
-	renderer.render scene, camera
 	terrain.updateCells()
+	renderer.render scene, camera
 	return
 animate = ->
 	try

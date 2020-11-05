@@ -1,22 +1,11 @@
 {
   "name": "web-minecraft",
   "version": "1.0.0",
-  "description": "Render Minecrafta w przegladarce",
   "scripts": {
     "start": "node src/index.js",
     "coffee": "coffee -o src/ -cw coffee/",
     "atlas": "node src/atlas.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/michaljaz/web-minecraft.git"
-  },
-  "author": "Michał Jażdżyk",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/michaljaz/web-minecraft/issues"
-  },
-  "homepage": "https://github.com/michaljaz/",
   "dependencies": {
     "canvas": "^2.6.1",
     "child_process": "^1.0.2",
@@ -24,7 +13,7 @@
     "express": "^4.17.1",
     "flying-squid": "^1.3.2",
     "http": "0.0.1-security",
-    "mineflayer": "^2.32.0",
+    "mineflayer": "^2.34.0",
     "opn": "^6.0.0",
     "path": "^0.12.7",
     "prismarine-chunk": "^1.20.3",

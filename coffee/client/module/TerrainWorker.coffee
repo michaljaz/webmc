@@ -180,10 +180,16 @@ handlers={
 	setVoxel:(data)->
 		terrain.setVoxel data...
 	genCellGeo: (data)->
-		postMessage {
-			cell:terrain.genCellGeo data...
-			info:data
-		}
+
+		if ((terrain.cellTerrain.vec3 data...) of terrain.cellTerrain.cells) is true
+			geo=terrain.genCellGeo data...
+			# if terrain.cellTerrain.cells[terrain.cellTerrain.vec3 data...] isnt undefined
+			postMessage {
+				cell:geo
+				info:data
+			}
+		else
+			console.log 'xd'
 	setCell: (data)->
 		terrain.cellTerrain.cells["#{data[0]}:#{data[1]}:#{data[2]}"]=data[3]
 }

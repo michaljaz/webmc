@@ -56,7 +56,6 @@ module.exports=(config)->
 				cell=new Chunk()
 				cell.load packet.chunkData,packet.bitMap,false,true
 				io.to(socket.id).emit "mapChunk", cell.sections,packet.x,packet.z
-
 				# console.log packet
 				return
 

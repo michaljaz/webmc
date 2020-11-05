@@ -1,5 +1,5 @@
-import {SkeletonUtils} from './../module/jsm/utils/SkeletonUtils.js'
-import * as THREE from './../module/build/three.module.js'
+import {SkeletonUtils} from './jsm/utils/SkeletonUtils.js'
+import * as THREE from './build/three.module.js'
 
 class Player
 	constructor: (options)->
@@ -49,5 +49,5 @@ class Players
 				delete _this.playersx[p]
 			return
 		return
-		
+
 export {Players}

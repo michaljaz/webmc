@@ -29,49 +29,49 @@ playerObject = null;
 
 inv_bar = null;
 
-import * as THREE from './module/build/three.module.js';
+import * as THREE from './build/three.module.js';
 
 import {
   SkeletonUtils
-} from './module/jsm/utils/SkeletonUtils.js';
+} from './jsm/utils/SkeletonUtils.js';
 
-import Stats from './module/jsm/libs/stats.module.js';
+import Stats from './jsm/libs/stats.module.js';
 
 import {
   Terrain
-} from './module/Terrain.js';
+} from './Terrain.js';
 
 import {
   FirstPersonControls
-} from './module/FirstPersonControls.js';
+} from './FirstPersonControls.js';
 
 import {
   gpuInfo
-} from './module/gpuInfo.js';
+} from './gpuInfo.js';
 
 import {
   AssetLoader
-} from './module/AssetLoader.js';
+} from './AssetLoader.js';
 
 import {
   InventoryBar
-} from './module/InventoryBar.js';
+} from './InventoryBar.js';
 
 import {
   AnimatedTextureAtlas
-} from './module/AnimatedTextureAtlas.js';
+} from './AnimatedTextureAtlas.js';
 
 import {
   Players
-} from './module/Players.js';
+} from './Players.js';
 
 import {
   RandomNick
-} from './module/RandomNick.js';
+} from './RandomNick.js';
 
 init = function() {
   var ATA, ambientLight, chunkWorker, clouds, directionalLight, loader, players, skybox;
-  chunkWorker = new Worker("./module/ChunkWorker.js", {
+  chunkWorker = new Worker("/module/ChunkWorker.js", {
     type: 'module'
   });
   chunkWorker.onmessage = function(data) {
@@ -245,8 +245,8 @@ render = function() {
     cursor.visible = false;
   }
   //Rendering
-  renderer.render(scene, camera);
   terrain.updateCells();
+  renderer.render(scene, camera);
 };
 
 animate = function() {

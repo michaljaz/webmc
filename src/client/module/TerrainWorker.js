@@ -508,10 +508,17 @@ handlers = {
     return terrain.setVoxel(...data);
   },
   genCellGeo: function(data) {
-    return postMessage({
-      cell: terrain.genCellGeo(...data),
-      info: data
-    });
+    var geo;
+    if (((terrain.cellTerrain.vec3(...data)) in terrain.cellTerrain.cells) === true) {
+      geo = terrain.genCellGeo(...data);
+      // if terrain.cellTerrain.cells[terrain.cellTerrain.vec3 data...] isnt undefined
+      return postMessage({
+        cell: geo,
+        info: data
+      });
+    } else {
+      return console.log('xd');
+    }
   },
   setCell: function(data) {
     return terrain.cellTerrain.cells[`${data[0]}:${data[1]}:${data[2]}`] = data[3];

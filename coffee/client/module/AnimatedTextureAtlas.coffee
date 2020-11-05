@@ -1,4 +1,4 @@
-import * as THREE from './../module/build/three.module.js'
+import * as THREE from './build/three.module.js'
 
 class TextureAtlasCreator
 	constructor: (options)->
@@ -22,7 +22,7 @@ class TextureAtlasCreator
 		canvasx.height=@willSize*16
 		toxelX=1
 		toxelY=1
-		for i of @textureMapping	
+		for i of @textureMapping
 			if i.includes "@"
 				xd=@decodeName i
 				if multi[xd.pref].loaded is undefined
@@ -64,7 +64,7 @@ class TextureAtlasCreator
 		#option2
 		col=Math.ceil(tick/h)-1
 		row=(tick-1)%h;
-		return {row,col}  
+		return {row,col}
 class AnimatedTextureAtlas
 	constructor:(options)->
 		_this=@
