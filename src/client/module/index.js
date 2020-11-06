@@ -66,7 +66,7 @@ import {
 } from './RandomNick.js';
 
 init = function() {
-  var ambientLight, clouds, directionalLight, loader, players, skybox;
+  var ambientLight, clouds, color, directionalLight, far, loader, near, players, skybox;
   //canvas,renderer,camera,lights
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -74,9 +74,13 @@ init = function() {
     PixelRatio: window.devicePixelRatio
   });
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(90, 2, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(70, 2, 0.1, 1000);
   camera.rotation.order = "YXZ";
   camera.position.set(26, 26, 26);
+  color = new THREE.Color("#adc8ff");
+  near = 64;
+  far = 128;
+  scene.fog = new THREE.Fog(color, near, far);
   //skybox
   loader = new THREE.TextureLoader();
   skybox = loader.load("assets/images/skybox.jpg", function() {
