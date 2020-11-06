@@ -105,11 +105,11 @@ init = ()->
 	]).setFocusOnly(1).listen()
 
 	#First Person Controls
-	FPC = new FirstPersonControls({
+	FPC = new FirstPersonControls {
 		canvas
 		camera
 		micromove: 0.3
-	}).listen()
+	}
 
 	#Raycast cursor
 	cursor=new THREE.LineSegments(

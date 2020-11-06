@@ -15,6 +15,7 @@ class FirstPersonControls
 		@camera=options.camera
 		@micromove=options.micromove
 		@gameState="menu"
+		@listen()
 	ac: (qx, qy, qa, qf)->
 		m_x = -Math.sin(qa) * qf;
 		m_y = -Math.cos(qa) * qf;

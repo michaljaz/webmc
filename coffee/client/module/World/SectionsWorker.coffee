@@ -85,7 +85,6 @@ class ChunkDecoder
         result.push(null)
     return result
 
-
 addEventListener "message", (e)->
 	fn = handlers[e.data.type]
 	if not fn

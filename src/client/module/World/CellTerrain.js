@@ -9,6 +9,9 @@ CellTerrain = class CellTerrain {
   }
 
   vec3(x, y, z) {
+    x = parseInt(x);
+    y = parseInt(y);
+    z = parseInt(z);
     return `${x}:${y}:${z}`;
   }
 

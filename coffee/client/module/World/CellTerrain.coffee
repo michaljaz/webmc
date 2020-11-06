@@ -3,6 +3,9 @@ class CellTerrain
 		@cellSize=options.cellSize
 		@cells={}
 	vec3: (x,y,z)->
+		x=parseInt x
+		y=parseInt y
+		z=parseInt z
 		return "#{x}:#{y}:#{z}"
 	computeVoxelOffset: (voxelX,voxelY,voxelZ) ->
 		x=voxelX %% @cellSize|0

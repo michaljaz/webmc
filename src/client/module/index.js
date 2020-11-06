@@ -152,7 +152,7 @@ init = function() {
     canvas,
     camera,
     micromove: 0.3
-  }).listen();
+  });
   //Raycast cursor
   cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
     color: 0x000000,

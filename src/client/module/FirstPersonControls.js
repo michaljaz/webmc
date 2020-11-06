@@ -18,6 +18,7 @@ FirstPersonControls = class FirstPersonControls {
     this.camera = options.camera;
     this.micromove = options.micromove;
     this.gameState = "menu";
+    this.listen();
   }
 
   ac(qx, qy, qa, qf) {

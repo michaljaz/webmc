@@ -26,93 +26,65 @@ class TerrainManager
 			[x2,y1]
 			[x2,y2]
 		]
-	vec3: (x,y,z) ->
-		if typeof x is "string"
-			x=parseInt x
-		if typeof y is "string"
-			y=parseInt y
-		if typeof z is "string"
-			z=parseInt z
-		return "#{x}:#{y}:#{z}"
-	genBlockFace: (type,voxel)->
-
-		try
+	genBlockFace: (type,voxel,pos)->
+		# toxX=@blocksMapping["debug"]["x"]
+		# toxY=28-@blocksMapping["debug"]["y"]
+		if @blocks[voxel] is undefined
+			toxX=@blocksMapping["debug"]["x"]
+			toxY=28-@blocksMapping["debug"]["y"]
+		else
 			blockName=@blocks[voxel]["faces"][type]
 			toxX=@blocksMapping[blockName]["x"]
 			toxY=@blocksMapping[blockName]["y"]
-		catch e
-			toxX=@blocksMapping["debug"]["x"]
-			toxY=28-@blocksMapping["debug"]["y"]
+
 		uv=@getToxel toxX,toxY
 		switch type
 			when "pz"
-				return [
-					{ pos: [-0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[0], },
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[2], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[1], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[1], },
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 0,  0,  1], uv: uv[2], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 0,  0,  1], uv: uv[3], }
-				]
+				return {
+					pos:[-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1],  0.5+pos[2],0.5+pos[0],  0.5+pos[1],  0.5+pos[2]]
+					norm:[0,  0,  1,0,  0,  1,0,  0,  1,0,  0,  1,0,  0,  1,0,  0,  1]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 			when "nx"
-				return [
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 1,  0,  0], uv: uv[0], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 1,  0,  0], uv: uv[2], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 1,  0,  0], uv: uv[1], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 1,  0,  0], uv: uv[1], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 1,  0,  0], uv: uv[2], },
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 1,  0,  0], uv: uv[3], }
-				]
+				return {
+					pos:[ 0.5+pos[0], -0.5+pos[1],  0.5+pos[2], 0.5+pos[0], -0.5+pos[1], -0.5+pos[2],0.5+pos[0],  0.5+pos[1],  0.5+pos[2], 0.5+pos[0],  0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1], -0.5+pos[2], 0.5+pos[0],  0.5+pos[1], -0.5+pos[2]]
+					norm:[ 1,  0,  0, 1,  0,  0, 1,  0,  0, 1,  0,  0, 1,  0,  0, 1,  0,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 			when "nz"
-				return [
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[0], },
-					{ pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[1], },
-					{ pos: [-0.5, -0.5, -0.5], norm: [ 0,  0, -1], uv: uv[2], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  0, -1], uv: uv[3], }
-				]
+				return {
+					pos:[ 0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1], -0.5+pos[2],0.5+pos[0],  0.5+pos[1], -0.5+pos[2], 0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2]]
+					norm:[ 0,  0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 			when "px"
-				return [
-					{ pos: [-0.5, -0.5, -0.5], norm: [-1,  0,  0], uv: uv[0], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [-1,  0,  0], uv: uv[2], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [-1,  0,  0], uv: uv[1], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [-1,  0,  0], uv: uv[1], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [-1,  0,  0], uv: uv[2], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [-1,  0,  0], uv: uv[3], },
-				]
+				return {
+					pos:[-0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2]]
+					norm:[-1,  0,  0,-1,  0,  0,-1,  0,  0,-1,  0,  0,-1,  0,  0,-1,  0,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 			when "py"
-				return [
-					{ pos: [ 0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[0], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[2], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[1], },
-					{ pos: [ 0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[1], },
-					{ pos: [-0.5,  0.5, -0.5], norm: [ 0,  1,  0], uv: uv[2], },
-					{ pos: [-0.5,  0.5,  0.5], norm: [ 0,  1,  0], uv: uv[3], }
-				]
+				return {
+					pos:[ 0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],0.5+pos[0],  0.5+pos[1],  0.5+pos[2], 0.5+pos[0],  0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2]]
+					norm:[ 0,  1,  0, 0,  1,  0, 0,  1,  0, 0,  1,  0, 0,  1,  0, 0,  1,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 			when "ny"
-				return [
-					{ pos: [ 0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[0], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[2], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[1], },
-					{ pos: [ 0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[1], },
-					{ pos: [-0.5, -0.5,  0.5], norm: [ 0, -1,  0], uv: uv[2], },
-					{ pos: [-0.5, -0.5, -0.5], norm: [ 0, -1,  0], uv: uv[3], }
-				]
+				return {
+					pos:[ 0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1], -0.5+pos[2], 0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0], -0.5+pos[1], -0.5+pos[2]]
+					norm:[ 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 	genCellGeo: (cellX,cellY,cellZ)->
 		positions=[]
 		normals=[]
 		uvs=[]
 		_this=@
 		addFace=(type,pos,voxel)->
-			faceVertex=_this.genBlockFace type,voxel
-			for vertex in faceVertex
-				vertex.pos[0]+=pos[0]
-				vertex.pos[1]+=pos[1]
-				vertex.pos[2]+=pos[2]
-				positions.push vertex.pos...
-				normals.push vertex.norm...
-				uvs.push vertex.uv...
+			faceVertex=_this.genBlockFace type,voxel,pos
+			positions.push faceVertex.pos...
+			normals.push faceVertex.norm...
+			uvs.push faceVertex.uv...
 			return
 		addGeo=(geo,pos)->
 			posi=geo.position.array
@@ -167,6 +139,7 @@ State={
 	world:{}
 }
 terrain=null
+time=0
 handlers={
 	init:(data)->
 		State.init=data
@@ -182,12 +155,16 @@ handlers={
 		terrain.setVoxel data...
 	genCellGeo: (data)->
 		if ((terrain.cellTerrain.vec3 data...) of terrain.cellTerrain.cells) is true
+			t0 = performance.now()
 			geo=terrain.genCellGeo data...
-			# if terrain.cellTerrain.cells[terrain.cellTerrain.vec3 data...] isnt undefined
+			t1 = performance.now()
+			time+=(t1 - t0)
+			console.log(time)
 			postMessage {
 				cell:geo
 				info:data
 			}
 	setCell: (data)->
+		console.log("Otrzymano komórkę")
 		terrain.cellTerrain.cells["#{data[0]}:#{data[1]}:#{data[2]}"]=data[3]
 }
