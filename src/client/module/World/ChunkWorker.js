@@ -5,6 +5,8 @@ import {
   CellTerrain
 } from './CellTerrain.js';
 
+console.log("CHUNK WORKER STARTED!");
+
 TerrainManager = class TerrainManager {
   constructor(options) {
     this.toxelSize = options.toxelSize;
@@ -16,7 +18,6 @@ TerrainManager = class TerrainManager {
     this.cellTerrain = new CellTerrain({
       cellSize: this.cellSize
     });
-    console.log("WORKER: TerrainManager started!");
   }
 
   getToxel(x, y) {
@@ -516,8 +517,6 @@ handlers = {
         cell: geo,
         info: data
       });
-    } else {
-      return console.log('xd');
     }
   },
   setCell: function(data) {

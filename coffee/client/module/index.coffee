@@ -1,27 +1,18 @@
 
-scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;terrain=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
+scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;world=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
 import * as THREE from './build/three.module.js'
 import {SkeletonUtils} from './jsm/utils/SkeletonUtils.js'
 import Stats from './jsm/libs/stats.module.js'
-import {Terrain} from './Terrain.js'
+import {World} from './World/World.js'
 import {FirstPersonControls} from './FirstPersonControls.js'
 import {gpuInfo} from './gpuInfo.js'
 import {AssetLoader} from './AssetLoader.js'
 import {InventoryBar} from './InventoryBar.js'
-import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
 import {Players} from './Players.js'
 import {RandomNick} from './RandomNick.js'
 
+
 init = ()->
-
-	chunkWorker=new Worker "/module/ChunkWorker.js", {type:'module'}
-	chunkWorker.onmessage=(data)->
-
-		result=data.data.result
-		for i in result
-			if i isnt null
-				terrain.setCell(i.x,i.y,i.z,i.data)
-
 	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
@@ -55,16 +46,10 @@ init = ()->
 	clouds.position.y=170
 	scene.add clouds
 
-	#Animated Material
-	ATA=new AnimatedTextureAtlas {
-		al
-	}
-
-	#setup terrain
-	terrain=new Terrain({
+	#setup world
+	world=new World({
 		toxelSize:27
 		cellSize:16
-		material:ATA.material
 		scene
 		camera
 		al
@@ -85,22 +70,17 @@ init = ()->
 		}
 		return
 	socket.on "blockUpdate",(block)->
-		terrain.setBlock block...
+		world.setBlock block...
 		return
 	socket.on "mapChunk", (sections,x,z)->
-		chunkWorker.postMessage {
-			type:"computeSections"
-			data:{
-				sections,x,z
-			}
-		}
+		world._computeSections sections,x,z
 	players=new Players {socket,scene,al}
 	socket.on "playerUpdate",(data)->
 		players.update data
 		return
 	socket.on "firstLoad",(v)->
 		console.log "First Load packet recieved!"
-		terrain.replaceWorld v
+		world.replaceWorld v
 		$(".initLoading").css "display","none"
 		stats = new Stats();
 		stats.showPanel(0);
@@ -146,7 +126,7 @@ init = ()->
 	#jquery events
 	$(document).mousedown (e)->
 		if FPC.gameState is "game"
-			rayBlock=terrain.getRayBlock()
+			rayBlock=world.getRayBlock()
 			if rayBlock
 				if e.which is 1
 					voxelId=0
@@ -185,7 +165,7 @@ render = ->
 		FPC.camMicroMove()
 
 	#Update cursor
-	rayBlock=terrain.getRayBlock()
+	rayBlock=world.getRayBlock()
 	if rayBlock
 		pos=rayBlock.posBreak
 		pos[0]=Math.floor pos[0]
@@ -197,7 +177,7 @@ render = ->
 		cursor.visible=false
 
 	#Rendering
-	terrain.updateCells()
+	world.updateCells()
 	renderer.render scene, camera
 	return
 animate = ->

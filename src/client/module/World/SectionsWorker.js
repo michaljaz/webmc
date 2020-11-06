@@ -3,6 +3,8 @@
   var BitArray, ChunkDecoder, cd, handlers,
     modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
+  console.log("SECTIONS WORKER STARTED!");
+
   BitArray = class BitArray {
     constructor(options) {
       var length, valueMask, valuesPerLong;

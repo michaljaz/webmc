@@ -1,26 +1,26 @@
-import * as THREE from './build/three.module.js'
+import * as THREE from './../build/three.module.js'
 import {CellTerrain} from './CellTerrain.js'
+import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
 
-class Terrain
+class World
 	constructor: (options) ->
 		_this=@
 		@cellMesh={}
 		@cellNeedsUpdate={}
 		@models={}
 		@cellSize=options.cellSize
-		@material=options.material
 		@camera=options.camera
 		@scene=options.scene
 		@toxelSize=options.toxelSize
 		@al=options.al
-		@cellTerrain=new CellTerrain {
-			cellSize:@cellSize
-		}
+		@cellTerrain=new CellTerrain {cellSize:@cellSize}
+		@ATA=new AnimatedTextureAtlas {al:@al}
+		@material=@ATA.material
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-		@worker=new Worker "/module/TerrainWorker.js", {type:'module'}
-		@worker.onmessage=(message)->
+		@chunkWorker=new Worker "/module/World/ChunkWorker.js", {type:'module'}
+		@chunkWorker.onmessage=(message)->
 			_this.updateCell message.data
-		@worker.postMessage {
+		@chunkWorker.postMessage {
 			type:'init'
 			data:{
 				models:{
@@ -34,6 +34,12 @@ class Terrain
 				cellSize: @cellSize
 			}
 		}
+		@sectionsWorker=new Worker "/module/World/SectionsWorker.js", {type:'module'}
+		@sectionsWorker.onmessage=(data)->
+			result=data.data.result
+			for i in result
+				if i isnt null
+					_this.setCell i.x,i.y,i.z,i.data
 	setCell: (cellX,cellY,cellZ,buffer)->
 		@_setCell cellX,cellY,cellZ,buffer
 		@cellTerrain.cells[@cellTerrain.vec3(cellX,cellY,cellZ)]=buffer
@@ -166,12 +172,12 @@ class Terrain
 		else
 			return false
 	_setCell: (cellX,cellY,cellZ,buffer)->
-		@worker.postMessage {
+		@chunkWorker.postMessage {
 			type:"setCell"
 			data:[cellX,cellY,cellZ,buffer]
 		}
 	_setVoxel: (voxelX,voxelY,voxelZ,value)->
-		@worker.postMessage {
+		@chunkWorker.postMessage {
 			type:"setVoxel"
 			data:[voxelX,voxelY,voxelZ,value]
 		}
@@ -179,8 +185,15 @@ class Terrain
 		cellX=parseInt cellX
 		cellY=parseInt cellY
 		cellZ=parseInt cellZ
-		@worker.postMessage {
+		@chunkWorker.postMessage {
 			type:"genCellGeo"
 			data:[cellX,cellY,cellZ]
 		}
-export {Terrain}
+	_computeSections: (sections,x,z)->
+		@sectionsWorker.postMessage {
+			type:"computeSections"
+			data:{
+				sections,x,z
+			}
+		}
+export {World}
