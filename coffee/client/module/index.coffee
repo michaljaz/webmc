@@ -20,12 +20,12 @@ init = ()->
 		PixelRatio:window.devicePixelRatio
 	}
 	scene=new THREE.Scene
-	camera = new THREE.PerspectiveCamera 70, 2, 0.1, 1000
+	camera = new THREE.PerspectiveCamera 90, 2, 0.1, 64
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
 	color = new THREE.Color("#adc8ff")
-	near = 64
-	far = 128
+	near = 32
+	far = 64
 	scene.fog = new THREE.Fog(color, near, far)
 	#skybox
 	loader = new THREE.TextureLoader();
@@ -78,6 +78,12 @@ init = ()->
 		return
 	socket.on "mapChunk", (sections,x,z)->
 		world._computeSections sections,x,z
+	socket.on "botPosition", (pos)->
+		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
+		new TWEEN.Tween camera.position
+			.to to, 40
+			.easing TWEEN.Easing.Quadratic.Out
+			.start()
 	players=new Players {socket,scene,al}
 	socket.on "playerUpdate",(data)->
 		players.update data
@@ -113,6 +119,7 @@ init = ()->
 		canvas
 		camera
 		micromove: 0.3
+		socket
 	}
 
 	#Raycast cursor
@@ -166,7 +173,6 @@ render = ->
 			xyaw:-camera.rotation.x
 			zyaw:camera.rotation.y+Math.PI
 		}
-		FPC.camMicroMove()
 
 	#Update cursor
 	rayBlock=world.getRayBlock()
@@ -182,8 +188,10 @@ render = ->
 
 	#Rendering
 	world.updateCells()
+	TWEEN.update();
 	renderer.render scene, camera
 	return
+
 animate = ->
 	try
 		stats.begin()

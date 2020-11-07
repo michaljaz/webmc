@@ -6,56 +6,19 @@ import * as THREE from './build/three.module.js';
 FirstPersonControls = class FirstPersonControls {
   constructor(options) {
     this.kc = {
-      "w": 87,
-      "s": 83,
-      "a": 65,
-      "d": 68,
-      "space": 32,
-      "shift": 16
+      87: "forward",
+      65: "right",
+      83: "back",
+      68: "left",
+      32: "jump"
     };
     this.keys = {};
     this.canvas = options.canvas;
     this.camera = options.camera;
     this.micromove = options.micromove;
+    this.socket = options.socket;
     this.gameState = "menu";
     this.listen();
-  }
-
-  ac(qx, qy, qa, qf) {
-    var m_x, m_y, r_x, r_y;
-    m_x = -Math.sin(qa) * qf;
-    m_y = -Math.cos(qa) * qf;
-    r_x = qx - m_x;
-    r_y = qy - m_y;
-    return {
-      x: r_x,
-      y: r_y
-    };
-  }
-
-  camMicroMove() {
-    if (this.keys[this.kc["w"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(180), this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(180), this.micromove).y;
-    }
-    if (this.keys[this.kc["s"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y, this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y, this.micromove).y;
-    }
-    if (this.keys[this.kc["a"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - THREE.MathUtils.degToRad(90), this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y - THREE.MathUtils.degToRad(90), this.micromove).y;
-    }
-    if (this.keys[this.kc["d"]]) {
-      this.camera.position.x = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(90), this.micromove).x;
-      this.camera.position.z = this.ac(this.camera.position.x, this.camera.position.z, this.camera.rotation.y + THREE.MathUtils.degToRad(90), this.micromove).y;
-    }
-    if (this.keys[this.kc["space"]]) {
-      this.camera.position.y += this.micromove;
-    }
-    if (this.keys[this.kc["shift"]]) {
-      return this.camera.position.y -= this.micromove;
-    }
   }
 
   updatePosition(e) {
@@ -68,6 +31,7 @@ FirstPersonControls = class FirstPersonControls {
       if (THREE.MathUtils.radToDeg(this.camera.rotation.x) > 90) {
         this.camera.rotation.x = THREE.MathUtils.degToRad(90);
       }
+      this.socket.emit("playerRotate", [this.camera.rotation.y, this.camera.rotation.x]);
     }
   }
 
@@ -85,8 +49,14 @@ FirstPersonControls = class FirstPersonControls {
           document.exitPointerLock();
         }
       }
+      if (_this.kc[z.keyCode] !== void 0) {
+        _this.socket.emit("move", _this.kc[z.keyCode], true);
+      }
     });
     $(document).keyup(function(z) {
+      if (_this.kc[z.keyCode] !== void 0) {
+        _this.socket.emit("move", _this.kc[z.keyCode], false);
+      }
       delete _this.keys[z.keyCode];
     });
     $(".gameOn").click(function() {

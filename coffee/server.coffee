@@ -64,9 +64,18 @@ module.exports=(config)->
 					return
 				socketInfo[socket.id].bot.chat message
 				return
+			socketInfo[socket.id].bot.on 'move',()->
+				try
+					console.log socketInfo[socket.id].bot.entity.position
+					io.to(socket.id).emit "botPosition",socketInfo[socket.id].bot.entity.position
+				return
 			#first world load
 			io.to(socket.id).emit "firstLoad",world
 			return
+		socket.on "move",(state,toggle)->
+			socketInfo[socket.id].bot.setControlState(state,toggle);
+		socket.on "playerRotate",(data)->
+			socketInfo[socket.id].bot.look data...
 		socket.on "playerUpdate",(data)->
 			players[socket.id]=data
 			io.sockets.emit "playerUpdate", players

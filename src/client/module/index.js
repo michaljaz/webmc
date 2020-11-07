@@ -74,12 +74,12 @@ init = function() {
     PixelRatio: window.devicePixelRatio
   });
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(70, 2, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(90, 2, 0.1, 64);
   camera.rotation.order = "YXZ";
   camera.position.set(26, 26, 26);
   color = new THREE.Color("#adc8ff");
-  near = 64;
-  far = 128;
+  near = 32;
+  far = 64;
   scene.fog = new THREE.Fog(color, near, far);
   //skybox
   loader = new THREE.TextureLoader();
@@ -133,6 +133,15 @@ init = function() {
   socket.on("mapChunk", function(sections, x, z) {
     return world._computeSections(sections, x, z);
   });
+  socket.on("botPosition", function(pos) {
+    var to;
+    to = {
+      x: pos.x - 0.5,
+      y: pos.y + 17,
+      z: pos.z - 0.5
+    };
+    return new TWEEN.Tween(camera.position).to(to, 40).easing(TWEEN.Easing.Quadratic.Out).start();
+  });
   players = new Players({socket, scene, al});
   socket.on("playerUpdate", function(data) {
     players.update(data);
@@ -155,7 +164,8 @@ init = function() {
   FPC = new FirstPersonControls({
     canvas,
     camera,
-    micromove: 0.3
+    micromove: 0.3,
+    socket
   });
   //Raycast cursor
   cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
@@ -207,7 +217,6 @@ render = function() {
       xyaw: -camera.rotation.x,
       zyaw: camera.rotation.y + Math.PI
     });
-    FPC.camMicroMove();
   }
   //Update cursor
   rayBlock = world.getRayBlock();
@@ -223,6 +232,7 @@ render = function() {
   }
   //Rendering
   world.updateCells();
+  TWEEN.update();
   renderer.render(scene, camera);
 };
 

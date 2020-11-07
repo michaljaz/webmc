@@ -187,13 +187,9 @@ handlers = {
     return terrain.setVoxel(...data);
   },
   genCellGeo: function(data) {
-    var geo, t0, t1;
+    var geo;
     if (((terrain.cellTerrain.vec3(...data)) in terrain.cellTerrain.cells) === true) {
-      t0 = performance.now();
       geo = terrain.genCellGeo(...data);
-      t1 = performance.now();
-      time += t1 - t0;
-      console.log(time);
       return postMessage({
         cell: geo,
         info: data
@@ -201,7 +197,6 @@ handlers = {
     }
   },
   setCell: function(data) {
-    console.log("Otrzymano komórkę");
     return terrain.cellTerrain.cells[`${data[0]}:${data[1]}:${data[2]}`] = data[3];
   }
 };

@@ -3,45 +3,19 @@ import * as THREE from './build/three.module.js'
 class FirstPersonControls
 	constructor: (options)->
 		@kc={
-			"w": 87,
-			"s": 83,
-			"a": 65,
-			"d": 68,
-			"space": 32,
-			"shift": 16
+			87:"forward"
+			65:"right"
+			83:"back"
+			68:"left"
+			32:"jump"
 		}
 		@keys={}
 		@canvas=options.canvas
 		@camera=options.camera
 		@micromove=options.micromove
+		@socket=options.socket
 		@gameState="menu"
 		@listen()
-	ac: (qx, qy, qa, qf)->
-		m_x = -Math.sin(qa) * qf;
-		m_y = -Math.cos(qa) * qf;
-		r_x = qx - m_x;
-		r_y = qy - m_y;
-		return {
-			x: r_x,
-			y: r_y
-		}
-	camMicroMove: ->
-		if @keys[@kc["w"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(180), @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(180), @micromove).y
-		if @keys[@kc["s"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y, @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y, @micromove).y
-		if @keys[@kc["a"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y - THREE.MathUtils.degToRad(90), @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y - THREE.MathUtils.degToRad(90), @micromove).y
-		if @keys[@kc["d"]]
-			@camera.position.x = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(90), @micromove).x
-			@camera.position.z = @ac(@camera.position.x, @camera.position.z, @camera.rotation.y + THREE.MathUtils.degToRad(90), @micromove).y
-		if @keys[@kc["space"]]
-			@camera.position.y += @micromove
-		if @keys[@kc["shift"]]
-			@camera.position.y -= @micromove
 	updatePosition: (e)->
 		if @gameState is "game"
 			@camera.rotation.x -= THREE.MathUtils.degToRad e.movementY / 10
@@ -50,6 +24,7 @@ class FirstPersonControls
 				@camera.rotation.x = THREE.MathUtils.degToRad -90
 			if THREE.MathUtils.radToDeg( @camera.rotation.x ) > 90
 				@camera.rotation.x = THREE.MathUtils.degToRad 90
+			@socket.emit "playerRotate", [@camera.rotation.y,@camera.rotation.x]
 		return
 	listen: ->
 		_this=@
@@ -62,8 +37,12 @@ class FirstPersonControls
 				else
 					document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock;
 					document.exitPointerLock();
+			if _this.kc[z.keyCode] isnt undefined
+				_this.socket.emit "move",_this.kc[z.keyCode],true
 			return
 		$(document).keyup (z) ->
+			if _this.kc[z.keyCode] isnt undefined
+				_this.socket.emit "move",_this.kc[z.keyCode],false
 			delete _this.keys[z.keyCode]
 			return
 		$(".gameOn").click ->

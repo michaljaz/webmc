@@ -64,8 +64,20 @@
           }
           socketInfo[socket.id].bot.chat(message);
         });
+        socketInfo[socket.id].bot.on('move', function() {
+          try {
+            console.log(socketInfo[socket.id].bot.entity.position);
+            io.to(socket.id).emit("botPosition", socketInfo[socket.id].bot.entity.position);
+          } catch (error) {}
+        });
         //first world load
         io.to(socket.id).emit("firstLoad", world);
+      });
+      socket.on("move", function(state, toggle) {
+        return socketInfo[socket.id].bot.setControlState(state, toggle);
+      });
+      socket.on("playerRotate", function(data) {
+        return socketInfo[socket.id].bot.look(...data);
       });
       socket.on("playerUpdate", function(data) {
         players[socket.id] = data;

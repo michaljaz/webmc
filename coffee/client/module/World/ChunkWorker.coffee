@@ -155,16 +155,11 @@ handlers={
 		terrain.setVoxel data...
 	genCellGeo: (data)->
 		if ((terrain.cellTerrain.vec3 data...) of terrain.cellTerrain.cells) is true
-			t0 = performance.now()
 			geo=terrain.genCellGeo data...
-			t1 = performance.now()
-			time+=(t1 - t0)
-			console.log(time)
 			postMessage {
 				cell:geo
 				info:data
 			}
 	setCell: (data)->
-		console.log("Otrzymano komórkę")
 		terrain.cellTerrain.cells["#{data[0]}:#{data[1]}:#{data[2]}"]=data[3]
 }
