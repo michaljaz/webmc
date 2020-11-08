@@ -8,12 +8,10 @@ import {FirstPersonControls} from './FirstPersonControls.js'
 import {gpuInfo} from './gpuInfo.js'
 import {AssetLoader} from './AssetLoader.js'
 import {InventoryBar} from './InventoryBar.js'
-import {Players} from './Players.js'
 import {RandomNick} from './RandomNick.js'
-
+import {GUI} from './jsm/libs/dat.gui.module.js'
 
 init = ()->
-	#canvas,renderer,camera,lights
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
 		canvas
@@ -23,18 +21,15 @@ init = ()->
 	camera = new THREE.PerspectiveCamera 90, 2, 0.1, 64
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
-	color = new THREE.Color("#adc8ff")
+	color = new THREE.Color "#adc8ff"
 	near = 32
 	far = 64
-	scene.fog = new THREE.Fog(color, near, far)
-	#skybox
-	loader = new THREE.TextureLoader();
-	skybox = loader.load "assets/images/skybox.jpg", () ->
-		rt = new THREE.WebGLCubeRenderTarget skybox.image.height
-		rt.fromEquirectangularTexture renderer, skybox
-		scene.background = rt
-		return
-	#Lights
+	scene.fog = new THREE.Fog color, near, far
+
+	rt = new THREE.WebGLCubeRenderTarget al.get("skybox").image.height
+	rt.fromEquirectangularTexture renderer, al.get "skybox"
+	scene.background = rt
+
 	ambientLight=new THREE.AmbientLight 0xcccccc
 	scene.add ambientLight
 	directionalLight = new THREE.DirectionalLight 0x333333, 2
@@ -42,7 +37,6 @@ init = ()->
 	scene.add directionalLight
 	console.warn gpuInfo()
 
-	#Clouds
 	clouds=al.get "clouds"
 	clouds.scale.x=0.1
 	clouds.scale.y=0.1
@@ -50,7 +44,6 @@ init = ()->
 	clouds.position.y=170
 	scene.add clouds
 
-	#setup world
 	world=new World({
 		toxelSize:27
 		cellSize:16
@@ -59,7 +52,6 @@ init = ()->
 		al
 	})
 
-	#Socket.io setup
 	socket=io.connect "#{al.get("host")}:#{al.get("websocket-port")}"
 	socket.on "connect",()->
 		console.log "Połączono z serverem!"
@@ -72,32 +64,25 @@ init = ()->
 		socket.emit "initClient", {
 			nick:nick
 		}
-		return
-	socket.on "blockUpdate",(block)->
-		world.setBlock block...
-		return
-	socket.on "mapChunk", (sections,x,z)->
-		world._computeSections sections,x,z
-	socket.on "botPosition", (pos)->
-		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
-		new TWEEN.Tween camera.position
-			.to to, 40
-			.easing TWEEN.Easing.Quadratic.Out
-			.start()
-	players=new Players {socket,scene,al}
-	socket.on "playerUpdate",(data)->
-		players.update data
-		return
-	socket.on "firstLoad",(v)->
 		console.log "First Load packet recieved!"
-		world.replaceWorld v
+		# world.replaceWorld v
 		$(".initLoading").css "display","none"
 		stats = new Stats();
 		stats.showPanel(0);
 		document.body.appendChild stats.dom
 		return
+	# socket.on "blockUpdate",(block)->
+	# 	world.setBlock block...
+	# 	return
+	socket.on "mapChunk", (sections,x,z)->
+		world._computeSections sections,x,z
+	socket.on "move", (pos)->
+		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
+		new TWEEN.Tween camera.position
+			.to to, 100
+			.easing TWEEN.Easing.Quadratic.Out
+			.start()
 
-	#Inventory Bar
 	inv_bar = new InventoryBar({
 		boxSize: 60
 		padding: 4
@@ -114,7 +99,6 @@ init = ()->
 		"assets/images/tnt.png"
 	]).setFocusOnly(1).listen()
 
-	#First Person Controls
 	FPC = new FirstPersonControls {
 		canvas
 		camera
@@ -122,7 +106,6 @@ init = ()->
 		socket
 	}
 
-	#Raycast cursor
 	cursor=new THREE.LineSegments(
 		new THREE.EdgesGeometry(
 			new THREE.BoxGeometry 1, 1, 1
@@ -133,28 +116,29 @@ init = ()->
 		}
 	)
 	scene.add cursor
-
-	#jquery events
-	$(document).mousedown (e)->
-		if FPC.gameState is "game"
-			rayBlock=world.getRayBlock()
-			if rayBlock
-				if e.which is 1
-					voxelId=0
-					pos=rayBlock.posBreak
-				else
-					voxelId=inv_bar.activeBox
-					pos=rayBlock.posPlace
-				pos[0]=Math.floor pos[0]
-				pos[1]=Math.floor pos[1]
-				pos[2]=Math.floor pos[2]
-				socket.emit "blockUpdate",[pos...,voxelId]
-		return
-
+	# $(document).mousedown (e)->
+	# 	if FPC.gameState is "game"
+	# 		rayBlock=world.getRayBlock()
+	# 		if rayBlock
+	# 			if e.which is 1
+	# 				voxelId=0
+	# 				pos=rayBlock.posBreak
+	# 			else
+	# 				voxelId=inv_bar.activeBox
+	# 				pos=rayBlock.posPlace
+	# 			pos[0]=Math.floor pos[0]
+	# 			pos[1]=Math.floor pos[1]
+	# 			pos[2]=Math.floor pos[2]
+	# 			socket.emit "blockUpdate",[pos...,voxelId]
+	# return
+	gui = new GUI()
+	params={
+		test:true
+	}
+	gui.add( params, 'test' ).name( 'test' )
 	animate()
 	return
 render = ->
-	#Autoresize canvas
 	width=window.innerWidth
 	height=window.innerHeight
 	if canvas.width isnt width or canvas.height isnt height
@@ -164,17 +148,6 @@ render = ->
 		camera.aspect = width / height
 		camera.updateProjectionMatrix()
 
-	#Player movement
-	if FPC.gameState is "game"
-		socket.emit "playerUpdate", {
-			x:camera.position.x
-			y:camera.position.y
-			z:camera.position.z
-			xyaw:-camera.rotation.x
-			zyaw:camera.rotation.y+Math.PI
-		}
-
-	#Update cursor
 	rayBlock=world.getRayBlock()
 	if rayBlock
 		pos=rayBlock.posBreak
@@ -186,7 +159,6 @@ render = ->
 	else
 		cursor.visible=false
 
-	#Rendering
 	world.updateCells()
 	TWEEN.update();
 	renderer.render scene, camera

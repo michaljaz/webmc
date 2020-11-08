@@ -58,16 +58,15 @@ import {
 } from './InventoryBar.js';
 
 import {
-  Players
-} from './Players.js';
-
-import {
   RandomNick
 } from './RandomNick.js';
 
+import {
+  GUI
+} from './jsm/libs/dat.gui.module.js';
+
 init = function() {
-  var ambientLight, clouds, color, directionalLight, far, loader, near, players, skybox;
-  //canvas,renderer,camera,lights
+  var ambientLight, clouds, color, directionalLight, far, gui, near, params, rt;
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
     canvas,
@@ -81,29 +80,21 @@ init = function() {
   near = 32;
   far = 64;
   scene.fog = new THREE.Fog(color, near, far);
-  //skybox
-  loader = new THREE.TextureLoader();
-  skybox = loader.load("assets/images/skybox.jpg", function() {
-    var rt;
-    rt = new THREE.WebGLCubeRenderTarget(skybox.image.height);
-    rt.fromEquirectangularTexture(renderer, skybox);
-    scene.background = rt;
-  });
-  //Lights
+  rt = new THREE.WebGLCubeRenderTarget(al.get("skybox").image.height);
+  rt.fromEquirectangularTexture(renderer, al.get("skybox"));
+  scene.background = rt;
   ambientLight = new THREE.AmbientLight(0xcccccc);
   scene.add(ambientLight);
   directionalLight = new THREE.DirectionalLight(0x333333, 2);
   directionalLight.position.set(1, 1, 0.5).normalize();
   scene.add(directionalLight);
   console.warn(gpuInfo());
-  //Clouds
   clouds = al.get("clouds");
   clouds.scale.x = 0.1;
   clouds.scale.y = 0.1;
   clouds.scale.z = 0.1;
   clouds.position.y = 170;
   scene.add(clouds);
-  //setup world
   world = new World({
     toxelSize: 27,
     cellSize: 16,
@@ -111,7 +102,6 @@ init = function() {
     camera,
     al
   });
-  //Socket.io setup
   socket = io.connect(`${al.get("host")}:${al.get("websocket-port")}`);
   socket.on("connect", function() {
     var nick;
@@ -126,79 +116,69 @@ init = function() {
     socket.emit("initClient", {
       nick: nick
     });
+    console.log("First Load packet recieved!");
+    // world.replaceWorld v
+    $(".initLoading").css("display", "none");
+    stats = new Stats();
+    stats.showPanel(0);
+    document.body.appendChild(stats.dom);
   });
-  socket.on("blockUpdate", function(block) {
-    world.setBlock(...block);
-  });
+  // socket.on "blockUpdate",(block)->
+  // 	world.setBlock block...
+  // 	return
   socket.on("mapChunk", function(sections, x, z) {
     return world._computeSections(sections, x, z);
   });
-  socket.on("botPosition", function(pos) {
+  socket.on("move", function(pos) {
     var to;
     to = {
       x: pos.x - 0.5,
       y: pos.y + 17,
       z: pos.z - 0.5
     };
-    return new TWEEN.Tween(camera.position).to(to, 40).easing(TWEEN.Easing.Quadratic.Out).start();
+    return new TWEEN.Tween(camera.position).to(to, 100).easing(TWEEN.Easing.Quadratic.Out).start();
   });
-  players = new Players({socket, scene, al});
-  socket.on("playerUpdate", function(data) {
-    players.update(data);
-  });
-  socket.on("firstLoad", function(v) {
-    console.log("First Load packet recieved!");
-    world.replaceWorld(v);
-    $(".initLoading").css("display", "none");
-    stats = new Stats();
-    stats.showPanel(0);
-    document.body.appendChild(stats.dom);
-  });
-  //Inventory Bar
   inv_bar = new InventoryBar({
     boxSize: 60,
     padding: 4,
     div: ".inventoryBar"
   }).setBoxes(["assets/images/grass_block.png", "assets/images/stone.png", "assets/images/oak_planks.png", "assets/images/smoker.gif", "assets/images/anvil.png", "assets/images/brick.png", "assets/images/furnace.png", "assets/images/bookshelf.png", "assets/images/tnt.png"]).setFocusOnly(1).listen();
-  //First Person Controls
   FPC = new FirstPersonControls({
     canvas,
     camera,
     micromove: 0.3,
     socket
   });
-  //Raycast cursor
   cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
     color: 0x000000,
     linewidth: 0.5
   }));
   scene.add(cursor);
-  //jquery events
-  $(document).mousedown(function(e) {
-    var pos, rayBlock, voxelId;
-    if (FPC.gameState === "game") {
-      rayBlock = world.getRayBlock();
-      if (rayBlock) {
-        if (e.which === 1) {
-          voxelId = 0;
-          pos = rayBlock.posBreak;
-        } else {
-          voxelId = inv_bar.activeBox;
-          pos = rayBlock.posPlace;
-        }
-        pos[0] = Math.floor(pos[0]);
-        pos[1] = Math.floor(pos[1]);
-        pos[2] = Math.floor(pos[2]);
-        socket.emit("blockUpdate", [...pos, voxelId]);
-      }
-    }
-  });
+  // $(document).mousedown (e)->
+  // 	if FPC.gameState is "game"
+  // 		rayBlock=world.getRayBlock()
+  // 		if rayBlock
+  // 			if e.which is 1
+  // 				voxelId=0
+  // 				pos=rayBlock.posBreak
+  // 			else
+  // 				voxelId=inv_bar.activeBox
+  // 				pos=rayBlock.posPlace
+  // 			pos[0]=Math.floor pos[0]
+  // 			pos[1]=Math.floor pos[1]
+  // 			pos[2]=Math.floor pos[2]
+  // 			socket.emit "blockUpdate",[pos...,voxelId]
+  // return
+  gui = new GUI();
+  params = {
+    test: true
+  };
+  gui.add(params, 'test').name('test');
   animate();
 };
 
 render = function() {
   var height, pos, rayBlock, width;
-  //Autoresize canvas
   width = window.innerWidth;
   height = window.innerHeight;
   if (canvas.width !== width || canvas.height !== height) {
@@ -208,17 +188,6 @@ render = function() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   }
-  //Player movement
-  if (FPC.gameState === "game") {
-    socket.emit("playerUpdate", {
-      x: camera.position.x,
-      y: camera.position.y,
-      z: camera.position.z,
-      xyaw: -camera.rotation.x,
-      zyaw: camera.rotation.y + Math.PI
-    });
-  }
-  //Update cursor
   rayBlock = world.getRayBlock();
   if (rayBlock) {
     pos = rayBlock.posBreak;
@@ -230,7 +199,6 @@ render = function() {
   } else {
     cursor.visible = false;
   }
-  //Rendering
   world.updateCells();
   TWEEN.update();
   renderer.render(scene, camera);

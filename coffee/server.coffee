@@ -11,16 +11,7 @@ module.exports=(config)->
 
 	sf={}
 	port=config["express-port"]
-	world={}
-	#Zapisywanie i odczytywanie świata
-	saveWorld=->
-		fs.writeFileSync __dirname+"/savedWorld.json",JSON.stringify(world)
-	restoreWorld=->
-		world=JSON.parse fs.readFileSync(__dirname+'/savedWorld.json')
 
-	restoreWorld()
-
-	players={}
 	socketInfo={}
 
 	app.use express.static(__dirname + "/client/")
@@ -35,28 +26,22 @@ module.exports=(config)->
 
 	server.listen config["websocket-port"]
 
-	#On connect
 	io.sockets.on "connection", (socket)->
-
-		#Trying to run special functions
 		socket.on "initClient",(data)->
 			console.log "[+] "+data.nick
-			#init socketInfo
+
 			socketInfo[socket.id]=data
 
-			#socketInfo add Bot
 			socketInfo[socket.id].bot=mineflayer.createBot {
 				host: config.realServer.ip
 				port: config.realServer.port
 				username: socketInfo[socket.id].nick
 			}
-			#On recieve real Map Chunk
-			socketInfo[socket.id].bot._client.on "map_chunk",(packet)->
 
+			socketInfo[socket.id].bot._client.on "map_chunk",(packet)->
 				cell=new Chunk()
 				cell.load packet.chunkData,packet.bitMap,false,true
 				io.to(socket.id).emit "mapChunk", cell.sections,packet.x,packet.z
-				# console.log packet
 				return
 
 			socketInfo[socket.id].bot.on 'chat',(username, message)->
@@ -64,33 +49,21 @@ module.exports=(config)->
 					return
 				socketInfo[socket.id].bot.chat message
 				return
+
 			socketInfo[socket.id].bot.on 'move',()->
 				try
-					console.log socketInfo[socket.id].bot.entity.position
-					io.to(socket.id).emit "botPosition",socketInfo[socket.id].bot.entity.position
+					io.to(socket.id).emit "move",socketInfo[socket.id].bot.entity.position
 				return
-			#first world load
-			io.to(socket.id).emit "firstLoad",world
 			return
 		socket.on "move",(state,toggle)->
 			socketInfo[socket.id].bot.setControlState(state,toggle);
-		socket.on "playerRotate",(data)->
+		socket.on "rotate",(data)->
 			socketInfo[socket.id].bot.look data...
-		socket.on "playerUpdate",(data)->
-			players[socket.id]=data
-			io.sockets.emit "playerUpdate", players
-		socket.on "blockUpdate",(block)->
-			world["#{block[0]}:#{block[1]}:#{block[2]}"]=block[3]
-			if block[3] is 0
-				delete world["#{block[0]}:#{block[1]}:#{block[2]}"]
-			io.sockets.emit "blockUpdate",block
-			saveWorld()
 		socket.on "disconnect", ->
 			console.log "[-] "+socketInfo[socket.id].nick
 
 			#end bot session
 			socketInfo[socket.id].bot.end()
 			#delete socketinfo
-			delete players[socket.id]
 			delete socketInfo[socket.id]
 			return

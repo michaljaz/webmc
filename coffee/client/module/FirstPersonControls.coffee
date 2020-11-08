@@ -24,7 +24,7 @@ class FirstPersonControls
 				@camera.rotation.x = THREE.MathUtils.degToRad -90
 			if THREE.MathUtils.radToDeg( @camera.rotation.x ) > 90
 				@camera.rotation.x = THREE.MathUtils.degToRad 90
-			@socket.emit "playerRotate", [@camera.rotation.y,@camera.rotation.x]
+			@socket.emit "rotate", [@camera.rotation.y,@camera.rotation.x]
 		return
 	listen: ->
 		_this=@

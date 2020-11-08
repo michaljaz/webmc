@@ -43,6 +43,10 @@
     "path":"assets/models/anvil/anvil.fbx",
     "type":"fbx"
   },
+  "skybox":{
+    "path":"assets/images/skybox.jpg",
+    "type":"texture"
+  },
   "websocket-port":{
     "path":"/websocket/",
     "type":"text"

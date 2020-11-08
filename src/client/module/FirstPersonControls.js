@@ -31,7 +31,7 @@ FirstPersonControls = class FirstPersonControls {
       if (THREE.MathUtils.radToDeg(this.camera.rotation.x) > 90) {
         this.camera.rotation.x = THREE.MathUtils.degToRad(90);
       }
-      this.socket.emit("playerRotate", [this.camera.rotation.y, this.camera.rotation.x]);
+      this.socket.emit("rotate", [this.camera.rotation.y, this.camera.rotation.x]);
     }
   }
 
