@@ -53,11 +53,11 @@ World = class World {
       type: 'module'
     });
     this.sectionsWorker.onmessage = function(data) {
-      var i, j, len1, result, results;
+      var i, l, len1, result, results;
       result = data.data.result;
       results = [];
-      for (j = 0, len1 = result.length; j < len1; j++) {
-        i = result[j];
+      for (l = 0, len1 = result.length; l < len1; l++) {
+        i = result[l];
         if (i !== null) {
           results.push(_this.setCell(i.x, i.y, i.z, i.data));
         } else {
@@ -69,14 +69,14 @@ World = class World {
   }
 
   setCell(cellX, cellY, cellZ, buffer) {
-    var j, len1, nei, neiCellId, ref, results;
+    var l, len1, nei, neiCellId, ref, results;
     this._setCell(cellX, cellY, cellZ, buffer);
     this.cellTerrain.cells[this.cellTerrain.vec3(cellX, cellY, cellZ)] = buffer;
     this.cellNeedsUpdate[this.cellTerrain.vec3(cellX, cellY, cellZ)] = true;
     ref = this.neighbours;
     results = [];
-    for (j = 0, len1 = ref.length; j < len1; j++) {
-      nei = ref[j];
+    for (l = 0, len1 = ref.length; l < len1; l++) {
+      nei = ref[l];
       neiCellId = this.cellTerrain.vec3(cellX + nei[0], cellY + nei[1], cellZ + nei[2]);
       results.push(this.cellNeedsUpdate[neiCellId] = true);
     }
@@ -84,7 +84,7 @@ World = class World {
   }
 
   setBlock(voxelX, voxelY, voxelZ, value) {
-    var cellId, j, len1, nei, neiCellId, ref;
+    var cellId, l, len1, nei, neiCellId, ref;
     voxelX = parseInt(voxelX);
     voxelY = parseInt(voxelY);
     voxelZ = parseInt(voxelZ);
@@ -94,8 +94,8 @@ World = class World {
       cellId = this.cellTerrain.vec3(...this.cellTerrain.computeCellForVoxel(voxelX, voxelY, voxelZ));
       this.cellNeedsUpdate[cellId] = true;
       ref = this.neighbours;
-      for (j = 0, len1 = ref.length; j < len1; j++) {
-        nei = ref[j];
+      for (l = 0, len1 = ref.length; l < len1; l++) {
+        nei = ref[l];
         neiCellId = this.cellTerrain.vec3(...this.cellTerrain.computeCellForVoxel(voxelX + nei[0], voxelY + nei[1], voxelZ + nei[2]));
         this.cellNeedsUpdate[neiCellId] = true;
       }
@@ -106,15 +106,42 @@ World = class World {
     return this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ);
   }
 
-  updateCells() {
-    var _this;
-    _this = this;
-    Object.keys(this.cellNeedsUpdate).forEach(function(id) {
-      if (_this.cellNeedsUpdate[id]) {
-        _this._genCellGeo(...id.split(":"));
-        return delete _this.cellNeedsUpdate[id];
-      }
-    });
+  updateCellsAroundPlayer(pos, radius) {
+    var cell, i, j, k, l, pcell, ref, ref1, ref2, results, v;
+    ref = this.cellMesh;
+    for (k in ref) {
+      v = ref[k];
+      v.visible = false;
+    }
+    cell = this.cellTerrain.computeCellForVoxel(Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z));
+    results = [];
+    for (i = l = ref1 = -radius, ref2 = radius; (ref1 <= ref2 ? l <= ref2 : l >= ref2); i = ref1 <= ref2 ? ++l : --l) {
+      results.push((function() {
+        var m, ref3, ref4, results1;
+        results1 = [];
+        for (j = m = ref3 = -radius, ref4 = radius; (ref3 <= ref4 ? m <= ref4 : m >= ref4); j = ref3 <= ref4 ? ++m : --m) {
+          results1.push((function() {
+            var n, ref5, ref6, results2;
+            results2 = [];
+            for (k = n = ref5 = -radius, ref6 = radius; (ref5 <= ref6 ? n <= ref6 : n >= ref6); k = ref5 <= ref6 ? ++n : --n) {
+              pcell = [cell[0] + i, cell[1] + j, cell[2] + k];
+              try {
+                this.cellMesh[this.cellTerrain.vec3(...pcell)].visible = true;
+              } catch (error) {}
+              if (this.cellNeedsUpdate[this.cellTerrain.vec3(...pcell)]) {
+                this._genCellGeo(...pcell);
+                results2.push(delete this.cellNeedsUpdate[this.cellTerrain.vec3(...pcell)]);
+              } else {
+                results2.push(void 0);
+              }
+            }
+            return results2;
+          }).call(this));
+        }
+        return results1;
+      }).call(this));
+    }
+    return results;
   }
 
   updateCell(data) {
@@ -203,16 +230,6 @@ World = class World {
       }
     }
     return null;
-  }
-
-  replaceWorld(voxels) {
-    var _this;
-    _this = this;
-    return Object.keys(voxels).forEach(function(id) {
-      if (voxels[id] !== _this.getBlock(...id.split(":"))) {
-        return _this.setBlock(...id.split(":"), voxels[id]);
-      }
-    });
   }
 
   getRayBlock() {

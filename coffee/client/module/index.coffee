@@ -18,13 +18,9 @@ init = ()->
 		PixelRatio:window.devicePixelRatio
 	}
 	scene=new THREE.Scene
-	camera = new THREE.PerspectiveCamera 90, 2, 0.1, 64
+	camera = new THREE.PerspectiveCamera 90, 2, 0.1, 1000
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
-	color = new THREE.Color "#adc8ff"
-	near = 32
-	far = 64
-	scene.fog = new THREE.Fog color, near, far
 
 	rt = new THREE.WebGLCubeRenderTarget al.get("skybox").image.height
 	rt.fromEquirectangularTexture renderer, al.get "skybox"
@@ -131,11 +127,19 @@ init = ()->
 	# 			pos[2]=Math.floor pos[2]
 	# 			socket.emit "blockUpdate",[pos...,voxelId]
 	# return
+	color = new THREE.Color "#adc8ff"
+	near = 32
+	far = 64
 	gui = new GUI()
 	params={
-		test:true
+		fog:false
 	}
-	gui.add( params, 'test' ).name( 'test' )
+	gui.add( params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
+		if params.fog
+			scene.fog = new THREE.Fog color, near, far
+		else
+			scene.fog = null
+	gui.add( world.material, 'wireframe' ).name( 'Wireframe' ).listen()
 	animate()
 	return
 render = ->
@@ -159,7 +163,7 @@ render = ->
 	else
 		cursor.visible=false
 
-	world.updateCells()
+	world.updateCellsAroundPlayer camera.position,5
 	TWEEN.update();
 	renderer.render scene, camera
 	return

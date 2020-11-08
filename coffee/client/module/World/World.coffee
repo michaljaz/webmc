@@ -62,13 +62,19 @@ class World
 		return
 	getBlock: (voxelX,voxelY,voxelZ) ->
 		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
-	updateCells: ->
-		_this=@
-		Object.keys(@cellNeedsUpdate).forEach (id)->
-			if _this.cellNeedsUpdate[id]
-				_this._genCellGeo id.split(":")...
-				delete _this.cellNeedsUpdate[id]
-		return
+	updateCellsAroundPlayer: (pos,radius)->
+		for k,v of @cellMesh
+			v.visible=false
+		cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
+		for i in [-radius..radius]
+			for j in [-radius..radius]
+				for k in [-radius..radius]
+					pcell=[cell[0]+i,cell[1]+j,cell[2]+k]
+					try
+						@cellMesh[@cellTerrain.vec3(pcell...)].visible=true
+					if @cellNeedsUpdate[@cellTerrain.vec3(pcell...)]
+						@_genCellGeo pcell...
+						delete @cellNeedsUpdate[@cellTerrain.vec3(pcell...)]
 	updateCell: (data)->
 		cellId=@cellTerrain.vec3 data.info...
 		cell=data.cell
@@ -154,11 +160,6 @@ class World
 					tzMax += tzDelta
 					steppedIndex = 2
 		return null
-	replaceWorld: (voxels)->
-		_this=@
-		Object.keys(voxels).forEach (id)->
-			if voxels[id] isnt _this.getBlock id.split(":")...
-				_this.setBlock id.split(":")...,voxels[id]
 	getRayBlock: ->
 		start = new THREE.Vector3().setFromMatrixPosition(@camera.matrixWorld)
 		end = new THREE.Vector3().set(0,0, 1).unproject(@camera)
