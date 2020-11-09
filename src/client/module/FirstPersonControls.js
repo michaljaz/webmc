@@ -10,12 +10,13 @@ FirstPersonControls = class FirstPersonControls {
       65: "right",
       83: "back",
       68: "left",
-      32: "jump"
+      32: "jump",
+      16: "sneak",
+      82: "sprint"
     };
     this.keys = {};
     this.canvas = options.canvas;
     this.camera = options.camera;
-    this.micromove = options.micromove;
     this.socket = options.socket;
     this.gameState = "menu";
     this.listen();

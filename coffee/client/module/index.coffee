@@ -127,11 +127,12 @@ init = ()->
 	# 			socket.emit "blockUpdate",[pos...,voxelId]
 	# return
 	color = new THREE.Color "#adc8ff"
-	near = 16*5-5-16
-	far = 16*5-5
+	near = 32
+	far = 3*16-5
+	scene.fog = new THREE.Fog color, near, far
 	gui = new GUI()
 	params={
-		fog:false
+		fog:true
 	}
 	gui.add( params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
 		if params.fog
@@ -162,7 +163,7 @@ render = ->
 	else
 		cursor.visible=false
 
-	world.updateCellsAroundPlayer camera.position,5
+	world.updateCellsAroundPlayer camera.position,3
 	TWEEN.update();
 	renderer.render scene, camera
 	return

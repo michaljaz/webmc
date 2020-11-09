@@ -70,7 +70,7 @@ class World
 			for j in [-radius..radius]
 				for k in [-radius..radius]
 					pcell=[cell[0]+i,cell[1]+j,cell[2]+k]
-					try
+					if @cellMesh[@cellTerrain.vec3(pcell...)]
 						@cellMesh[@cellTerrain.vec3(pcell...)].visible=true
 					if @cellNeedsUpdate[@cellTerrain.vec3(pcell...)]
 						@_genCellGeo pcell...

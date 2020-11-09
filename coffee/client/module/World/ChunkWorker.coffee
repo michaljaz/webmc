@@ -1,7 +1,6 @@
 import {CellTerrain} from './CellTerrain.js'
-import {Block} from './../Block/Block.js'
+import {Block} from './../build/Block.js'
 console.log "CHUNK WORKER STARTED!"
-console.log Block
 class TerrainManager
 	constructor: (options)->
 		@toxelSize=options.toxelSize
@@ -28,20 +27,12 @@ class TerrainManager
 		]
 	genBlockFace: (type,voxel,pos)->
 		xd=new Block.fromStateId voxel
-		try
+		if @blocksMapping[xd.name]
 			toxX=@blocksMapping[xd.name]["x"]
 			toxY=@blocksMapping[xd.name]["y"]
-		catch
+		else
 			toxX=@blocksMapping["debug"]["x"]
 			toxY=28-@blocksMapping["debug"]["y"]
-		# if @blocks[voxel] is undefined
-		# 	toxX=@blocksMapping["debug"]["x"]
-		# 	toxY=28-@blocksMapping["debug"]["y"]
-		# else
-		# 	blockName=@blocks[voxel]["faces"][type]
-		# 	toxX=@blocksMapping[blockName]["x"]
-		# 	toxY=@blocksMapping[blockName]["y"]
-
 		uv=@getToxel toxX,toxY
 		switch type
 			when "pz"

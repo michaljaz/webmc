@@ -7,11 +7,9 @@ import {
 
 import {
   Block
-} from './../Block/Block.js';
+} from './../build/Block.js';
 
 console.log("CHUNK WORKER STARTED!");
-
-console.log(Block);
 
 TerrainManager = class TerrainManager {
   constructor(options) {
@@ -40,20 +38,13 @@ TerrainManager = class TerrainManager {
   genBlockFace(type, voxel, pos) {
     var toxX, toxY, uv, xd;
     xd = new Block.fromStateId(voxel);
-    try {
+    if (this.blocksMapping[xd.name]) {
       toxX = this.blocksMapping[xd.name]["x"];
       toxY = this.blocksMapping[xd.name]["y"];
-    } catch (error) {
+    } else {
       toxX = this.blocksMapping["debug"]["x"];
       toxY = 28 - this.blocksMapping["debug"]["y"];
     }
-    // if @blocks[voxel] is undefined
-    // 	toxX=@blocksMapping["debug"]["x"]
-    // 	toxY=28-@blocksMapping["debug"]["y"]
-    // else
-    // 	blockName=@blocks[voxel]["faces"][type]
-    // 	toxX=@blocksMapping[blockName]["x"]
-    // 	toxY=@blocksMapping[blockName]["y"]
     uv = this.getToxel(toxX, toxY);
     switch (type) {
       case "pz":

@@ -125,9 +125,9 @@ World = class World {
             results2 = [];
             for (k = n = ref5 = -radius, ref6 = radius; (ref5 <= ref6 ? n <= ref6 : n >= ref6); k = ref5 <= ref6 ? ++n : --n) {
               pcell = [cell[0] + i, cell[1] + j, cell[2] + k];
-              try {
+              if (this.cellMesh[this.cellTerrain.vec3(...pcell)]) {
                 this.cellMesh[this.cellTerrain.vec3(...pcell)].visible = true;
-              } catch (error) {}
+              }
               if (this.cellNeedsUpdate[this.cellTerrain.vec3(...pcell)]) {
                 this._genCellGeo(...pcell);
                 results2.push(delete this.cellNeedsUpdate[this.cellTerrain.vec3(...pcell)]);

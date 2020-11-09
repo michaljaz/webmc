@@ -8,11 +8,12 @@ class FirstPersonControls
 			83:"back"
 			68:"left"
 			32:"jump"
+			16:"sneak"
+			82:"sprint"
 		}
 		@keys={}
 		@canvas=options.canvas
 		@camera=options.camera
-		@micromove=options.micromove
 		@socket=options.socket
 		@gameState="menu"
 		@listen()
