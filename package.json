@@ -14,6 +14,7 @@
     "mineflayer": "^2.34.0",
     "opn": "^6.0.0",
     "path": "^0.12.7",
+    "prismarine-block": "^1.7.1",
     "prismarine-chunk": "^1.20.3",
     "socket.io": "^2.3.0",
     "terminal-kit": "^1.44.0"
@@ -21,7 +22,7 @@
   "devDependencies": {
     "coffeescript": "^2.5.1"
   },
-  "engines":{
-    "node":"14.x"
+  "engines": {
+    "node": "14.x"
   }
 }
