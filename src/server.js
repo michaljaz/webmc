@@ -34,7 +34,8 @@
         socketInfo[socket.id].bot = mineflayer.createBot({
           host: config.realServer.ip,
           port: config.realServer.port,
-          username: socketInfo[socket.id].nick
+          username: socketInfo[socket.id].nick,
+          version: "1.16.3"
         });
         socketInfo[socket.id].bot._client.on("map_chunk", function(packet) {
           var cell;
@@ -53,19 +54,28 @@
             io.to(socket.id).emit("move", socketInfo[socket.id].bot.entity.position);
           } catch (error) {}
         });
+        socketInfo[socket.id].bot.on('blockUpdate', function(oldb, newb) {
+          io.to(socket.id).emit("blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]);
+        });
       });
       socket.on("move", function(state, toggle) {
-        return socketInfo[socket.id].bot.setControlState(state, toggle);
+        try {
+          socketInfo[socket.id].bot.setControlState(state, toggle);
+        } catch (error) {}
       });
       socket.on("rotate", function(data) {
-        return socketInfo[socket.id].bot.look(...data);
+        try {
+          socketInfo[socket.id].bot.look(...data);
+        } catch (error) {}
       });
       return socket.on("disconnect", function() {
         console.log("[-] " + socketInfo[socket.id].nick);
-        //end bot session
-        socketInfo[socket.id].bot.end();
-        //delete socketinfo
-        delete socketInfo[socket.id];
+        try {
+          //end bot session
+          socketInfo[socket.id].bot.end();
+          //delete socketinfo
+          delete socketInfo[socket.id];
+        } catch (error) {}
       });
     });
   };

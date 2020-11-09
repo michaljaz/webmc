@@ -119,9 +119,9 @@ init = function() {
     stats.showPanel(0);
     document.body.appendChild(stats.dom);
   });
-  // socket.on "blockUpdate",(block)->
-  // 	world.setBlock block...
-  // 	return
+  socket.on("blockUpdate", function(block) {
+    world.setBlock(block[0], block[1] + 16, block[2], block[3]);
+  });
   socket.on("mapChunk", function(sections, x, z) {
     return world._computeSections(sections, x, z);
   });
@@ -166,8 +166,8 @@ init = function() {
   // 			socket.emit "blockUpdate",[pos...,voxelId]
   // return
   color = new THREE.Color("#adc8ff");
-  near = 32;
-  far = 64;
+  near = 16 * 5 - 5 - 16;
+  far = 16 * 5 - 5;
   gui = new GUI();
   params = {
     fog: false

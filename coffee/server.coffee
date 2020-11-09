@@ -36,6 +36,7 @@ module.exports=(config)->
 				host: config.realServer.ip
 				port: config.realServer.port
 				username: socketInfo[socket.id].nick
+				version: "1.16.3"
 			}
 
 			socketInfo[socket.id].bot._client.on "map_chunk",(packet)->
@@ -54,16 +55,25 @@ module.exports=(config)->
 				try
 					io.to(socket.id).emit "move",socketInfo[socket.id].bot.entity.position
 				return
+
+			socketInfo[socket.id].bot.on 'blockUpdate',(oldb,newb)->
+				io.to(socket.id).emit "blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]
+				return
 			return
 		socket.on "move",(state,toggle)->
-			socketInfo[socket.id].bot.setControlState(state,toggle);
+			try
+				socketInfo[socket.id].bot.setControlState(state,toggle)
+			return
 		socket.on "rotate",(data)->
-			socketInfo[socket.id].bot.look data...
+			try
+				socketInfo[socket.id].bot.look data...
+			return
 		socket.on "disconnect", ->
 			console.log "[-] "+socketInfo[socket.id].nick
 
 			#end bot session
-			socketInfo[socket.id].bot.end()
-			#delete socketinfo
-			delete socketInfo[socket.id]
+			try
+				socketInfo[socket.id].bot.end()
+				#delete socketinfo
+				delete socketInfo[socket.id]
 			return
