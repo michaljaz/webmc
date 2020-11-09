@@ -5,7 +5,7 @@ class InventoryBar
 		@padding=options.padding
 		@boxes=9
 		@activeBox=1
-		document.querySelector(@div).style="position:fixed;bottom:3px;left:50%;width:#{(@boxSize+2)*@boxes}px;margin-left:-#{@boxSize*@boxes/2}px;height:#{@boxSize}px;"
+		document.querySelector(@div).style="position:fixed;bottom:30px;left:50%;width:#{(@boxSize+2)*@boxes}px;margin-left:-#{@boxSize*@boxes/2}px;height:#{@boxSize}px;"
 	setBox: (number,imageSrc)->
 		if imageSrc is null
 			imageSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
@@ -43,6 +43,14 @@ class InventoryBar
 		for i in [0..images.length-1]
 			@setBox i+1,images[i]
 		return @
+	setHealth: (points)->
+		for i in [1..10]
+			document.querySelector(".he_#{i}").src="assets/images/heart/black.png"
+		if points isnt 0
+			for i in [1..(points+points%2)/2]
+				document.querySelector(".he_#{i}").src="assets/images/heart/red.png"
+			if points%2 is 1
+				document.querySelector(".he_#{(points+points%2)/2}").src="assets/images/heart/half.png"
 	listen: ->
 		_this=@
 		$(window).on 'wheel', (event) ->
@@ -53,5 +61,5 @@ class InventoryBar
 		$(document).keydown (z) ->
 			_this.directBoxChange(z)
 		return @
-		
+
 export {InventoryBar}

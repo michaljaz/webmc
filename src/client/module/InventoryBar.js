@@ -8,7 +8,7 @@ InventoryBar = class InventoryBar {
     this.padding = options.padding;
     this.boxes = 9;
     this.activeBox = 1;
-    document.querySelector(this.div).style = `position:fixed;bottom:3px;left:50%;width:${(this.boxSize + 2) * this.boxes}px;margin-left:-${this.boxSize * this.boxes / 2}px;height:${this.boxSize}px;`;
+    document.querySelector(this.div).style = `position:fixed;bottom:30px;left:50%;width:${(this.boxSize + 2) * this.boxes}px;margin-left:-${this.boxSize * this.boxes / 2}px;height:${this.boxSize}px;`;
   }
 
   setBox(number, imageSrc) {
@@ -67,6 +67,21 @@ InventoryBar = class InventoryBar {
       this.setBox(i + 1, images[i]);
     }
     return this;
+  }
+
+  setHealth(points) {
+    var i, j, k, ref;
+    for (i = j = 1; j <= 10; i = ++j) {
+      document.querySelector(`.he_${i}`).src = "assets/images/heart/black.png";
+    }
+    if (points !== 0) {
+      for (i = k = 1, ref = (points + points % 2) / 2; (1 <= ref ? k <= ref : k >= ref); i = 1 <= ref ? ++k : --k) {
+        document.querySelector(`.he_${i}`).src = "assets/images/heart/red.png";
+      }
+      if (points % 2 === 1) {
+        return document.querySelector(`.he_${(points + points % 2) / 2}`).src = "assets/images/heart/half.png";
+      }
+    }
   }
 
   listen() {

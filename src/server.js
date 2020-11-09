@@ -54,6 +54,11 @@
             io.to(socket.id).emit("move", socketInfo[socket.id].bot.entity.position);
           } catch (error) {}
         });
+        socketInfo[socket.id].bot.on('health', function() {
+          try {
+            io.to(socket.id).emit("health", socketInfo[socket.id].bot.health);
+          } catch (error) {}
+        });
         socketInfo[socket.id].bot.on('blockUpdate', function(oldb, newb) {
           io.to(socket.id).emit("blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]);
         });
@@ -69,9 +74,9 @@
         } catch (error) {}
       });
       return socket.on("disconnect", function() {
-        console.log("[-] " + socketInfo[socket.id].nick);
         try {
           //end bot session
+          console.log("[-] " + socketInfo[socket.id].nick);
           socketInfo[socket.id].bot.end();
           //delete socketinfo
           delete socketInfo[socket.id];

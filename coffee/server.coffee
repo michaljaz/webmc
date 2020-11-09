@@ -55,6 +55,10 @@ module.exports=(config)->
 				try
 					io.to(socket.id).emit "move",socketInfo[socket.id].bot.entity.position
 				return
+			socketInfo[socket.id].bot.on 'health',()->
+				try
+					io.to(socket.id).emit "health",socketInfo[socket.id].bot.health
+				return
 
 			socketInfo[socket.id].bot.on 'blockUpdate',(oldb,newb)->
 				io.to(socket.id).emit "blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]
@@ -69,10 +73,9 @@ module.exports=(config)->
 				socketInfo[socket.id].bot.look data...
 			return
 		socket.on "disconnect", ->
-			console.log "[-] "+socketInfo[socket.id].nick
-
 			#end bot session
 			try
+				console.log "[-] "+socketInfo[socket.id].nick
 				socketInfo[socket.id].bot.end()
 				#delete socketinfo
 				delete socketInfo[socket.id]
