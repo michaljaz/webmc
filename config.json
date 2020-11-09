@@ -3,7 +3,7 @@
 	"express-port":8080,
 	"host":"localhost",
 	"realServer":{
-		"ip":"localhost",
+		"ip":"krainamc.pl",
 		"port":25565,
 		"version":"1.16.3"
 	}
