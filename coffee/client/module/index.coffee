@@ -10,7 +10,6 @@ import {AssetLoader} from './AssetLoader.js'
 import {InventoryBar} from './InventoryBar.js'
 import {RandomNick} from './RandomNick.js'
 import {GUI} from './jsm/libs/dat.gui.module.js'
-
 init = ()->
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
