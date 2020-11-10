@@ -35,12 +35,14 @@ TerrainManager = class TerrainManager {
     return [[x1, y1], [x1, y2], [x2, y1], [x2, y2]];
   }
 
-  genBlockFace(type, voxel, pos) {
-    var toxX, toxY, uv, xd;
-    xd = new Block.fromStateId(voxel);
-    if (this.blocksMapping[xd.name]) {
-      toxX = this.blocksMapping[xd.name]["x"];
-      toxY = this.blocksMapping[xd.name]["y"];
+  genBlockFace(type, block, pos) {
+    var toxX, toxY, uv;
+    if (block.name === "water") {
+      toxX = this.blocksMapping["water_flow"]["x"];
+      toxY = this.blocksMapping["water_flow"]["y"];
+    } else if (this.blocksMapping[block.name]) {
+      toxX = this.blocksMapping[block.name]["x"];
+      toxY = this.blocksMapping[block.name]["y"];
     } else {
       toxX = this.blocksMapping["debug"]["x"];
       toxY = 28 - this.blocksMapping["debug"]["y"];
@@ -87,14 +89,14 @@ TerrainManager = class TerrainManager {
   }
 
   genCellGeo(cellX, cellY, cellZ) {
-    var _this, addFace, addGeo, geo, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs, voxel;
+    var _this, addFace, addGeo, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs;
     positions = [];
     normals = [];
     uvs = [];
     _this = this;
-    addFace = function(type, pos, voxel) {
+    addFace = function(type, pos) {
       var faceVertex;
-      faceVertex = _this.genBlockFace(type, voxel, pos);
+      faceVertex = _this.genBlockFace(type, _this.cellTerrain.getBlock(...pos), pos);
       positions.push(...faceVertex.pos);
       normals.push(...faceVertex.norm);
       uvs.push(...faceVertex.uv);
@@ -114,35 +116,51 @@ TerrainManager = class TerrainManager {
       for (j = m = 0, ref1 = this.cellSize - 1; (0 <= ref1 ? m <= ref1 : m >= ref1); j = 0 <= ref1 ? ++m : --m) {
         for (k = n = 0, ref2 = this.cellSize - 1; (0 <= ref2 ? n <= ref2 : n >= ref2); k = 0 <= ref2 ? ++n : --n) {
           pos = [cellX * this.cellSize + i, cellY * this.cellSize + j, cellZ * this.cellSize + k];
-          voxel = this.getVoxel(...pos);
-          if (voxel) {
-            if (this.blocks[voxel] === void 0 || this.blocks[voxel].isBlock) {
-              if (!(this.blocks[this.getVoxel(pos[0] + 1, pos[1], pos[2])] === void 0 || this.blocks[this.getVoxel(pos[0] + 1, pos[1], pos[2])].isBlock)) {
-                addFace("nx", pos, voxel);
-              }
-              if (!(this.blocks[this.getVoxel(pos[0] - 1, pos[1], pos[2])] === void 0 || this.blocks[this.getVoxel(pos[0] - 1, pos[1], pos[2])].isBlock)) {
-                addFace("px", pos, voxel);
-              }
-              if (!(this.blocks[this.getVoxel(pos[0], pos[1] - 1, pos[2])] === void 0 || this.blocks[this.getVoxel(pos[0], pos[1] - 1, pos[2])].isBlock)) {
-                addFace("ny", pos, voxel);
-              }
-              if (!(this.blocks[this.getVoxel(pos[0], pos[1] + 1, pos[2])] === void 0 || this.blocks[this.getVoxel(pos[0], pos[1] + 1, pos[2])].isBlock)) {
-                addFace("py", pos, voxel);
-              }
-              if (!(this.blocks[this.getVoxel(pos[0], pos[1], pos[2] + 1)] === void 0 || this.blocks[this.getVoxel(pos[0], pos[1], pos[2] + 1)].isBlock)) {
-                addFace("pz", pos, voxel);
-              }
-              if (!(this.blocks[this.getVoxel(pos[0], pos[1], pos[2] - 1)] === void 0 || this.blocks[this.getVoxel(pos[0], pos[1], pos[2] - 1)].isBlock)) {
-                addFace("nz", pos, voxel);
-              }
-            } else {
-              geo = this.models[this.blocks[voxel].model];
-              addGeo(geo, pos);
+          if (this.cellTerrain.getBlock(...pos).boundingBox === "block") {
+            if (this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).boundingBox !== "block") {
+              addFace("nx", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).boundingBox !== "block") {
+              addFace("px", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).boundingBox !== "block") {
+              addFace("ny", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).boundingBox !== "block") {
+              addFace("py", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).boundingBox !== "block") {
+              addFace("pz", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).boundingBox !== "block") {
+              addFace("nz", pos);
+            }
+          } else if (this.cellTerrain.getBlock(...pos).name === "water") {
+            if (this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).name === "air") {
+              addFace("nx", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).name === "air") {
+              addFace("px", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).name === "air") {
+              addFace("ny", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).name === "air") {
+              addFace("py", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).name === "air") {
+              addFace("pz", pos);
+            }
+            if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).name === "air") {
+              addFace("nz", pos);
             }
           }
         }
       }
     }
+    // else
+    // 	geo=@models[@blocks[voxel].model]
+    // 	addGeo geo,pos
     return {positions, normals, uvs};
   }
 

@@ -1,3 +1,4 @@
+import {Block} from './../build/Block.js'
 class CellTerrain
 	constructor: (options)->
 		@cellSize=options.cellSize
@@ -44,5 +45,7 @@ class CellTerrain
 		return @cells[@vec3(x,y,z)]
 	setBuffer:(x,y,z,buffer)->
 		@cells[@vec3(x,y,z)]=buffer
+	getBlock:(blockX,blockY,blockZ)->
+		return new Block.fromStateId @getVoxel(blockX,blockY,blockZ)
 
 export {CellTerrain}

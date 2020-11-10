@@ -2,6 +2,10 @@
 var CellTerrain,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
+import {
+  Block
+} from './../build/Block.js';
+
 CellTerrain = class CellTerrain {
   constructor(options) {
     this.cellSize = options.cellSize;
@@ -74,6 +78,10 @@ CellTerrain = class CellTerrain {
 
   setBuffer(x, y, z, buffer) {
     return this.cells[this.vec3(x, y, z)] = buffer;
+  }
+
+  getBlock(blockX, blockY, blockZ) {
+    return new Block.fromStateId(this.getVoxel(blockX, blockY, blockZ));
   }
 
 };

@@ -25,11 +25,13 @@ class TerrainManager
 			[x2,y1]
 			[x2,y2]
 		]
-	genBlockFace: (type,voxel,pos)->
-		xd=new Block.fromStateId voxel
-		if @blocksMapping[xd.name]
-			toxX=@blocksMapping[xd.name]["x"]
-			toxY=@blocksMapping[xd.name]["y"]
+	genBlockFace: (type,block,pos)->
+		if block.name is "water"
+			toxX=@blocksMapping["water_flow"]["x"]
+			toxY=@blocksMapping["water_flow"]["y"]
+		else if @blocksMapping[block.name]
+			toxX=@blocksMapping[block.name]["x"]
+			toxY=@blocksMapping[block.name]["y"]
 		else
 			toxX=@blocksMapping["debug"]["x"]
 			toxY=28-@blocksMapping["debug"]["y"]
@@ -76,8 +78,8 @@ class TerrainManager
 		normals=[]
 		uvs=[]
 		_this=@
-		addFace=(type,pos,voxel)->
-			faceVertex=_this.genBlockFace type,voxel,pos
+		addFace=(type,pos)->
+			faceVertex=_this.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
 			positions.push faceVertex.pos...
 			normals.push faceVertex.norm...
 			uvs.push faceVertex.uv...
@@ -95,24 +97,35 @@ class TerrainManager
 			for j in [0..@cellSize-1]
 				for k in [0..@cellSize-1]
 					pos=[cellX*@cellSize+i,cellY*@cellSize+j,cellZ*@cellSize+k]
-					voxel=@getVoxel pos...
-					if voxel
-						if @blocks[voxel] is undefined or @blocks[voxel].isBlock
-							if not (@blocks[@getVoxel(pos[0]+1,pos[1],pos[2])] is undefined or @blocks[@getVoxel(pos[0]+1,pos[1],pos[2])].isBlock)
-								addFace "nx",pos,voxel
-							if not (@blocks[@getVoxel(pos[0]-1,pos[1],pos[2])] is undefined or @blocks[@getVoxel(pos[0]-1,pos[1],pos[2])].isBlock)
-								addFace "px",pos,voxel
-							if not (@blocks[@getVoxel(pos[0],pos[1]-1,pos[2])] is undefined or @blocks[@getVoxel(pos[0],pos[1]-1,pos[2])].isBlock)
-								addFace "ny",pos,voxel
-							if not (@blocks[@getVoxel(pos[0],pos[1]+1,pos[2])] is undefined or @blocks[@getVoxel(pos[0],pos[1]+1,pos[2])].isBlock)
-								addFace "py",pos,voxel
-							if not (@blocks[@getVoxel(pos[0],pos[1],pos[2]+1)] is undefined or @blocks[@getVoxel(pos[0],pos[1],pos[2]+1)].isBlock)
-								addFace "pz",pos,voxel
-							if not (@blocks[@getVoxel(pos[0],pos[1],pos[2]-1)] is undefined or @blocks[@getVoxel(pos[0],pos[1],pos[2]-1)].isBlock)
-								addFace "nz",pos,voxel
-						else
-							geo=@models[@blocks[voxel].model]
-							addGeo geo,pos
+					if @cellTerrain.getBlock(pos...).boundingBox is "block"
+						if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).boundingBox isnt "block")
+							addFace "nx",pos
+						if (@cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).boundingBox isnt "block")
+							addFace "px",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1]-1,pos[2]).boundingBox isnt "block")
+							addFace "ny",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1]+1,pos[2]).boundingBox isnt "block")
+							addFace "py",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]+1).boundingBox isnt "block")
+							addFace "pz",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).boundingBox isnt "block")
+							addFace "nz",pos
+					else if @cellTerrain.getBlock(pos...).name is "water"
+						if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).name is "air")
+							addFace "nx",pos
+						if (@cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).name is "air")
+							addFace "px",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1]-1,pos[2]).name is "air")
+							addFace "ny",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1]+1,pos[2]).name is "air")
+							addFace "py",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]+1).name is "air")
+							addFace "pz",pos
+						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).name is "air")
+							addFace "nz",pos
+						# else
+						# 	geo=@models[@blocks[voxel].model]
+						# 	addGeo geo,pos
 		return {
 			positions
 			normals
