@@ -8,7 +8,7 @@ InventoryBar = class InventoryBar {
     this.padding = options.padding;
     this.boxes = 9;
     this.activeBox = 1;
-    document.querySelector(this.div).style = `position:fixed;bottom:30px;left:50%;width:${(this.boxSize + 2) * this.boxes}px;margin-left:-${this.boxSize * this.boxes / 2}px;height:${this.boxSize}px;`;
+    document.querySelector(this.div).style = `position:fixed;bottom:50px;left:50%;width:${(this.boxSize + 2) * this.boxes}px;margin-left:-${this.boxSize * this.boxes / 2}px;height:${this.boxSize}px;`;
   }
 
   setBox(number, imageSrc) {

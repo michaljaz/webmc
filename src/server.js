@@ -60,6 +60,11 @@
             io.to(socket.id).emit("food", socketInfo[socket.id].bot.food);
           } catch (error) {}
         });
+        socketInfo[socket.id].bot.on('experience', function() {
+          try {
+            io.to(socket.id).emit("xp", socketInfo[socket.id].bot.experience);
+          } catch (error) {}
+        });
         socketInfo[socket.id].bot.on('blockUpdate', function(oldb, newb) {
           io.to(socket.id).emit("blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]);
         });

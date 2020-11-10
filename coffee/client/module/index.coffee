@@ -75,6 +75,9 @@ init = ()->
 		inv_bar.setHp(points)
 	socket.on "food",(points)->
 		inv_bar.setFood(points)
+	socket.on "xp",(xp)->
+		$(".player_xp").text(xp.level)
+		$(".progress-bar").css("width",xp.progress*100+"%")
 	socket.on "move", (pos)->
 		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
 		new TWEEN.Tween camera.position

@@ -5,7 +5,7 @@ class InventoryBar
 		@padding=options.padding
 		@boxes=9
 		@activeBox=1
-		document.querySelector(@div).style="position:fixed;bottom:30px;left:50%;width:#{(@boxSize+2)*@boxes}px;margin-left:-#{@boxSize*@boxes/2}px;height:#{@boxSize}px;"
+		document.querySelector(@div).style="position:fixed;bottom:50px;left:50%;width:#{(@boxSize+2)*@boxes}px;margin-left:-#{@boxSize*@boxes/2}px;height:#{@boxSize}px;"
 	setBox: (number,imageSrc)->
 		if imageSrc is null
 			imageSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="

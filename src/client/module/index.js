@@ -131,6 +131,10 @@ init = function() {
   socket.on("food", function(points) {
     return inv_bar.setFood(points);
   });
+  socket.on("xp", function(xp) {
+    $(".player_xp").text(xp.level);
+    return $(".progress-bar").css("width", xp.progress * 100 + "%");
+  });
   socket.on("move", function(pos) {
     var to;
     to = {

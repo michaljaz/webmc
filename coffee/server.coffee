@@ -60,6 +60,10 @@ module.exports=(config)->
 					io.to(socket.id).emit "hp",socketInfo[socket.id].bot.health
 					io.to(socket.id).emit "food",socketInfo[socket.id].bot.food
 				return
+			socketInfo[socket.id].bot.on 'experience',()->
+				try
+					io.to(socket.id).emit "xp",socketInfo[socket.id].bot.experience
+				return
 			socketInfo[socket.id].bot.on 'blockUpdate',(oldb,newb)->
 				io.to(socket.id).emit "blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]
 				return
