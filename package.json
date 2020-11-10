@@ -7,6 +7,7 @@
     "atlas": "node src/atlas.js"
   },
   "dependencies": {
+    "ansi-to-html": "^0.6.14",
     "canvas": "^2.6.1",
     "child_process": "^1.0.2",
     "express": "^4.17.1",

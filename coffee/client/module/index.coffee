@@ -75,6 +75,8 @@ init = ()->
 		inv_bar.setHp(points)
 	socket.on "food",(points)->
 		inv_bar.setFood(points)
+	socket.on "msg",(msg)->
+		$(".chat").append(msg+"<br>")
 	socket.on "xp",(xp)->
 		$(".player_xp").text(xp.level)
 		$(".progress-bar").css("width",xp.progress*100+"%")

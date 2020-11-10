@@ -8,6 +8,8 @@ module.exports=(config)->
 	mineflayer = require 'mineflayer'
 	Chunk = require("prismarine-chunk")("1.16.1")
 	vec3=require "vec3"
+	Convert = require 'ansi-to-html'
+	convert = new Convert()
 
 	sf={}
 	port=config["express-port"]
@@ -48,7 +50,6 @@ module.exports=(config)->
 			socketInfo[socket.id].bot.on 'chat',(username, message)->
 				if username is socketInfo[socket.id].bot.username
 					return
-				socketInfo[socket.id].bot.chat message
 				return
 
 			socketInfo[socket.id].bot.on 'move',()->
@@ -59,6 +60,10 @@ module.exports=(config)->
 				try
 					io.to(socket.id).emit "hp",socketInfo[socket.id].bot.health
 					io.to(socket.id).emit "food",socketInfo[socket.id].bot.food
+				return
+			socketInfo[socket.id].bot.on 'message',(msg)->
+				try
+					io.to(socket.id).emit "msg",convert.toHtml(msg.toAnsi());
 				return
 			socketInfo[socket.id].bot.on 'experience',()->
 				try
