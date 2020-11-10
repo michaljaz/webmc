@@ -56,7 +56,8 @@
         });
         socketInfo[socket.id].bot.on('health', function() {
           try {
-            io.to(socket.id).emit("health", socketInfo[socket.id].bot.health);
+            io.to(socket.id).emit("hp", socketInfo[socket.id].bot.health);
+            io.to(socket.id).emit("food", socketInfo[socket.id].bot.food);
           } catch (error) {}
         });
         socketInfo[socket.id].bot.on('blockUpdate', function(oldb, newb) {

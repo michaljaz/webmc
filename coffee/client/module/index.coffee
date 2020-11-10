@@ -71,8 +71,10 @@ init = ()->
 		return
 	socket.on "mapChunk", (sections,x,z)->
 		world._computeSections sections,x,z
-	socket.on "health",(points)->
-		inv_bar.setHealth(points)
+	socket.on "hp",(points)->
+		inv_bar.setHp(points)
+	socket.on "food",(points)->
+		inv_bar.setFood(points)
 	socket.on "move", (pos)->
 		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
 		new TWEEN.Tween camera.position
@@ -95,7 +97,6 @@ init = ()->
 		"assets/images/bookshelf.png",
 		"assets/images/tnt.png"
 	]).setFocusOnly(1).listen()
-
 
 	FPC = new FirstPersonControls {
 		canvas

@@ -62,9 +62,26 @@ canvas {
   border:1px solid black;
   width:60px;
   height:60px;
+  margin:-2px;
 }
-.health{
-  width:19px;
-  height:19px;
+.player_hp{
+  margin:1px;
+  margin-bottom:3px;
+}
+.hp{
+  width:21px;
+  height:21px;
   margin:-1px;
+}
+.food{
+  width:21px;
+  height:21px;
+  margin:-1px;
+}
+.player_food{
+  float:right;
+  margin-right:30px;
+}
+.player_health{
+  margin-bottom:5px;
 }

@@ -125,8 +125,11 @@ init = function() {
   socket.on("mapChunk", function(sections, x, z) {
     return world._computeSections(sections, x, z);
   });
-  socket.on("health", function(points) {
-    return inv_bar.setHealth(points);
+  socket.on("hp", function(points) {
+    return inv_bar.setHp(points);
+  });
+  socket.on("food", function(points) {
+    return inv_bar.setFood(points);
   });
   socket.on("move", function(pos) {
     var to;

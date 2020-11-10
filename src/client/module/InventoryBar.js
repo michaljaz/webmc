@@ -69,17 +69,32 @@ InventoryBar = class InventoryBar {
     return this;
   }
 
-  setHealth(points) {
+  setHp(points) {
     var i, j, k, ref;
     for (i = j = 1; j <= 10; i = ++j) {
-      document.querySelector(`.he_${i}`).src = "assets/images/heart/black.png";
+      document.querySelector(`.hp_${i}`).src = "assets/images/heart/black.png";
     }
     if (points !== 0) {
       for (i = k = 1, ref = (points + points % 2) / 2; (1 <= ref ? k <= ref : k >= ref); i = 1 <= ref ? ++k : --k) {
-        document.querySelector(`.he_${i}`).src = "assets/images/heart/red.png";
+        document.querySelector(`.hp_${i}`).src = "assets/images/heart/red.png";
       }
       if (points % 2 === 1) {
-        return document.querySelector(`.he_${(points + points % 2) / 2}`).src = "assets/images/heart/half.png";
+        document.querySelector(`.hp_${(points + points % 2) / 2}`).src = "assets/images/heart/half.png";
+      }
+    }
+  }
+
+  setFood(points) {
+    var i, j, k, ref;
+    for (i = j = 1; j <= 10; i = ++j) {
+      document.querySelector(`.food_${i}`).src = "assets/images/hunger/black.png";
+    }
+    if (points !== 0) {
+      for (i = k = 1, ref = (points + points % 2) / 2; (1 <= ref ? k <= ref : k >= ref); i = 1 <= ref ? ++k : --k) {
+        document.querySelector(`.food_${i}`).src = "assets/images/hunger/full.png";
+      }
+      if (points % 2 === 1) {
+        document.querySelector(`.food_${(points + points % 2) / 2}`).src = "assets/images/hunger/half.png";
       }
     }
   }

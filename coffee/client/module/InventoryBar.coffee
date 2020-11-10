@@ -43,14 +43,24 @@ class InventoryBar
 		for i in [0..images.length-1]
 			@setBox i+1,images[i]
 		return @
-	setHealth: (points)->
+	setHp: (points)->
 		for i in [1..10]
-			document.querySelector(".he_#{i}").src="assets/images/heart/black.png"
+			document.querySelector(".hp_#{i}").src="assets/images/heart/black.png"
 		if points isnt 0
 			for i in [1..(points+points%2)/2]
-				document.querySelector(".he_#{i}").src="assets/images/heart/red.png"
+				document.querySelector(".hp_#{i}").src="assets/images/heart/red.png"
 			if points%2 is 1
-				document.querySelector(".he_#{(points+points%2)/2}").src="assets/images/heart/half.png"
+				document.querySelector(".hp_#{(points+points%2)/2}").src="assets/images/heart/half.png"
+		return
+	setFood: (points)->
+		for i in [1..10]
+			document.querySelector(".food_#{i}").src="assets/images/hunger/black.png"
+		if points isnt 0
+			for i in [1..(points+points%2)/2]
+				document.querySelector(".food_#{i}").src="assets/images/hunger/full.png"
+			if points%2 is 1
+				document.querySelector(".food_#{(points+points%2)/2}").src="assets/images/hunger/half.png"
+		return
 	listen: ->
 		_this=@
 		$(window).on 'wheel', (event) ->
@@ -61,5 +71,4 @@ class InventoryBar
 		$(document).keydown (z) ->
 			_this.directBoxChange(z)
 		return @
-
 export {InventoryBar}
