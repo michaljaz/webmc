@@ -3,6 +3,8 @@ class CellTerrain
 	constructor: (options)->
 		@cellSize=options.cellSize
 		@cells={}
+		@biomes={}
+		@loadedBlocks={}
 	vec3: (x,y,z)->
 		x=parseInt x
 		y=parseInt y
@@ -41,11 +43,20 @@ class CellTerrain
 			return 0
 		voff=@computeVoxelOffset voxelX,voxelY,voxelZ
 		return cell[voff]
-	getBuffer:(x,y,z)->
+	getCell:(cellX,cellY,cellZ)->
 		return @cells[@vec3(x,y,z)]
-	setBuffer:(x,y,z,buffer)->
-		@cells[@vec3(x,y,z)]=buffer
+	setCell:(cellX,cellY,cellZ,buffer)->
+		@cells[@vec3(cellX,cellY,cellZ)]=buffer
 	getBlock:(blockX,blockY,blockZ)->
-		return new Block.fromStateId @getVoxel(blockX,blockY,blockZ)
-
+		if @loadedBlocks[@getVoxel(blockX,blockY,blockZ)] is undefined
+			@loadedBlocks[@getVoxel(blockX,blockY,blockZ)]=new Block.fromStateId @getVoxel(blockX,blockY,blockZ), @getBlockBiome(blockX,blockY,blockZ)
+		return @loadedBlocks[@getVoxel(blockX,blockY,blockZ)]
+	setBiome:(cellX,cellY,cellZ,biome)->
+		@biomes[@vec3(cellX,cellY,cellZ)]=biome
+	getBlockBiome:(blockX,blockY,blockZ)->
+		biome=@getCellForVoxel blockX,blockY,blockZ
+		if not biome
+			return null
+		voff=@computeVoxelOffset blockX,blockY,blockZ
+		return biome[voff]
 export {CellTerrain}

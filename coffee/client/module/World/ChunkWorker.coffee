@@ -74,10 +74,10 @@ class TerrainManager
 					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
 				}
 	genCellGeo: (cellX,cellY,cellZ)->
+		_this=@
 		positions=[]
 		normals=[]
 		uvs=[]
-		_this=@
 		addFace=(type,pos)->
 			faceVertex=_this.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
 			positions.push faceVertex.pos...
@@ -123,19 +123,11 @@ class TerrainManager
 							addFace "pz",pos
 						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).name is "air")
 							addFace "nz",pos
-						# else
-						# 	geo=@models[@blocks[voxel].model]
-						# 	addGeo geo,pos
 		return {
 			positions
 			normals
 			uvs
 		}
-	setVoxel: (voxelX,voxelY,voxelZ,value)->
-		@cellTerrain.setVoxel voxelX,voxelY,voxelZ,value
-		return
-	getVoxel: (voxelX,voxelY,voxelZ)->
-		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
 
 addEventListener "message", (e)->
 	fn = handlers[e.data.type]
@@ -161,7 +153,7 @@ handlers={
 		}
 		return
 	setVoxel:(data)->
-		terrain.setVoxel data...
+		terrain.cellTerrain.setVoxel data...
 	genCellGeo: (data)->
 		if ((terrain.cellTerrain.vec3 data...) of terrain.cellTerrain.cells) is true
 			geo=terrain.genCellGeo data...
@@ -170,5 +162,6 @@ handlers={
 				info:data
 			}
 	setCell: (data)->
-		terrain.cellTerrain.cells["#{data[0]}:#{data[1]}:#{data[2]}"]=data[3]
+		terrain.cellTerrain.setCell data[0],data[1],data[2],data[3]
+		terrain.cellTerrain.setBiome data[0],data[1],data[2],data[4]
 }

@@ -10,7 +10,6 @@
 
 ```bash
 
-#Instalacja repozytorium
 git clone https://github.com/michaljaz/web-minecraft
 cd web-minecraft
 npm i

@@ -69,17 +69,20 @@ class ChunkDecoder
           z:0
         }
         cell=new Uint8Array 16*16*16
+        biome=new Uint8Array 16*16*16
         for x in [0..15]
           for y in [0..15]
             for z in [0..15]
               # ct.setVoxel packet.x+x,num+y,packet.z+z
               cell[@cvo(x,y,z)]=palette[data.get(@getBlockIndex({x,y,z}))]
               # base.push(palette[data.get(@getBlockIndex({x,y,z}))])
+              biome[@cvo(x,y,z)]=packet.biomes[(((num+y) >> 2) & 63) << 4 | (((packet.z+z) >> 2) & 3) << 2 | (((packet.x+x) >> 2) & 3)]
         result.push {
           x:packet.x
           y:num
-          z:packet.z,
-          data:cell
+          z:packet.z
+          cell
+          biome
         }
       else
         result.push(null)

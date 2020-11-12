@@ -91,6 +91,9 @@ init = function() {
   clouds.scale.z = 0.1;
   clouds.position.y = 170;
   scene.add(clouds);
+  stats = new Stats();
+  stats.showPanel(0);
+  document.body.appendChild(stats.dom);
   world = new World({
     toxelSize: 27,
     cellSize: 16,
@@ -112,18 +115,14 @@ init = function() {
     socket.emit("initClient", {
       nick: nick
     });
-    console.log("First Load packet recieved!");
     // world.replaceWorld v
     $(".initLoading").css("display", "none");
-    stats = new Stats();
-    stats.showPanel(0);
-    document.body.appendChild(stats.dom);
   });
   socket.on("blockUpdate", function(block) {
     world.setBlock(block[0], block[1] + 16, block[2], block[3]);
   });
-  socket.on("mapChunk", function(sections, x, z) {
-    return world._computeSections(sections, x, z);
+  socket.on("mapChunk", function(sections, x, z, biomes) {
+    return world._computeSections(sections, x, z, biomes);
   });
   socket.on("hp", function(points) {
     return inv_bar.setHp(points);
@@ -163,24 +162,9 @@ init = function() {
     linewidth: 0.5
   }));
   scene.add(cursor);
-  // $(document).mousedown (e)->
-  // 	if FPC.gameState is "game"
-  // 		rayBlock=world.getRayBlock()
-  // 		if rayBlock
-  // 			if e.which is 1
-  // 				voxelId=0
-  // 				pos=rayBlock.posBreak
-  // 			else
-  // 				voxelId=inv_bar.activeBox
-  // 				pos=rayBlock.posPlace
-  // 			pos[0]=Math.floor pos[0]
-  // 			pos[1]=Math.floor pos[1]
-  // 			pos[2]=Math.floor pos[2]
-  // 			socket.emit "blockUpdate",[pos...,voxelId]
-  // return
   color = new THREE.Color("#adc8ff");
-  near = 32;
-  far = 3 * 16 - 5;
+  near = 3 * 16 - 13;
+  far = 3 * 16 - 3;
   scene.fog = new THREE.Fog(color, near, far);
   gui = new GUI();
   params = {

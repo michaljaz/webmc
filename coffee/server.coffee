@@ -44,7 +44,7 @@ module.exports=(config)->
 			socketInfo[socket.id].bot._client.on "map_chunk",(packet)->
 				cell=new Chunk()
 				cell.load packet.chunkData,packet.bitMap,false,true
-				io.to(socket.id).emit "mapChunk", cell.sections,packet.x,packet.z
+				io.to(socket.id).emit "mapChunk", cell.sections,packet.x,packet.z,packet.biomes
 				return
 
 			socketInfo[socket.id].bot.on 'chat',(username, message)->

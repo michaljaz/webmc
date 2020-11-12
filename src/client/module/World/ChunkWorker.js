@@ -90,10 +90,10 @@ TerrainManager = class TerrainManager {
 
   genCellGeo(cellX, cellY, cellZ) {
     var _this, addFace, addGeo, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs;
+    _this = this;
     positions = [];
     normals = [];
     uvs = [];
-    _this = this;
     addFace = function(type, pos) {
       var faceVertex;
       faceVertex = _this.genBlockFace(type, _this.cellTerrain.getBlock(...pos), pos);
@@ -158,18 +158,7 @@ TerrainManager = class TerrainManager {
         }
       }
     }
-    // else
-    // 	geo=@models[@blocks[voxel].model]
-    // 	addGeo geo,pos
     return {positions, normals, uvs};
-  }
-
-  setVoxel(voxelX, voxelY, voxelZ, value) {
-    this.cellTerrain.setVoxel(voxelX, voxelY, voxelZ, value);
-  }
-
-  getVoxel(voxelX, voxelY, voxelZ) {
-    return this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ);
   }
 
 };
@@ -204,7 +193,7 @@ handlers = {
     });
   },
   setVoxel: function(data) {
-    return terrain.setVoxel(...data);
+    return terrain.cellTerrain.setVoxel(...data);
   },
   genCellGeo: function(data) {
     var geo;
@@ -217,6 +206,7 @@ handlers = {
     }
   },
   setCell: function(data) {
-    return terrain.cellTerrain.cells[`${data[0]}:${data[1]}:${data[2]}`] = data[3];
+    terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
+    return terrain.cellTerrain.setBiome(data[0], data[1], data[2], data[4]);
   }
 };

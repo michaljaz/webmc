@@ -81,7 +81,7 @@
     }
 
     computeSections(packet) {
-      var cell, data, i, j, k, l, len, m, num, palette, pos, result, sections, solidBlockCount, x, y, z;
+      var biome, cell, data, i, j, k, l, len, m, num, palette, pos, result, sections, solidBlockCount, x, y, z;
       sections = packet.sections;
       num = 0;
       result = [];
@@ -98,20 +98,23 @@
             z: 0
           };
           cell = new Uint8Array(16 * 16 * 16);
+          biome = new Uint8Array(16 * 16 * 16);
           for (x = k = 0; k <= 15; x = ++k) {
             for (y = l = 0; l <= 15; y = ++l) {
               for (z = m = 0; m <= 15; z = ++m) {
                 // ct.setVoxel packet.x+x,num+y,packet.z+z
                 cell[this.cvo(x, y, z)] = palette[data.get(this.getBlockIndex({x, y, z}))];
+                // base.push(palette[data.get(@getBlockIndex({x,y,z}))])
+                biome[this.cvo(x, y, z)] = packet.biomes[(((num + y) >> 2) & 63) << 4 | (((packet.z + z) >> 2) & 3) << 2 | (((packet.x + x) >> 2) & 3)];
               }
             }
           }
-          // base.push(palette[data.get(@getBlockIndex({x,y,z}))])
           result.push({
             x: packet.x,
             y: num,
             z: packet.z,
-            data: cell
+            cell,
+            biome
           });
         } else {
           result.push(null);

@@ -10,6 +10,8 @@ CellTerrain = class CellTerrain {
   constructor(options) {
     this.cellSize = options.cellSize;
     this.cells = {};
+    this.biomes = {};
+    this.loadedBlocks = {};
   }
 
   vec3(x, y, z) {
@@ -72,16 +74,33 @@ CellTerrain = class CellTerrain {
     return cell[voff];
   }
 
-  getBuffer(x, y, z) {
+  getCell(cellX, cellY, cellZ) {
     return this.cells[this.vec3(x, y, z)];
   }
 
-  setBuffer(x, y, z, buffer) {
-    return this.cells[this.vec3(x, y, z)] = buffer;
+  setCell(cellX, cellY, cellZ, buffer) {
+    return this.cells[this.vec3(cellX, cellY, cellZ)] = buffer;
   }
 
   getBlock(blockX, blockY, blockZ) {
-    return new Block.fromStateId(this.getVoxel(blockX, blockY, blockZ));
+    if (this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] === void 0) {
+      this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] = new Block.fromStateId(this.getVoxel(blockX, blockY, blockZ), this.getBlockBiome(blockX, blockY, blockZ));
+    }
+    return this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)];
+  }
+
+  setBiome(cellX, cellY, cellZ, biome) {
+    return this.biomes[this.vec3(cellX, cellY, cellZ)] = biome;
+  }
+
+  getBlockBiome(blockX, blockY, blockZ) {
+    var biome, voff;
+    biome = this.getCellForVoxel(blockX, blockY, blockZ);
+    if (!biome) {
+      return null;
+    }
+    voff = this.computeVoxelOffset(blockX, blockY, blockZ);
+    return biome[voff];
   }
 
 };

@@ -16,6 +16,7 @@ class World
 		@cellTerrain=new CellTerrain {cellSize:@cellSize}
 		@ATA=new AnimatedTextureAtlas {al:@al}
 		@material=@ATA.material
+		@material2=@ATA.material2
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 		@chunkWorker=new Worker "/module/World/ChunkWorker.js", {type:'module'}
 		@chunkWorker.onmessage=(message)->
@@ -39,10 +40,11 @@ class World
 			result=data.data.result
 			for i in result
 				if i isnt null
-					_this.setCell i.x,i.y,i.z,i.data
-	setCell: (cellX,cellY,cellZ,buffer)->
-		@_setCell cellX,cellY,cellZ,buffer
-		@cellTerrain.cells[@cellTerrain.vec3(cellX,cellY,cellZ)]=buffer
+					_this.setCell i.x,i.y,i.z,i.cell,i.biome
+	setCell: (cellX,cellY,cellZ,buffer,biome)->
+		@_setCell cellX,cellY,cellZ,buffer,biome
+		@cellTerrain.setCell cellX,cellY,cellZ,buffer
+		@cellTerrain.setBiome cellX,cellY,cellZ,biome
 		@cellNeedsUpdate[@cellTerrain.vec3(cellX,cellY,cellZ)]=true
 		for nei in @neighbours
 			neiCellId=@cellTerrain.vec3(cellX+nei[0],cellY+nei[1],cellZ+nei[2])
@@ -172,10 +174,10 @@ class World
 			return {posPlace,posBreak}
 		else
 			return false
-	_setCell: (cellX,cellY,cellZ,buffer)->
+	_setCell: (cellX,cellY,cellZ,buffer,biome)->
 		@chunkWorker.postMessage {
 			type:"setCell"
-			data:[cellX,cellY,cellZ,buffer]
+			data:[cellX,cellY,cellZ,buffer,biome]
 		}
 	_setVoxel: (voxelX,voxelY,voxelZ,value)->
 		@chunkWorker.postMessage {
@@ -190,11 +192,11 @@ class World
 			type:"genCellGeo"
 			data:[cellX,cellY,cellZ]
 		}
-	_computeSections: (sections,x,z)->
+	_computeSections: (sections,x,z,biomes)->
 		@sectionsWorker.postMessage {
 			type:"computeSections"
 			data:{
-				sections,x,z
+				sections,x,z,biomes
 			}
 		}
 export {World}

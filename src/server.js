@@ -43,7 +43,7 @@
           var cell;
           cell = new Chunk();
           cell.load(packet.chunkData, packet.bitMap, false, true);
-          io.to(socket.id).emit("mapChunk", cell.sections, packet.x, packet.z);
+          io.to(socket.id).emit("mapChunk", cell.sections, packet.x, packet.z, packet.biomes);
         });
         socketInfo[socket.id].bot.on('chat', function(username, message) {
           if (username === socketInfo[socket.id].bot.username) {

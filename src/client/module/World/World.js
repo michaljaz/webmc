@@ -30,6 +30,7 @@ World = class World {
       al: this.al
     });
     this.material = this.ATA.material;
+    this.material2 = this.ATA.material2;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     this.chunkWorker = new Worker("/module/World/ChunkWorker.js", {
       type: 'module'
@@ -59,7 +60,7 @@ World = class World {
       for (l = 0, len1 = result.length; l < len1; l++) {
         i = result[l];
         if (i !== null) {
-          results.push(_this.setCell(i.x, i.y, i.z, i.data));
+          results.push(_this.setCell(i.x, i.y, i.z, i.cell, i.biome));
         } else {
           results.push(void 0);
         }
@@ -68,10 +69,11 @@ World = class World {
     };
   }
 
-  setCell(cellX, cellY, cellZ, buffer) {
+  setCell(cellX, cellY, cellZ, buffer, biome) {
     var l, len1, nei, neiCellId, ref, results;
-    this._setCell(cellX, cellY, cellZ, buffer);
-    this.cellTerrain.cells[this.cellTerrain.vec3(cellX, cellY, cellZ)] = buffer;
+    this._setCell(cellX, cellY, cellZ, buffer, biome);
+    this.cellTerrain.setCell(cellX, cellY, cellZ, buffer);
+    this.cellTerrain.setBiome(cellX, cellY, cellZ, biome);
     this.cellNeedsUpdate[this.cellTerrain.vec3(cellX, cellY, cellZ)] = true;
     ref = this.neighbours;
     results = [];
@@ -250,10 +252,10 @@ World = class World {
     }
   }
 
-  _setCell(cellX, cellY, cellZ, buffer) {
+  _setCell(cellX, cellY, cellZ, buffer, biome) {
     return this.chunkWorker.postMessage({
       type: "setCell",
-      data: [cellX, cellY, cellZ, buffer]
+      data: [cellX, cellY, cellZ, buffer, biome]
     });
   }
 
@@ -274,10 +276,10 @@ World = class World {
     });
   }
 
-  _computeSections(sections, x, z) {
+  _computeSections(sections, x, z, biomes) {
     return this.sectionsWorker.postMessage({
       type: "computeSections",
-      data: {sections, x, z}
+      data: {sections, x, z, biomes}
     });
   }
 
