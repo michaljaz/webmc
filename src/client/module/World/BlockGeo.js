@@ -20,7 +20,7 @@ BlockGeo = class BlockGeo {
   }
 
   genBlockFace(type, block, pos) {
-    var toxX, toxY, uv;
+    var li, sh, toxX, toxY, uv;
     if (block.name === "water") {
       toxX = this.blocksMapping["water_flow"]["x"];
       toxY = this.blocksMapping["water_flow"]["y"];
@@ -31,43 +31,51 @@ BlockGeo = class BlockGeo {
       toxX = this.blocksMapping["debug"]["x"];
       toxY = 28 - this.blocksMapping["debug"]["y"];
     }
+    li = [255, 255, 255];
+    sh = [0, 0, 0];
     uv = this.getToxel(toxX, toxY);
     switch (type) {
       case "pz":
         return {
           pos: [-0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
           norm: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
+          color: []
         };
       case "nx":
         return {
           pos: [0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]],
           norm: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
+          color: []
         };
       case "nz":
         return {
           pos: [0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]],
           norm: [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
+          color: []
         };
       case "px":
         return {
           pos: [-0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
           norm: [-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
+          color: []
         };
       case "py":
         return {
           pos: [0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
           norm: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
+          color: []
         };
       case "ny":
         return {
           pos: [0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2]],
           norm: [0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
+          color: []
         };
     }
   }

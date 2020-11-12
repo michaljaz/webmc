@@ -100,7 +100,8 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
     this.al = options.al;
     this.material = new THREE.MeshStandardMaterial({
       side: 0,
-      map: null
+      map: null,
+      vertexColors: true
     });
     this.atlasCreator = new TextureAtlasCreator({
       textureX: this.al.get("blocksAtlasFull"),

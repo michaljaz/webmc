@@ -155,7 +155,9 @@ World = class World {
     geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(cell.positions), 3));
     geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(cell.normals), 3));
     geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(cell.uvs), 2));
+    geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cell.colors), 3));
     if (mesh === void 0) {
+      console.log(geometry);
       this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
       this.scene.add(this.cellMesh[cellId]);
     } else {

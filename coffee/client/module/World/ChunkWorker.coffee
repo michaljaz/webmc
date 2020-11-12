@@ -18,11 +18,13 @@ class TerrainManager
 		positions=[]
 		normals=[]
 		uvs=[]
+		colors=[]
 		addFace=(type,pos)->
 			faceVertex=_this.BlockGeo.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
 			positions.push faceVertex.pos...
 			normals.push faceVertex.norm...
 			uvs.push faceVertex.uv...
+			colors.push(0.5,0.5,0.5,0.5,0.5,0.5,1,1,1,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5,0.5)
 			return
 		for i in [0..@cellSize-1]
 			for j in [0..@cellSize-1]
@@ -58,6 +60,7 @@ class TerrainManager
 			positions
 			normals
 			uvs
+			colors
 		}
 
 addEventListener "message", (e)->

@@ -72,6 +72,7 @@ class AnimatedTextureAtlas
 		@material=new THREE.MeshStandardMaterial({
 			side: 0
 			map:null
+			vertexColors: true
 		})
 		@atlasCreator=new TextureAtlasCreator({
 			textureX:@al.get "blocksAtlasFull"

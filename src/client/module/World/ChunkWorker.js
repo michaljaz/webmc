@@ -24,17 +24,19 @@ TerrainManager = class TerrainManager {
   }
 
   genCellGeo(cellX, cellY, cellZ) {
-    var _this, addFace, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs;
+    var _this, addFace, colors, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs;
     _this = this;
     positions = [];
     normals = [];
     uvs = [];
+    colors = [];
     addFace = function(type, pos) {
       var faceVertex;
       faceVertex = _this.BlockGeo.genBlockFace(type, _this.cellTerrain.getBlock(...pos), pos);
       positions.push(...faceVertex.pos);
       normals.push(...faceVertex.norm);
       uvs.push(...faceVertex.uv);
+      colors.push(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
     };
     for (i = l = 0, ref = this.cellSize - 1; (0 <= ref ? l <= ref : l >= ref); i = 0 <= ref ? ++l : --l) {
       for (j = m = 0, ref1 = this.cellSize - 1; (0 <= ref1 ? m <= ref1 : m >= ref1); j = 0 <= ref1 ? ++m : --m) {
@@ -82,7 +84,7 @@ TerrainManager = class TerrainManager {
         }
       }
     }
-    return {positions, normals, uvs};
+    return {positions, normals, uvs, colors};
   }
 
 };

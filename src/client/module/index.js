@@ -73,7 +73,7 @@ init = function() {
     PixelRatio: window.devicePixelRatio
   });
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(90, 2, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(100, 2, 0.1, 1000);
   camera.rotation.order = "YXZ";
   camera.position.set(26, 26, 26);
   rt = new THREE.WebGLCubeRenderTarget(al.get("skybox").image.height);
