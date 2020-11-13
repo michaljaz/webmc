@@ -111,7 +111,8 @@ World = class World {
   updateCellsAroundPlayer(pos, radius) {
     var _this, cell, i, j, k, l, ref, ref1, ref2, results, up, v;
     _this = this;
-    if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > 1000)) {
+    if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > 500)) {
+      console.log("updating");
       ref = this.cellMesh;
       for (k in ref) {
         v = ref[k];

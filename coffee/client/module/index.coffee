@@ -1,5 +1,5 @@
 
-scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;world=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null
+scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;world=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null;params=null
 import * as THREE from './build/three.module.js'
 import {SkeletonUtils} from './jsm/utils/SkeletonUtils.js'
 import Stats from './jsm/libs/stats.module.js'
@@ -130,6 +130,7 @@ init = ()->
 	gui = new GUI()
 	params={
 		fog:true
+		chunkdist:4
 	}
 	gui.add( params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
 		if params.fog
@@ -137,6 +138,7 @@ init = ()->
 		else
 			scene.fog = null
 	gui.add( world.material, 'wireframe' ).name( 'Wireframe' ).listen()
+	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
 	animate()
 	return
 render = ->
@@ -160,7 +162,7 @@ render = ->
 	else
 		cursor.visible=false
 
-	world.updateCellsAroundPlayer camera.position,5
+	world.updateCellsAroundPlayer camera.position,params.chunkdist
 	TWEEN.update();
 	renderer.render scene, camera
 	return

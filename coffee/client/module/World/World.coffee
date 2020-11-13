@@ -66,7 +66,8 @@ class World
 		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
 	updateCellsAroundPlayer: (pos,radius)->
 		_this=@
-		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>1000)
+		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>500)
+			console.log "updating"
 			for k,v of @cellMesh
 				v.visible=false
 			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
