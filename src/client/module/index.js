@@ -105,7 +105,7 @@ init = function() {
   socket.on("connect", function() {
     var nick;
     console.log("Połączono z serverem!");
-    $('.loadingText').text("Wczytywanie terenu...");
+    $('.loadingText').text("Za chwilę dołączysz do gry...");
     nick = document.location.hash.substring(1, document.location.hash.length);
     if (nick === "") {
       nick = RandomNick();
@@ -115,11 +115,13 @@ init = function() {
     socket.emit("initClient", {
       nick: nick
     });
-    // world.replaceWorld v
-    $(".initLoading").css("display", "none");
   });
   socket.on("blockUpdate", function(block) {
     world.setBlock(block[0], block[1] + 16, block[2], block[3]);
+  });
+  socket.on("spawn", function(sections, x, z, biomes) {
+    console.log("Gracz dołączył do gry!");
+    return $(".initLoading").css("display", "none");
   });
   socket.on("mapChunk", function(sections, x, z, biomes) {
     return world._computeSections(sections, x, z, biomes);
@@ -203,7 +205,7 @@ render = function() {
   } else {
     cursor.visible = false;
   }
-  world.updateCellsAroundPlayer(camera.position, 3);
+  world.updateCellsAroundPlayer(camera.position, 5);
   TWEEN.update();
   renderer.render(scene, camera);
 };

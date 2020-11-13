@@ -30,7 +30,7 @@ World = class World {
       al: this.al
     });
     this.material = this.ATA.material;
-    this.material2 = this.ATA.material2;
+    this.cellUpdateTime = null;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     this.chunkWorker = new Worker("/module/World/ChunkWorker.js", {
       type: 'module'
@@ -109,41 +109,47 @@ World = class World {
   }
 
   updateCellsAroundPlayer(pos, radius) {
-    var cell, i, j, k, l, pcell, ref, ref1, ref2, results, v;
-    ref = this.cellMesh;
-    for (k in ref) {
-      v = ref[k];
-      v.visible = false;
-    }
-    cell = this.cellTerrain.computeCellForVoxel(Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z));
-    results = [];
-    for (i = l = ref1 = -radius, ref2 = radius; (ref1 <= ref2 ? l <= ref2 : l >= ref2); i = ref1 <= ref2 ? ++l : --l) {
-      results.push((function() {
-        var m, ref3, ref4, results1;
-        results1 = [];
-        for (j = m = ref3 = -radius, ref4 = radius; (ref3 <= ref4 ? m <= ref4 : m >= ref4); j = ref3 <= ref4 ? ++m : --m) {
-          results1.push((function() {
-            var n, ref5, ref6, results2;
-            results2 = [];
-            for (k = n = ref5 = -radius, ref6 = radius; (ref5 <= ref6 ? n <= ref6 : n >= ref6); k = ref5 <= ref6 ? ++n : --n) {
-              pcell = [cell[0] + i, cell[1] + j, cell[2] + k];
-              if (this.cellMesh[this.cellTerrain.vec3(...pcell)]) {
-                this.cellMesh[this.cellTerrain.vec3(...pcell)].visible = true;
-              }
-              if (this.cellNeedsUpdate[this.cellTerrain.vec3(...pcell)]) {
-                this._genCellGeo(...pcell);
-                results2.push(delete this.cellNeedsUpdate[this.cellTerrain.vec3(...pcell)]);
-              } else {
-                results2.push(void 0);
-              }
-            }
-            return results2;
-          }).call(this));
+    var _this, cell, i, j, k, l, ref, ref1, ref2, results, up, v;
+    _this = this;
+    if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > 1000)) {
+      ref = this.cellMesh;
+      for (k in ref) {
+        v = ref[k];
+        v.visible = false;
+      }
+      cell = this.cellTerrain.computeCellForVoxel(Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z));
+      up = function(x, y, z) {
+        var pcell;
+        pcell = [cell[0] + x, cell[1] + y, cell[2] + z];
+        if (_this.cellMesh[_this.cellTerrain.vec3(...pcell)]) {
+          _this.cellMesh[_this.cellTerrain.vec3(...pcell)].visible = true;
         }
-        return results1;
-      }).call(this));
+        if (_this.cellNeedsUpdate[_this.cellTerrain.vec3(...pcell)]) {
+          _this._genCellGeo(...pcell);
+          delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(...pcell)];
+        }
+      };
+      up(0, 0, 0);
+      results = [];
+      for (i = l = ref1 = -radius, ref2 = radius; (ref1 <= ref2 ? l <= ref2 : l >= ref2); i = ref1 <= ref2 ? ++l : --l) {
+        results.push((function() {
+          var m, ref3, ref4, results1;
+          results1 = [];
+          for (j = m = ref3 = -radius, ref4 = radius; (ref3 <= ref4 ? m <= ref4 : m >= ref4); j = ref3 <= ref4 ? ++m : --m) {
+            results1.push((function() {
+              var n, ref5, ref6, results2;
+              results2 = [];
+              for (k = n = ref5 = -radius, ref6 = radius; (ref5 <= ref6 ? n <= ref6 : n >= ref6); k = ref5 <= ref6 ? ++n : --n) {
+                results2.push(up(i, j, k));
+              }
+              return results2;
+            })());
+          }
+          return results1;
+        })());
+      }
+      return results;
     }
-    return results;
   }
 
   updateCell(data) {
@@ -157,7 +163,6 @@ World = class World {
     geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(cell.uvs), 2));
     geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cell.colors), 3));
     if (mesh === void 0) {
-      console.log(geometry);
       this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
       this.scene.add(this.cellMesh[cellId]);
     } else {
@@ -255,6 +260,7 @@ World = class World {
   }
 
   _setCell(cellX, cellY, cellZ, buffer, biome) {
+    this.cellUpdateTime = performance.now();
     return this.chunkWorker.postMessage({
       type: "setCell",
       data: [cellX, cellY, cellZ, buffer, biome]

@@ -10,6 +10,7 @@ import {AssetLoader} from './AssetLoader.js'
 import {InventoryBar} from './InventoryBar.js'
 import {RandomNick} from './RandomNick.js'
 import {GUI} from './jsm/libs/dat.gui.module.js'
+
 init = ()->
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
@@ -54,7 +55,7 @@ init = ()->
 	socket=io.connect "#{al.get("host")}:#{al.get("websocket-port")}"
 	socket.on "connect",()->
 		console.log "Połączono z serverem!"
-		$('.loadingText').text "Wczytywanie terenu..."
+		$('.loadingText').text "Za chwilę dołączysz do gry..."
 		nick=document.location.hash.substring(1,document.location.hash.length)
 		if nick is ""
 			nick=RandomNick()
@@ -63,12 +64,13 @@ init = ()->
 		socket.emit "initClient", {
 			nick:nick
 		}
-		# world.replaceWorld v
-		$(".initLoading").css "display","none"
 		return
 	socket.on "blockUpdate",(block)->
 		world.setBlock block[0],block[1]+16,block[2],block[3]
 		return
+	socket.on "spawn", (sections,x,z,biomes)->
+		console.log "Gracz dołączył do gry!"
+		$(".initLoading").css "display","none"
 	socket.on "mapChunk", (sections,x,z,biomes)->
 		world._computeSections sections,x,z,biomes
 	socket.on "hp",(points)->
@@ -158,7 +160,7 @@ render = ->
 	else
 		cursor.visible=false
 
-	world.updateCellsAroundPlayer camera.position,3
+	world.updateCellsAroundPlayer camera.position,5
 	TWEEN.update();
 	renderer.render scene, camera
 	return

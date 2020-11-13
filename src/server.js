@@ -61,6 +61,11 @@
             io.to(socket.id).emit("food", socketInfo[socket.id].bot.food);
           } catch (error) {}
         });
+        socketInfo[socket.id].bot.on('spawn', function() {
+          try {
+            io.to(socket.id).emit("spawn");
+          } catch (error) {}
+        });
         socketInfo[socket.id].bot.on('message', function(msg) {
           try {
             io.to(socket.id).emit("msg", convert.toHtml(msg.toAnsi()));

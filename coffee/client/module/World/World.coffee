@@ -16,7 +16,7 @@ class World
 		@cellTerrain=new CellTerrain {cellSize:@cellSize}
 		@ATA=new AnimatedTextureAtlas {al:@al}
 		@material=@ATA.material
-		@material2=@ATA.material2
+		@cellUpdateTime=null
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 		@chunkWorker=new Worker "/module/World/ChunkWorker.js", {type:'module'}
 		@chunkWorker.onmessage=(message)->
@@ -65,18 +65,24 @@ class World
 	getBlock: (voxelX,voxelY,voxelZ) ->
 		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
 	updateCellsAroundPlayer: (pos,radius)->
-		for k,v of @cellMesh
-			v.visible=false
-		cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
-		for i in [-radius..radius]
-			for j in [-radius..radius]
-				for k in [-radius..radius]
-					pcell=[cell[0]+i,cell[1]+j,cell[2]+k]
-					if @cellMesh[@cellTerrain.vec3(pcell...)]
-						@cellMesh[@cellTerrain.vec3(pcell...)].visible=true
-					if @cellNeedsUpdate[@cellTerrain.vec3(pcell...)]
-						@_genCellGeo pcell...
-						delete @cellNeedsUpdate[@cellTerrain.vec3(pcell...)]
+		_this=@
+		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>1000)
+			for k,v of @cellMesh
+				v.visible=false
+			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
+			up=(x,y,z)->
+				pcell=[cell[0]+x,cell[1]+y,cell[2]+z]
+				if _this.cellMesh[_this.cellTerrain.vec3(pcell...)]
+					_this.cellMesh[_this.cellTerrain.vec3(pcell...)].visible=true
+				if _this.cellNeedsUpdate[_this.cellTerrain.vec3(pcell...)]
+					_this._genCellGeo pcell...
+					delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(pcell...)]
+				return
+			up(0,0,0)
+			for i in [-radius..radius]
+				for j in [-radius..radius]
+					for k in [-radius..radius]
+						up i,j,k
 	updateCell: (data)->
 		cellId=@cellTerrain.vec3 data.info...
 		cell=data.cell
@@ -87,7 +93,6 @@ class World
 		geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
 		geometry.setAttribute 'color',new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
 		if mesh is undefined
-			console.log geometry
 			@cellMesh[cellId]=new THREE.Mesh geometry,@material
 			@scene.add @cellMesh[cellId]
 		else
@@ -177,6 +182,7 @@ class World
 		else
 			return false
 	_setCell: (cellX,cellY,cellZ,buffer,biome)->
+		@cellUpdateTime=performance.now()
 		@chunkWorker.postMessage {
 			type:"setCell"
 			data:[cellX,cellY,cellZ,buffer,biome]

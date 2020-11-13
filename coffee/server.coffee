@@ -61,6 +61,10 @@ module.exports=(config)->
 					io.to(socket.id).emit "hp",socketInfo[socket.id].bot.health
 					io.to(socket.id).emit "food",socketInfo[socket.id].bot.food
 				return
+			socketInfo[socket.id].bot.on 'spawn',()->
+				try
+					io.to(socket.id).emit "spawn"
+				return
 			socketInfo[socket.id].bot.on 'message',(msg)->
 				try
 					io.to(socket.id).emit "msg",convert.toHtml(msg.toAnsi());
