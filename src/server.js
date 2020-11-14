@@ -2,6 +2,7 @@
 (function() {
   module.exports = function(config) {
     var Chunk, Convert, app, convert, express, fs, http, io, mineflayer, port, server, sf, socketInfo, vec3;
+    //biblioteki
     fs = require("fs");
     http = require("http");
     server = http.createServer();
@@ -9,13 +10,15 @@
     express = require('express');
     app = express();
     mineflayer = require('mineflayer');
-    Chunk = require("prismarine-chunk")("1.16.1");
+    Chunk = require("prismarine-chunk")(config.realServer.version);
     vec3 = require("vec3");
     Convert = require('ansi-to-html');
     convert = new Convert();
+    //początkowe zmienne
     sf = {};
     port = config["express-port"];
     socketInfo = {};
+    //Konfiguracja serwera express
     app.use(express.static(__dirname + "/client/"));
     app.use(function(req, res, next) {
       res.set('Cache-Control', 'no-store');
@@ -29,16 +32,19 @@
     });
     app.listen(port);
     server.listen(config["websocket-port"]);
+    //websocket
     return io.sockets.on("connection", function(socket) {
       socket.on("initClient", function(data) {
         console.log("[+] " + data.nick);
+        //Dodawanie informacji o graczu do socketInfo
         socketInfo[socket.id] = data;
         socketInfo[socket.id].bot = mineflayer.createBot({
           host: config.realServer.ip,
           port: config.realServer.port,
           username: socketInfo[socket.id].nick,
-          version: "1.16.3"
+          version: config.realServer.version
         });
+        //Eventy otrzymywane z serwera minecraftowego
         socketInfo[socket.id].bot._client.on("map_chunk", function(packet) {
           var cell;
           cell = new Chunk();
@@ -80,9 +86,15 @@
           io.to(socket.id).emit("blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]);
         });
       });
+      //eventy otrzymywane od klienta
       socket.on("move", function(state, toggle) {
         try {
           socketInfo[socket.id].bot.setControlState(state, toggle);
+        } catch (error) {}
+      });
+      socket.on("command", function(com) {
+        try {
+          socketInfo[socket.id].bot.chat(com);
         } catch (error) {}
       });
       socket.on("rotate", function(data) {
@@ -92,10 +104,8 @@
       });
       return socket.on("disconnect", function() {
         try {
-          //end bot session
           console.log("[-] " + socketInfo[socket.id].nick);
           socketInfo[socket.id].bot.end();
-          //delete socketinfo
           delete socketInfo[socket.id];
         } catch (error) {}
       });

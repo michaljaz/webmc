@@ -69,6 +69,7 @@ import {
 
 init = function() {
   var ambientLight, clouds, color, directionalLight, far, gui, near, rt;
+  //Płótno,renderer,scena i kamera
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
     canvas,
@@ -78,24 +79,30 @@ init = function() {
   camera = new THREE.PerspectiveCamera(100, 2, 0.1, 1000);
   camera.rotation.order = "YXZ";
   camera.position.set(26, 26, 26);
+  //Skybox
   rt = new THREE.WebGLCubeRenderTarget(al.get("skybox").image.height);
   rt.fromEquirectangularTexture(renderer, al.get("skybox"));
   scene.background = rt;
+  //Światła
   ambientLight = new THREE.AmbientLight(0xcccccc);
   scene.add(ambientLight);
   directionalLight = new THREE.DirectionalLight(0x333333, 2);
   directionalLight.position.set(1, 1, 0.5).normalize();
   scene.add(directionalLight);
+  //Informacja o gpu komputera
   console.warn(gpuInfo());
+  //Chmury
   clouds = al.get("clouds");
   clouds.scale.x = 0.1;
   clouds.scale.y = 0.1;
   clouds.scale.z = 0.1;
   clouds.position.y = 170;
   scene.add(clouds);
+  //FPSy
   stats = new Stats();
   stats.showPanel(0);
   document.body.appendChild(stats.dom);
+  //Utworzenie klasy świat
   world = new World({
     toxelSize: 27,
     cellSize: 16,
@@ -103,6 +110,7 @@ init = function() {
     camera,
     al
   });
+  //komunikacja z serwerem websocket
   socket = io.connect(`${al.get("host")}:${al.get("websocket-port")}`);
   socket.on("connect", function() {
     var nick;
@@ -150,26 +158,31 @@ init = function() {
     };
     return new TWEEN.Tween(camera.position).to(to, 100).easing(TWEEN.Easing.Quadratic.Out).start();
   });
+  //Utworzenie inventory
   inv_bar = new InventoryBar({
     boxSize: 60,
     padding: 4,
     div: ".inventoryBar"
   }).setBoxes(["assets/images/grass_block.png", "assets/images/stone.png", "assets/images/oak_planks.png", "assets/images/smoker.gif", "assets/images/anvil.png", "assets/images/brick.png", "assets/images/furnace.png", "assets/images/bookshelf.png", "assets/images/tnt.png"]).setFocusOnly(1).listen();
+  //Kontrolki gracza
   FPC = new FirstPersonControls({
     canvas,
     camera,
     micromove: 0.3,
     socket
   });
+  //Kursor raycastowania
   cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
     color: 0x000000,
     linewidth: 0.5
   }));
   scene.add(cursor);
+  //Mgła
   color = new THREE.Color("#adc8ff");
   near = 3 * 16 - 13;
   far = 3 * 16 - 3;
   scene.fog = new THREE.Fog(color, near, far);
+  //Interfejs dat.gui
   gui = new GUI();
   params = {
     fog: true,
@@ -184,11 +197,14 @@ init = function() {
   });
   gui.add(world.material, 'wireframe').name('Wireframe').listen();
   gui.add(params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
+  //Wprawienie w ruch funkcji animate
   animate();
 };
 
+//Renderowanie
 render = function() {
   var height, pos, rayBlock, width;
+  //Automatyczne zmienianie rozmiaru renderera
   width = window.innerWidth;
   height = window.innerHeight;
   if (canvas.width !== width || canvas.height !== height) {
@@ -198,6 +214,7 @@ render = function() {
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
   }
+  //Raycastowany block
   rayBlock = world.getRayBlock();
   if (rayBlock) {
     pos = rayBlock.posBreak;
@@ -209,11 +226,14 @@ render = function() {
   } else {
     cursor.visible = false;
   }
+  //Updatowanie komórek wokół gracza
   world.updateCellsAroundPlayer(camera.position, params.chunkdist);
+  //Updatowanie sceny i animacji TWEEN
   TWEEN.update();
   renderer.render(scene, camera);
 };
 
+//Funkcja animate
 animate = function() {
   try {
     stats.begin();
@@ -223,14 +243,12 @@ animate = function() {
   requestAnimationFrame(animate);
 };
 
+//AssetLoader
 al = new AssetLoader();
 
 $.get("assets/assetLoader.json", function(assets) {
   al.load(assets, function() {
     console.log("AssetLoader: done loading!");
-    al.get("anvil").children[0].geometry.rotateX(-Math.PI / 2);
-    al.get("anvil").children[0].geometry.translate(0, 0.17, 0);
-    al.get("anvil").children[0].geometry.translate(0, -0.25, 0);
     init();
   }, al);
 });

@@ -20,10 +20,13 @@ FirstPersonControls = class FirstPersonControls {
     this.socket = options.socket;
     this.gameState = "menu";
     this.listen();
+    $("#commandx").blur();
+    $(".command").hide();
   }
 
   updatePosition(e) {
-    if (this.gameState === "game") {
+    //Updatowanie kursora
+    if (this.gameState === "gameLock") {
       this.camera.rotation.x -= THREE.MathUtils.degToRad(e.movementY / 10);
       this.camera.rotation.y -= THREE.MathUtils.degToRad(e.movementX / 10);
       if (THREE.MathUtils.radToDeg(this.camera.rotation.x) < -90) {
@@ -39,37 +42,70 @@ FirstPersonControls = class FirstPersonControls {
   listen() {
     var _this, lockChangeAlert;
     _this = this;
-    $(window).keydown(function(z) {
+    $(document).keydown(function(z) {
+      //Kliknięcie
       _this.keys[z.keyCode] = true;
-      //If click escape
-      if (z.keyCode === 27) {
-        if (_this.gameState === "menu") {
-          _this.canvas.requestPointerLock();
+      //Klawisz Enter
+      if (z.keyCode === 13 && _this.gameState === "chat") {
+        _this.socket.emit("command", commandx.value);
+        commandx.value = "";
+      }
+      //Klawisz T lub /
+      if ((z.keyCode === 84 || z.keyCode === 191) && _this.gameState === "gameLock") {
+        if (z.keyCode === 191) {
+          commandx.value = "/";
+        }
+        _this._Chat();
+        z.preventDefault();
+      }
+      //Klawisz `
+      if (z.keyCode === 192) {
+        $("#commandx").blur();
+        $(".command").hide();
+        z.preventDefault();
+        if ((_this.gameState === "menu") || (_this.gameState === "chat")) {
+          _this._Game();
         } else {
-          document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-          document.exitPointerLock();
+          _this._Menu();
         }
       }
-      if (_this.kc[z.keyCode] !== void 0) {
+      if (z.keyCode === 27 && _this.gameState === "chat") {
+        $("#commandx").blur();
+        $(".command").hide();
+        _this._Menu();
+      }
+      //Wysyłanie state'u do serwera
+      if (_this.kc[z.keyCode] !== void 0 && _this.gameState === "gameLock") {
         _this.socket.emit("move", _this.kc[z.keyCode], true);
       }
     });
     $(document).keyup(function(z) {
+      //Odkliknięcie
+      delete _this.keys[z.keyCode];
+      //Wysyłanie state'u do serwera
       if (_this.kc[z.keyCode] !== void 0) {
         _this.socket.emit("move", _this.kc[z.keyCode], false);
       }
-      delete _this.keys[z.keyCode];
     });
     $(".gameOn").click(function() {
-      _this.canvas.requestPointerLock();
+      _this._Game();
     });
     lockChangeAlert = function() {
       if (document.pointerLockElement === _this.canvas || document.mozPointerLockElement === _this.canvas) {
-        _this.gameState = "game";
-        $(".gameMenu").css("display", "none");
+        //Lock
+        if (_this.gameState === "game") {
+          $("#commandx").blur();
+          $(".command").hide();
+          _this.state("gameLock");
+          $(".gameMenu").css("display", "none");
+        }
       } else {
-        _this.gameState = "menu";
-        $(".gameMenu").css("display", "block");
+        //Unlock
+        if ((_this.gameState === "menu") || (_this.gameState === "gameLock")) {
+          $("#commandx").blur();
+          $(".command").hide();
+          _this._Menu();
+        }
       }
     };
     document.addEventListener('pointerlockchange', lockChangeAlert, false);
@@ -78,6 +114,34 @@ FirstPersonControls = class FirstPersonControls {
       return _this.updatePosition(e);
     }, false);
     return this;
+  }
+
+  state(state) {
+    this.gameState = state;
+    return console.log("Game state: " + state);
+  }
+
+  _Game() {
+    this.state("game");
+    return this.canvas.requestPointerLock();
+  }
+
+  _Menu() {
+    this.state("menu");
+    $(".gameMenu").css("display", "block");
+    document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+    return document.exitPointerLock();
+  }
+
+  _Chat() {
+    if (this.gameState === "gameLock") {
+      this.state("chat");
+      $(".gameMenu").css("display", "none");
+      document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
+      document.exitPointerLock();
+      $(".command").show();
+      return $("#commandx").focus();
+    }
   }
 
 };

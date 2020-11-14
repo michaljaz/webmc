@@ -31,7 +31,9 @@ World = class World {
     });
     this.material = this.ATA.material;
     this.cellUpdateTime = null;
+    this.renderTime = 500;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
+    //Utworzenie Workera do obliczania geometrii chunków
     this.chunkWorker = new Worker("/module/World/ChunkWorker.js", {
       type: 'module'
     });
@@ -44,12 +46,12 @@ World = class World {
         models: {
           anvil: {...this.al.get("anvil").children[0].geometry.attributes}
         },
-        blocks: this.al.get("blocks"),
         blocksMapping: this.al.get("blocksMapping"),
         toxelSize: this.toxelSize,
         cellSize: this.cellSize
       }
     });
+    //Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
     this.sectionsWorker = new Worker("/module/World/SectionsWorker.js", {
       type: 'module'
     });
@@ -67,6 +69,7 @@ World = class World {
       }
       return results;
     };
+    return;
   }
 
   setCell(cellX, cellY, cellZ, buffer, biome) {
@@ -104,15 +107,11 @@ World = class World {
     }
   }
 
-  getBlock(voxelX, voxelY, voxelZ) {
-    return this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ);
-  }
-
   updateCellsAroundPlayer(pos, radius) {
     var _this, cell, i, j, k, l, ref, ref1, ref2, results, up, v;
+    //Updatowanie komórek wokół gracza w danym zasięgu
     _this = this;
-    if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > 500)) {
-      console.log("updating");
+    if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > this.renderTime)) {
       ref = this.cellMesh;
       for (k in ref) {
         v = ref[k];
@@ -131,6 +130,10 @@ World = class World {
         }
       };
       up(0, 0, 0);
+      up(1, 0, 0);
+      up(-1, 0, 0);
+      up(0, 0, 1);
+      up(0, 0, -1);
       results = [];
       for (i = l = ref1 = -radius, ref2 = radius; (ref1 <= ref2 ? l <= ref2 : l >= ref2); i = ref1 <= ref2 ? ++l : --l) {
         results.push((function() {
@@ -155,6 +158,7 @@ World = class World {
 
   updateCell(data) {
     var cell, cellId, geometry, mesh;
+    //Updatowanie komórki z już obliczoną geometrią
     cellId = this.cellTerrain.vec3(...data.info);
     cell = data.cell;
     mesh = this.cellMesh[cellId];
@@ -205,7 +209,7 @@ World = class World {
     tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
     steppedIndex = -1;
     while (t <= len) {
-      voxel = this.getBlock(ix, iy, iz);
+      voxel = this.cellTerrain.getVoxel(ix, iy, iz);
       if (voxel) {
         return {
           position: [start.x + t * dx, start.y + t * dy, start.z + t * dz],
@@ -261,6 +265,7 @@ World = class World {
   }
 
   _setCell(cellX, cellY, cellZ, buffer, biome) {
+    //Wysyłanie do ChunkWorkera informacji nowej komórce
     this.cellUpdateTime = performance.now();
     return this.chunkWorker.postMessage({
       type: "setCell",
@@ -269,6 +274,7 @@ World = class World {
   }
 
   _setVoxel(voxelX, voxelY, voxelZ, value) {
+    //Wysyłanie do ChunkWorkera informacji o nowym Voxelu
     return this.chunkWorker.postMessage({
       type: "setVoxel",
       data: [voxelX, voxelY, voxelZ, value]
@@ -276,6 +282,7 @@ World = class World {
   }
 
   _genCellGeo(cellX, cellY, cellZ) {
+    //Wysyłanie do ChunkWorkera prośby o wygenerowanie geometrii komórki
     cellX = parseInt(cellX);
     cellY = parseInt(cellY);
     cellZ = parseInt(cellZ);
@@ -286,6 +293,7 @@ World = class World {
   }
 
   _computeSections(sections, x, z, biomes) {
+    //Wysyłanie do SectionsWorkera Buffora, który ma przekształcić w łatwiejszą postać
     return this.sectionsWorker.postMessage({
       type: "computeSections",
       data: {sections, x, z, biomes}

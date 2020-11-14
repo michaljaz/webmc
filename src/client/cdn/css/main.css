@@ -111,13 +111,9 @@ canvas {
   font-size:20px;
   font-weight:bold;
 }
-.console{
+.con{
   overflow:auto;
   display:flex; flex-direction:column-reverse;
-  position:fixed;
-  bottom:110px;
-  left:0px;
-  width:60%;
   -webkit-text-stroke: 1px black;
    color: white;
    text-shadow:
@@ -126,10 +122,20 @@ canvas {
       1px -1px 0 #000,
       -1px 1px 0 #000,
        1px 1px 0 #000;
-  height:30%;
+  height:70%;
   font-weight:bold;
   font-size:20px;
 }
-.console::-webkit-scrollbar {
+.console{
+  position:fixed;
+  height:30%;
+  bottom:110px;
+  left:0px;
+  width:60%;
+}
+.command{
+  font-size:40px;
+}
+.con::-webkit-scrollbar {
     display: none;
 }

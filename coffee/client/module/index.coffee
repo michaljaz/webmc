@@ -12,6 +12,7 @@ import {RandomNick} from './RandomNick.js'
 import {GUI} from './jsm/libs/dat.gui.module.js'
 
 init = ()->
+	#Płótno,renderer,scena i kamera
 	canvas=document.querySelector '#c'
 	renderer=new THREE.WebGLRenderer {
 		canvas
@@ -22,17 +23,22 @@ init = ()->
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
 
+	#Skybox
 	rt = new THREE.WebGLCubeRenderTarget al.get("skybox").image.height
 	rt.fromEquirectangularTexture renderer, al.get "skybox"
 	scene.background = rt
 
+	#Światła
 	ambientLight=new THREE.AmbientLight 0xcccccc
 	scene.add ambientLight
 	directionalLight = new THREE.DirectionalLight 0x333333, 2
 	directionalLight.position.set(1, 1, 0.5).normalize()
 	scene.add directionalLight
+
+	#Informacja o gpu komputera
 	console.warn gpuInfo()
 
+	#Chmury
 	clouds=al.get "clouds"
 	clouds.scale.x=0.1
 	clouds.scale.y=0.1
@@ -40,10 +46,12 @@ init = ()->
 	clouds.position.y=170
 	scene.add clouds
 
+	#FPSy
 	stats = new Stats()
 	stats.showPanel 0
 	document.body.appendChild stats.dom
 
+	#Utworzenie klasy świat
 	world=new World({
 		toxelSize:27
 		cellSize:16
@@ -52,6 +60,7 @@ init = ()->
 		al
 	})
 
+	#komunikacja z serwerem websocket
 	socket=io.connect "#{al.get("host")}:#{al.get("websocket-port")}"
 	socket.on "connect",()->
 		console.log "Połączono z serverem!"
@@ -89,6 +98,7 @@ init = ()->
 			.easing TWEEN.Easing.Quadratic.Out
 			.start()
 
+	#Utworzenie inventory
 	inv_bar = new InventoryBar({
 		boxSize: 60
 		padding: 4
@@ -105,6 +115,7 @@ init = ()->
 		"assets/images/tnt.png"
 	]).setFocusOnly(1).listen()
 
+	#Kontrolki gracza
 	FPC = new FirstPersonControls {
 		canvas
 		camera
@@ -112,6 +123,7 @@ init = ()->
 		socket
 	}
 
+	#Kursor raycastowania
 	cursor=new THREE.LineSegments(
 		new THREE.EdgesGeometry(
 			new THREE.BoxGeometry 1, 1, 1
@@ -123,10 +135,13 @@ init = ()->
 	)
 	scene.add cursor
 
+	#Mgła
 	color = new THREE.Color "#adc8ff"
 	near = 3*16-13
 	far = 3*16-3
 	scene.fog = new THREE.Fog color, near, far
+
+	#Interfejs dat.gui
 	gui = new GUI()
 	params={
 		fog:true
@@ -139,9 +154,14 @@ init = ()->
 			scene.fog = null
 	gui.add( world.material, 'wireframe' ).name( 'Wireframe' ).listen()
 	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
+
+	#Wprawienie w ruch funkcji animate
 	animate()
 	return
+
+#Renderowanie
 render = ->
+	#Automatyczne zmienianie rozmiaru renderera
 	width=window.innerWidth
 	height=window.innerHeight
 	if canvas.width isnt width or canvas.height isnt height
@@ -151,6 +171,7 @@ render = ->
 		camera.aspect = width / height
 		camera.updateProjectionMatrix()
 
+	#Raycastowany block
 	rayBlock=world.getRayBlock()
 	if rayBlock
 		pos=rayBlock.posBreak
@@ -162,11 +183,15 @@ render = ->
 	else
 		cursor.visible=false
 
+	#Updatowanie komórek wokół gracza
 	world.updateCellsAroundPlayer camera.position,params.chunkdist
+
+	#Updatowanie sceny i animacji TWEEN
 	TWEEN.update();
 	renderer.render scene, camera
 	return
 
+#Funkcja animate
 animate = ->
 	try
 		stats.begin()
@@ -175,13 +200,11 @@ animate = ->
 	requestAnimationFrame animate
 	return
 
+#AssetLoader
 al=new AssetLoader
 $.get "assets/assetLoader.json", (assets)->
 	al.load assets,()->
 		console.log "AssetLoader: done loading!"
-		al.get("anvil").children[0].geometry.rotateX -Math.PI/2
-		al.get("anvil").children[0].geometry.translate 0,0.17,0
-		al.get("anvil").children[0].geometry.translate 0,-0.25,0
 		init()
 		return
 	,al

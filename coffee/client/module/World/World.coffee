@@ -17,7 +17,10 @@ class World
 		@ATA=new AnimatedTextureAtlas {al:@al}
 		@material=@ATA.material
 		@cellUpdateTime=null
+		@renderTime=500
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+
+		#Utworzenie Workera do obliczania geometrii chunków
 		@chunkWorker=new Worker "/module/World/ChunkWorker.js", {type:'module'}
 		@chunkWorker.onmessage=(message)->
 			_this.updateCell message.data
@@ -29,18 +32,20 @@ class World
 						@al.get("anvil").children[0].geometry.attributes...
 					}
 				}
-				blocks: @al.get "blocks"
 				blocksMapping: @al.get "blocksMapping"
 				toxelSize: @toxelSize
 				cellSize: @cellSize
 			}
 		}
+
+		#Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
 		@sectionsWorker=new Worker "/module/World/SectionsWorker.js", {type:'module'}
 		@sectionsWorker.onmessage=(data)->
 			result=data.data.result
 			for i in result
 				if i isnt null
 					_this.setCell i.x,i.y,i.z,i.cell,i.biome
+		return
 	setCell: (cellX,cellY,cellZ,buffer,biome)->
 		@_setCell cellX,cellY,cellZ,buffer,biome
 		@cellTerrain.setCell cellX,cellY,cellZ,buffer
@@ -62,12 +67,10 @@ class World
 				neiCellId=@cellTerrain.vec3 @cellTerrain.computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2])...
 				@cellNeedsUpdate[neiCellId]=true
 		return
-	getBlock: (voxelX,voxelY,voxelZ) ->
-		return @cellTerrain.getVoxel voxelX,voxelY,voxelZ
 	updateCellsAroundPlayer: (pos,radius)->
+		#Updatowanie komórek wokół gracza w danym zasięgu
 		_this=@
-		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>500)
-			console.log "updating"
+		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>@renderTime)
 			for k,v of @cellMesh
 				v.visible=false
 			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
@@ -80,11 +83,17 @@ class World
 					delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(pcell...)]
 				return
 			up(0,0,0)
+			up(1,0,0)
+			up(-1,0,0)
+
+			up(0,0,1)
+			up(0,0,-1)
 			for i in [-radius..radius]
 				for j in [-radius..radius]
 					for k in [-radius..radius]
 						up i,j,k
 	updateCell: (data)->
+		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
 		cell=data.cell
 		mesh=@cellMesh[cellId]
@@ -132,7 +141,7 @@ class World
 		tzMax = if tzDelta < Infinity then tzDelta * zDist else Infinity
 		steppedIndex = -1
 		while t <= len
-			voxel = @getBlock ix, iy, iz
+			voxel = @cellTerrain.getVoxel ix, iy, iz
 			if voxel
 				return {
 					position: [
@@ -183,17 +192,20 @@ class World
 		else
 			return false
 	_setCell: (cellX,cellY,cellZ,buffer,biome)->
+		#Wysyłanie do ChunkWorkera informacji nowej komórce
 		@cellUpdateTime=performance.now()
 		@chunkWorker.postMessage {
 			type:"setCell"
 			data:[cellX,cellY,cellZ,buffer,biome]
 		}
 	_setVoxel: (voxelX,voxelY,voxelZ,value)->
+		#Wysyłanie do ChunkWorkera informacji o nowym Voxelu
 		@chunkWorker.postMessage {
 			type:"setVoxel"
 			data:[voxelX,voxelY,voxelZ,value]
 		}
 	_genCellGeo: (cellX,cellY,cellZ)->
+		#Wysyłanie do ChunkWorkera prośby o wygenerowanie geometrii komórki
 		cellX=parseInt cellX
 		cellY=parseInt cellY
 		cellZ=parseInt cellZ
@@ -202,6 +214,7 @@ class World
 			data:[cellX,cellY,cellZ]
 		}
 	_computeSections: (sections,x,z,biomes)->
+		#Wysyłanie do SectionsWorkera Buffora, który ma przekształcić w łatwiejszą postać
 		@sectionsWorker.postMessage {
 			type:"computeSections"
 			data:{
