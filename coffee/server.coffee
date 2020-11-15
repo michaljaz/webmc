@@ -1,6 +1,8 @@
-module.exports=(config)->
+module.exports=(type)->
 	#biblioteki
+	opn=require "opn"
 	fs=require "fs"
+	config=JSON.parse fs.readFileSync(__dirname+"/../config.json")
 	http=require "http"
 	server=http.createServer()
 	io=require("socket.io")(server)
@@ -12,13 +14,20 @@ module.exports=(config)->
 	Convert = require 'ansi-to-html'
 	convert = new Convert()
 
+
+
+	opn("http://#{config.host}:#{config['express-port']}")
+
 	#początkowe zmienne
 	sf={}
 	port=config["express-port"]
 	socketInfo={}
 
 	#Konfiguracja serwera express
-	app.use express.static(__dirname + "/client/")
+	if type is "production"
+		app.use express.static(__dirname + "/../dist/")
+	else
+		app.use express.static(__dirname + "/client/")
 	app.use (req, res, next) ->
 		res.set 'Cache-Control', 'no-store'
 		next()

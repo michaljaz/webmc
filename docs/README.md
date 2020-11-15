@@ -6,14 +6,24 @@
 
 <i>
 </i>
-<h1>Uruchamianie gry:</h1>
+<h1>Instalacja i uruchamianie:</h1>
 
 ```bash
 
+#Instalacja
 git clone https://github.com/michaljaz/web-minecraft
 cd web-minecraft
 npm i
+
+#Kompilacja Coffeescripta
+npm run coffee
+
+#Testowanie aplikacji
 npm start
+
+#Produkcja
+npm run build
+npm run production
 
 ```
 <br>

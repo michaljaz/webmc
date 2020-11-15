@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Web-Minecraft</title>
+
+    <!-- META TAGS -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
+
+    <!-- ICON -->
+    <link rel="icon" href="assets/images/grass_block.png">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/css/bootstrap.min.css">
+    <!-- Material Design Bootstrap -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/css/mdb.min.css">
+    <!-- Own style -->
+    <link rel="stylesheet" href="/css/style.css">
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.0/js/bootstrap.min.js"></script>
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.19.1/js/mdb.min.js"></script>
+    <!-- TWEEN.JS -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/tween.js/18.6.4/tween.umd.js"></script>
+    <!-- SOCKET.IO -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
+  </head>
+  <body>
+    <!-- RENDER CANVAS -->
+    <canvas id="c"></canvas>
+
+    <!-- LOADING SCREEN -->
+    <div class="initLoading">
+      <div class="loadingBar text-center">
+        <img src="assets/images/logo.png">
+        <h1 class="loadingText">Ładowanie zasobów...</h1>
+        <div class="status"></div>
+        <img src="assets/images/loadingx.gif">
+      </div>
+    </div>
+
+    <!-- CONSOLE -->
+    <div class="console">
+
+      <!-- CON -->
+      <div class="con">
+
+        <!-- CHAT -->
+        <div class="chat"></div>
+      </div>
+
+      <!-- Material input -->
+      <div class="md-form command">
+        <input type="text" id="commandx" class="form-control text-light">
+        <label for="commandx">Komenda:</label>
+      </div>
+    </div>
+
+    <!-- GUI -->
+    <div class="gui">
+
+      <!-- INVENTORY BAR -->
+      <div class="inventoryBar">
+
+        <!-- PLAYER HEALTH -->
+        <div class="player_health">
+
+          <!-- PLAYER HP -->
+          <span class="player_hp">
+            <img class='hp hp_1'>
+            <img class='hp hp_2'>
+            <img class='hp hp_3'>
+            <img class='hp hp_4'>
+            <img class='hp hp_5'>
+            <img class='hp hp_6'>
+            <img class='hp hp_7'>
+            <img class='hp hp_8'>
+            <img class='hp hp_9'>
+            <img class='hp hp_10'>
+          </span>
+
+          <!-- PLAYER XP -->
+          <span class="player_xp">
+            Łączenie...
+          </span>
+
+          <!-- PLAYER FOOD -->
+          <span class="player_food">
+            <img class='food food_10'>
+            <img class='food food_9'>
+            <img class='food food_8'>
+            <img class='food food_7'>
+            <img class='food food_6'>
+            <img class='food food_5'>
+            <img class='food food_4'>
+            <img class='food food_3'>
+            <img class='food food_2'>
+            <img class='food food_1'>
+          </span>
+        </div>
+
+        <!--EXPERIENCE BAR -->
+        <div class="progress">
+          <div class="progress-bar" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <!-- PLAYER ITEMS -->
+        <div class="player_items">
+          <img class='inv_box inv_box_1'>
+          <img class='inv_box inv_box_2'>
+          <img class='inv_box inv_box_3'>
+          <img class='inv_box inv_box_4'>
+          <img class='inv_box inv_box_5'>
+          <img class='inv_box inv_box_6'>
+          <img class='inv_box inv_box_7'>
+          <img class='inv_box inv_box_8'>
+          <img class='inv_box inv_box_9'>
+        </div>
+      </div>
+
+      <!-- GAME MENU -->
+      <div class="gameMenu">
+        <div class="row">
+
+          <!-- FIRST COLUMN -->
+          <div class="col-4 pl-5 pt-4">
+            Web-minecraft v.1.0<br>
+            Wykonanie: michaljaz
+          </div>
+
+          <!--SECOND COLUMN -->
+          <div class="col-4 text-center p-3">
+            <h3>Gra zatrzymana</h3>
+            <button class="gameOn btn btn-dark w-100">
+              Graj
+            </button>
+          </div>
+
+          <!-- THIRD COLUMN -->
+          <div class="col-4 p-3">
+            Kontrolki
+            <li>
+              <button>W</button> do przodu
+            </li>
+            <li>
+              <button>S</button> do tyłu
+            </li>
+            <li>
+              <button>A</button> w lewo
+            </li>
+            <li>
+              <button>D</button> w prawo
+            </li>
+            <li>
+              <button>R</button> sprint
+            </li>
+            <li>
+              <button>Spacja</button> skakanie
+            </li>
+            <li>
+              <button>Shift</button> skradanie się
+            </li>
+            <li>
+              <button>`</button> odpowiednik Escape
+            </li>
+            <li>
+              <button>/</button> <button>T</button> czat
+            </li>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW CROSS -->
+      <div class="cross">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <line x1="15" y1="0" x2="15" y2="30" stroke="black" stroke-width="1" />
+          <line x1="0" y1="15" x2="30" y2="15" stroke="black" stroke-width="1" />
+        </svg>
+      </div>
+    </div>
+
+    <!-- GAME BUNDLE -->
+    <script type="module" src="module/index.js"></script>
+
+  </body>
+</html>

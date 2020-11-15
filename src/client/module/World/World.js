@@ -34,7 +34,7 @@ World = class World {
     this.renderTime = 500;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     //Utworzenie Workera do obliczania geometrii chunków
-    this.chunkWorker = new Worker("/module/World/ChunkWorker.js", {
+    this.chunkWorker = new Worker("/module/World/chunk.worker.js", {
       type: 'module'
     });
     this.chunkWorker.onmessage = function(message) {
@@ -52,7 +52,7 @@ World = class World {
       }
     });
     //Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
-    this.sectionsWorker = new Worker("/module/World/SectionsWorker.js", {
+    this.sectionsWorker = new Worker("/module/World/sections.worker.js", {
       type: 'module'
     });
     this.sectionsWorker.onmessage = function(data) {
