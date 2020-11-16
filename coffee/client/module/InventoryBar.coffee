@@ -9,15 +9,15 @@ class InventoryBar
 	setBox: (number,imageSrc)->
 		if imageSrc is null
 			imageSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-		document.querySelector(".inv_box_#{number}").src=imageSrc
+		$(".inv_box").eq(number-1).attr("src",imageSrc)
 		return
 	setFocus: (number,state)->
 		if state
-			document.querySelector(".inv_box_#{number}").style.background="rgba(0,0,0,0.7)"
-			document.querySelector(".inv_box_#{number}").style.border="1px solid black"
+			$(".inv_box").eq(number-1).css("background","rgba(0,0,0,0.7)")
+			$(".inv_box").eq(number-1).css("border","1px solid black")
 		else
-			document.querySelector(".inv_box_#{number}").style.background="rgba(54,54,54,0.5)"
-			document.querySelector(".inv_box_#{number}").style.border="1px solid #363636"
+			$(".inv_box").eq(number-1).css("background","rgba(54,54,54,0.5)")
+			$(".inv_box").eq(number-1).css("border","1px solid #363636")
 		return
 	setFocusOnly: (number)->
 		for i in [1..@boxes]
@@ -45,21 +45,21 @@ class InventoryBar
 		return @
 	setHp: (points)->
 		for i in [1..10]
-			document.querySelector(".hp_#{i}").src="assets/images/heart/black.png"
+			$(".hp").eq(i-1).attr("src","assets/images/heart/black.png")
 		if points isnt 0
 			for i in [1..(points+points%2)/2]
-				document.querySelector(".hp_#{i}").src="assets/images/heart/red.png"
+				$(".hp").eq(i-1).attr("src","assets/images/heart/red.png")
 			if points%2 is 1
-				document.querySelector(".hp_#{(points+points%2)/2}").src="assets/images/heart/half.png"
+				$(".hp").eq((points+points%2)/2-1).attr("src","assets/images/heart/half.png")
 		return
 	setFood: (points)->
 		for i in [1..10]
-			document.querySelector(".food_#{i}").src="assets/images/hunger/black.png"
+			$(".food").eq(10-i).attr("src","assets/images/hunger/black.png")
 		if points isnt 0
 			for i in [1..(points+points%2)/2]
-				document.querySelector(".food_#{i}").src="assets/images/hunger/full.png"
+				$(".food").eq(10-i).attr("src","assets/images/hunger/full.png")
 			if points%2 is 1
-				document.querySelector(".food_#{(points+points%2)/2}").src="assets/images/hunger/half.png"
+				$(".food").eq(10-(points+points%2)/2).attr("src","assets/images/hunger/half.png")
 		return
 	listen: ->
 		_this=@

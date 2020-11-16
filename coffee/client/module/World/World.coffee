@@ -21,7 +21,7 @@ class World
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 
 		#Utworzenie Workera do obliczania geometrii chunków
-		@chunkWorker=new Worker "chunk.worker.js", {type:'module'}
+		@chunkWorker=new Worker "/module/World/chunk.worker.js", {type:'module'}
 		@chunkWorker.onmessage=(message)->
 			_this.updateCell message.data
 		@chunkWorker.postMessage {
@@ -39,7 +39,7 @@ class World
 		}
 
 		#Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
-		@sectionsWorker=new Worker "sections.worker.js", {type:'module'}
+		@sectionsWorker=new Worker "/module/World/sections.worker.js", {type:'module'}
 		@sectionsWorker.onmessage=(data)->
 			result=data.data.result
 			for i in result
