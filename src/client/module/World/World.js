@@ -56,11 +56,11 @@ World = class World {
       type: 'module'
     });
     this.sectionsWorker.onmessage = function(data) {
-      var i, l, len1, result, results;
+      var i, j, len1, result, results;
       result = data.data.result;
       results = [];
-      for (l = 0, len1 = result.length; l < len1; l++) {
-        i = result[l];
+      for (j = 0, len1 = result.length; j < len1; j++) {
+        i = result[j];
         if (i !== null) {
           results.push(_this.setCell(i.x, i.y, i.z, i.cell, i.biome));
         } else {
@@ -73,15 +73,15 @@ World = class World {
   }
 
   setCell(cellX, cellY, cellZ, buffer, biome) {
-    var l, len1, nei, neiCellId, ref, results;
+    var j, len1, nei, neiCellId, ref, results;
     this._setCell(cellX, cellY, cellZ, buffer, biome);
     this.cellTerrain.setCell(cellX, cellY, cellZ, buffer);
     this.cellTerrain.setBiome(cellX, cellY, cellZ, biome);
     this.cellNeedsUpdate[this.cellTerrain.vec3(cellX, cellY, cellZ)] = true;
     ref = this.neighbours;
     results = [];
-    for (l = 0, len1 = ref.length; l < len1; l++) {
-      nei = ref[l];
+    for (j = 0, len1 = ref.length; j < len1; j++) {
+      nei = ref[j];
       neiCellId = this.cellTerrain.vec3(cellX + nei[0], cellY + nei[1], cellZ + nei[2]);
       results.push(this.cellNeedsUpdate[neiCellId] = true);
     }
@@ -89,7 +89,7 @@ World = class World {
   }
 
   setBlock(voxelX, voxelY, voxelZ, value) {
-    var cellId, l, len1, nei, neiCellId, ref;
+    var cellId, j, len1, nei, neiCellId, ref;
     voxelX = parseInt(voxelX);
     voxelY = parseInt(voxelY);
     voxelZ = parseInt(voxelZ);
@@ -99,8 +99,8 @@ World = class World {
       cellId = this.cellTerrain.vec3(...this.cellTerrain.computeCellForVoxel(voxelX, voxelY, voxelZ));
       this.cellNeedsUpdate[cellId] = true;
       ref = this.neighbours;
-      for (l = 0, len1 = ref.length; l < len1; l++) {
-        nei = ref[l];
+      for (j = 0, len1 = ref.length; j < len1; j++) {
+        nei = ref[j];
         neiCellId = this.cellTerrain.vec3(...this.cellTerrain.computeCellForVoxel(voxelX + nei[0], voxelY + nei[1], voxelZ + nei[2]));
         this.cellNeedsUpdate[neiCellId] = true;
       }
@@ -108,7 +108,7 @@ World = class World {
   }
 
   updateCellsAroundPlayer(pos, radius) {
-    var _this, cell, i, j, k, l, ref, ref1, ref2, results, up, v;
+    var _this, cell, i, j, k, odw, ref, ref1, results, up, v, x, y, z;
     //Updatowanie komórek wokół gracza w danym zasięgu
     _this = this;
     if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > this.renderTime)) {
@@ -129,22 +129,30 @@ World = class World {
           delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(...pcell)];
         }
       };
-      up(0, 0, 0);
-      up(1, 0, 0);
-      up(-1, 0, 0);
-      up(0, 0, 1);
-      up(0, 0, -1);
+      odw = {};
       results = [];
-      for (i = l = ref1 = -radius, ref2 = radius; (ref1 <= ref2 ? l <= ref2 : l >= ref2); i = ref1 <= ref2 ? ++l : --l) {
+      for (i = j = 0, ref1 = radius; (0 <= ref1 ? j <= ref1 : j >= ref1); i = 0 <= ref1 ? ++j : --j) {
         results.push((function() {
-          var m, ref3, ref4, results1;
+          var l, ref2, ref3, results1;
           results1 = [];
-          for (j = m = ref3 = -radius, ref4 = radius; (ref3 <= ref4 ? m <= ref4 : m >= ref4); j = ref3 <= ref4 ? ++m : --m) {
+          for (x = l = ref2 = -i, ref3 = i; (ref2 <= ref3 ? l <= ref3 : l >= ref3); x = ref2 <= ref3 ? ++l : --l) {
             results1.push((function() {
-              var n, ref5, ref6, results2;
+              var m, ref4, ref5, results2;
               results2 = [];
-              for (k = n = ref5 = -radius, ref6 = radius; (ref5 <= ref6 ? n <= ref6 : n >= ref6); k = ref5 <= ref6 ? ++n : --n) {
-                results2.push(up(i, j, k));
+              for (y = m = ref4 = -i, ref5 = i; (ref4 <= ref5 ? m <= ref5 : m >= ref5); y = ref4 <= ref5 ? ++m : --m) {
+                results2.push((function() {
+                  var n, ref6, ref7, results3;
+                  results3 = [];
+                  for (z = n = ref6 = -i, ref7 = i; (ref6 <= ref7 ? n <= ref7 : n >= ref7); z = ref6 <= ref7 ? ++n : --n) {
+                    if (!odw[`${x}:${y}:${z}`]) {
+                      up(x, y, z);
+                      results3.push(odw[`${x}:${y}:${z}`] = true);
+                    } else {
+                      results3.push(void 0);
+                    }
+                  }
+                  return results3;
+                })());
               }
               return results2;
             })());

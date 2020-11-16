@@ -82,16 +82,14 @@ class World
 					_this._genCellGeo pcell...
 					delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(pcell...)]
 				return
-			up(0,0,0)
-			up(1,0,0)
-			up(-1,0,0)
-
-			up(0,0,1)
-			up(0,0,-1)
-			for i in [-radius..radius]
-				for j in [-radius..radius]
-					for k in [-radius..radius]
-						up i,j,k
+			odw={}
+			for i in [0..radius]
+				for x in [-i..i]
+					for y in [-i..i]
+						for z in [-i..i]
+							if not odw["#{x}:#{y}:#{z}"]
+								up(x,y,z)
+								odw["#{x}:#{y}:#{z}"]=true
 	updateCell: (data)->
 		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
