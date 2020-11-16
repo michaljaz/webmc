@@ -1,6 +1,7 @@
 var nodeExternals = require('webpack-node-externals');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const path = require("path");
 module.exports = {
   mode:'production',
   target: 'node',
@@ -9,6 +10,9 @@ module.exports = {
     "module/index":'./src/client/module/index.js',
     "module/World/chunk.worker":'./src/client/module/World/chunk.worker.js',
     "module/World/sections.worker":"./src/client/module/World/sections.worker.js"
+  },
+  output:{
+    path:path.resolve(__dirname+"/src/dist/")
   },
   module: {
     rules: [

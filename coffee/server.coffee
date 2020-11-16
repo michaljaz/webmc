@@ -25,7 +25,7 @@ module.exports=(type)->
 
 	#Konfiguracja serwera express
 	if type is "production"
-		app.use express.static(__dirname + "/../dist/")
+		app.use express.static(__dirname + "/dist/")
 	else
 		app.use express.static(__dirname + "/client/")
 	app.use (req, res, next) ->

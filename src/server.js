@@ -23,7 +23,7 @@
     socketInfo = {};
     //Konfiguracja serwera express
     if (type === "production") {
-      app.use(express.static(__dirname + "/../dist/"));
+      app.use(express.static(__dirname + "/dist/"));
     } else {
       app.use(express.static(__dirname + "/client/"));
     }
