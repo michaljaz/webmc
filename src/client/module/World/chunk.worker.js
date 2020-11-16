@@ -24,19 +24,83 @@ TerrainManager = class TerrainManager {
   }
 
   genCellGeo(cellX, cellY, cellZ) {
-    var _this, addFace, colors, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs;
+    var _this, addFace, aoColor, colors, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, uvs;
     _this = this;
     positions = [];
     normals = [];
     uvs = [];
     colors = [];
+    aoColor = function(type) {
+      if (type === 0) {
+        return [0.9, 0.9, 0.9];
+      } else if (type === 1) {
+        return [0.7, 0.7, 0.7];
+      } else if (type === 2) {
+        return [0.5, 0.5, 0.5];
+      } else {
+        return [0.3, 0.3, 0.3];
+      }
+    };
     addFace = function(type, pos) {
-      var faceVertex;
+      var col1, col2, col3, col4, faceVertex, l, loaded, m, n, x, y, z;
       faceVertex = _this.BlockGeo.genBlockFace(type, _this.cellTerrain.getBlock(...pos), pos);
       positions.push(...faceVertex.pos);
       normals.push(...faceVertex.norm);
       uvs.push(...faceVertex.uv);
-      colors.push(0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 1, 1, 1, 1, 1, 1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5);
+      // _this.cellTerrain.getBlock(pos[0],pos[1],pos[2])
+      loaded = {};
+      for (x = l = -1; l <= 1; x = ++l) {
+        for (y = m = -1; m <= 1; y = ++m) {
+          for (z = n = -1; n <= 1; z = ++n) {
+            if (_this.cellTerrain.getBlock(pos[0] + x, pos[1] + y, pos[2] + z).boundingBox === "block") {
+              loaded[`${x}:${y}:${z}`] = 1;
+            } else {
+              loaded[`${x}:${y}:${z}`] = 0;
+            }
+          }
+        }
+      }
+      col1 = aoColor(0);
+      col2 = aoColor(0);
+      col3 = aoColor(0);
+      col4 = aoColor(0);
+      if (type === "py") {
+        col1 = aoColor(loaded["1:1:-1"] + loaded["0:1:-1"] + loaded["1:1:0"]);
+        col2 = aoColor(loaded["1:1:1"] + loaded["0:1:1"] + loaded["1:1:0"]);
+        col3 = aoColor(loaded["-1:1:-1"] + loaded["0:1:-1"] + loaded["-1:1:0"]);
+        col4 = aoColor(loaded["-1:1:1"] + loaded["0:1:1"] + loaded["-1:1:0"]);
+      }
+      if (type === "ny") {
+        col2 = aoColor(loaded["1:-1:-1"] + loaded["0:-1:-1"] + loaded["1:-1:0"]);
+        col1 = aoColor(loaded["1:-1:1"] + loaded["0:-1:1"] + loaded["1:-1:0"]);
+        col4 = aoColor(loaded["-1:-1:-1"] + loaded["0:-1:-1"] + loaded["-1:-1:0"]);
+        col3 = aoColor(loaded["-1:-1:1"] + loaded["0:-1:1"] + loaded["-1:-1:0"]);
+      }
+      if (type === "px") {
+        col1 = aoColor(loaded["-1:-1:0"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]);
+        col2 = aoColor(loaded["-1:1:0"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]);
+        col3 = aoColor(loaded["-1:-1:0"] + loaded["-1:-1:1"] + loaded["-1:0:1"]);
+        col4 = aoColor(loaded["-1:1:0"] + loaded["-1:1:1"] + loaded["-1:0:1"]);
+      }
+      if (type === "nx") {
+        col3 = aoColor(loaded["1:-1:0"] + loaded["1:-1:-1"] + loaded["1:0:-1"]);
+        col4 = aoColor(loaded["1:1:0"] + loaded["1:1:-1"] + loaded["1:0:-1"]);
+        col1 = aoColor(loaded["1:-1:0"] + loaded["1:-1:1"] + loaded["1:0:1"]);
+        col2 = aoColor(loaded["1:1:0"] + loaded["1:1:1"] + loaded["1:0:1"]);
+      }
+      if (type === "pz") {
+        col1 = aoColor(loaded["0:-1:1"] + loaded["-1:-1:1"] + loaded["-1:0:1"]);
+        col2 = aoColor(loaded["0:1:1"] + loaded["-1:1:1"] + loaded["-1:0:1"]);
+        col3 = aoColor(loaded["0:-1:1"] + loaded["1:-1:1"] + loaded["1:0:1"]);
+        col4 = aoColor(loaded["0:1:1"] + loaded["1:1:1"] + loaded["1:0:1"]);
+      }
+      if (type === "nz") {
+        col3 = aoColor(loaded["0:-1:-1"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]);
+        col4 = aoColor(loaded["0:1:-1"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]);
+        col1 = aoColor(loaded["0:-1:-1"] + loaded["1:-1:-1"] + loaded["1:0:-1"]);
+        col2 = aoColor(loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]);
+      }
+      colors.push(...col1, ...col3, ...col2, ...col2, ...col3, ...col4);
     };
     for (i = l = 0, ref = this.cellSize - 1; (0 <= ref ? l <= ref : l >= ref); i = 0 <= ref ? ++l : --l) {
       for (j = m = 0, ref1 = this.cellSize - 1; (0 <= ref1 ? m <= ref1 : m >= ref1); j = 0 <= ref1 ? ++m : --m) {

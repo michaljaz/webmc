@@ -3,7 +3,5 @@ RandomNick=->
 	finalName = ""
 	finalName = nameList[Math.floor( Math.random() * nameList.length )]
 	finalName += nameList[Math.floor( Math.random() * nameList.length )]
-	if Math.random() > 0.5
-		finalName += nameList[Math.floor( Math.random() * nameList.length )]
 	return finalName
 export {RandomNick}

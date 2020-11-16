@@ -19,12 +19,65 @@ class TerrainManager
 		normals=[]
 		uvs=[]
 		colors=[]
+		aoColor=(type)->
+			if type is 0
+				return [0.9,0.9,0.9]
+			else if type is 1
+				return [0.7,0.7,0.7]
+			else if type is 2
+				return [0.5,0.5,0.5]
+			else
+				return [0.3,0.3,0.3]
 		addFace=(type,pos)->
 			faceVertex=_this.BlockGeo.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
 			positions.push faceVertex.pos...
 			normals.push faceVertex.norm...
 			uvs.push faceVertex.uv...
-			colors.push(0.5,0.5,0.5,0.5,0.5,0.5,1,1,1,1,1,1,0.5,0.5,0.5,0.5,0.5,0.5)
+			# _this.cellTerrain.getBlock(pos[0],pos[1],pos[2])
+			loaded={}
+			for x in [-1..1]
+				for y in [-1..1]
+					for z in [-1..1]
+						if (_this.cellTerrain.getBlock(pos[0]+x, pos[1]+y,pos[2]+z).boundingBox is "block")
+							loaded["#{x}:#{y}:#{z}"]=1
+						else
+							loaded["#{x}:#{y}:#{z}"]=0
+			col1=aoColor(0)
+			col2=aoColor(0)
+			col3=aoColor(0)
+			col4=aoColor(0)
+			if type is "py"
+				col1=aoColor(loaded["1:1:-1"]+loaded["0:1:-1"]+loaded["1:1:0"])
+				col2=aoColor(loaded["1:1:1"]+loaded["0:1:1"]+loaded["1:1:0"])
+				col3=aoColor(loaded["-1:1:-1"]+loaded["0:1:-1"]+loaded["-1:1:0"])
+				col4=aoColor(loaded["-1:1:1"]+loaded["0:1:1"]+loaded["-1:1:0"])
+			if type is "ny"
+				col2=aoColor(loaded["1:-1:-1"]+loaded["0:-1:-1"]+loaded["1:-1:0"])
+				col1=aoColor(loaded["1:-1:1"]+loaded["0:-1:1"]+loaded["1:-1:0"])
+				col4=aoColor(loaded["-1:-1:-1"]+loaded["0:-1:-1"]+loaded["-1:-1:0"])
+				col3=aoColor(loaded["-1:-1:1"]+loaded["0:-1:1"]+loaded["-1:-1:0"])
+			if type is "px"
+				col1=aoColor(loaded["-1:-1:0"]+loaded["-1:-1:-1"]+loaded["-1:0:-1"])
+				col2=aoColor(loaded["-1:1:0"]+loaded["-1:1:-1"]+loaded["-1:0:-1"])
+				col3=aoColor(loaded["-1:-1:0"]+loaded["-1:-1:1"]+loaded["-1:0:1"])
+				col4=aoColor(loaded["-1:1:0"]+loaded["-1:1:1"]+loaded["-1:0:1"])
+			if type is "nx"
+				col3=aoColor(loaded["1:-1:0"]+loaded["1:-1:-1"]+loaded["1:0:-1"])
+				col4=aoColor(loaded["1:1:0"]+loaded["1:1:-1"]+loaded["1:0:-1"])
+				col1=aoColor(loaded["1:-1:0"]+loaded["1:-1:1"]+loaded["1:0:1"])
+				col2=aoColor(loaded["1:1:0"]+loaded["1:1:1"]+loaded["1:0:1"])
+			if type is "pz"
+				col1=aoColor(loaded["0:-1:1"]+loaded["-1:-1:1"]+loaded["-1:0:1"])
+				col2=aoColor(loaded["0:1:1"]+loaded["-1:1:1"]+loaded["-1:0:1"])
+				col3=aoColor(loaded["0:-1:1"]+loaded["1:-1:1"]+loaded["1:0:1"])
+				col4=aoColor(loaded["0:1:1"]+loaded["1:1:1"]+loaded["1:0:1"])
+			if type is "nz"
+				col3=aoColor(loaded["0:-1:-1"]+loaded["-1:-1:-1"]+loaded["-1:0:-1"])
+				col4=aoColor(loaded["0:1:-1"]+loaded["-1:1:-1"]+loaded["-1:0:-1"])
+				col1=aoColor(loaded["0:-1:-1"]+loaded["1:-1:-1"]+loaded["1:0:-1"])
+				col2=aoColor(loaded["0:1:-1"]+loaded["1:1:-1"]+loaded["1:0:-1"])
+
+			colors.push col1...,col3...,col2...,col2...,col3...,col4...
 			return
 		for i in [0..@cellSize-1]
 			for j in [0..@cellSize-1]
