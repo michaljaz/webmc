@@ -38,14 +38,6 @@ init = ()->
 	#Informacja o gpu komputera
 	console.warn gpuInfo()
 
-	#Chmury
-	clouds=al.get "clouds"
-	clouds.scale.x=0.1
-	clouds.scale.y=0.1
-	clouds.scale.z=0.1
-	clouds.position.y=170
-	scene.add clouds
-
 	#FPSy
 	stats = new Stats()
 	stats.showPanel 0
@@ -89,8 +81,7 @@ init = ()->
 	socket.on "msg",(msg)->
 		$(".chat").append(msg+"<br>")
 	socket.on "xp",(xp)->
-		$(".player_xp").text(xp.level)
-		$(".progress-bar").css("width",xp.progress*100+"%")
+		inv_bar.setXp xp.level,xp.progress
 	socket.on "move", (pos)->
 		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
 		new TWEEN.Tween camera.position
@@ -103,17 +94,7 @@ init = ()->
 		boxSize: 60
 		padding: 4
 		div: ".inventoryBar"
-	}).setBoxes([
-		"assets/images/grass_block.png",
-		"assets/images/stone.png",
-		"assets/images/oak_planks.png",
-		"assets/images/smoker.gif",
-		"assets/images/anvil.png",
-		"assets/images/brick.png",
-		"assets/images/furnace.png",
-		"assets/images/bookshelf.png",
-		"assets/images/tnt.png"
-	]).setFocusOnly(1).listen()
+	}).listen()
 
 	#Kontrolki gracza
 	FPC = new FirstPersonControls {

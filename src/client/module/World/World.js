@@ -43,9 +43,6 @@ World = class World {
     this.chunkWorker.postMessage({
       type: 'init',
       data: {
-        models: {
-          anvil: {...this.al.get("anvil").children[0].geometry.attributes}
-        },
         blocksMapping: this.al.get("blocksMapping"),
         toxelSize: this.toxelSize,
         cellSize: this.cellSize

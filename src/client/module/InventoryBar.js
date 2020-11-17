@@ -2,116 +2,65 @@
 var InventoryBar;
 
 InventoryBar = class InventoryBar {
-  constructor(options) {
-    this.boxSize = options.boxSize;
-    this.div = options.div;
-    this.padding = options.padding;
-    this.boxes = 9;
-    this.activeBox = 1;
-    document.querySelector(this.div).style = `position:fixed;bottom:50px;left:50%;width:${(this.boxSize + 2) * this.boxes}px;margin-left:-${this.boxSize * this.boxes / 2}px;height:${this.boxSize}px;`;
-  }
-
-  setBox(number, imageSrc) {
-    if (imageSrc === null) {
-      imageSrc = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
-    }
-    $(".inv_box").eq(number - 1).attr("src", imageSrc);
-  }
-
-  setFocus(number, state) {
-    if (state) {
-      $(".inv_box").eq(number - 1).css("background", "rgba(0,0,0,0.7)");
-      $(".inv_box").eq(number - 1).css("border", "1px solid black");
-    } else {
-      $(".inv_box").eq(number - 1).css("background", "rgba(54,54,54,0.5)");
-      $(".inv_box").eq(number - 1).css("border", "1px solid #363636");
-    }
-  }
-
-  setFocusOnly(number) {
-    var i, j, ref;
-    for (i = j = 1, ref = this.boxes; (1 <= ref ? j <= ref : j >= ref); i = 1 <= ref ? ++j : --j) {
-      this.setFocus(i, i === number);
-    }
-    this.activeBox = number;
-    return this;
-  }
-
-  moveBoxMinus() {
-    if (this.activeBox + 1 > this.boxes) {
-      this.setFocusOnly(1);
-    } else {
-      this.setFocusOnly(this.activeBox + 1);
-    }
-  }
-
-  moveBoxPlus() {
-    if (this.activeBox - 1 === 0) {
-      return this.setFocusOnly(this.boxes);
-    } else {
-      return this.setFocusOnly(this.activeBox - 1);
-    }
-  }
-
-  directBoxChange(event) {
-    var code;
-    code = event.keyCode;
-    if (code >= 49 && code < 49 + this.boxes) {
-      return this.setFocusOnly(code - 48);
-    }
-  }
-
-  setBoxes(images) {
-    var i, j, ref;
-    for (i = j = 0, ref = images.length - 1; (0 <= ref ? j <= ref : j >= ref); i = 0 <= ref ? ++j : --j) {
-      this.setBox(i + 1, images[i]);
-    }
-    return this;
-  }
-
   setHp(points) {
-    var i, j, k, ref;
+    var i, j, k, l, lista, ref;
+    lista = {};
     for (i = j = 1; j <= 10; i = ++j) {
-      $(".hp").eq(i - 1).attr("src", "assets/images/heart/black.png");
+      lista[i - 1] = "empty";
+      $(".hp").eq(i - 1).removeClass("empty");
+      $(".hp").eq(i - 1).removeClass("full");
+      $(".hp").eq(i - 1).removeClass("half");
     }
     if (points !== 0) {
       for (i = k = 1, ref = (points + points % 2) / 2; (1 <= ref ? k <= ref : k >= ref); i = 1 <= ref ? ++k : --k) {
-        $(".hp").eq(i - 1).attr("src", "assets/images/heart/red.png");
+        lista[i - 1] = "full";
       }
       if (points % 2 === 1) {
-        $(".hp").eq((points + points % 2) / 2 - 1).attr("src", "assets/images/heart/half.png");
+        lista[(points + points % 2) / 2 - 1] = "half";
       }
+    }
+    for (i = l = 1; l <= 10; i = ++l) {
+      $(".hp").eq(i - 1).addClass(lista[i - 1]);
     }
   }
 
   setFood(points) {
-    var i, j, k, ref;
+    var i, j, k, l, lista, ref;
+    lista = {};
     for (i = j = 1; j <= 10; i = ++j) {
-      $(".food").eq(10 - i).attr("src", "assets/images/hunger/black.png");
+      lista[10 - i] = "empty";
+      $(".food").eq(10 - i).removeClass("empty");
+      $(".food").eq(10 - i).removeClass("full");
+      $(".food").eq(10 - i).removeClass("half");
     }
     if (points !== 0) {
       for (i = k = 1, ref = (points + points % 2) / 2; (1 <= ref ? k <= ref : k >= ref); i = 1 <= ref ? ++k : --k) {
-        $(".food").eq(10 - i).attr("src", "assets/images/hunger/full.png");
+        lista[10 - i] = "full";
       }
       if (points % 2 === 1) {
-        $(".food").eq(10 - (points + points % 2) / 2).attr("src", "assets/images/hunger/half.png");
+        lista[10 - (points + points % 2) / 2] = "half";
       }
     }
+    for (i = l = 1; l <= 10; i = ++l) {
+      $(".food").eq(10 - i).addClass(lista[10 - i]);
+    }
+  }
+
+  setXp(level, progress) {
+    $(".player_xp").text(level);
+    return $(".xp_bar").css("width", `${500 * progress}px`);
   }
 
   listen() {
     var _this;
     _this = this;
-    $(window).on('wheel', function(event) {
-      if (event.originalEvent.deltaY < 0) {
-        return _this.moveBoxPlus();
-      } else {
-        return _this.moveBoxMinus();
-      }
-    });
-    $(document).keydown(function(z) {
-      return _this.directBoxChange(z);
-    });
+    // $(window).on 'wheel', (event) ->
+    // 	if event.originalEvent.deltaY < 0
+    // 		_this.moveBoxPlus()
+    // 	else
+    // 		_this.moveBoxMinus()
+    // $(document).keydown (z) ->
+    // 	_this.directBoxChange(z)
     return this;
   }
 

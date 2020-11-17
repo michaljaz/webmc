@@ -68,7 +68,7 @@ import {
 } from './jsm/libs/dat.gui.module.js';
 
 init = function() {
-  var ambientLight, clouds, color, directionalLight, far, gui, near, rt;
+  var ambientLight, color, directionalLight, far, gui, near, rt;
   //Płótno,renderer,scena i kamera
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -91,13 +91,6 @@ init = function() {
   scene.add(directionalLight);
   //Informacja o gpu komputera
   console.warn(gpuInfo());
-  //Chmury
-  clouds = al.get("clouds");
-  clouds.scale.x = 0.1;
-  clouds.scale.y = 0.1;
-  clouds.scale.z = 0.1;
-  clouds.position.y = 170;
-  scene.add(clouds);
   //FPSy
   stats = new Stats();
   stats.showPanel(0);
@@ -146,8 +139,7 @@ init = function() {
     return $(".chat").append(msg + "<br>");
   });
   socket.on("xp", function(xp) {
-    $(".player_xp").text(xp.level);
-    return $(".progress-bar").css("width", xp.progress * 100 + "%");
+    return inv_bar.setXp(xp.level, xp.progress);
   });
   socket.on("move", function(pos) {
     var to;
@@ -163,7 +155,7 @@ init = function() {
     boxSize: 60,
     padding: 4,
     div: ".inventoryBar"
-  }).setBoxes(["assets/images/grass_block.png", "assets/images/stone.png", "assets/images/oak_planks.png", "assets/images/smoker.gif", "assets/images/anvil.png", "assets/images/brick.png", "assets/images/furnace.png", "assets/images/bookshelf.png", "assets/images/tnt.png"]).setFocusOnly(1).listen();
+  }).listen();
   //Kontrolki gracza
   FPC = new FirstPersonControls({
     canvas,

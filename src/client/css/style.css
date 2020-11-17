@@ -58,33 +58,7 @@ canvas {
   margin-top:200px;
 }
 
-.inv_box{
-  border:1px solid black;
-  width:60px;
-  height:60px;
-  margin:-2px;
-}
-.player_hp{
-  margin:1px;
-  margin-bottom:3px;
-}
-.hp{
-  width:21px;
-  height:21px;
-  margin:-1px;
-}
-.food{
-  width:21px;
-  height:21px;
-  margin:-1px;
-}
-.player_food{
-  float:right;
-  margin-right:30px;
-}
-.player_health{
-  margin-bottom:5px;
-}
+
 .progress{
   margin:5px;
   margin-right:20px;
@@ -99,7 +73,8 @@ canvas {
   position:fixed;
   transform: translateX(-50%);
   left:50%;
-  bottom:70px;
+  bottom:62px;
+  z-index:10;
   -webkit-text-stroke: 1px black;
    color: #259c45;
    text-shadow:
@@ -138,4 +113,83 @@ canvas {
 }
 .con::-webkit-scrollbar {
     display: none;
+}
+.inv_bar{
+  position:fixed;
+  bottom:0px;
+  left:50%;
+  width:500px;
+  height:60px;;
+  transform: translateX(-50%);
+  background-image: url("/assets/gui/widgets.png");
+  background-repeat: no-repeat;
+  border:0px;
+  background-position: 0px 0px;
+  background-size: 703px auto;
+  border: none;
+  /* background-attachment: fixed; */
+}
+.player_hp{
+  position:fixed;
+  bottom:80px;
+  left:calc(50vw - 250px);
+  display:block;
+}
+:root{
+  --mn:0.910384068;
+  --box:calc(24.72px * var(--mn));
+  --st:calc(44px * var(--mn));
+}
+.hp,.food{
+  width:var(--box);
+  height:var(--box);
+  margin-right:-4px;
+  background-image: url("/assets/gui/icons.png"),url("/assets/gui/icons.png");
+  background-repeat: no-repeat,no-repeat;
+  background-size: 640px auto,640px auto;
+  display:inline-block;
+  image-rendering: crisp-edges;
+}
+
+.hp.full{
+  background-position: calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+}
+.hp.half{
+  background-position: calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+}
+.hp.empty{
+  background-position: calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+}
+.food.full{
+  background-position:calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+}
+.food.half{
+  background-position:calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+}
+.food.empty{
+  background-position:calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+}
+.xp_bar_empty,.xp_bar{
+  position:fixed;
+  bottom:61px;
+  left:calc(50vw - 250px);
+  width:500px;
+  height:14px;
+  background-image: url("/assets/gui/icons.png");
+  background-repeat: no-repeat;
+  border:0px;
+  background-size: 703px auto;
+  border: none;
+}
+.xp_bar_empty{
+  background-position: 0px -176px;
+}
+.xp_bar{
+  background-position: 0px -189px;
+}
+.player_food{
+  position:fixed;
+  bottom:80px;
+  right:calc(50vw - 245px);
+  display:block;
 }

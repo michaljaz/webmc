@@ -27,11 +27,6 @@ class World
 		@chunkWorker.postMessage {
 			type:'init'
 			data:{
-				models:{
-					anvil:{
-						@al.get("anvil").children[0].geometry.attributes...
-					}
-				}
 				blocksMapping: @al.get "blocksMapping"
 				toxelSize: @toxelSize
 				cellSize: @cellSize
