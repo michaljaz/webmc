@@ -125,9 +125,6 @@ FirstPersonControls = class FirstPersonControls {
       $(".chat").removeClass("focus");
       $(".chat").addClass("blur");
     }
-    if (this.gameState !== "menu") {
-      $(".winbl").removeClass("blur");
-    }
     return console.log("Game state: " + state);
   }
 
@@ -138,7 +135,6 @@ FirstPersonControls = class FirstPersonControls {
 
   _Menu() {
     this.state("menu");
-    $(".winbl").addClass("blur");
     $(".gameMenu").css("display", "block");
     document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     return document.exitPointerLock();

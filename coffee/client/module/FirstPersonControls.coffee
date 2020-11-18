@@ -107,15 +107,12 @@ class FirstPersonControls
 		else
 			$(".chat").removeClass("focus")
 			$(".chat").addClass("blur")
-		if @gameState isnt "menu"
-			$(".winbl").removeClass("blur")
 		console.log "Game state: "+state
 	_Game:()->
 		@state "game"
 		@canvas.requestPointerLock()
 	_Menu:()->
 		@state "menu"
-		$(".winbl").addClass("blur")
 		$(".gameMenu").css "display", "block"
 		document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
 		document.exitPointerLock();
