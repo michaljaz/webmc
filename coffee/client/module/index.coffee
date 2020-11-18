@@ -69,9 +69,11 @@ init = ()->
 	socket.on "blockUpdate",(block)->
 		world.setBlock block[0],block[1]+16,block[2],block[3]
 		return
-	socket.on "spawn", (sections,x,z,biomes)->
+	socket.on "spawn", (yaw,pitch)->
 		console.log "Gracz dołączył do gry!"
 		$(".initLoading").css "display","none"
+		camera.rotation.y=yaw
+		camera.rotation.x=pitch
 	socket.on "mapChunk", (sections,x,z,biomes)->
 		world._computeSections sections,x,z,biomes
 	socket.on "hp",(points)->

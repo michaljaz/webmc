@@ -122,9 +122,11 @@ init = function() {
   socket.on("blockUpdate", function(block) {
     world.setBlock(block[0], block[1] + 16, block[2], block[3]);
   });
-  socket.on("spawn", function(sections, x, z, biomes) {
+  socket.on("spawn", function(yaw, pitch) {
     console.log("Gracz dołączył do gry!");
-    return $(".initLoading").css("display", "none");
+    $(".initLoading").css("display", "none");
+    camera.rotation.y = yaw;
+    return camera.rotation.x = pitch;
   });
   socket.on("mapChunk", function(sections, x, z, biomes) {
     return world._computeSections(sections, x, z, biomes);

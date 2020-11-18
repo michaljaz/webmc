@@ -15,10 +15,8 @@ class FirstPersonControls
 		@canvas=options.canvas
 		@camera=options.camera
 		@socket=options.socket
-		@gameState="menu"
+		@setState "menu"
 		@listen()
-		$(".com_i").blur()
-		$(".com").hide()
 	updatePosition: (e)->
 		#Updatowanie kursora
 		if @gameState is "gameLock"
@@ -36,31 +34,35 @@ class FirstPersonControls
 			#Kliknięcie
 			_this.keys[z.keyCode] = true
 
+			#Klawisz Escape
+			if z.keyCode is 27 and _this.gameState is "inventory"
+				_this.setState "menu"
+
 			#Klawisz Enter
 			if z.keyCode is 13 and _this.gameState is "chat"
 				_this.socket.emit "command",$(".com_i").val()
 				$(".com_i").val("")
 
+			#Klawisz E
+			if (z.keyCode is 69) and (_this.gameState isnt "chat") and (_this.gameState isnt "menu")
+				_this.setState "inventory"
+
 			#Klawisz T lub /
 			if (z.keyCode is 84 or z.keyCode is 191) and _this.gameState is "gameLock"
 				if z.keyCode is 191
 					$(".com_i").val("/")
-				_this._Chat()
+				_this.setState "chat"
 				z.preventDefault()
 
 			#Klawisz `
 			if z.keyCode is 192
-				$(".com_i").blur()
-				$(".com").hide()
 				z.preventDefault()
-				if (_this.gameState is "menu") or (_this.gameState is "chat")
-					_this._Game()
+				if (_this.gameState is "menu") or (_this.gameState is "chat") or (_this.gameState is "inventory")
+					_this.setState "game"
 				else
-					_this._Menu()
+					_this.setState "menu"
 			if z.keyCode is 27 and _this.gameState is "chat"
-				$(".com_i").blur()
-				$(".com").hide()
-				_this._Menu()
+				_this.setState "menu"
 
 			#Wysyłanie state'u do serwera
 			if _this.kc[z.keyCode] isnt undefined and _this.gameState is "gameLock"
@@ -76,22 +78,17 @@ class FirstPersonControls
 
 			return
 		$(".gameOn").click ->
-			_this._Game()
+			_this.setState "game"
 			return
 		lockChangeAlert=()->
 			if document.pointerLockElement is _this.canvas or document.mozPointerLockElement is _this.canvas
 				#Lock
 				if _this.gameState is "game"
-					$(".com_i").blur()
-					$(".com").hide()
-					_this.state "gameLock"
-					$(".gameMenu").css "display", "none"
+					_this.setState "gameLock"
 			else
 				#Unlock
-				if (_this.gameState is "menu") or (_this.gameState is "gameLock")
-					$(".com_i").blur()
-					$(".com").hide()
-					_this._Menu()
+				if (_this.gameState is "gameLock") and (_this.gameState isnt "inventory")
+					_this.setState "menu"
 			return
 		document.addEventListener 'pointerlockchange', lockChangeAlert, false
 		document.addEventListener 'mozpointerlockchange', lockChangeAlert, false
@@ -99,32 +96,48 @@ class FirstPersonControls
 			_this.updatePosition(e)
 		, false
 		return @
+	reqLock:()->
+		@canvas.requestPointerLock()
+	unLock:()->
+		document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
+		document.exitPointerLock()
 	state:(state)->
 		@gameState=state
-		if @gameState is "chat"
-			$(".chat").addClass("focus")
-			$(".chat").removeClass("blur")
-		else
-			$(".chat").removeClass("focus")
-			$(".chat").addClass("blur")
 		console.log "Game state: "+state
-	_Game:()->
-		@state "game"
-		@canvas.requestPointerLock()
-	_Menu:()->
-		@state "menu"
-		$(".gameMenu").css "display", "block"
-		document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
-		document.exitPointerLock();
-	_Chat:()->
-		if @gameState is "gameLock"
-			@state "chat"
-			$(".gameMenu").css "display", "none"
-			document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
-			document.exitPointerLock()
-			$(".com").show()
-			$(".com_i").focus()
-
-
+	resetState:()->
+		$(".gameMenu").hide()
+		$(".chat").removeClass("focus")
+		$(".chat").addClass("blur")
+		$(".com_i").blur()
+		$(".com").hide()
+		$(".inv_window").hide()
+	setState:(state)->
+		@resetState()
+		switch state
+			when "game"
+				@state "game"
+				@reqLock()
+			when "gameLock"
+				@state "gameLock"
+			when "menu"
+				@state "menu"
+				$(".gameMenu").show()
+				@unLock()
+			when "chat"
+				if @gameState is "gameLock"
+					$(".chat").addClass("focus")
+					$(".chat").removeClass("blur")
+					@state "chat"
+					@unLock()
+					$(".com").show()
+					$(".com_i").focus()
+			when "inventory"
+				if @gameState isnt "menu"
+					if @gameState isnt "inventory"
+						@state "inventory"
+						$(".inv_window").show()
+						@unLock()
+					else
+						@setState "game"
 
 export {FirstPersonControls}

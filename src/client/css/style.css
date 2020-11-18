@@ -126,6 +126,7 @@ canvas {
     display: none;
 }
 .inv_bar{
+  image-rendering: pixelated;
   position:fixed;
   bottom:0px;
   left:50%;
@@ -193,9 +194,11 @@ canvas {
   border: none;
 }
 .xp_bar_empty{
+  image-rendering: pixelated;
   background-position: 0px -176px;
 }
 .xp_bar{
+  image-rendering: pixelated;
   background-position: 0px -189px;
 }
 .player_food{
@@ -203,4 +206,17 @@ canvas {
   bottom:70px;
   right:calc(50vw - 245px);
   display:block;
+}
+.inv_window{
+  image-rendering: pixelated;
+  z-index:10;
+  background-image: url("/assets/gui/inventory.png");
+  background-repeat: no-repeat;
+  background-size: 600px auto;
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:412px;
+  height:388px;
+  transform: translate(-50%,-50%);
 }

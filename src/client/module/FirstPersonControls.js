@@ -18,10 +18,8 @@ FirstPersonControls = class FirstPersonControls {
     this.canvas = options.canvas;
     this.camera = options.camera;
     this.socket = options.socket;
-    this.gameState = "menu";
+    this.setState("menu");
     this.listen();
-    $(".com_i").blur();
-    $(".com").hide();
   }
 
   updatePosition(e) {
@@ -45,34 +43,38 @@ FirstPersonControls = class FirstPersonControls {
     $(document).keydown(function(z) {
       //Kliknięcie
       _this.keys[z.keyCode] = true;
+      //Klawisz Escape
+      if (z.keyCode === 27 && _this.gameState === "inventory") {
+        _this.setState("menu");
+      }
       //Klawisz Enter
       if (z.keyCode === 13 && _this.gameState === "chat") {
         _this.socket.emit("command", $(".com_i").val());
         $(".com_i").val("");
+      }
+      //Klawisz E
+      if ((z.keyCode === 69) && (_this.gameState !== "chat") && (_this.gameState !== "menu")) {
+        _this.setState("inventory");
       }
       //Klawisz T lub /
       if ((z.keyCode === 84 || z.keyCode === 191) && _this.gameState === "gameLock") {
         if (z.keyCode === 191) {
           $(".com_i").val("/");
         }
-        _this._Chat();
+        _this.setState("chat");
         z.preventDefault();
       }
       //Klawisz `
       if (z.keyCode === 192) {
-        $(".com_i").blur();
-        $(".com").hide();
         z.preventDefault();
-        if ((_this.gameState === "menu") || (_this.gameState === "chat")) {
-          _this._Game();
+        if ((_this.gameState === "menu") || (_this.gameState === "chat") || (_this.gameState === "inventory")) {
+          _this.setState("game");
         } else {
-          _this._Menu();
+          _this.setState("menu");
         }
       }
       if (z.keyCode === 27 && _this.gameState === "chat") {
-        $(".com_i").blur();
-        $(".com").hide();
-        _this._Menu();
+        _this.setState("menu");
       }
       //Wysyłanie state'u do serwera
       if (_this.kc[z.keyCode] !== void 0 && _this.gameState === "gameLock") {
@@ -88,23 +90,18 @@ FirstPersonControls = class FirstPersonControls {
       }
     });
     $(".gameOn").click(function() {
-      _this._Game();
+      _this.setState("game");
     });
     lockChangeAlert = function() {
       if (document.pointerLockElement === _this.canvas || document.mozPointerLockElement === _this.canvas) {
         //Lock
         if (_this.gameState === "game") {
-          $(".com_i").blur();
-          $(".com").hide();
-          _this.state("gameLock");
-          $(".gameMenu").css("display", "none");
+          _this.setState("gameLock");
         }
       } else {
         //Unlock
-        if ((_this.gameState === "menu") || (_this.gameState === "gameLock")) {
-          $(".com_i").blur();
-          $(".com").hide();
-          _this._Menu();
+        if ((_this.gameState === "gameLock") && (_this.gameState !== "inventory")) {
+          _this.setState("menu");
         }
       }
     };
@@ -116,38 +113,61 @@ FirstPersonControls = class FirstPersonControls {
     return this;
   }
 
-  state(state) {
-    this.gameState = state;
-    if (this.gameState === "chat") {
-      $(".chat").addClass("focus");
-      $(".chat").removeClass("blur");
-    } else {
-      $(".chat").removeClass("focus");
-      $(".chat").addClass("blur");
-    }
-    return console.log("Game state: " + state);
-  }
-
-  _Game() {
-    this.state("game");
+  reqLock() {
     return this.canvas.requestPointerLock();
   }
 
-  _Menu() {
-    this.state("menu");
-    $(".gameMenu").css("display", "block");
+  unLock() {
     document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
     return document.exitPointerLock();
   }
 
-  _Chat() {
-    if (this.gameState === "gameLock") {
-      this.state("chat");
-      $(".gameMenu").css("display", "none");
-      document.exitPointerLock = document.exitPointerLock || document.mozExitPointerLock;
-      document.exitPointerLock();
-      $(".com").show();
-      return $(".com_i").focus();
+  state(state) {
+    this.gameState = state;
+    return console.log("Game state: " + state);
+  }
+
+  resetState() {
+    $(".gameMenu").hide();
+    $(".chat").removeClass("focus");
+    $(".chat").addClass("blur");
+    $(".com_i").blur();
+    $(".com").hide();
+    return $(".inv_window").hide();
+  }
+
+  setState(state) {
+    this.resetState();
+    switch (state) {
+      case "game":
+        this.state("game");
+        return this.reqLock();
+      case "gameLock":
+        return this.state("gameLock");
+      case "menu":
+        this.state("menu");
+        $(".gameMenu").show();
+        return this.unLock();
+      case "chat":
+        if (this.gameState === "gameLock") {
+          $(".chat").addClass("focus");
+          $(".chat").removeClass("blur");
+          this.state("chat");
+          this.unLock();
+          $(".com").show();
+          return $(".com_i").focus();
+        }
+        break;
+      case "inventory":
+        if (this.gameState !== "menu") {
+          if (this.gameState !== "inventory") {
+            this.state("inventory");
+            $(".inv_window").show();
+            return this.unLock();
+          } else {
+            return this.setState("game");
+          }
+        }
     }
   }
 

@@ -80,7 +80,7 @@ module.exports=(type)->
 			,100
 			socketInfo[socket.id].bot.on 'spawn',()->
 				try
-					io.to(socket.id).emit "spawn"
+					io.to(socket.id).emit "spawn",socketInfo[socket.id].bot.entity.yaw,socketInfo[socket.id].bot.entity.pitch
 				return
 			socketInfo[socket.id].bot.on 'kicked',(reason,loggedIn)->
 				try

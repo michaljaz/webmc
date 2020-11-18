@@ -86,7 +86,7 @@
         }, 100);
         socketInfo[socket.id].bot.on('spawn', function() {
           try {
-            io.to(socket.id).emit("spawn");
+            io.to(socket.id).emit("spawn", socketInfo[socket.id].bot.entity.yaw, socketInfo[socket.id].bot.entity.pitch);
           } catch (error) {}
         });
         socketInfo[socket.id].bot.on('kicked', function(reason, loggedIn) {
