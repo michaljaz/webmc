@@ -1,5 +1,5 @@
-body { margin: 0; background:black;}
 
+body { margin: 0; background:black;}
 canvas {
   display: block;
   width:100%;
@@ -33,7 +33,7 @@ canvas {
 }
 
 .initLoading{
-  z-index:11;
+  z-index:99;
   position:fixed;
   top:0px;
   left:0px;
@@ -86,9 +86,15 @@ canvas {
   font-size:20px;
   font-weight:bold;
 }
-.con{
-  overflow:auto;
-  display:flex; flex-direction:column-reverse;
+.chat{
+  position:fixed;
+  bottom:100px;
+  left:0px;
+  width:60%;
+  overflow-x:hidden;
+  overflow:scroll;
+  /* display:flex; */
+  /* flex-direction:column-reverse; */
   -webkit-text-stroke: 1px black;
    color: white;
    text-shadow:
@@ -97,21 +103,26 @@ canvas {
       1px -1px 0 #000,
       -1px 1px 0 #000,
        1px 1px 0 #000;
-  height:70%;
+  height:45%;
   font-weight:bold;
   font-size:20px;
 }
-.console{
+.chat.focus{
+  background:rgba(0,0,0,0.5);
+}
+.chat.blur{
+  background:rgba(0,0,0,0);
+}
+.com{
   position:fixed;
-  height:30%;
-  bottom:110px;
+  bottom:-30px;
+  padding:5px;
   left:0px;
-  width:60%;
+  width:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:11;
 }
-.command{
-  font-size:40px;
-}
-.con::-webkit-scrollbar {
+.chat::-webkit-scrollbar {
     display: none;
 }
 .inv_bar{
@@ -131,7 +142,7 @@ canvas {
 }
 .player_hp{
   position:fixed;
-  bottom:80px;
+  bottom:70px;
   left:calc(50vw - 250px);
   display:block;
 }
@@ -189,7 +200,18 @@ canvas {
 }
 .player_food{
   position:fixed;
-  bottom:80px;
+  bottom:70px;
   right:calc(50vw - 245px);
   display:block;
+}
+.winbl{
+  z-index:13;
+  position:fixed;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+}
+.winbl.blur{
+  background:rgba(0,0,0,0.5);
 }

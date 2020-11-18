@@ -42,6 +42,7 @@
     //websocket
     return io.sockets.on("connection", function(socket) {
       socket.on("initClient", function(data) {
+        var inv;
         console.log("[+] " + data.nick);
         //Dodawanie informacji o graczu do socketInfo
         socketInfo[socket.id] = data;
@@ -74,9 +75,23 @@
             io.to(socket.id).emit("food", socketInfo[socket.id].bot.food);
           } catch (error) {}
         });
+        inv = "";
+        socketInfo[socket.id].int = setInterval(function() {
+          var inv_new;
+          inv_new = JSON.stringify(socketInfo[socket.id].bot.inventory.slots);
+          if (inv !== inv_new) {
+            inv = inv_new;
+            return io.to(socket.id).emit("inventory", socketInfo[socket.id].bot.inventory.slots);
+          }
+        }, 100);
         socketInfo[socket.id].bot.on('spawn', function() {
           try {
             io.to(socket.id).emit("spawn");
+          } catch (error) {}
+        });
+        socketInfo[socket.id].bot.on('kicked', function(reason, loggedIn) {
+          try {
+            io.to(socket.id).emit("kicked", reason);
           } catch (error) {}
         });
         socketInfo[socket.id].bot.on('message', function(msg) {
@@ -111,6 +126,7 @@
       });
       return socket.on("disconnect", function() {
         try {
+          clearInterval(socketInfo[socket.id].int);
           console.log("[-] " + socketInfo[socket.id].nick);
           socketInfo[socket.id].bot.end();
           delete socketInfo[socket.id];

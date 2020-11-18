@@ -76,10 +76,20 @@ init = ()->
 		world._computeSections sections,x,z,biomes
 	socket.on "hp",(points)->
 		inv_bar.setHp(points)
+	socket.on "inventory",(inv)->
+		console.log inv
 	socket.on "food",(points)->
 		inv_bar.setFood(points)
 	socket.on "msg",(msg)->
+		atBottom = isElementScrolledToBottom(consoleDiv)
 		$(".chat").append(msg+"<br>")
+		if atBottom
+			scrollToBottom(consoleDiv)
+	socket.on "kicked",(reason)->
+		atBottom = isElementScrolledToBottom(consoleDiv)
+		$(".chat").append("You have been kicked!<br>")
+		if atBottom
+			scrollToBottom(consoleDiv)
 	socket.on "xp",(xp)->
 		inv_bar.setXp xp.level,xp.progress
 	socket.on "move", (pos)->
@@ -136,6 +146,19 @@ init = ()->
 	gui.add( world.material, 'wireframe' ).name( 'Wireframe' ).listen()
 	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
 
+	#Autoscrollowanie chatu
+	consoleDiv = document.querySelector(".chat")
+
+	window.addEventListener "wheel", (e)->
+		if FPC.gameState isnt "chat"
+			e.preventDefault()
+	, {passive: false}
+	isElementScrolledToBottom=(el)->
+		if el.scrollTop >= (el.scrollHeight - el.offsetHeight)
+			return true
+		return false
+	scrollToBottom=(el)->
+		el.scrollTop = el.scrollHeight
 	#Wprawienie w ruch funkcji animate
 	animate()
 	return

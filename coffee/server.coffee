@@ -71,9 +71,20 @@ module.exports=(type)->
 					io.to(socket.id).emit "hp",socketInfo[socket.id].bot.health
 					io.to(socket.id).emit "food",socketInfo[socket.id].bot.food
 				return
+			inv=""
+			socketInfo[socket.id].int=setInterval ()->
+				inv_new=JSON.stringify(socketInfo[socket.id].bot.inventory.slots)
+				if inv isnt inv_new
+					inv=inv_new
+					io.to(socket.id).emit "inventory",socketInfo[socket.id].bot.inventory.slots
+			,100
 			socketInfo[socket.id].bot.on 'spawn',()->
 				try
 					io.to(socket.id).emit "spawn"
+				return
+			socketInfo[socket.id].bot.on 'kicked',(reason,loggedIn)->
+				try
+					io.to(socket.id).emit "kicked",reason
 				return
 			socketInfo[socket.id].bot.on 'message',(msg)->
 				try
@@ -103,6 +114,7 @@ module.exports=(type)->
 			return
 		socket.on "disconnect", ->
 			try
+				clearInterval socketInfo[socket.id].int
 				console.log "[-] "+socketInfo[socket.id].nick
 				socketInfo[socket.id].bot.end()
 				delete socketInfo[socket.id]

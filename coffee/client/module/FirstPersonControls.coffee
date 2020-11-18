@@ -17,8 +17,8 @@ class FirstPersonControls
 		@socket=options.socket
 		@gameState="menu"
 		@listen()
-		$("#commandx").blur()
-		$(".command").hide()
+		$(".com_i").blur()
+		$(".com").hide()
 	updatePosition: (e)->
 		#Updatowanie kursora
 		if @gameState is "gameLock"
@@ -38,28 +38,28 @@ class FirstPersonControls
 
 			#Klawisz Enter
 			if z.keyCode is 13 and _this.gameState is "chat"
-				_this.socket.emit "command",commandx.value
-				commandx.value=""
+				_this.socket.emit "command",$(".com_i").val()
+				$(".com_i").val("")
 
 			#Klawisz T lub /
 			if (z.keyCode is 84 or z.keyCode is 191) and _this.gameState is "gameLock"
 				if z.keyCode is 191
-					commandx.value="/"
+					$(".com_i").val("/")
 				_this._Chat()
 				z.preventDefault()
 
 			#Klawisz `
 			if z.keyCode is 192
-				$("#commandx").blur()
-				$(".command").hide()
+				$(".com_i").blur()
+				$(".com").hide()
 				z.preventDefault()
 				if (_this.gameState is "menu") or (_this.gameState is "chat")
 					_this._Game()
 				else
 					_this._Menu()
 			if z.keyCode is 27 and _this.gameState is "chat"
-				$("#commandx").blur()
-				$(".command").hide()
+				$(".com_i").blur()
+				$(".com").hide()
 				_this._Menu()
 
 			#Wysyłanie state'u do serwera
@@ -82,15 +82,15 @@ class FirstPersonControls
 			if document.pointerLockElement is _this.canvas or document.mozPointerLockElement is _this.canvas
 				#Lock
 				if _this.gameState is "game"
-					$("#commandx").blur()
-					$(".command").hide()
+					$(".com_i").blur()
+					$(".com").hide()
 					_this.state "gameLock"
 					$(".gameMenu").css "display", "none"
 			else
 				#Unlock
 				if (_this.gameState is "menu") or (_this.gameState is "gameLock")
-					$("#commandx").blur()
-					$(".command").hide()
+					$(".com_i").blur()
+					$(".com").hide()
 					_this._Menu()
 			return
 		document.addEventListener 'pointerlockchange', lockChangeAlert, false
@@ -101,12 +101,21 @@ class FirstPersonControls
 		return @
 	state:(state)->
 		@gameState=state
+		if @gameState is "chat"
+			$(".chat").addClass("focus")
+			$(".chat").removeClass("blur")
+		else
+			$(".chat").removeClass("focus")
+			$(".chat").addClass("blur")
+		if @gameState isnt "menu"
+			$(".winbl").removeClass("blur")
 		console.log "Game state: "+state
 	_Game:()->
 		@state "game"
 		@canvas.requestPointerLock()
 	_Menu:()->
 		@state "menu"
+		$(".winbl").addClass("blur")
 		$(".gameMenu").css "display", "block"
 		document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
 		document.exitPointerLock();
@@ -116,8 +125,8 @@ class FirstPersonControls
 			$(".gameMenu").css "display", "none"
 			document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
 			document.exitPointerLock()
-			$(".command").show()
-			$("#commandx").focus()
+			$(".com").show()
+			$(".com_i").focus()
 
 
 

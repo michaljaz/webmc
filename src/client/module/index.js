@@ -68,7 +68,7 @@ import {
 } from './jsm/libs/dat.gui.module.js';
 
 init = function() {
-  var ambientLight, color, directionalLight, far, gui, near, rt;
+  var ambientLight, color, consoleDiv, directionalLight, far, gui, isElementScrolledToBottom, near, rt, scrollToBottom;
   //Płótno,renderer,scena i kamera
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -132,11 +132,27 @@ init = function() {
   socket.on("hp", function(points) {
     return inv_bar.setHp(points);
   });
+  socket.on("inventory", function(inv) {
+    return console.log(inv);
+  });
   socket.on("food", function(points) {
     return inv_bar.setFood(points);
   });
   socket.on("msg", function(msg) {
-    return $(".chat").append(msg + "<br>");
+    var atBottom;
+    atBottom = isElementScrolledToBottom(consoleDiv);
+    $(".chat").append(msg + "<br>");
+    if (atBottom) {
+      return scrollToBottom(consoleDiv);
+    }
+  });
+  socket.on("kicked", function(reason) {
+    var atBottom;
+    atBottom = isElementScrolledToBottom(consoleDiv);
+    $(".chat").append("You have been kicked!<br>");
+    if (atBottom) {
+      return scrollToBottom(consoleDiv);
+    }
   });
   socket.on("xp", function(xp) {
     return inv_bar.setXp(xp.level, xp.progress);
@@ -189,6 +205,24 @@ init = function() {
   });
   gui.add(world.material, 'wireframe').name('Wireframe').listen();
   gui.add(params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
+  //Autoscrollowanie chatu
+  consoleDiv = document.querySelector(".chat");
+  window.addEventListener("wheel", function(e) {
+    if (FPC.gameState !== "chat") {
+      return e.preventDefault();
+    }
+  }, {
+    passive: false
+  });
+  isElementScrolledToBottom = function(el) {
+    if (el.scrollTop >= (el.scrollHeight - el.offsetHeight)) {
+      return true;
+    }
+    return false;
+  };
+  scrollToBottom = function(el) {
+    return el.scrollTop = el.scrollHeight;
+  };
   //Wprawienie w ruch funkcji animate
   animate();
 };
