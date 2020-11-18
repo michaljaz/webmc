@@ -67,8 +67,12 @@ import {
   GUI
 } from './jsm/libs/dat.gui.module.js';
 
+import {
+  Chat
+} from './Chat.js';
+
 init = function() {
-  var ambientLight, color, consoleDiv, directionalLight, far, gui, isElementScrolledToBottom, near, rt, scrollToBottom;
+  var ambientLight, chat, color, directionalLight, eventMap, far, gui, i, near, rt;
   //Płótno,renderer,scena i kamera
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -103,84 +107,77 @@ init = function() {
     camera,
     al
   });
-  //komunikacja z serwerem websocket
+  //Połączenie z serwerem i kontrolki gracza
   socket = io.connect(`${al.get("host")}:${al.get("websocket-port")}`);
-  socket.on("connect", function() {
-    var nick;
-    console.log("Połączono z serverem!");
-    $('.loadingText').text("Za chwilę dołączysz do gry...");
-    nick = document.location.hash.substring(1, document.location.hash.length);
-    if (nick === "") {
-      nick = RandomNick();
-      document.location.href = `\#${nick}`;
-    }
-    console.log(`User nick: 	${nick}`);
-    socket.emit("initClient", {
-      nick: nick
-    });
-  });
-  socket.on("blockUpdate", function(block) {
-    world.setBlock(block[0], block[1] + 16, block[2], block[3]);
-  });
-  socket.on("spawn", function(yaw, pitch) {
-    console.log("Gracz dołączył do gry!");
-    $(".initLoading").css("display", "none");
-    camera.rotation.y = yaw;
-    return camera.rotation.x = pitch;
-  });
-  socket.on("mapChunk", function(sections, x, z, biomes) {
-    return world._computeSections(sections, x, z, biomes);
-  });
-  socket.on("hp", function(points) {
-    return inv_bar.setHp(points);
-  });
-  socket.on("inventory", function(inv) {
-    return console.log(inv);
-  });
-  socket.on("food", function(points) {
-    return inv_bar.setFood(points);
-  });
-  socket.on("msg", function(msg) {
-    var atBottom;
-    atBottom = isElementScrolledToBottom(consoleDiv);
-    $(".chat").append(msg + "<br>");
-    if (atBottom) {
-      return scrollToBottom(consoleDiv);
-    }
-  });
-  socket.on("kicked", function(reason) {
-    var atBottom;
-    atBottom = isElementScrolledToBottom(consoleDiv);
-    $(".chat").append("You have been kicked!<br>");
-    if (atBottom) {
-      return scrollToBottom(consoleDiv);
-    }
-  });
-  socket.on("xp", function(xp) {
-    return inv_bar.setXp(xp.level, xp.progress);
-  });
-  socket.on("move", function(pos) {
-    var to;
-    to = {
-      x: pos.x - 0.5,
-      y: pos.y + 17,
-      z: pos.z - 0.5
-    };
-    return new TWEEN.Tween(camera.position).to(to, 100).easing(TWEEN.Easing.Quadratic.Out).start();
-  });
-  //Utworzenie inventory
-  inv_bar = new InventoryBar({
-    boxSize: 60,
-    padding: 4,
-    div: ".inventoryBar"
-  }).listen();
-  //Kontrolki gracza
   FPC = new FirstPersonControls({
     canvas,
     camera,
     micromove: 0.3,
     socket
   });
+  //Czat
+  chat = new Chat({FPC});
+  //Komunikacja z serwerem websocket
+  eventMap = {
+    "connect": function() {
+      var nick;
+      console.log("Połączono z serverem!");
+      $('.loadingText').text("Za chwilę dołączysz do gry...");
+      nick = document.location.hash.substring(1, document.location.hash.length);
+      if (nick === "") {
+        nick = RandomNick();
+        document.location.href = `\#${nick}`;
+      }
+      console.log(`User nick: 	${nick}`);
+      socket.emit("initClient", {
+        nick: nick
+      });
+    },
+    "blockUpdate": function(block) {
+      world.setBlock(block[0], block[1] + 16, block[2], block[3]);
+    },
+    "spawn": function(yaw, pitch) {
+      console.log("Gracz dołączył do gry!");
+      $(".initLoading").css("display", "none");
+      camera.rotation.y = yaw;
+      camera.rotation.x = pitch;
+    },
+    "mapChunk": function(sections, x, z, biomes) {
+      world._computeSections(sections, x, z, biomes);
+    },
+    "hp": function(points) {
+      inv_bar.setHp(points);
+    },
+    "inventory": function(inv) {
+      console.log(inv);
+    },
+    "food": function(points) {
+      inv_bar.setFood(points);
+    },
+    "msg": function(msg) {
+      chat.log(msg);
+    },
+    "kicked": function(reason) {
+      chat.log("You have been kicked!");
+    },
+    "xp": function(xp) {
+      inv_bar.setXp(xp.level, xp.progress);
+    },
+    "move": function(pos) {
+      var to;
+      to = {
+        x: pos.x - 0.5,
+        y: pos.y + 17,
+        z: pos.z - 0.5
+      };
+      new TWEEN.Tween(camera.position).to(to, 100).easing(TWEEN.Easing.Quadratic.Out).start();
+    }
+  };
+  for (i in eventMap) {
+    socket.on(i, eventMap[i]);
+  }
+  //Utworzenie inventory
+  inv_bar = new InventoryBar();
   //Kursor raycastowania
   cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
     color: 0x000000,
@@ -207,24 +204,6 @@ init = function() {
   });
   gui.add(world.material, 'wireframe').name('Wireframe').listen();
   gui.add(params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
-  //Autoscrollowanie chatu
-  consoleDiv = document.querySelector(".chat");
-  window.addEventListener("wheel", function(e) {
-    if (FPC.gameState !== "chat") {
-      return e.preventDefault();
-    }
-  }, {
-    passive: false
-  });
-  isElementScrolledToBottom = function(el) {
-    if (el.scrollTop >= (el.scrollHeight - el.offsetHeight)) {
-      return true;
-    }
-    return false;
-  };
-  scrollToBottom = function(el) {
-    return el.scrollTop = el.scrollHeight;
-  };
   //Wprawienie w ruch funkcji animate
   animate();
 };

@@ -10,6 +10,7 @@ import {AssetLoader} from './AssetLoader.js'
 import {InventoryBar} from './InventoryBar.js'
 import {RandomNick} from './RandomNick.js'
 import {GUI} from './jsm/libs/dat.gui.module.js'
+import {Chat} from './Chat.js'
 
 init = ()->
 	#Płótno,renderer,scena i kamera
@@ -52,69 +53,75 @@ init = ()->
 		al
 	})
 
-	#komunikacja z serwerem websocket
+	#Połączenie z serwerem i kontrolki gracza
 	socket=io.connect "#{al.get("host")}:#{al.get("websocket-port")}"
-	socket.on "connect",()->
-		console.log "Połączono z serverem!"
-		$('.loadingText').text "Za chwilę dołączysz do gry..."
-		nick=document.location.hash.substring(1,document.location.hash.length)
-		if nick is ""
-			nick=RandomNick()
-			document.location.href="\##{nick}"
-		console.log "User nick: 	#{nick}"
-		socket.emit "initClient", {
-			nick:nick
-		}
-		return
-	socket.on "blockUpdate",(block)->
-		world.setBlock block[0],block[1]+16,block[2],block[3]
-		return
-	socket.on "spawn", (yaw,pitch)->
-		console.log "Gracz dołączył do gry!"
-		$(".initLoading").css "display","none"
-		camera.rotation.y=yaw
-		camera.rotation.x=pitch
-	socket.on "mapChunk", (sections,x,z,biomes)->
-		world._computeSections sections,x,z,biomes
-	socket.on "hp",(points)->
-		inv_bar.setHp(points)
-	socket.on "inventory",(inv)->
-		console.log inv
-	socket.on "food",(points)->
-		inv_bar.setFood(points)
-	socket.on "msg",(msg)->
-		atBottom = isElementScrolledToBottom(consoleDiv)
-		$(".chat").append(msg+"<br>")
-		if atBottom
-			scrollToBottom(consoleDiv)
-	socket.on "kicked",(reason)->
-		atBottom = isElementScrolledToBottom(consoleDiv)
-		$(".chat").append("You have been kicked!<br>")
-		if atBottom
-			scrollToBottom(consoleDiv)
-	socket.on "xp",(xp)->
-		inv_bar.setXp xp.level,xp.progress
-	socket.on "move", (pos)->
-		to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
-		new TWEEN.Tween camera.position
-			.to to, 100
-			.easing TWEEN.Easing.Quadratic.Out
-			.start()
-
-	#Utworzenie inventory
-	inv_bar = new InventoryBar({
-		boxSize: 60
-		padding: 4
-		div: ".inventoryBar"
-	}).listen()
-
-	#Kontrolki gracza
 	FPC = new FirstPersonControls {
 		canvas
 		camera
 		micromove: 0.3
 		socket
 	}
+
+	#Czat
+	chat=new Chat({FPC})
+
+	#Komunikacja z serwerem websocket
+	eventMap={
+		"connect":()->
+			console.log "Połączono z serverem!"
+			$('.loadingText').text "Za chwilę dołączysz do gry..."
+			nick=document.location.hash.substring(1,document.location.hash.length)
+			if nick is ""
+				nick=RandomNick()
+				document.location.href="\##{nick}"
+			console.log "User nick: 	#{nick}"
+			socket.emit "initClient", {
+				nick:nick
+			}
+			return
+		"blockUpdate":(block)->
+			world.setBlock block[0],block[1]+16,block[2],block[3]
+			return
+		"spawn":(yaw,pitch)->
+			console.log "Gracz dołączył do gry!"
+			$(".initLoading").css "display","none"
+			camera.rotation.y=yaw
+			camera.rotation.x=pitch
+			return
+		"mapChunk":(sections,x,z,biomes)->
+			world._computeSections sections,x,z,biomes
+			return
+		"hp":(points)->
+			inv_bar.setHp(points)
+			return
+		"inventory":(inv)->
+			console.log inv
+			return
+		"food":(points)->
+			inv_bar.setFood(points)
+			return
+		"msg":(msg)->
+			chat.log(msg)
+			return
+		"kicked":(reason)->
+			chat.log("You have been kicked!")
+			return
+		"xp":(xp)->
+			inv_bar.setXp xp.level,xp.progress
+			return
+		"move":(pos)->
+			to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
+			new TWEEN.Tween camera.position
+				.to to, 100
+				.easing TWEEN.Easing.Quadratic.Out
+				.start()
+			return
+	}
+	for i of eventMap
+		socket.on i,eventMap[i]
+
+	#Utworzenie inventory
+	inv_bar = new InventoryBar()
 
 	#Kursor raycastowania
 	cursor=new THREE.LineSegments(
@@ -148,19 +155,6 @@ init = ()->
 	gui.add( world.material, 'wireframe' ).name( 'Wireframe' ).listen()
 	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
 
-	#Autoscrollowanie chatu
-	consoleDiv = document.querySelector(".chat")
-
-	window.addEventListener "wheel", (e)->
-		if FPC.gameState isnt "chat"
-			e.preventDefault()
-	, {passive: false}
-	isElementScrolledToBottom=(el)->
-		if el.scrollTop >= (el.scrollHeight - el.offsetHeight)
-			return true
-		return false
-	scrollToBottom=(el)->
-		el.scrollTop = el.scrollHeight
 	#Wprawienie w ruch funkcji animate
 	animate()
 	return

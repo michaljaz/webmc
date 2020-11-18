@@ -14,8 +14,6 @@ module.exports=(type)->
 	Convert = require 'ansi-to-html'
 	convert = new Convert()
 
-
-
 	opn("http://#{config.host}:#{config['express-port']}")
 
 	#początkowe zmienne
@@ -40,6 +38,8 @@ module.exports=(type)->
 
 	#websocket
 	io.sockets.on "connection", (socket)->
+		socketInfo[socket.id]={}
+		bot=socketInfo[socket.id]
 		socket.on "initClient",(data)->
 			console.log "[+] "+data.nick
 
@@ -51,71 +51,67 @@ module.exports=(type)->
 				username: socketInfo[socket.id].nick
 				version: config.realServer.version
 			}
-
+			bot=()->
+				return socketInfo[socket.id].bot
+			emit=(array)->
+				io.to(socket.id).emit array...
 			#Eventy otrzymywane z serwera minecraftowego
-			socketInfo[socket.id].bot._client.on "map_chunk",(packet)->
+			bot()._client.on "map_chunk",(packet)->
 				cell=new Chunk()
 				cell.load packet.chunkData,packet.bitMap,false,true
-				io.to(socket.id).emit "mapChunk", cell.sections,packet.x,packet.z,packet.biomes
+				emit ["mapChunk", cell.sections,packet.x,packet.z,packet.biomes]
 				return
-			socketInfo[socket.id].bot.on 'chat',(username, message)->
-				if username is socketInfo[socket.id].bot.username
+			botEventMap={
+				"move":()->
+					emit ["move",bot().entity.position]
 					return
-				return
-			socketInfo[socket.id].bot.on 'move',()->
-				try
-					io.to(socket.id).emit "move",socketInfo[socket.id].bot.entity.position
-				return
-			socketInfo[socket.id].bot.on 'health',()->
-				try
-					io.to(socket.id).emit "hp",socketInfo[socket.id].bot.health
-					io.to(socket.id).emit "food",socketInfo[socket.id].bot.food
-				return
+				"health":()->
+					emit ["hp",bot().health]
+					emit ["food",bot().food]
+					return
+				"spawn":()->
+					emit ["spawn",bot().entity.yaw,bot().entity.pitch]
+					return
+				"kicked":(reason,loggedIn)->
+					emit ["kicked",reason]
+					return
+				"message":(msg)->
+					emit ["msg",convert.toHtml(msg.toAnsi())]
+					return
+				"experience":()->
+					emit ["xp",bot().experience]
+					return
+				"blockUpdate":(oldb,newb)->
+					emit ["blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]]
+					return
+			}
+			for i of botEventMap
+				socketInfo[socket.id].bot.on i, botEventMap[i]
+
 			inv=""
 			socketInfo[socket.id].int=setInterval ()->
-				inv_new=JSON.stringify(socketInfo[socket.id].bot.inventory.slots)
+				inv_new=JSON.stringify(bot().inventory.slots)
 				if inv isnt inv_new
 					inv=inv_new
-					io.to(socket.id).emit "inventory",socketInfo[socket.id].bot.inventory.slots
+					emit "inventory",bot().inventory.slots
 			,100
-			socketInfo[socket.id].bot.on 'spawn',()->
-				try
-					io.to(socket.id).emit "spawn",socketInfo[socket.id].bot.entity.yaw,socketInfo[socket.id].bot.entity.pitch
-				return
-			socketInfo[socket.id].bot.on 'kicked',(reason,loggedIn)->
-				try
-					io.to(socket.id).emit "kicked",reason
-				return
-			socketInfo[socket.id].bot.on 'message',(msg)->
-				try
-					io.to(socket.id).emit "msg",convert.toHtml(msg.toAnsi());
-				return
-			socketInfo[socket.id].bot.on 'experience',()->
-				try
-					io.to(socket.id).emit "xp",socketInfo[socket.id].bot.experience
-				return
-			socketInfo[socket.id].bot.on 'blockUpdate',(oldb,newb)->
-				io.to(socket.id).emit "blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]
-				return
-			return
-
-		#eventy otrzymywane od klienta
-		socket.on "move",(state,toggle)->
-			try
-				socketInfo[socket.id].bot.setControlState(state,toggle)
-			return
-		socket.on "command",(com)->
-			try
-				socketInfo[socket.id].bot.chat(com)
-			return
-		socket.on "rotate",(data)->
-			try
-				socketInfo[socket.id].bot.look data...
-			return
-		socket.on "disconnect", ->
-			try
-				clearInterval socketInfo[socket.id].int
-				console.log "[-] "+socketInfo[socket.id].nick
-				socketInfo[socket.id].bot.end()
-				delete socketInfo[socket.id]
-			return
+			socketEventMap={
+				"move":(state,toggle)->
+					bot().setControlState(state,toggle)
+					return
+				"command":(com)->
+					bot().chat(com)
+					return
+				"rotate":(data)->
+					bot().look data...
+					return
+				"disconnect":()->
+					try
+						clearInterval socketInfo[socket.id].int
+						console.log "[-] "+socketInfo[socket.id].nick
+						socketInfo[socket.id].bot.end()
+						delete socketInfo[socket.id]
+					return
+			}
+			for i of socketEventMap
+				socket.on i,socketEventMap[i]

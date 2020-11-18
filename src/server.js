@@ -41,8 +41,11 @@
     server.listen(config["websocket-port"]);
     //websocket
     return io.sockets.on("connection", function(socket) {
-      socket.on("initClient", function(data) {
-        var inv;
+      var bot;
+      socketInfo[socket.id] = {};
+      bot = socketInfo[socket.id];
+      return socket.on("initClient", function(data) {
+        var botEventMap, emit, i, inv, results, socketEventMap;
         console.log("[+] " + data.nick);
         //Dodawanie informacji o graczu do socketInfo
         socketInfo[socket.id] = data;
@@ -52,85 +55,79 @@
           username: socketInfo[socket.id].nick,
           version: config.realServer.version
         });
+        bot = function() {
+          return socketInfo[socket.id].bot;
+        };
+        emit = function(array) {
+          return io.to(socket.id).emit(...array);
+        };
         //Eventy otrzymywane z serwera minecraftowego
-        socketInfo[socket.id].bot._client.on("map_chunk", function(packet) {
+        bot()._client.on("map_chunk", function(packet) {
           var cell;
           cell = new Chunk();
           cell.load(packet.chunkData, packet.bitMap, false, true);
-          io.to(socket.id).emit("mapChunk", cell.sections, packet.x, packet.z, packet.biomes);
+          emit(["mapChunk", cell.sections, packet.x, packet.z, packet.biomes]);
         });
-        socketInfo[socket.id].bot.on('chat', function(username, message) {
-          if (username === socketInfo[socket.id].bot.username) {
-            return;
+        botEventMap = {
+          "move": function() {
+            emit(["move", bot().entity.position]);
+          },
+          "health": function() {
+            emit(["hp", bot().health]);
+            emit(["food", bot().food]);
+          },
+          "spawn": function() {
+            emit(["spawn", bot().entity.yaw, bot().entity.pitch]);
+          },
+          "kicked": function(reason, loggedIn) {
+            emit(["kicked", reason]);
+          },
+          "message": function(msg) {
+            emit(["msg", convert.toHtml(msg.toAnsi())]);
+          },
+          "experience": function() {
+            emit(["xp", bot().experience]);
+          },
+          "blockUpdate": function(oldb, newb) {
+            emit(["blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]]);
           }
-        });
-        socketInfo[socket.id].bot.on('move', function() {
-          try {
-            io.to(socket.id).emit("move", socketInfo[socket.id].bot.entity.position);
-          } catch (error) {}
-        });
-        socketInfo[socket.id].bot.on('health', function() {
-          try {
-            io.to(socket.id).emit("hp", socketInfo[socket.id].bot.health);
-            io.to(socket.id).emit("food", socketInfo[socket.id].bot.food);
-          } catch (error) {}
-        });
+        };
+        for (i in botEventMap) {
+          socketInfo[socket.id].bot.on(i, botEventMap[i]);
+        }
         inv = "";
         socketInfo[socket.id].int = setInterval(function() {
           var inv_new;
-          inv_new = JSON.stringify(socketInfo[socket.id].bot.inventory.slots);
+          inv_new = JSON.stringify(bot().inventory.slots);
           if (inv !== inv_new) {
             inv = inv_new;
-            return io.to(socket.id).emit("inventory", socketInfo[socket.id].bot.inventory.slots);
+            return emit("inventory", bot().inventory.slots);
           }
         }, 100);
-        socketInfo[socket.id].bot.on('spawn', function() {
-          try {
-            io.to(socket.id).emit("spawn", socketInfo[socket.id].bot.entity.yaw, socketInfo[socket.id].bot.entity.pitch);
-          } catch (error) {}
-        });
-        socketInfo[socket.id].bot.on('kicked', function(reason, loggedIn) {
-          try {
-            io.to(socket.id).emit("kicked", reason);
-          } catch (error) {}
-        });
-        socketInfo[socket.id].bot.on('message', function(msg) {
-          try {
-            io.to(socket.id).emit("msg", convert.toHtml(msg.toAnsi()));
-          } catch (error) {}
-        });
-        socketInfo[socket.id].bot.on('experience', function() {
-          try {
-            io.to(socket.id).emit("xp", socketInfo[socket.id].bot.experience);
-          } catch (error) {}
-        });
-        socketInfo[socket.id].bot.on('blockUpdate', function(oldb, newb) {
-          io.to(socket.id).emit("blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]);
-        });
-      });
-      //eventy otrzymywane od klienta
-      socket.on("move", function(state, toggle) {
-        try {
-          socketInfo[socket.id].bot.setControlState(state, toggle);
-        } catch (error) {}
-      });
-      socket.on("command", function(com) {
-        try {
-          socketInfo[socket.id].bot.chat(com);
-        } catch (error) {}
-      });
-      socket.on("rotate", function(data) {
-        try {
-          socketInfo[socket.id].bot.look(...data);
-        } catch (error) {}
-      });
-      return socket.on("disconnect", function() {
-        try {
-          clearInterval(socketInfo[socket.id].int);
-          console.log("[-] " + socketInfo[socket.id].nick);
-          socketInfo[socket.id].bot.end();
-          delete socketInfo[socket.id];
-        } catch (error) {}
+        socketEventMap = {
+          "move": function(state, toggle) {
+            bot().setControlState(state, toggle);
+          },
+          "command": function(com) {
+            bot().chat(com);
+          },
+          "rotate": function(data) {
+            bot().look(...data);
+          },
+          "disconnect": function() {
+            try {
+              clearInterval(socketInfo[socket.id].int);
+              console.log("[-] " + socketInfo[socket.id].nick);
+              socketInfo[socket.id].bot.end();
+              delete socketInfo[socket.id];
+            } catch (error) {}
+          }
+        };
+        results = [];
+        for (i in socketEventMap) {
+          results.push(socket.on(i, socketEventMap[i]));
+        }
+        return results;
       });
     });
   };

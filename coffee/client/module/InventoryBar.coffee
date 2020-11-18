@@ -32,14 +32,4 @@ class InventoryBar
 	setXp: (level,progress)->
 		$(".player_xp").text level
 		$(".xp_bar").css "width","#{500*progress}px"
-	listen: ->
-		_this=@
-		# $(window).on 'wheel', (event) ->
-		# 	if event.originalEvent.deltaY < 0
-		# 		_this.moveBoxPlus()
-		# 	else
-		# 		_this.moveBoxMinus()
-		# $(document).keydown (z) ->
-		# 	_this.directBoxChange(z)
-		return @
 export {InventoryBar}

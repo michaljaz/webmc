@@ -128,7 +128,6 @@ FirstPersonControls = class FirstPersonControls {
   }
 
   resetState() {
-    $(".gameMenu").hide();
     $(".chat").removeClass("focus");
     $(".chat").addClass("blur");
     $(".com_i").blur();
@@ -143,7 +142,8 @@ FirstPersonControls = class FirstPersonControls {
         this.state("game");
         return this.reqLock();
       case "gameLock":
-        return this.state("gameLock");
+        this.state("gameLock");
+        return $(".gameMenu").hide();
       case "menu":
         this.state("menu");
         $(".gameMenu").show();
@@ -152,6 +152,7 @@ FirstPersonControls = class FirstPersonControls {
         if (this.gameState === "gameLock") {
           $(".chat").addClass("focus");
           $(".chat").removeClass("blur");
+          $(".gameMenu").hide();
           this.state("chat");
           this.unLock();
           $(".com").show();
@@ -160,6 +161,7 @@ FirstPersonControls = class FirstPersonControls {
         break;
       case "inventory":
         if (this.gameState !== "menu") {
+          $(".gameMenu").hide();
           if (this.gameState !== "inventory") {
             this.state("inventory");
             $(".inv_window").show();

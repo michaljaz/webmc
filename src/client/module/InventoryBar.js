@@ -51,19 +51,6 @@ InventoryBar = class InventoryBar {
     return $(".xp_bar").css("width", `${500 * progress}px`);
   }
 
-  listen() {
-    var _this;
-    _this = this;
-    // $(window).on 'wheel', (event) ->
-    // 	if event.originalEvent.deltaY < 0
-    // 		_this.moveBoxPlus()
-    // 	else
-    // 		_this.moveBoxMinus()
-    // $(document).keydown (z) ->
-    // 	_this.directBoxChange(z)
-    return this;
-  }
-
 };
 
 export {

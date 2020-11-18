@@ -105,7 +105,6 @@ class FirstPersonControls
 		@gameState=state
 		console.log "Game state: "+state
 	resetState:()->
-		$(".gameMenu").hide()
 		$(".chat").removeClass("focus")
 		$(".chat").addClass("blur")
 		$(".com_i").blur()
@@ -119,6 +118,7 @@ class FirstPersonControls
 				@reqLock()
 			when "gameLock"
 				@state "gameLock"
+				$(".gameMenu").hide()
 			when "menu"
 				@state "menu"
 				$(".gameMenu").show()
@@ -127,12 +127,14 @@ class FirstPersonControls
 				if @gameState is "gameLock"
 					$(".chat").addClass("focus")
 					$(".chat").removeClass("blur")
+					$(".gameMenu").hide()
 					@state "chat"
 					@unLock()
 					$(".com").show()
 					$(".com_i").focus()
 			when "inventory"
 				if @gameState isnt "menu"
+					$(".gameMenu").hide()
 					if @gameState isnt "inventory"
 						@state "inventory"
 						$(".inv_window").show()
