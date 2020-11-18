@@ -80,7 +80,7 @@ init = function() {
     PixelRatio: window.devicePixelRatio
   });
   scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(100, 2, 0.1, 1000);
+  camera = new THREE.PerspectiveCamera(95, 2, 0.1, 1000);
   camera.rotation.order = "YXZ";
   camera.position.set(26, 26, 26);
   //Skybox
@@ -113,7 +113,8 @@ init = function() {
     canvas,
     camera,
     micromove: 0.3,
-    socket
+    socket,
+    TWEEN
   });
   //Czat
   chat = new Chat({FPC});

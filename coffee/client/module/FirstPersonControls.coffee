@@ -15,6 +15,7 @@ class FirstPersonControls
 		@canvas=options.canvas
 		@camera=options.camera
 		@socket=options.socket
+		@TWEEN=options.TWEEN
 		@setState "menu"
 		@listen()
 	updatePosition: (e)->
@@ -67,6 +68,14 @@ class FirstPersonControls
 			#Wysyłanie state'u do serwera
 			if _this.kc[z.keyCode] isnt undefined and _this.gameState is "gameLock"
 				_this.socket.emit "move",_this.kc[z.keyCode],true
+				if _this.kc[z.keyCode] is "sprint"
+					to={fov:105}
+					new _this.TWEEN.Tween _this.camera
+						.to to, 200
+						.easing _this.TWEEN.Easing.Quadratic.Out
+						.onUpdate ()->
+							_this.camera.updateProjectionMatrix()
+						.start()
 			return
 		$(document).keyup (z) ->
 			#Odkliknięcie
@@ -75,6 +84,14 @@ class FirstPersonControls
 			#Wysyłanie state'u do serwera
 			if _this.kc[z.keyCode] isnt undefined
 				_this.socket.emit "move",_this.kc[z.keyCode],false
+				if _this.kc[z.keyCode] is "sprint"
+					to={fov:95}
+					new _this.TWEEN.Tween _this.camera
+						.to to, 200
+						.easing _this.TWEEN.Easing.Quadratic.Out
+						.onUpdate ()->
+							_this.camera.updateProjectionMatrix()
+						.start()
 
 			return
 		$(".gameOn").click ->

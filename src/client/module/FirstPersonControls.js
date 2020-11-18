@@ -18,6 +18,7 @@ FirstPersonControls = class FirstPersonControls {
     this.canvas = options.canvas;
     this.camera = options.camera;
     this.socket = options.socket;
+    this.TWEEN = options.TWEEN;
     this.setState("menu");
     this.listen();
   }
@@ -41,6 +42,7 @@ FirstPersonControls = class FirstPersonControls {
     var _this, lockChangeAlert;
     _this = this;
     $(document).keydown(function(z) {
+      var to;
       //Kliknięcie
       _this.keys[z.keyCode] = true;
       //Klawisz Escape
@@ -79,14 +81,31 @@ FirstPersonControls = class FirstPersonControls {
       //Wysyłanie state'u do serwera
       if (_this.kc[z.keyCode] !== void 0 && _this.gameState === "gameLock") {
         _this.socket.emit("move", _this.kc[z.keyCode], true);
+        if (_this.kc[z.keyCode] === "sprint") {
+          to = {
+            fov: 105
+          };
+          new _this.TWEEN.Tween(_this.camera).to(to, 200).easing(_this.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
+            return _this.camera.updateProjectionMatrix();
+          }).start();
+        }
       }
     });
     $(document).keyup(function(z) {
+      var to;
       //Odkliknięcie
       delete _this.keys[z.keyCode];
       //Wysyłanie state'u do serwera
       if (_this.kc[z.keyCode] !== void 0) {
         _this.socket.emit("move", _this.kc[z.keyCode], false);
+        if (_this.kc[z.keyCode] === "sprint") {
+          to = {
+            fov: 95
+          };
+          new _this.TWEEN.Tween(_this.camera).to(to, 200).easing(_this.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
+            return _this.camera.updateProjectionMatrix();
+          }).start();
+        }
       }
     });
     $(".gameOn").click(function() {
