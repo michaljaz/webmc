@@ -66,6 +66,9 @@ init = ()->
 	#Czat
 	chat=new Chat({FPC})
 
+	#Utworzenie inventory
+	inv_bar = new InventoryBar()
+
 	#Komunikacja z serwerem websocket
 	eventMap={
 		"connect":()->
@@ -96,7 +99,10 @@ init = ()->
 			inv_bar.setHp(points)
 			return
 		"inventory":(inv)->
-			console.log inv
+			for i in [36..44]
+				try
+					$(".inv_box").eq(i-36).css("background-image","url(/assets/items/#{inv[i].name}.png)")
+				# console.log inv[i]
 			return
 		"food":(points)->
 			inv_bar.setFood(points)
@@ -120,9 +126,6 @@ init = ()->
 	}
 	for i of eventMap
 		socket.on i,eventMap[i]
-
-	#Utworzenie inventory
-	inv_bar = new InventoryBar()
 
 	#Kursor raycastowania
 	cursor=new THREE.LineSegments(

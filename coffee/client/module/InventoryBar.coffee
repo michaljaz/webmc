@@ -1,3 +1,4 @@
+
 class InventoryBar
 	setHp: (points)->
 		lista={}

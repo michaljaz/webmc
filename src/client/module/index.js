@@ -118,6 +118,8 @@ init = function() {
   });
   //Czat
   chat = new Chat({FPC});
+  //Utworzenie inventory
+  inv_bar = new InventoryBar();
   //Komunikacja z serwerem websocket
   eventMap = {
     "connect": function() {
@@ -150,8 +152,14 @@ init = function() {
       inv_bar.setHp(points);
     },
     "inventory": function(inv) {
-      console.log(inv);
+      var i, j;
+      for (i = j = 36; j <= 44; i = ++j) {
+        try {
+          $(".inv_box").eq(i - 36).css("background-image", `url(/assets/items/${inv[i].name}.png)`);
+        } catch (error) {}
+      }
     },
+    // console.log inv[i]
     "food": function(points) {
       inv_bar.setFood(points);
     },
@@ -177,8 +185,6 @@ init = function() {
   for (i in eventMap) {
     socket.on(i, eventMap[i]);
   }
-  //Utworzenie inventory
-  inv_bar = new InventoryBar();
   //Kursor raycastowania
   cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
     color: 0x000000,

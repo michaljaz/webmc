@@ -208,7 +208,6 @@ canvas {
   display:block;
 }
 .inv_window{
-  image-rendering: pixelated;
   z-index:10;
   background-image: url("/assets/gui/inventory.png");
   background-repeat: no-repeat;
@@ -219,4 +218,14 @@ canvas {
   width:412px;
   height:388px;
   transform: translate(-50%,-50%);
+}
+.inv_box{
+  background-repeat: no-repeat;
+  background-size: 43px 43px;
+  display:inline-block;
+  margin-left:9px;
+  margin-top:9px;
+  width:43px;
+  height:43px;
+  margin-right:-1px;
 }
