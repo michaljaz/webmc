@@ -4,61 +4,20 @@ module.exports=(type)->
 	fs=require "fs"
 	config=JSON.parse fs.readFileSync(__dirname+"/../config.json")
 	http=require "http"
-	server=http.createServer()
-	io=require("socket.io")(server)
 	express=require 'express'
+	app=express()
+	server=http.createServer(app)
+	io=require("socket.io")(server)
 	request = require 'request'
-	app=express();
 	mineflayer = require 'mineflayer'
 	Chunk = require("prismarine-chunk")(config.realServer.version)
 	vec3=require "vec3"
 	Convert = require 'ansi-to-html'
 	convert = new Convert()
 
-	# opn("http://#{config.host}:#{config['express-port']}")
-
 	#początkowe zmienne
 	sf={}
-	port=config["express-port"]
 	socketInfo={}
-
-	getItem=(name,callback)->
-		mozl=[
-			"materials"
-			"armor_recipes"
-			"basic_recipes"
-			"block_recipes"
-			"mobs"
-			"decoration_recipes"
-			"dye_recipes"
-			"firework_recipes"
-			"food_recipes"
-			"mechanism_recipes"
-			"tool_recipes"
-			"transportation_recipes"
-			"weapon_recipes"
-		]
-		done=0
-		wysl=false
-		for i in mozl
-			options = {
-				method: 'GET'
-				url: "https://www.digminecraft.com/#{i}/images/#{name}.png"
-				encoding: null
-			}
-			((options)->
-				request options, (err, response, body)->
-					done+=1
-					if not err and response.statusCode == 200 and wysl is false
-						wysl=true
-						callback options.url
-
-					else if wysl is false and done is mozl.length
-						callback "error"
-					return
-			)(options)
-
-
 
 	#Konfiguracja serwera express
 	if type is "production"
@@ -68,22 +27,16 @@ module.exports=(type)->
 	app.use (req, res, next) ->
 		res.set 'Cache-Control', 'no-store'
 		next()
-	app.get "/items/:item",(req,res)->
-		getItem req.params.item,(resp)->
-			res.send(resp)
-	app.get "/websocket/",(req,res)->
-		res.send String(config["websocket-port"])
-	app.get "/host/",(req,res)->
-		res.send String(config["host"])
-	app.listen port
-	server.listen config["websocket-port"]
+	server.listen config["port"],()->
+		console.log "Server is running on \x1b[34mhttp://localhost:#{config["port"]}\x1b[0m"
+		# opn("http://#{config.host}:#{config['express-port']}")
 
 	#websocket
 	io.sockets.on "connection", (socket)->
 		socketInfo[socket.id]={}
 		bot=socketInfo[socket.id]
 		socket.on "initClient",(data)->
-			console.log "[+] "+data.nick
+			console.log "[\x1b[32m+\x1b[0m] "+data.nick
 
 			#Dodawanie informacji o graczu do socketInfo
 			socketInfo[socket.id]=data
@@ -151,7 +104,7 @@ module.exports=(type)->
 				"disconnect":()->
 					try
 						clearInterval socketInfo[socket.id].int
-						console.log "[-] "+socketInfo[socket.id].nick
+						console.log "[\x1b[31m-\x1b[0m] "+socketInfo[socket.id].nick
 						socketInfo[socket.id].bot.end()
 						delete socketInfo[socket.id]
 					return

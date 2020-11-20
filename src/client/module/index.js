@@ -108,7 +108,7 @@ init = function() {
     al
   });
   //Połączenie z serwerem i kontrolki gracza
-  socket = io.connect(`${al.get("host")}:${al.get("websocket-port")}`);
+  socket = io.connect(`${document.location.host}`);
   FPC = new FirstPersonControls({
     canvas,
     camera,

@@ -1,6 +1,5 @@
 var nodeExternals = require('webpack-node-externals');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const path = require("path");
 module.exports = {
   mode:'production',

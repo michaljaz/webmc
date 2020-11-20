@@ -14,13 +14,5 @@
   "skybox":{
     "path":"assets/images/skybox.jpg",
     "type":"texture"
-  },
-  "websocket-port":{
-    "path":"/websocket/",
-    "type":"text"
-  },
-  "host":{
-    "path":"/host/",
-    "type":"text"
   }
 }
