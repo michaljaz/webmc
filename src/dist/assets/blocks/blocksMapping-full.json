@@ -1,0 +1,5174 @@
+{
+  "acacia_door_bottom": {
+    "x": 1,
+    "y": 1
+  },
+  "acacia_door_top": {
+    "x": 2,
+    "y": 1
+  },
+  "acacia_leaves": {
+    "x": 3,
+    "y": 1
+  },
+  "acacia_log": {
+    "x": 4,
+    "y": 1
+  },
+  "acacia_log_top": {
+    "x": 5,
+    "y": 1
+  },
+  "acacia_planks": {
+    "x": 6,
+    "y": 1
+  },
+  "acacia_sapling": {
+    "x": 7,
+    "y": 1
+  },
+  "acacia_trapdoor": {
+    "x": 8,
+    "y": 1
+  },
+  "activator_rail": {
+    "x": 9,
+    "y": 1
+  },
+  "activator_rail_on": {
+    "x": 10,
+    "y": 1
+  },
+  "allium": {
+    "x": 11,
+    "y": 1
+  },
+  "ancient_debris_side": {
+    "x": 12,
+    "y": 1
+  },
+  "ancient_debris_top": {
+    "x": 13,
+    "y": 1
+  },
+  "andesite": {
+    "x": 14,
+    "y": 1
+  },
+  "anvil": {
+    "x": 15,
+    "y": 1
+  },
+  "anvil_top": {
+    "x": 16,
+    "y": 1
+  },
+  "attached_melon_stem": {
+    "x": 17,
+    "y": 1
+  },
+  "attached_pumpkin_stem": {
+    "x": 18,
+    "y": 1
+  },
+  "azure_bluet": {
+    "x": 19,
+    "y": 1
+  },
+  "bamboo_large_leaves": {
+    "x": 20,
+    "y": 1
+  },
+  "bamboo_singleleaf": {
+    "x": 21,
+    "y": 1
+  },
+  "bamboo_small_leaves": {
+    "x": 22,
+    "y": 1
+  },
+  "bamboo_stage0": {
+    "x": 23,
+    "y": 1
+  },
+  "bamboo_stalk": {
+    "x": 24,
+    "y": 1
+  },
+  "barrel_bottom": {
+    "x": 25,
+    "y": 1
+  },
+  "barrel_side": {
+    "x": 26,
+    "y": 1
+  },
+  "barrel_top": {
+    "x": 27,
+    "y": 1
+  },
+  "barrel_top_open": {
+    "x": 28,
+    "y": 1
+  },
+  "basalt_side": {
+    "x": 29,
+    "y": 1
+  },
+  "basalt_top": {
+    "x": 30,
+    "y": 1
+  },
+  "beacon": {
+    "x": 31,
+    "y": 1
+  },
+  "bedrock": {
+    "x": 32,
+    "y": 1
+  },
+  "bee_nest_bottom": {
+    "x": 33,
+    "y": 1
+  },
+  "bee_nest_front": {
+    "x": 34,
+    "y": 1
+  },
+  "bee_nest_front_honey": {
+    "x": 35,
+    "y": 1
+  },
+  "bee_nest_side": {
+    "x": 36,
+    "y": 1
+  },
+  "bee_nest_top": {
+    "x": 1,
+    "y": 2
+  },
+  "beehive_end": {
+    "x": 2,
+    "y": 2
+  },
+  "beehive_front": {
+    "x": 3,
+    "y": 2
+  },
+  "beehive_front_honey": {
+    "x": 4,
+    "y": 2
+  },
+  "beehive_side": {
+    "x": 5,
+    "y": 2
+  },
+  "beetroots_stage0": {
+    "x": 6,
+    "y": 2
+  },
+  "beetroots_stage1": {
+    "x": 7,
+    "y": 2
+  },
+  "beetroots_stage2": {
+    "x": 8,
+    "y": 2
+  },
+  "beetroots_stage3": {
+    "x": 9,
+    "y": 2
+  },
+  "bell_bottom": {
+    "x": 10,
+    "y": 2
+  },
+  "bell_side": {
+    "x": 11,
+    "y": 2
+  },
+  "bell_top": {
+    "x": 12,
+    "y": 2
+  },
+  "birch_door_bottom": {
+    "x": 13,
+    "y": 2
+  },
+  "birch_door_top": {
+    "x": 14,
+    "y": 2
+  },
+  "birch_leaves": {
+    "x": 15,
+    "y": 2
+  },
+  "birch_log": {
+    "x": 16,
+    "y": 2
+  },
+  "birch_log_top": {
+    "x": 17,
+    "y": 2
+  },
+  "birch_planks": {
+    "x": 18,
+    "y": 2
+  },
+  "birch_sapling": {
+    "x": 19,
+    "y": 2
+  },
+  "birch_trapdoor": {
+    "x": 20,
+    "y": 2
+  },
+  "black_concrete": {
+    "x": 21,
+    "y": 2
+  },
+  "black_concrete_powder": {
+    "x": 22,
+    "y": 2
+  },
+  "black_glazed_terracotta": {
+    "x": 23,
+    "y": 2
+  },
+  "black_shulker_box": {
+    "x": 24,
+    "y": 2
+  },
+  "black_stained_glass": {
+    "x": 25,
+    "y": 2
+  },
+  "black_stained_glass_pane_top": {
+    "x": 26,
+    "y": 2
+  },
+  "black_terracotta": {
+    "x": 27,
+    "y": 2
+  },
+  "black_wool": {
+    "x": 28,
+    "y": 2
+  },
+  "blackstone": {
+    "x": 29,
+    "y": 2
+  },
+  "blackstone_top": {
+    "x": 30,
+    "y": 2
+  },
+  "blast_furnace_front": {
+    "x": 31,
+    "y": 2
+  },
+  "blast_furnace_front_on@0@0": {
+    "x": 32,
+    "y": 2
+  },
+  "blast_furnace_front_on@0@1": {
+    "x": 33,
+    "y": 2
+  },
+  "blast_furnace_side": {
+    "x": 34,
+    "y": 2
+  },
+  "blast_furnace_top": {
+    "x": 35,
+    "y": 2
+  },
+  "blue_concrete": {
+    "x": 36,
+    "y": 2
+  },
+  "blue_concrete_powder": {
+    "x": 1,
+    "y": 3
+  },
+  "blue_glazed_terracotta": {
+    "x": 2,
+    "y": 3
+  },
+  "blue_ice": {
+    "x": 3,
+    "y": 3
+  },
+  "blue_orchid": {
+    "x": 4,
+    "y": 3
+  },
+  "blue_shulker_box": {
+    "x": 5,
+    "y": 3
+  },
+  "blue_stained_glass": {
+    "x": 6,
+    "y": 3
+  },
+  "blue_stained_glass_pane_top": {
+    "x": 7,
+    "y": 3
+  },
+  "blue_terracotta": {
+    "x": 8,
+    "y": 3
+  },
+  "blue_wool": {
+    "x": 9,
+    "y": 3
+  },
+  "bone_block_side": {
+    "x": 10,
+    "y": 3
+  },
+  "bone_block_top": {
+    "x": 11,
+    "y": 3
+  },
+  "bookshelf": {
+    "x": 12,
+    "y": 3
+  },
+  "brain_coral": {
+    "x": 13,
+    "y": 3
+  },
+  "brain_coral_block": {
+    "x": 14,
+    "y": 3
+  },
+  "brain_coral_fan": {
+    "x": 15,
+    "y": 3
+  },
+  "brewing_stand": {
+    "x": 16,
+    "y": 3
+  },
+  "brewing_stand_base": {
+    "x": 17,
+    "y": 3
+  },
+  "bricks": {
+    "x": 18,
+    "y": 3
+  },
+  "brown_concrete": {
+    "x": 19,
+    "y": 3
+  },
+  "brown_concrete_powder": {
+    "x": 20,
+    "y": 3
+  },
+  "brown_glazed_terracotta": {
+    "x": 21,
+    "y": 3
+  },
+  "brown_mushroom": {
+    "x": 22,
+    "y": 3
+  },
+  "brown_mushroom_block": {
+    "x": 23,
+    "y": 3
+  },
+  "brown_shulker_box": {
+    "x": 24,
+    "y": 3
+  },
+  "brown_stained_glass": {
+    "x": 25,
+    "y": 3
+  },
+  "brown_stained_glass_pane_top": {
+    "x": 26,
+    "y": 3
+  },
+  "brown_terracotta": {
+    "x": 27,
+    "y": 3
+  },
+  "brown_wool": {
+    "x": 28,
+    "y": 3
+  },
+  "bubble_coral": {
+    "x": 29,
+    "y": 3
+  },
+  "bubble_coral_block": {
+    "x": 30,
+    "y": 3
+  },
+  "bubble_coral_fan": {
+    "x": 31,
+    "y": 3
+  },
+  "cactus_bottom": {
+    "x": 32,
+    "y": 3
+  },
+  "cactus_side": {
+    "x": 33,
+    "y": 3
+  },
+  "cactus_top": {
+    "x": 34,
+    "y": 3
+  },
+  "cake_bottom": {
+    "x": 35,
+    "y": 3
+  },
+  "cake_inner": {
+    "x": 36,
+    "y": 3
+  },
+  "cake_side": {
+    "x": 1,
+    "y": 4
+  },
+  "cake_top": {
+    "x": 2,
+    "y": 4
+  },
+  "campfire_fire@0@0": {
+    "x": 3,
+    "y": 4
+  },
+  "campfire_fire@0@1": {
+    "x": 4,
+    "y": 4
+  },
+  "campfire_fire@0@2": {
+    "x": 5,
+    "y": 4
+  },
+  "campfire_fire@0@3": {
+    "x": 6,
+    "y": 4
+  },
+  "campfire_fire@0@4": {
+    "x": 7,
+    "y": 4
+  },
+  "campfire_fire@0@5": {
+    "x": 8,
+    "y": 4
+  },
+  "campfire_fire@0@6": {
+    "x": 9,
+    "y": 4
+  },
+  "campfire_fire@0@7": {
+    "x": 10,
+    "y": 4
+  },
+  "campfire_log": {
+    "x": 11,
+    "y": 4
+  },
+  "campfire_log_lit@0@0": {
+    "x": 12,
+    "y": 4
+  },
+  "campfire_log_lit@0@1": {
+    "x": 13,
+    "y": 4
+  },
+  "campfire_log_lit@0@2": {
+    "x": 14,
+    "y": 4
+  },
+  "campfire_log_lit@0@3": {
+    "x": 15,
+    "y": 4
+  },
+  "carrots_stage0": {
+    "x": 16,
+    "y": 4
+  },
+  "carrots_stage1": {
+    "x": 17,
+    "y": 4
+  },
+  "carrots_stage2": {
+    "x": 18,
+    "y": 4
+  },
+  "carrots_stage3": {
+    "x": 19,
+    "y": 4
+  },
+  "cartography_table_side1": {
+    "x": 20,
+    "y": 4
+  },
+  "cartography_table_side2": {
+    "x": 21,
+    "y": 4
+  },
+  "cartography_table_side3": {
+    "x": 22,
+    "y": 4
+  },
+  "cartography_table_top": {
+    "x": 23,
+    "y": 4
+  },
+  "carved_pumpkin": {
+    "x": 24,
+    "y": 4
+  },
+  "cauldron_bottom": {
+    "x": 25,
+    "y": 4
+  },
+  "cauldron_inner": {
+    "x": 26,
+    "y": 4
+  },
+  "cauldron_side": {
+    "x": 27,
+    "y": 4
+  },
+  "cauldron_top": {
+    "x": 28,
+    "y": 4
+  },
+  "chain": {
+    "x": 29,
+    "y": 4
+  },
+  "chain_command_block_back@0@0": {
+    "x": 30,
+    "y": 4
+  },
+  "chain_command_block_back@0@1": {
+    "x": 31,
+    "y": 4
+  },
+  "chain_command_block_back@0@2": {
+    "x": 32,
+    "y": 4
+  },
+  "chain_command_block_back@0@3": {
+    "x": 33,
+    "y": 4
+  },
+  "chain_command_block_conditional@0@0": {
+    "x": 34,
+    "y": 4
+  },
+  "chain_command_block_conditional@0@1": {
+    "x": 35,
+    "y": 4
+  },
+  "chain_command_block_conditional@0@2": {
+    "x": 36,
+    "y": 4
+  },
+  "chain_command_block_conditional@0@3": {
+    "x": 1,
+    "y": 5
+  },
+  "chain_command_block_front@0@0": {
+    "x": 2,
+    "y": 5
+  },
+  "chain_command_block_front@0@1": {
+    "x": 3,
+    "y": 5
+  },
+  "chain_command_block_front@0@2": {
+    "x": 4,
+    "y": 5
+  },
+  "chain_command_block_front@0@3": {
+    "x": 5,
+    "y": 5
+  },
+  "chain_command_block_side@0@0": {
+    "x": 6,
+    "y": 5
+  },
+  "chain_command_block_side@0@1": {
+    "x": 7,
+    "y": 5
+  },
+  "chain_command_block_side@0@2": {
+    "x": 8,
+    "y": 5
+  },
+  "chain_command_block_side@0@3": {
+    "x": 9,
+    "y": 5
+  },
+  "chipped_anvil_top": {
+    "x": 10,
+    "y": 5
+  },
+  "chiseled_nether_bricks": {
+    "x": 11,
+    "y": 5
+  },
+  "chiseled_polished_blackstone": {
+    "x": 12,
+    "y": 5
+  },
+  "chiseled_quartz_block": {
+    "x": 13,
+    "y": 5
+  },
+  "chiseled_quartz_block_top": {
+    "x": 14,
+    "y": 5
+  },
+  "chiseled_red_sandstone": {
+    "x": 15,
+    "y": 5
+  },
+  "chiseled_sandstone": {
+    "x": 16,
+    "y": 5
+  },
+  "chiseled_stone_bricks": {
+    "x": 17,
+    "y": 5
+  },
+  "chorus_flower": {
+    "x": 18,
+    "y": 5
+  },
+  "chorus_flower_dead": {
+    "x": 19,
+    "y": 5
+  },
+  "chorus_plant": {
+    "x": 20,
+    "y": 5
+  },
+  "clay": {
+    "x": 21,
+    "y": 5
+  },
+  "coal_block": {
+    "x": 22,
+    "y": 5
+  },
+  "coal_ore": {
+    "x": 23,
+    "y": 5
+  },
+  "coarse_dirt": {
+    "x": 24,
+    "y": 5
+  },
+  "cobblestone": {
+    "x": 25,
+    "y": 5
+  },
+  "cobweb": {
+    "x": 26,
+    "y": 5
+  },
+  "cocoa_stage0": {
+    "x": 27,
+    "y": 5
+  },
+  "cocoa_stage1": {
+    "x": 28,
+    "y": 5
+  },
+  "cocoa_stage2": {
+    "x": 29,
+    "y": 5
+  },
+  "command_block_back@0@0": {
+    "x": 30,
+    "y": 5
+  },
+  "command_block_back@0@1": {
+    "x": 31,
+    "y": 5
+  },
+  "command_block_back@0@2": {
+    "x": 32,
+    "y": 5
+  },
+  "command_block_back@0@3": {
+    "x": 33,
+    "y": 5
+  },
+  "command_block_conditional@0@0": {
+    "x": 34,
+    "y": 5
+  },
+  "command_block_conditional@0@1": {
+    "x": 35,
+    "y": 5
+  },
+  "command_block_conditional@0@2": {
+    "x": 36,
+    "y": 5
+  },
+  "command_block_conditional@0@3": {
+    "x": 1,
+    "y": 6
+  },
+  "command_block_front@0@0": {
+    "x": 2,
+    "y": 6
+  },
+  "command_block_front@0@1": {
+    "x": 3,
+    "y": 6
+  },
+  "command_block_front@0@2": {
+    "x": 4,
+    "y": 6
+  },
+  "command_block_front@0@3": {
+    "x": 5,
+    "y": 6
+  },
+  "command_block_side@0@0": {
+    "x": 6,
+    "y": 6
+  },
+  "command_block_side@0@1": {
+    "x": 7,
+    "y": 6
+  },
+  "command_block_side@0@2": {
+    "x": 8,
+    "y": 6
+  },
+  "command_block_side@0@3": {
+    "x": 9,
+    "y": 6
+  },
+  "comparator": {
+    "x": 10,
+    "y": 6
+  },
+  "comparator_on": {
+    "x": 11,
+    "y": 6
+  },
+  "composter_bottom": {
+    "x": 12,
+    "y": 6
+  },
+  "composter_compost": {
+    "x": 13,
+    "y": 6
+  },
+  "composter_ready": {
+    "x": 14,
+    "y": 6
+  },
+  "composter_side": {
+    "x": 15,
+    "y": 6
+  },
+  "composter_top": {
+    "x": 16,
+    "y": 6
+  },
+  "conduit": {
+    "x": 17,
+    "y": 6
+  },
+  "cornflower": {
+    "x": 18,
+    "y": 6
+  },
+  "cracked_nether_bricks": {
+    "x": 19,
+    "y": 6
+  },
+  "cracked_polished_blackstone_bricks": {
+    "x": 20,
+    "y": 6
+  },
+  "cracked_stone_bricks": {
+    "x": 21,
+    "y": 6
+  },
+  "crafting_table_front": {
+    "x": 22,
+    "y": 6
+  },
+  "crafting_table_side": {
+    "x": 23,
+    "y": 6
+  },
+  "crafting_table_top": {
+    "x": 24,
+    "y": 6
+  },
+  "crimson_door_bottom": {
+    "x": 25,
+    "y": 6
+  },
+  "crimson_door_top": {
+    "x": 26,
+    "y": 6
+  },
+  "crimson_fungus": {
+    "x": 27,
+    "y": 6
+  },
+  "crimson_nylium": {
+    "x": 28,
+    "y": 6
+  },
+  "crimson_nylium_side": {
+    "x": 29,
+    "y": 6
+  },
+  "crimson_planks": {
+    "x": 30,
+    "y": 6
+  },
+  "crimson_roots": {
+    "x": 31,
+    "y": 6
+  },
+  "crimson_roots_pot": {
+    "x": 32,
+    "y": 6
+  },
+  "crimson_stem@0@0": {
+    "x": 33,
+    "y": 6
+  },
+  "crimson_stem@0@1": {
+    "x": 34,
+    "y": 6
+  },
+  "crimson_stem@0@2": {
+    "x": 35,
+    "y": 6
+  },
+  "crimson_stem@0@3": {
+    "x": 36,
+    "y": 6
+  },
+  "crimson_stem@0@4": {
+    "x": 1,
+    "y": 7
+  },
+  "crimson_stem_top": {
+    "x": 2,
+    "y": 7
+  },
+  "crimson_trapdoor": {
+    "x": 3,
+    "y": 7
+  },
+  "crying_obsidian": {
+    "x": 4,
+    "y": 7
+  },
+  "cut_red_sandstone": {
+    "x": 5,
+    "y": 7
+  },
+  "cut_sandstone": {
+    "x": 6,
+    "y": 7
+  },
+  "cyan_concrete": {
+    "x": 7,
+    "y": 7
+  },
+  "cyan_concrete_powder": {
+    "x": 8,
+    "y": 7
+  },
+  "cyan_glazed_terracotta": {
+    "x": 9,
+    "y": 7
+  },
+  "cyan_shulker_box": {
+    "x": 10,
+    "y": 7
+  },
+  "cyan_stained_glass": {
+    "x": 11,
+    "y": 7
+  },
+  "cyan_stained_glass_pane_top": {
+    "x": 12,
+    "y": 7
+  },
+  "cyan_terracotta": {
+    "x": 13,
+    "y": 7
+  },
+  "cyan_wool": {
+    "x": 14,
+    "y": 7
+  },
+  "damaged_anvil_top": {
+    "x": 15,
+    "y": 7
+  },
+  "dandelion": {
+    "x": 16,
+    "y": 7
+  },
+  "dark_oak_door_bottom": {
+    "x": 17,
+    "y": 7
+  },
+  "dark_oak_door_top": {
+    "x": 18,
+    "y": 7
+  },
+  "dark_oak_leaves": {
+    "x": 19,
+    "y": 7
+  },
+  "dark_oak_log": {
+    "x": 20,
+    "y": 7
+  },
+  "dark_oak_log_top": {
+    "x": 21,
+    "y": 7
+  },
+  "dark_oak_planks": {
+    "x": 22,
+    "y": 7
+  },
+  "dark_oak_sapling": {
+    "x": 23,
+    "y": 7
+  },
+  "dark_oak_trapdoor": {
+    "x": 24,
+    "y": 7
+  },
+  "dark_prismarine": {
+    "x": 25,
+    "y": 7
+  },
+  "daylight_detector_inverted_top": {
+    "x": 26,
+    "y": 7
+  },
+  "daylight_detector_side": {
+    "x": 27,
+    "y": 7
+  },
+  "daylight_detector_top": {
+    "x": 28,
+    "y": 7
+  },
+  "dead_brain_coral": {
+    "x": 29,
+    "y": 7
+  },
+  "dead_brain_coral_block": {
+    "x": 30,
+    "y": 7
+  },
+  "dead_brain_coral_fan": {
+    "x": 31,
+    "y": 7
+  },
+  "dead_bubble_coral": {
+    "x": 32,
+    "y": 7
+  },
+  "dead_bubble_coral_block": {
+    "x": 33,
+    "y": 7
+  },
+  "dead_bubble_coral_fan": {
+    "x": 34,
+    "y": 7
+  },
+  "dead_bush": {
+    "x": 35,
+    "y": 7
+  },
+  "dead_fire_coral": {
+    "x": 36,
+    "y": 7
+  },
+  "dead_fire_coral_block": {
+    "x": 1,
+    "y": 8
+  },
+  "dead_fire_coral_fan": {
+    "x": 2,
+    "y": 8
+  },
+  "dead_horn_coral": {
+    "x": 3,
+    "y": 8
+  },
+  "dead_horn_coral_block": {
+    "x": 4,
+    "y": 8
+  },
+  "dead_horn_coral_fan": {
+    "x": 5,
+    "y": 8
+  },
+  "dead_tube_coral": {
+    "x": 6,
+    "y": 8
+  },
+  "dead_tube_coral_block": {
+    "x": 7,
+    "y": 8
+  },
+  "dead_tube_coral_fan": {
+    "x": 8,
+    "y": 8
+  },
+  "debug": {
+    "x": 9,
+    "y": 8
+  },
+  "debug2": {
+    "x": 10,
+    "y": 8
+  },
+  "destroy_stage_0": {
+    "x": 11,
+    "y": 8
+  },
+  "destroy_stage_1": {
+    "x": 12,
+    "y": 8
+  },
+  "destroy_stage_2": {
+    "x": 13,
+    "y": 8
+  },
+  "destroy_stage_3": {
+    "x": 14,
+    "y": 8
+  },
+  "destroy_stage_4": {
+    "x": 15,
+    "y": 8
+  },
+  "destroy_stage_5": {
+    "x": 16,
+    "y": 8
+  },
+  "destroy_stage_6": {
+    "x": 17,
+    "y": 8
+  },
+  "destroy_stage_7": {
+    "x": 18,
+    "y": 8
+  },
+  "destroy_stage_8": {
+    "x": 19,
+    "y": 8
+  },
+  "destroy_stage_9": {
+    "x": 20,
+    "y": 8
+  },
+  "detector_rail": {
+    "x": 21,
+    "y": 8
+  },
+  "detector_rail_on": {
+    "x": 22,
+    "y": 8
+  },
+  "diamond_block": {
+    "x": 23,
+    "y": 8
+  },
+  "diamond_ore": {
+    "x": 24,
+    "y": 8
+  },
+  "diorite": {
+    "x": 25,
+    "y": 8
+  },
+  "dirt": {
+    "x": 26,
+    "y": 8
+  },
+  "dispenser_front": {
+    "x": 27,
+    "y": 8
+  },
+  "dispenser_front_vertical": {
+    "x": 28,
+    "y": 8
+  },
+  "dragon_egg": {
+    "x": 29,
+    "y": 8
+  },
+  "dried_kelp_bottom": {
+    "x": 30,
+    "y": 8
+  },
+  "dried_kelp_side": {
+    "x": 31,
+    "y": 8
+  },
+  "dried_kelp_top": {
+    "x": 32,
+    "y": 8
+  },
+  "dropper_front": {
+    "x": 33,
+    "y": 8
+  },
+  "dropper_front_vertical": {
+    "x": 34,
+    "y": 8
+  },
+  "emerald_block": {
+    "x": 35,
+    "y": 8
+  },
+  "emerald_ore": {
+    "x": 36,
+    "y": 8
+  },
+  "enchanting_table_bottom": {
+    "x": 1,
+    "y": 9
+  },
+  "enchanting_table_side": {
+    "x": 2,
+    "y": 9
+  },
+  "enchanting_table_top": {
+    "x": 3,
+    "y": 9
+  },
+  "end_portal_frame_eye": {
+    "x": 4,
+    "y": 9
+  },
+  "end_portal_frame_side": {
+    "x": 5,
+    "y": 9
+  },
+  "end_portal_frame_top": {
+    "x": 6,
+    "y": 9
+  },
+  "end_rod": {
+    "x": 7,
+    "y": 9
+  },
+  "end_stone": {
+    "x": 8,
+    "y": 9
+  },
+  "end_stone_bricks": {
+    "x": 9,
+    "y": 9
+  },
+  "farmland": {
+    "x": 10,
+    "y": 9
+  },
+  "farmland_moist": {
+    "x": 11,
+    "y": 9
+  },
+  "fern": {
+    "x": 12,
+    "y": 9
+  },
+  "fire_0@0@0": {
+    "x": 13,
+    "y": 9
+  },
+  "fire_0@0@1": {
+    "x": 14,
+    "y": 9
+  },
+  "fire_0@0@2": {
+    "x": 15,
+    "y": 9
+  },
+  "fire_0@0@3": {
+    "x": 16,
+    "y": 9
+  },
+  "fire_0@0@4": {
+    "x": 17,
+    "y": 9
+  },
+  "fire_0@0@5": {
+    "x": 18,
+    "y": 9
+  },
+  "fire_0@0@6": {
+    "x": 19,
+    "y": 9
+  },
+  "fire_0@0@7": {
+    "x": 20,
+    "y": 9
+  },
+  "fire_0@0@8": {
+    "x": 21,
+    "y": 9
+  },
+  "fire_0@0@9": {
+    "x": 22,
+    "y": 9
+  },
+  "fire_0@0@10": {
+    "x": 23,
+    "y": 9
+  },
+  "fire_0@0@11": {
+    "x": 24,
+    "y": 9
+  },
+  "fire_0@0@12": {
+    "x": 25,
+    "y": 9
+  },
+  "fire_0@0@13": {
+    "x": 26,
+    "y": 9
+  },
+  "fire_0@0@14": {
+    "x": 27,
+    "y": 9
+  },
+  "fire_0@0@15": {
+    "x": 28,
+    "y": 9
+  },
+  "fire_0@0@16": {
+    "x": 29,
+    "y": 9
+  },
+  "fire_0@0@17": {
+    "x": 30,
+    "y": 9
+  },
+  "fire_0@0@18": {
+    "x": 31,
+    "y": 9
+  },
+  "fire_0@0@19": {
+    "x": 32,
+    "y": 9
+  },
+  "fire_0@0@20": {
+    "x": 33,
+    "y": 9
+  },
+  "fire_0@0@21": {
+    "x": 34,
+    "y": 9
+  },
+  "fire_0@0@22": {
+    "x": 35,
+    "y": 9
+  },
+  "fire_0@0@23": {
+    "x": 36,
+    "y": 9
+  },
+  "fire_0@0@24": {
+    "x": 1,
+    "y": 10
+  },
+  "fire_0@0@25": {
+    "x": 2,
+    "y": 10
+  },
+  "fire_0@0@26": {
+    "x": 3,
+    "y": 10
+  },
+  "fire_0@0@27": {
+    "x": 4,
+    "y": 10
+  },
+  "fire_0@0@28": {
+    "x": 5,
+    "y": 10
+  },
+  "fire_0@0@29": {
+    "x": 6,
+    "y": 10
+  },
+  "fire_0@0@30": {
+    "x": 7,
+    "y": 10
+  },
+  "fire_0@0@31": {
+    "x": 8,
+    "y": 10
+  },
+  "fire_1@0@0": {
+    "x": 9,
+    "y": 10
+  },
+  "fire_1@0@1": {
+    "x": 10,
+    "y": 10
+  },
+  "fire_1@0@2": {
+    "x": 11,
+    "y": 10
+  },
+  "fire_1@0@3": {
+    "x": 12,
+    "y": 10
+  },
+  "fire_1@0@4": {
+    "x": 13,
+    "y": 10
+  },
+  "fire_1@0@5": {
+    "x": 14,
+    "y": 10
+  },
+  "fire_1@0@6": {
+    "x": 15,
+    "y": 10
+  },
+  "fire_1@0@7": {
+    "x": 16,
+    "y": 10
+  },
+  "fire_1@0@8": {
+    "x": 17,
+    "y": 10
+  },
+  "fire_1@0@9": {
+    "x": 18,
+    "y": 10
+  },
+  "fire_1@0@10": {
+    "x": 19,
+    "y": 10
+  },
+  "fire_1@0@11": {
+    "x": 20,
+    "y": 10
+  },
+  "fire_1@0@12": {
+    "x": 21,
+    "y": 10
+  },
+  "fire_1@0@13": {
+    "x": 22,
+    "y": 10
+  },
+  "fire_1@0@14": {
+    "x": 23,
+    "y": 10
+  },
+  "fire_1@0@15": {
+    "x": 24,
+    "y": 10
+  },
+  "fire_1@0@16": {
+    "x": 25,
+    "y": 10
+  },
+  "fire_1@0@17": {
+    "x": 26,
+    "y": 10
+  },
+  "fire_1@0@18": {
+    "x": 27,
+    "y": 10
+  },
+  "fire_1@0@19": {
+    "x": 28,
+    "y": 10
+  },
+  "fire_1@0@20": {
+    "x": 29,
+    "y": 10
+  },
+  "fire_1@0@21": {
+    "x": 30,
+    "y": 10
+  },
+  "fire_1@0@22": {
+    "x": 31,
+    "y": 10
+  },
+  "fire_1@0@23": {
+    "x": 32,
+    "y": 10
+  },
+  "fire_1@0@24": {
+    "x": 33,
+    "y": 10
+  },
+  "fire_1@0@25": {
+    "x": 34,
+    "y": 10
+  },
+  "fire_1@0@26": {
+    "x": 35,
+    "y": 10
+  },
+  "fire_1@0@27": {
+    "x": 36,
+    "y": 10
+  },
+  "fire_1@0@28": {
+    "x": 1,
+    "y": 11
+  },
+  "fire_1@0@29": {
+    "x": 2,
+    "y": 11
+  },
+  "fire_1@0@30": {
+    "x": 3,
+    "y": 11
+  },
+  "fire_1@0@31": {
+    "x": 4,
+    "y": 11
+  },
+  "fire_coral": {
+    "x": 5,
+    "y": 11
+  },
+  "fire_coral_block": {
+    "x": 6,
+    "y": 11
+  },
+  "fire_coral_fan": {
+    "x": 7,
+    "y": 11
+  },
+  "fletching_table_front": {
+    "x": 8,
+    "y": 11
+  },
+  "fletching_table_side": {
+    "x": 9,
+    "y": 11
+  },
+  "fletching_table_top": {
+    "x": 10,
+    "y": 11
+  },
+  "flower_pot": {
+    "x": 11,
+    "y": 11
+  },
+  "frosted_ice_0": {
+    "x": 12,
+    "y": 11
+  },
+  "frosted_ice_1": {
+    "x": 13,
+    "y": 11
+  },
+  "frosted_ice_2": {
+    "x": 14,
+    "y": 11
+  },
+  "frosted_ice_3": {
+    "x": 15,
+    "y": 11
+  },
+  "furnace_front": {
+    "x": 16,
+    "y": 11
+  },
+  "furnace_front_on": {
+    "x": 17,
+    "y": 11
+  },
+  "furnace_side": {
+    "x": 18,
+    "y": 11
+  },
+  "furnace_top": {
+    "x": 19,
+    "y": 11
+  },
+  "gilded_blackstone": {
+    "x": 20,
+    "y": 11
+  },
+  "glass": {
+    "x": 21,
+    "y": 11
+  },
+  "glass_pane_top": {
+    "x": 22,
+    "y": 11
+  },
+  "glowstone": {
+    "x": 23,
+    "y": 11
+  },
+  "gold_block": {
+    "x": 24,
+    "y": 11
+  },
+  "gold_ore": {
+    "x": 25,
+    "y": 11
+  },
+  "granite": {
+    "x": 26,
+    "y": 11
+  },
+  "grass": {
+    "x": 27,
+    "y": 11
+  },
+  "grass_block_side": {
+    "x": 28,
+    "y": 11
+  },
+  "grass_block_side_overlay": {
+    "x": 29,
+    "y": 11
+  },
+  "grass_block_snow": {
+    "x": 30,
+    "y": 11
+  },
+  "grass_block_top": {
+    "x": 31,
+    "y": 11
+  },
+  "grass_path_side": {
+    "x": 32,
+    "y": 11
+  },
+  "grass_path_top": {
+    "x": 33,
+    "y": 11
+  },
+  "gravel": {
+    "x": 34,
+    "y": 11
+  },
+  "gray_concrete": {
+    "x": 35,
+    "y": 11
+  },
+  "gray_concrete_powder": {
+    "x": 36,
+    "y": 11
+  },
+  "gray_glazed_terracotta": {
+    "x": 1,
+    "y": 12
+  },
+  "gray_shulker_box": {
+    "x": 2,
+    "y": 12
+  },
+  "gray_stained_glass": {
+    "x": 3,
+    "y": 12
+  },
+  "gray_stained_glass_pane_top": {
+    "x": 4,
+    "y": 12
+  },
+  "gray_terracotta": {
+    "x": 5,
+    "y": 12
+  },
+  "gray_wool": {
+    "x": 6,
+    "y": 12
+  },
+  "green_concrete": {
+    "x": 7,
+    "y": 12
+  },
+  "green_concrete_powder": {
+    "x": 8,
+    "y": 12
+  },
+  "green_glazed_terracotta": {
+    "x": 9,
+    "y": 12
+  },
+  "green_shulker_box": {
+    "x": 10,
+    "y": 12
+  },
+  "green_stained_glass": {
+    "x": 11,
+    "y": 12
+  },
+  "green_stained_glass_pane_top": {
+    "x": 12,
+    "y": 12
+  },
+  "green_terracotta": {
+    "x": 13,
+    "y": 12
+  },
+  "green_wool": {
+    "x": 14,
+    "y": 12
+  },
+  "grindstone_pivot": {
+    "x": 15,
+    "y": 12
+  },
+  "grindstone_round": {
+    "x": 16,
+    "y": 12
+  },
+  "grindstone_side": {
+    "x": 17,
+    "y": 12
+  },
+  "hay_block_side": {
+    "x": 18,
+    "y": 12
+  },
+  "hay_block_top": {
+    "x": 19,
+    "y": 12
+  },
+  "honey_block_bottom": {
+    "x": 20,
+    "y": 12
+  },
+  "honey_block_side": {
+    "x": 21,
+    "y": 12
+  },
+  "honey_block_top": {
+    "x": 22,
+    "y": 12
+  },
+  "honeycomb_block": {
+    "x": 23,
+    "y": 12
+  },
+  "hopper_inside": {
+    "x": 24,
+    "y": 12
+  },
+  "hopper_outside": {
+    "x": 25,
+    "y": 12
+  },
+  "hopper_top": {
+    "x": 26,
+    "y": 12
+  },
+  "horn_coral": {
+    "x": 27,
+    "y": 12
+  },
+  "horn_coral_block": {
+    "x": 28,
+    "y": 12
+  },
+  "horn_coral_fan": {
+    "x": 29,
+    "y": 12
+  },
+  "ice": {
+    "x": 30,
+    "y": 12
+  },
+  "iron_bars": {
+    "x": 31,
+    "y": 12
+  },
+  "iron_block": {
+    "x": 32,
+    "y": 12
+  },
+  "iron_door_bottom": {
+    "x": 33,
+    "y": 12
+  },
+  "iron_door_top": {
+    "x": 34,
+    "y": 12
+  },
+  "iron_ore": {
+    "x": 35,
+    "y": 12
+  },
+  "iron_trapdoor": {
+    "x": 36,
+    "y": 12
+  },
+  "item_frame": {
+    "x": 1,
+    "y": 13
+  },
+  "jack_o_lantern": {
+    "x": 2,
+    "y": 13
+  },
+  "jigsaw_bottom": {
+    "x": 3,
+    "y": 13
+  },
+  "jigsaw_lock": {
+    "x": 4,
+    "y": 13
+  },
+  "jigsaw_side": {
+    "x": 5,
+    "y": 13
+  },
+  "jigsaw_top": {
+    "x": 6,
+    "y": 13
+  },
+  "jukebox_side": {
+    "x": 7,
+    "y": 13
+  },
+  "jukebox_top": {
+    "x": 8,
+    "y": 13
+  },
+  "jungle_door_bottom": {
+    "x": 9,
+    "y": 13
+  },
+  "jungle_door_top": {
+    "x": 10,
+    "y": 13
+  },
+  "jungle_leaves": {
+    "x": 11,
+    "y": 13
+  },
+  "jungle_log": {
+    "x": 12,
+    "y": 13
+  },
+  "jungle_log_top": {
+    "x": 13,
+    "y": 13
+  },
+  "jungle_planks": {
+    "x": 14,
+    "y": 13
+  },
+  "jungle_sapling": {
+    "x": 15,
+    "y": 13
+  },
+  "jungle_trapdoor": {
+    "x": 16,
+    "y": 13
+  },
+  "kelp@0@0": {
+    "x": 17,
+    "y": 13
+  },
+  "kelp@0@1": {
+    "x": 18,
+    "y": 13
+  },
+  "kelp@0@2": {
+    "x": 19,
+    "y": 13
+  },
+  "kelp@0@3": {
+    "x": 20,
+    "y": 13
+  },
+  "kelp@0@4": {
+    "x": 21,
+    "y": 13
+  },
+  "kelp@0@5": {
+    "x": 22,
+    "y": 13
+  },
+  "kelp@0@6": {
+    "x": 23,
+    "y": 13
+  },
+  "kelp@0@7": {
+    "x": 24,
+    "y": 13
+  },
+  "kelp@0@8": {
+    "x": 25,
+    "y": 13
+  },
+  "kelp@0@9": {
+    "x": 26,
+    "y": 13
+  },
+  "kelp@0@10": {
+    "x": 27,
+    "y": 13
+  },
+  "kelp@0@11": {
+    "x": 28,
+    "y": 13
+  },
+  "kelp@0@12": {
+    "x": 29,
+    "y": 13
+  },
+  "kelp@0@13": {
+    "x": 30,
+    "y": 13
+  },
+  "kelp@0@14": {
+    "x": 31,
+    "y": 13
+  },
+  "kelp@0@15": {
+    "x": 32,
+    "y": 13
+  },
+  "kelp@0@16": {
+    "x": 33,
+    "y": 13
+  },
+  "kelp@0@17": {
+    "x": 34,
+    "y": 13
+  },
+  "kelp@0@18": {
+    "x": 35,
+    "y": 13
+  },
+  "kelp@0@19": {
+    "x": 36,
+    "y": 13
+  },
+  "kelp_plant@0@0": {
+    "x": 1,
+    "y": 14
+  },
+  "kelp_plant@0@1": {
+    "x": 2,
+    "y": 14
+  },
+  "kelp_plant@0@2": {
+    "x": 3,
+    "y": 14
+  },
+  "kelp_plant@0@3": {
+    "x": 4,
+    "y": 14
+  },
+  "kelp_plant@0@4": {
+    "x": 5,
+    "y": 14
+  },
+  "kelp_plant@0@5": {
+    "x": 6,
+    "y": 14
+  },
+  "kelp_plant@0@6": {
+    "x": 7,
+    "y": 14
+  },
+  "kelp_plant@0@7": {
+    "x": 8,
+    "y": 14
+  },
+  "kelp_plant@0@8": {
+    "x": 9,
+    "y": 14
+  },
+  "kelp_plant@0@9": {
+    "x": 10,
+    "y": 14
+  },
+  "kelp_plant@0@10": {
+    "x": 11,
+    "y": 14
+  },
+  "kelp_plant@0@11": {
+    "x": 12,
+    "y": 14
+  },
+  "kelp_plant@0@12": {
+    "x": 13,
+    "y": 14
+  },
+  "kelp_plant@0@13": {
+    "x": 14,
+    "y": 14
+  },
+  "kelp_plant@0@14": {
+    "x": 15,
+    "y": 14
+  },
+  "kelp_plant@0@15": {
+    "x": 16,
+    "y": 14
+  },
+  "kelp_plant@0@16": {
+    "x": 17,
+    "y": 14
+  },
+  "kelp_plant@0@17": {
+    "x": 18,
+    "y": 14
+  },
+  "kelp_plant@0@18": {
+    "x": 19,
+    "y": 14
+  },
+  "kelp_plant@0@19": {
+    "x": 20,
+    "y": 14
+  },
+  "ladder": {
+    "x": 21,
+    "y": 14
+  },
+  "lantern@0@0": {
+    "x": 22,
+    "y": 14
+  },
+  "lantern@0@1": {
+    "x": 23,
+    "y": 14
+  },
+  "lantern@0@2": {
+    "x": 24,
+    "y": 14
+  },
+  "lapis_block": {
+    "x": 25,
+    "y": 14
+  },
+  "lapis_ore": {
+    "x": 26,
+    "y": 14
+  },
+  "large_fern_bottom": {
+    "x": 27,
+    "y": 14
+  },
+  "large_fern_top": {
+    "x": 28,
+    "y": 14
+  },
+  "lava_flow@0@0": {
+    "x": 29,
+    "y": 14
+  },
+  "lava_flow@0@1": {
+    "x": 30,
+    "y": 14
+  },
+  "lava_flow@0@2": {
+    "x": 31,
+    "y": 14
+  },
+  "lava_flow@0@3": {
+    "x": 32,
+    "y": 14
+  },
+  "lava_flow@0@4": {
+    "x": 33,
+    "y": 14
+  },
+  "lava_flow@0@5": {
+    "x": 34,
+    "y": 14
+  },
+  "lava_flow@0@6": {
+    "x": 35,
+    "y": 14
+  },
+  "lava_flow@0@7": {
+    "x": 36,
+    "y": 14
+  },
+  "lava_flow@0@8": {
+    "x": 1,
+    "y": 15
+  },
+  "lava_flow@0@9": {
+    "x": 2,
+    "y": 15
+  },
+  "lava_flow@0@10": {
+    "x": 3,
+    "y": 15
+  },
+  "lava_flow@0@11": {
+    "x": 4,
+    "y": 15
+  },
+  "lava_flow@0@12": {
+    "x": 5,
+    "y": 15
+  },
+  "lava_flow@0@13": {
+    "x": 6,
+    "y": 15
+  },
+  "lava_flow@0@14": {
+    "x": 7,
+    "y": 15
+  },
+  "lava_flow@0@15": {
+    "x": 8,
+    "y": 15
+  },
+  "lava_flow@0@16": {
+    "x": 9,
+    "y": 15
+  },
+  "lava_flow@0@17": {
+    "x": 10,
+    "y": 15
+  },
+  "lava_flow@0@18": {
+    "x": 11,
+    "y": 15
+  },
+  "lava_flow@0@19": {
+    "x": 12,
+    "y": 15
+  },
+  "lava_flow@0@20": {
+    "x": 13,
+    "y": 15
+  },
+  "lava_flow@0@21": {
+    "x": 14,
+    "y": 15
+  },
+  "lava_flow@0@22": {
+    "x": 15,
+    "y": 15
+  },
+  "lava_flow@0@23": {
+    "x": 16,
+    "y": 15
+  },
+  "lava_flow@0@24": {
+    "x": 17,
+    "y": 15
+  },
+  "lava_flow@0@25": {
+    "x": 18,
+    "y": 15
+  },
+  "lava_flow@0@26": {
+    "x": 19,
+    "y": 15
+  },
+  "lava_flow@0@27": {
+    "x": 20,
+    "y": 15
+  },
+  "lava_flow@0@28": {
+    "x": 21,
+    "y": 15
+  },
+  "lava_flow@0@29": {
+    "x": 22,
+    "y": 15
+  },
+  "lava_flow@0@30": {
+    "x": 23,
+    "y": 15
+  },
+  "lava_flow@0@31": {
+    "x": 24,
+    "y": 15
+  },
+  "lava_flow@1@0": {
+    "x": 25,
+    "y": 15
+  },
+  "lava_flow@1@1": {
+    "x": 26,
+    "y": 15
+  },
+  "lava_flow@1@2": {
+    "x": 27,
+    "y": 15
+  },
+  "lava_flow@1@3": {
+    "x": 28,
+    "y": 15
+  },
+  "lava_flow@1@4": {
+    "x": 29,
+    "y": 15
+  },
+  "lava_flow@1@5": {
+    "x": 30,
+    "y": 15
+  },
+  "lava_flow@1@6": {
+    "x": 31,
+    "y": 15
+  },
+  "lava_flow@1@7": {
+    "x": 32,
+    "y": 15
+  },
+  "lava_flow@1@8": {
+    "x": 33,
+    "y": 15
+  },
+  "lava_flow@1@9": {
+    "x": 34,
+    "y": 15
+  },
+  "lava_flow@1@10": {
+    "x": 35,
+    "y": 15
+  },
+  "lava_flow@1@11": {
+    "x": 36,
+    "y": 15
+  },
+  "lava_flow@1@12": {
+    "x": 1,
+    "y": 16
+  },
+  "lava_flow@1@13": {
+    "x": 2,
+    "y": 16
+  },
+  "lava_flow@1@14": {
+    "x": 3,
+    "y": 16
+  },
+  "lava_flow@1@15": {
+    "x": 4,
+    "y": 16
+  },
+  "lava_flow@1@16": {
+    "x": 5,
+    "y": 16
+  },
+  "lava_flow@1@17": {
+    "x": 6,
+    "y": 16
+  },
+  "lava_flow@1@18": {
+    "x": 7,
+    "y": 16
+  },
+  "lava_flow@1@19": {
+    "x": 8,
+    "y": 16
+  },
+  "lava_flow@1@20": {
+    "x": 9,
+    "y": 16
+  },
+  "lava_flow@1@21": {
+    "x": 10,
+    "y": 16
+  },
+  "lava_flow@1@22": {
+    "x": 11,
+    "y": 16
+  },
+  "lava_flow@1@23": {
+    "x": 12,
+    "y": 16
+  },
+  "lava_flow@1@24": {
+    "x": 13,
+    "y": 16
+  },
+  "lava_flow@1@25": {
+    "x": 14,
+    "y": 16
+  },
+  "lava_flow@1@26": {
+    "x": 15,
+    "y": 16
+  },
+  "lava_flow@1@27": {
+    "x": 16,
+    "y": 16
+  },
+  "lava_flow@1@28": {
+    "x": 17,
+    "y": 16
+  },
+  "lava_flow@1@29": {
+    "x": 18,
+    "y": 16
+  },
+  "lava_flow@1@30": {
+    "x": 19,
+    "y": 16
+  },
+  "lava_flow@1@31": {
+    "x": 20,
+    "y": 16
+  },
+  "lava_still@0@0": {
+    "x": 21,
+    "y": 16
+  },
+  "lava_still@0@1": {
+    "x": 22,
+    "y": 16
+  },
+  "lava_still@0@2": {
+    "x": 23,
+    "y": 16
+  },
+  "lava_still@0@3": {
+    "x": 24,
+    "y": 16
+  },
+  "lava_still@0@4": {
+    "x": 25,
+    "y": 16
+  },
+  "lava_still@0@5": {
+    "x": 26,
+    "y": 16
+  },
+  "lava_still@0@6": {
+    "x": 27,
+    "y": 16
+  },
+  "lava_still@0@7": {
+    "x": 28,
+    "y": 16
+  },
+  "lava_still@0@8": {
+    "x": 29,
+    "y": 16
+  },
+  "lava_still@0@9": {
+    "x": 30,
+    "y": 16
+  },
+  "lava_still@0@10": {
+    "x": 31,
+    "y": 16
+  },
+  "lava_still@0@11": {
+    "x": 32,
+    "y": 16
+  },
+  "lava_still@0@12": {
+    "x": 33,
+    "y": 16
+  },
+  "lava_still@0@13": {
+    "x": 34,
+    "y": 16
+  },
+  "lava_still@0@14": {
+    "x": 35,
+    "y": 16
+  },
+  "lava_still@0@15": {
+    "x": 36,
+    "y": 16
+  },
+  "lava_still@0@16": {
+    "x": 1,
+    "y": 17
+  },
+  "lava_still@0@17": {
+    "x": 2,
+    "y": 17
+  },
+  "lava_still@0@18": {
+    "x": 3,
+    "y": 17
+  },
+  "lava_still@0@19": {
+    "x": 4,
+    "y": 17
+  },
+  "lectern_base": {
+    "x": 5,
+    "y": 17
+  },
+  "lectern_front": {
+    "x": 6,
+    "y": 17
+  },
+  "lectern_sides": {
+    "x": 7,
+    "y": 17
+  },
+  "lectern_top": {
+    "x": 8,
+    "y": 17
+  },
+  "lever": {
+    "x": 9,
+    "y": 17
+  },
+  "light_blue_concrete": {
+    "x": 10,
+    "y": 17
+  },
+  "light_blue_concrete_powder": {
+    "x": 11,
+    "y": 17
+  },
+  "light_blue_glazed_terracotta": {
+    "x": 12,
+    "y": 17
+  },
+  "light_blue_shulker_box": {
+    "x": 13,
+    "y": 17
+  },
+  "light_blue_stained_glass": {
+    "x": 14,
+    "y": 17
+  },
+  "light_blue_stained_glass_pane_top": {
+    "x": 15,
+    "y": 17
+  },
+  "light_blue_terracotta": {
+    "x": 16,
+    "y": 17
+  },
+  "light_blue_wool": {
+    "x": 17,
+    "y": 17
+  },
+  "light_gray_concrete": {
+    "x": 18,
+    "y": 17
+  },
+  "light_gray_concrete_powder": {
+    "x": 19,
+    "y": 17
+  },
+  "light_gray_glazed_terracotta": {
+    "x": 20,
+    "y": 17
+  },
+  "light_gray_shulker_box": {
+    "x": 21,
+    "y": 17
+  },
+  "light_gray_stained_glass": {
+    "x": 22,
+    "y": 17
+  },
+  "light_gray_stained_glass_pane_top": {
+    "x": 23,
+    "y": 17
+  },
+  "light_gray_terracotta": {
+    "x": 24,
+    "y": 17
+  },
+  "light_gray_wool": {
+    "x": 25,
+    "y": 17
+  },
+  "lilac_bottom": {
+    "x": 26,
+    "y": 17
+  },
+  "lilac_top": {
+    "x": 27,
+    "y": 17
+  },
+  "lily_of_the_valley": {
+    "x": 28,
+    "y": 17
+  },
+  "lily_pad": {
+    "x": 29,
+    "y": 17
+  },
+  "lime_concrete": {
+    "x": 30,
+    "y": 17
+  },
+  "lime_concrete_powder": {
+    "x": 31,
+    "y": 17
+  },
+  "lime_glazed_terracotta": {
+    "x": 32,
+    "y": 17
+  },
+  "lime_shulker_box": {
+    "x": 33,
+    "y": 17
+  },
+  "lime_stained_glass": {
+    "x": 34,
+    "y": 17
+  },
+  "lime_stained_glass_pane_top": {
+    "x": 35,
+    "y": 17
+  },
+  "lime_terracotta": {
+    "x": 36,
+    "y": 17
+  },
+  "lime_wool": {
+    "x": 1,
+    "y": 18
+  },
+  "lodestone_side": {
+    "x": 2,
+    "y": 18
+  },
+  "lodestone_top": {
+    "x": 3,
+    "y": 18
+  },
+  "loom_bottom": {
+    "x": 4,
+    "y": 18
+  },
+  "loom_front": {
+    "x": 5,
+    "y": 18
+  },
+  "loom_side": {
+    "x": 6,
+    "y": 18
+  },
+  "loom_top": {
+    "x": 7,
+    "y": 18
+  },
+  "magenta_concrete": {
+    "x": 8,
+    "y": 18
+  },
+  "magenta_concrete_powder": {
+    "x": 9,
+    "y": 18
+  },
+  "magenta_glazed_terracotta": {
+    "x": 10,
+    "y": 18
+  },
+  "magenta_shulker_box": {
+    "x": 11,
+    "y": 18
+  },
+  "magenta_stained_glass": {
+    "x": 12,
+    "y": 18
+  },
+  "magenta_stained_glass_pane_top": {
+    "x": 13,
+    "y": 18
+  },
+  "magenta_terracotta": {
+    "x": 14,
+    "y": 18
+  },
+  "magenta_wool": {
+    "x": 15,
+    "y": 18
+  },
+  "magma@0@0": {
+    "x": 16,
+    "y": 18
+  },
+  "magma@0@1": {
+    "x": 17,
+    "y": 18
+  },
+  "magma@0@2": {
+    "x": 18,
+    "y": 18
+  },
+  "melon_side": {
+    "x": 19,
+    "y": 18
+  },
+  "melon_stem": {
+    "x": 20,
+    "y": 18
+  },
+  "melon_top": {
+    "x": 21,
+    "y": 18
+  },
+  "mossy_cobblestone": {
+    "x": 22,
+    "y": 18
+  },
+  "mossy_stone_bricks": {
+    "x": 23,
+    "y": 18
+  },
+  "mushroom_block_inside": {
+    "x": 24,
+    "y": 18
+  },
+  "mushroom_stem": {
+    "x": 25,
+    "y": 18
+  },
+  "mycelium_side": {
+    "x": 26,
+    "y": 18
+  },
+  "mycelium_top": {
+    "x": 27,
+    "y": 18
+  },
+  "nether_bricks": {
+    "x": 28,
+    "y": 18
+  },
+  "nether_gold_ore": {
+    "x": 29,
+    "y": 18
+  },
+  "nether_portal@0@0": {
+    "x": 30,
+    "y": 18
+  },
+  "nether_portal@0@1": {
+    "x": 31,
+    "y": 18
+  },
+  "nether_portal@0@2": {
+    "x": 32,
+    "y": 18
+  },
+  "nether_portal@0@3": {
+    "x": 33,
+    "y": 18
+  },
+  "nether_portal@0@4": {
+    "x": 34,
+    "y": 18
+  },
+  "nether_portal@0@5": {
+    "x": 35,
+    "y": 18
+  },
+  "nether_portal@0@6": {
+    "x": 36,
+    "y": 18
+  },
+  "nether_portal@0@7": {
+    "x": 1,
+    "y": 19
+  },
+  "nether_portal@0@8": {
+    "x": 2,
+    "y": 19
+  },
+  "nether_portal@0@9": {
+    "x": 3,
+    "y": 19
+  },
+  "nether_portal@0@10": {
+    "x": 4,
+    "y": 19
+  },
+  "nether_portal@0@11": {
+    "x": 5,
+    "y": 19
+  },
+  "nether_portal@0@12": {
+    "x": 6,
+    "y": 19
+  },
+  "nether_portal@0@13": {
+    "x": 7,
+    "y": 19
+  },
+  "nether_portal@0@14": {
+    "x": 8,
+    "y": 19
+  },
+  "nether_portal@0@15": {
+    "x": 9,
+    "y": 19
+  },
+  "nether_portal@0@16": {
+    "x": 10,
+    "y": 19
+  },
+  "nether_portal@0@17": {
+    "x": 11,
+    "y": 19
+  },
+  "nether_portal@0@18": {
+    "x": 12,
+    "y": 19
+  },
+  "nether_portal@0@19": {
+    "x": 13,
+    "y": 19
+  },
+  "nether_portal@0@20": {
+    "x": 14,
+    "y": 19
+  },
+  "nether_portal@0@21": {
+    "x": 15,
+    "y": 19
+  },
+  "nether_portal@0@22": {
+    "x": 16,
+    "y": 19
+  },
+  "nether_portal@0@23": {
+    "x": 17,
+    "y": 19
+  },
+  "nether_portal@0@24": {
+    "x": 18,
+    "y": 19
+  },
+  "nether_portal@0@25": {
+    "x": 19,
+    "y": 19
+  },
+  "nether_portal@0@26": {
+    "x": 20,
+    "y": 19
+  },
+  "nether_portal@0@27": {
+    "x": 21,
+    "y": 19
+  },
+  "nether_portal@0@28": {
+    "x": 22,
+    "y": 19
+  },
+  "nether_portal@0@29": {
+    "x": 23,
+    "y": 19
+  },
+  "nether_portal@0@30": {
+    "x": 24,
+    "y": 19
+  },
+  "nether_portal@0@31": {
+    "x": 25,
+    "y": 19
+  },
+  "nether_quartz_ore": {
+    "x": 26,
+    "y": 19
+  },
+  "nether_sprouts": {
+    "x": 27,
+    "y": 19
+  },
+  "nether_wart_block": {
+    "x": 28,
+    "y": 19
+  },
+  "nether_wart_stage0": {
+    "x": 29,
+    "y": 19
+  },
+  "nether_wart_stage1": {
+    "x": 30,
+    "y": 19
+  },
+  "nether_wart_stage2": {
+    "x": 31,
+    "y": 19
+  },
+  "netherite_block": {
+    "x": 32,
+    "y": 19
+  },
+  "netherrack": {
+    "x": 33,
+    "y": 19
+  },
+  "note_block": {
+    "x": 34,
+    "y": 19
+  },
+  "oak_door_bottom": {
+    "x": 35,
+    "y": 19
+  },
+  "oak_door_top": {
+    "x": 36,
+    "y": 19
+  },
+  "oak_leaves": {
+    "x": 1,
+    "y": 20
+  },
+  "oak_log": {
+    "x": 2,
+    "y": 20
+  },
+  "oak_log_top": {
+    "x": 3,
+    "y": 20
+  },
+  "oak_planks": {
+    "x": 4,
+    "y": 20
+  },
+  "oak_sapling": {
+    "x": 5,
+    "y": 20
+  },
+  "oak_trapdoor": {
+    "x": 6,
+    "y": 20
+  },
+  "observer_back": {
+    "x": 7,
+    "y": 20
+  },
+  "observer_back_on": {
+    "x": 8,
+    "y": 20
+  },
+  "observer_front": {
+    "x": 9,
+    "y": 20
+  },
+  "observer_side": {
+    "x": 10,
+    "y": 20
+  },
+  "observer_top": {
+    "x": 11,
+    "y": 20
+  },
+  "obsidian": {
+    "x": 12,
+    "y": 20
+  },
+  "orange_concrete": {
+    "x": 13,
+    "y": 20
+  },
+  "orange_concrete_powder": {
+    "x": 14,
+    "y": 20
+  },
+  "orange_glazed_terracotta": {
+    "x": 15,
+    "y": 20
+  },
+  "orange_shulker_box": {
+    "x": 16,
+    "y": 20
+  },
+  "orange_stained_glass": {
+    "x": 17,
+    "y": 20
+  },
+  "orange_stained_glass_pane_top": {
+    "x": 18,
+    "y": 20
+  },
+  "orange_terracotta": {
+    "x": 19,
+    "y": 20
+  },
+  "orange_tulip": {
+    "x": 20,
+    "y": 20
+  },
+  "orange_wool": {
+    "x": 21,
+    "y": 20
+  },
+  "oxeye_daisy": {
+    "x": 22,
+    "y": 20
+  },
+  "packed_ice": {
+    "x": 23,
+    "y": 20
+  },
+  "peony_bottom": {
+    "x": 24,
+    "y": 20
+  },
+  "peony_top": {
+    "x": 25,
+    "y": 20
+  },
+  "pink_concrete": {
+    "x": 26,
+    "y": 20
+  },
+  "pink_concrete_powder": {
+    "x": 27,
+    "y": 20
+  },
+  "pink_glazed_terracotta": {
+    "x": 28,
+    "y": 20
+  },
+  "pink_shulker_box": {
+    "x": 29,
+    "y": 20
+  },
+  "pink_stained_glass": {
+    "x": 30,
+    "y": 20
+  },
+  "pink_stained_glass_pane_top": {
+    "x": 31,
+    "y": 20
+  },
+  "pink_terracotta": {
+    "x": 32,
+    "y": 20
+  },
+  "pink_tulip": {
+    "x": 33,
+    "y": 20
+  },
+  "pink_wool": {
+    "x": 34,
+    "y": 20
+  },
+  "piston_bottom": {
+    "x": 35,
+    "y": 20
+  },
+  "piston_inner": {
+    "x": 36,
+    "y": 20
+  },
+  "piston_side": {
+    "x": 1,
+    "y": 21
+  },
+  "piston_top": {
+    "x": 2,
+    "y": 21
+  },
+  "piston_top_sticky": {
+    "x": 3,
+    "y": 21
+  },
+  "podzol_side": {
+    "x": 4,
+    "y": 21
+  },
+  "podzol_top": {
+    "x": 5,
+    "y": 21
+  },
+  "polished_andesite": {
+    "x": 6,
+    "y": 21
+  },
+  "polished_basalt_side": {
+    "x": 7,
+    "y": 21
+  },
+  "polished_basalt_top": {
+    "x": 8,
+    "y": 21
+  },
+  "polished_blackstone": {
+    "x": 9,
+    "y": 21
+  },
+  "polished_blackstone_bricks": {
+    "x": 10,
+    "y": 21
+  },
+  "polished_diorite": {
+    "x": 11,
+    "y": 21
+  },
+  "polished_granite": {
+    "x": 12,
+    "y": 21
+  },
+  "poppy": {
+    "x": 13,
+    "y": 21
+  },
+  "potatoes_stage0": {
+    "x": 14,
+    "y": 21
+  },
+  "potatoes_stage1": {
+    "x": 15,
+    "y": 21
+  },
+  "potatoes_stage2": {
+    "x": 16,
+    "y": 21
+  },
+  "potatoes_stage3": {
+    "x": 17,
+    "y": 21
+  },
+  "powered_rail": {
+    "x": 18,
+    "y": 21
+  },
+  "powered_rail_on": {
+    "x": 19,
+    "y": 21
+  },
+  "prismarine@0@0": {
+    "x": 20,
+    "y": 21
+  },
+  "prismarine@0@1": {
+    "x": 21,
+    "y": 21
+  },
+  "prismarine@0@2": {
+    "x": 22,
+    "y": 21
+  },
+  "prismarine@0@3": {
+    "x": 23,
+    "y": 21
+  },
+  "prismarine_bricks": {
+    "x": 24,
+    "y": 21
+  },
+  "pumpkin_side": {
+    "x": 25,
+    "y": 21
+  },
+  "pumpkin_stem": {
+    "x": 26,
+    "y": 21
+  },
+  "pumpkin_top": {
+    "x": 27,
+    "y": 21
+  },
+  "purple_concrete": {
+    "x": 28,
+    "y": 21
+  },
+  "purple_concrete_powder": {
+    "x": 29,
+    "y": 21
+  },
+  "purple_glazed_terracotta": {
+    "x": 30,
+    "y": 21
+  },
+  "purple_shulker_box": {
+    "x": 31,
+    "y": 21
+  },
+  "purple_stained_glass": {
+    "x": 32,
+    "y": 21
+  },
+  "purple_stained_glass_pane_top": {
+    "x": 33,
+    "y": 21
+  },
+  "purple_terracotta": {
+    "x": 34,
+    "y": 21
+  },
+  "purple_wool": {
+    "x": 35,
+    "y": 21
+  },
+  "purpur_block": {
+    "x": 36,
+    "y": 21
+  },
+  "purpur_pillar": {
+    "x": 1,
+    "y": 22
+  },
+  "purpur_pillar_top": {
+    "x": 2,
+    "y": 22
+  },
+  "quartz_block_bottom": {
+    "x": 3,
+    "y": 22
+  },
+  "quartz_block_side": {
+    "x": 4,
+    "y": 22
+  },
+  "quartz_block_top": {
+    "x": 5,
+    "y": 22
+  },
+  "quartz_bricks": {
+    "x": 6,
+    "y": 22
+  },
+  "quartz_pillar": {
+    "x": 7,
+    "y": 22
+  },
+  "quartz_pillar_top": {
+    "x": 8,
+    "y": 22
+  },
+  "rail": {
+    "x": 9,
+    "y": 22
+  },
+  "rail_corner": {
+    "x": 10,
+    "y": 22
+  },
+  "red_concrete": {
+    "x": 11,
+    "y": 22
+  },
+  "red_concrete_powder": {
+    "x": 12,
+    "y": 22
+  },
+  "red_glazed_terracotta": {
+    "x": 13,
+    "y": 22
+  },
+  "red_mushroom": {
+    "x": 14,
+    "y": 22
+  },
+  "red_mushroom_block": {
+    "x": 15,
+    "y": 22
+  },
+  "red_nether_bricks": {
+    "x": 16,
+    "y": 22
+  },
+  "red_sand": {
+    "x": 17,
+    "y": 22
+  },
+  "red_sandstone": {
+    "x": 18,
+    "y": 22
+  },
+  "red_sandstone_bottom": {
+    "x": 19,
+    "y": 22
+  },
+  "red_sandstone_top": {
+    "x": 20,
+    "y": 22
+  },
+  "red_shulker_box": {
+    "x": 21,
+    "y": 22
+  },
+  "red_stained_glass": {
+    "x": 22,
+    "y": 22
+  },
+  "red_stained_glass_pane_top": {
+    "x": 23,
+    "y": 22
+  },
+  "red_terracotta": {
+    "x": 24,
+    "y": 22
+  },
+  "red_tulip": {
+    "x": 25,
+    "y": 22
+  },
+  "red_wool": {
+    "x": 26,
+    "y": 22
+  },
+  "redstone_block": {
+    "x": 27,
+    "y": 22
+  },
+  "redstone_dust_dot": {
+    "x": 28,
+    "y": 22
+  },
+  "redstone_dust_line0": {
+    "x": 29,
+    "y": 22
+  },
+  "redstone_dust_line1": {
+    "x": 30,
+    "y": 22
+  },
+  "redstone_dust_overlay": {
+    "x": 31,
+    "y": 22
+  },
+  "redstone_lamp": {
+    "x": 32,
+    "y": 22
+  },
+  "redstone_lamp_on": {
+    "x": 33,
+    "y": 22
+  },
+  "redstone_ore": {
+    "x": 34,
+    "y": 22
+  },
+  "redstone_torch": {
+    "x": 35,
+    "y": 22
+  },
+  "redstone_torch_off": {
+    "x": 36,
+    "y": 22
+  },
+  "repeater": {
+    "x": 1,
+    "y": 23
+  },
+  "repeater_on": {
+    "x": 2,
+    "y": 23
+  },
+  "repeating_command_block_back@0@0": {
+    "x": 3,
+    "y": 23
+  },
+  "repeating_command_block_back@0@1": {
+    "x": 4,
+    "y": 23
+  },
+  "repeating_command_block_back@0@2": {
+    "x": 5,
+    "y": 23
+  },
+  "repeating_command_block_back@0@3": {
+    "x": 6,
+    "y": 23
+  },
+  "repeating_command_block_conditional@0@0": {
+    "x": 7,
+    "y": 23
+  },
+  "repeating_command_block_conditional@0@1": {
+    "x": 8,
+    "y": 23
+  },
+  "repeating_command_block_conditional@0@2": {
+    "x": 9,
+    "y": 23
+  },
+  "repeating_command_block_conditional@0@3": {
+    "x": 10,
+    "y": 23
+  },
+  "repeating_command_block_front@0@0": {
+    "x": 11,
+    "y": 23
+  },
+  "repeating_command_block_front@0@1": {
+    "x": 12,
+    "y": 23
+  },
+  "repeating_command_block_front@0@2": {
+    "x": 13,
+    "y": 23
+  },
+  "repeating_command_block_front@0@3": {
+    "x": 14,
+    "y": 23
+  },
+  "repeating_command_block_side@0@0": {
+    "x": 15,
+    "y": 23
+  },
+  "repeating_command_block_side@0@1": {
+    "x": 16,
+    "y": 23
+  },
+  "repeating_command_block_side@0@2": {
+    "x": 17,
+    "y": 23
+  },
+  "repeating_command_block_side@0@3": {
+    "x": 18,
+    "y": 23
+  },
+  "respawn_anchor_bottom": {
+    "x": 19,
+    "y": 23
+  },
+  "respawn_anchor_side0": {
+    "x": 20,
+    "y": 23
+  },
+  "respawn_anchor_side1": {
+    "x": 21,
+    "y": 23
+  },
+  "respawn_anchor_side2": {
+    "x": 22,
+    "y": 23
+  },
+  "respawn_anchor_side3": {
+    "x": 23,
+    "y": 23
+  },
+  "respawn_anchor_side4": {
+    "x": 24,
+    "y": 23
+  },
+  "respawn_anchor_top@0@0": {
+    "x": 25,
+    "y": 23
+  },
+  "respawn_anchor_top@0@1": {
+    "x": 26,
+    "y": 23
+  },
+  "respawn_anchor_top@0@2": {
+    "x": 27,
+    "y": 23
+  },
+  "respawn_anchor_top@0@3": {
+    "x": 28,
+    "y": 23
+  },
+  "respawn_anchor_top@0@4": {
+    "x": 29,
+    "y": 23
+  },
+  "respawn_anchor_top@0@5": {
+    "x": 30,
+    "y": 23
+  },
+  "respawn_anchor_top@0@6": {
+    "x": 31,
+    "y": 23
+  },
+  "respawn_anchor_top@0@7": {
+    "x": 32,
+    "y": 23
+  },
+  "respawn_anchor_top@0@8": {
+    "x": 33,
+    "y": 23
+  },
+  "respawn_anchor_top@0@9": {
+    "x": 34,
+    "y": 23
+  },
+  "respawn_anchor_top@0@10": {
+    "x": 35,
+    "y": 23
+  },
+  "respawn_anchor_top@0@11": {
+    "x": 36,
+    "y": 23
+  },
+  "respawn_anchor_top@0@12": {
+    "x": 1,
+    "y": 24
+  },
+  "respawn_anchor_top@0@13": {
+    "x": 2,
+    "y": 24
+  },
+  "respawn_anchor_top@0@14": {
+    "x": 3,
+    "y": 24
+  },
+  "respawn_anchor_top@0@15": {
+    "x": 4,
+    "y": 24
+  },
+  "respawn_anchor_top@0@16": {
+    "x": 5,
+    "y": 24
+  },
+  "respawn_anchor_top@0@17": {
+    "x": 6,
+    "y": 24
+  },
+  "respawn_anchor_top@0@18": {
+    "x": 7,
+    "y": 24
+  },
+  "respawn_anchor_top@0@19": {
+    "x": 8,
+    "y": 24
+  },
+  "respawn_anchor_top@0@20": {
+    "x": 9,
+    "y": 24
+  },
+  "respawn_anchor_top@0@21": {
+    "x": 10,
+    "y": 24
+  },
+  "respawn_anchor_top@0@22": {
+    "x": 11,
+    "y": 24
+  },
+  "respawn_anchor_top@0@23": {
+    "x": 12,
+    "y": 24
+  },
+  "respawn_anchor_top@0@24": {
+    "x": 13,
+    "y": 24
+  },
+  "respawn_anchor_top@0@25": {
+    "x": 14,
+    "y": 24
+  },
+  "respawn_anchor_top@0@26": {
+    "x": 15,
+    "y": 24
+  },
+  "respawn_anchor_top@0@27": {
+    "x": 16,
+    "y": 24
+  },
+  "respawn_anchor_top@0@28": {
+    "x": 17,
+    "y": 24
+  },
+  "respawn_anchor_top@0@29": {
+    "x": 18,
+    "y": 24
+  },
+  "respawn_anchor_top@0@30": {
+    "x": 19,
+    "y": 24
+  },
+  "respawn_anchor_top@0@31": {
+    "x": 20,
+    "y": 24
+  },
+  "respawn_anchor_top_off": {
+    "x": 21,
+    "y": 24
+  },
+  "rose_bush_bottom": {
+    "x": 22,
+    "y": 24
+  },
+  "rose_bush_top": {
+    "x": 23,
+    "y": 24
+  },
+  "sand": {
+    "x": 24,
+    "y": 24
+  },
+  "sandstone": {
+    "x": 25,
+    "y": 24
+  },
+  "sandstone_bottom": {
+    "x": 26,
+    "y": 24
+  },
+  "sandstone_top": {
+    "x": 27,
+    "y": 24
+  },
+  "scaffolding_bottom": {
+    "x": 28,
+    "y": 24
+  },
+  "scaffolding_side": {
+    "x": 29,
+    "y": 24
+  },
+  "scaffolding_top": {
+    "x": 30,
+    "y": 24
+  },
+  "sea_lantern@0@0": {
+    "x": 31,
+    "y": 24
+  },
+  "sea_lantern@0@1": {
+    "x": 32,
+    "y": 24
+  },
+  "sea_lantern@0@2": {
+    "x": 33,
+    "y": 24
+  },
+  "sea_lantern@0@3": {
+    "x": 34,
+    "y": 24
+  },
+  "sea_lantern@0@4": {
+    "x": 35,
+    "y": 24
+  },
+  "sea_pickle": {
+    "x": 36,
+    "y": 24
+  },
+  "seagrass@0@0": {
+    "x": 1,
+    "y": 25
+  },
+  "seagrass@0@1": {
+    "x": 2,
+    "y": 25
+  },
+  "seagrass@0@2": {
+    "x": 3,
+    "y": 25
+  },
+  "seagrass@0@3": {
+    "x": 4,
+    "y": 25
+  },
+  "seagrass@0@4": {
+    "x": 5,
+    "y": 25
+  },
+  "seagrass@0@5": {
+    "x": 6,
+    "y": 25
+  },
+  "seagrass@0@6": {
+    "x": 7,
+    "y": 25
+  },
+  "seagrass@0@7": {
+    "x": 8,
+    "y": 25
+  },
+  "seagrass@0@8": {
+    "x": 9,
+    "y": 25
+  },
+  "seagrass@0@9": {
+    "x": 10,
+    "y": 25
+  },
+  "seagrass@0@10": {
+    "x": 11,
+    "y": 25
+  },
+  "seagrass@0@11": {
+    "x": 12,
+    "y": 25
+  },
+  "seagrass@0@12": {
+    "x": 13,
+    "y": 25
+  },
+  "seagrass@0@13": {
+    "x": 14,
+    "y": 25
+  },
+  "seagrass@0@14": {
+    "x": 15,
+    "y": 25
+  },
+  "seagrass@0@15": {
+    "x": 16,
+    "y": 25
+  },
+  "seagrass@0@16": {
+    "x": 17,
+    "y": 25
+  },
+  "seagrass@0@17": {
+    "x": 18,
+    "y": 25
+  },
+  "shroomlight": {
+    "x": 19,
+    "y": 25
+  },
+  "shulker_box": {
+    "x": 20,
+    "y": 25
+  },
+  "slime_block": {
+    "x": 21,
+    "y": 25
+  },
+  "smithing_table_bottom": {
+    "x": 22,
+    "y": 25
+  },
+  "smithing_table_front": {
+    "x": 23,
+    "y": 25
+  },
+  "smithing_table_side": {
+    "x": 24,
+    "y": 25
+  },
+  "smithing_table_top": {
+    "x": 25,
+    "y": 25
+  },
+  "smoker_bottom": {
+    "x": 26,
+    "y": 25
+  },
+  "smoker_front": {
+    "x": 27,
+    "y": 25
+  },
+  "smoker_front_on@0@0": {
+    "x": 28,
+    "y": 25
+  },
+  "smoker_front_on@0@1": {
+    "x": 29,
+    "y": 25
+  },
+  "smoker_front_on@0@2": {
+    "x": 30,
+    "y": 25
+  },
+  "smoker_side": {
+    "x": 31,
+    "y": 25
+  },
+  "smoker_top": {
+    "x": 32,
+    "y": 25
+  },
+  "smooth_stone": {
+    "x": 33,
+    "y": 25
+  },
+  "smooth_stone_slab_side": {
+    "x": 34,
+    "y": 25
+  },
+  "snow": {
+    "x": 35,
+    "y": 25
+  },
+  "soul_campfire_fire@0@0": {
+    "x": 36,
+    "y": 25
+  },
+  "soul_campfire_fire@0@1": {
+    "x": 1,
+    "y": 26
+  },
+  "soul_campfire_fire@0@2": {
+    "x": 2,
+    "y": 26
+  },
+  "soul_campfire_fire@0@3": {
+    "x": 3,
+    "y": 26
+  },
+  "soul_campfire_fire@0@4": {
+    "x": 4,
+    "y": 26
+  },
+  "soul_campfire_fire@0@5": {
+    "x": 5,
+    "y": 26
+  },
+  "soul_campfire_fire@0@6": {
+    "x": 6,
+    "y": 26
+  },
+  "soul_campfire_fire@0@7": {
+    "x": 7,
+    "y": 26
+  },
+  "soul_campfire_log_lit@0@0": {
+    "x": 8,
+    "y": 26
+  },
+  "soul_campfire_log_lit@0@1": {
+    "x": 9,
+    "y": 26
+  },
+  "soul_campfire_log_lit@0@2": {
+    "x": 10,
+    "y": 26
+  },
+  "soul_campfire_log_lit@0@3": {
+    "x": 11,
+    "y": 26
+  },
+  "soul_fire_0@0@0": {
+    "x": 12,
+    "y": 26
+  },
+  "soul_fire_0@0@1": {
+    "x": 13,
+    "y": 26
+  },
+  "soul_fire_0@0@2": {
+    "x": 14,
+    "y": 26
+  },
+  "soul_fire_0@0@3": {
+    "x": 15,
+    "y": 26
+  },
+  "soul_fire_0@0@4": {
+    "x": 16,
+    "y": 26
+  },
+  "soul_fire_0@0@5": {
+    "x": 17,
+    "y": 26
+  },
+  "soul_fire_0@0@6": {
+    "x": 18,
+    "y": 26
+  },
+  "soul_fire_0@0@7": {
+    "x": 19,
+    "y": 26
+  },
+  "soul_fire_0@0@8": {
+    "x": 20,
+    "y": 26
+  },
+  "soul_fire_0@0@9": {
+    "x": 21,
+    "y": 26
+  },
+  "soul_fire_0@0@10": {
+    "x": 22,
+    "y": 26
+  },
+  "soul_fire_0@0@11": {
+    "x": 23,
+    "y": 26
+  },
+  "soul_fire_0@0@12": {
+    "x": 24,
+    "y": 26
+  },
+  "soul_fire_0@0@13": {
+    "x": 25,
+    "y": 26
+  },
+  "soul_fire_0@0@14": {
+    "x": 26,
+    "y": 26
+  },
+  "soul_fire_0@0@15": {
+    "x": 27,
+    "y": 26
+  },
+  "soul_fire_0@0@16": {
+    "x": 28,
+    "y": 26
+  },
+  "soul_fire_0@0@17": {
+    "x": 29,
+    "y": 26
+  },
+  "soul_fire_0@0@18": {
+    "x": 30,
+    "y": 26
+  },
+  "soul_fire_0@0@19": {
+    "x": 31,
+    "y": 26
+  },
+  "soul_fire_0@0@20": {
+    "x": 32,
+    "y": 26
+  },
+  "soul_fire_0@0@21": {
+    "x": 33,
+    "y": 26
+  },
+  "soul_fire_0@0@22": {
+    "x": 34,
+    "y": 26
+  },
+  "soul_fire_0@0@23": {
+    "x": 35,
+    "y": 26
+  },
+  "soul_fire_0@0@24": {
+    "x": 36,
+    "y": 26
+  },
+  "soul_fire_0@0@25": {
+    "x": 1,
+    "y": 27
+  },
+  "soul_fire_0@0@26": {
+    "x": 2,
+    "y": 27
+  },
+  "soul_fire_0@0@27": {
+    "x": 3,
+    "y": 27
+  },
+  "soul_fire_0@0@28": {
+    "x": 4,
+    "y": 27
+  },
+  "soul_fire_0@0@29": {
+    "x": 5,
+    "y": 27
+  },
+  "soul_fire_0@0@30": {
+    "x": 6,
+    "y": 27
+  },
+  "soul_fire_0@0@31": {
+    "x": 7,
+    "y": 27
+  },
+  "soul_fire_1@0@0": {
+    "x": 8,
+    "y": 27
+  },
+  "soul_fire_1@0@1": {
+    "x": 9,
+    "y": 27
+  },
+  "soul_fire_1@0@2": {
+    "x": 10,
+    "y": 27
+  },
+  "soul_fire_1@0@3": {
+    "x": 11,
+    "y": 27
+  },
+  "soul_fire_1@0@4": {
+    "x": 12,
+    "y": 27
+  },
+  "soul_fire_1@0@5": {
+    "x": 13,
+    "y": 27
+  },
+  "soul_fire_1@0@6": {
+    "x": 14,
+    "y": 27
+  },
+  "soul_fire_1@0@7": {
+    "x": 15,
+    "y": 27
+  },
+  "soul_fire_1@0@8": {
+    "x": 16,
+    "y": 27
+  },
+  "soul_fire_1@0@9": {
+    "x": 17,
+    "y": 27
+  },
+  "soul_fire_1@0@10": {
+    "x": 18,
+    "y": 27
+  },
+  "soul_fire_1@0@11": {
+    "x": 19,
+    "y": 27
+  },
+  "soul_fire_1@0@12": {
+    "x": 20,
+    "y": 27
+  },
+  "soul_fire_1@0@13": {
+    "x": 21,
+    "y": 27
+  },
+  "soul_fire_1@0@14": {
+    "x": 22,
+    "y": 27
+  },
+  "soul_fire_1@0@15": {
+    "x": 23,
+    "y": 27
+  },
+  "soul_fire_1@0@16": {
+    "x": 24,
+    "y": 27
+  },
+  "soul_fire_1@0@17": {
+    "x": 25,
+    "y": 27
+  },
+  "soul_fire_1@0@18": {
+    "x": 26,
+    "y": 27
+  },
+  "soul_fire_1@0@19": {
+    "x": 27,
+    "y": 27
+  },
+  "soul_fire_1@0@20": {
+    "x": 28,
+    "y": 27
+  },
+  "soul_fire_1@0@21": {
+    "x": 29,
+    "y": 27
+  },
+  "soul_fire_1@0@22": {
+    "x": 30,
+    "y": 27
+  },
+  "soul_fire_1@0@23": {
+    "x": 31,
+    "y": 27
+  },
+  "soul_fire_1@0@24": {
+    "x": 32,
+    "y": 27
+  },
+  "soul_fire_1@0@25": {
+    "x": 33,
+    "y": 27
+  },
+  "soul_fire_1@0@26": {
+    "x": 34,
+    "y": 27
+  },
+  "soul_fire_1@0@27": {
+    "x": 35,
+    "y": 27
+  },
+  "soul_fire_1@0@28": {
+    "x": 36,
+    "y": 27
+  },
+  "soul_fire_1@0@29": {
+    "x": 1,
+    "y": 28
+  },
+  "soul_fire_1@0@30": {
+    "x": 2,
+    "y": 28
+  },
+  "soul_fire_1@0@31": {
+    "x": 3,
+    "y": 28
+  },
+  "soul_lantern@0@0": {
+    "x": 4,
+    "y": 28
+  },
+  "soul_lantern@0@1": {
+    "x": 5,
+    "y": 28
+  },
+  "soul_lantern@0@2": {
+    "x": 6,
+    "y": 28
+  },
+  "soul_sand": {
+    "x": 7,
+    "y": 28
+  },
+  "soul_soil": {
+    "x": 8,
+    "y": 28
+  },
+  "soul_torch": {
+    "x": 9,
+    "y": 28
+  },
+  "spawner": {
+    "x": 10,
+    "y": 28
+  },
+  "sponge": {
+    "x": 11,
+    "y": 28
+  },
+  "spruce_door_bottom": {
+    "x": 12,
+    "y": 28
+  },
+  "spruce_door_top": {
+    "x": 13,
+    "y": 28
+  },
+  "spruce_leaves": {
+    "x": 14,
+    "y": 28
+  },
+  "spruce_log": {
+    "x": 15,
+    "y": 28
+  },
+  "spruce_log_top": {
+    "x": 16,
+    "y": 28
+  },
+  "spruce_planks": {
+    "x": 17,
+    "y": 28
+  },
+  "spruce_sapling": {
+    "x": 18,
+    "y": 28
+  },
+  "spruce_trapdoor": {
+    "x": 19,
+    "y": 28
+  },
+  "stone": {
+    "x": 20,
+    "y": 28
+  },
+  "stone_bricks": {
+    "x": 21,
+    "y": 28
+  },
+  "stonecutter_bottom": {
+    "x": 22,
+    "y": 28
+  },
+  "stonecutter_saw@0@0": {
+    "x": 23,
+    "y": 28
+  },
+  "stonecutter_saw@0@1": {
+    "x": 24,
+    "y": 28
+  },
+  "stonecutter_saw@0@2": {
+    "x": 25,
+    "y": 28
+  },
+  "stonecutter_side": {
+    "x": 26,
+    "y": 28
+  },
+  "stonecutter_top": {
+    "x": 27,
+    "y": 28
+  },
+  "stripped_acacia_log": {
+    "x": 28,
+    "y": 28
+  },
+  "stripped_acacia_log_top": {
+    "x": 29,
+    "y": 28
+  },
+  "stripped_birch_log": {
+    "x": 30,
+    "y": 28
+  },
+  "stripped_birch_log_top": {
+    "x": 31,
+    "y": 28
+  },
+  "stripped_crimson_stem": {
+    "x": 32,
+    "y": 28
+  },
+  "stripped_crimson_stem_top": {
+    "x": 33,
+    "y": 28
+  },
+  "stripped_dark_oak_log": {
+    "x": 34,
+    "y": 28
+  },
+  "stripped_dark_oak_log_top": {
+    "x": 35,
+    "y": 28
+  },
+  "stripped_jungle_log": {
+    "x": 36,
+    "y": 28
+  },
+  "stripped_jungle_log_top": {
+    "x": 1,
+    "y": 29
+  },
+  "stripped_oak_log": {
+    "x": 2,
+    "y": 29
+  },
+  "stripped_oak_log_top": {
+    "x": 3,
+    "y": 29
+  },
+  "stripped_spruce_log": {
+    "x": 4,
+    "y": 29
+  },
+  "stripped_spruce_log_top": {
+    "x": 5,
+    "y": 29
+  },
+  "stripped_warped_stem": {
+    "x": 6,
+    "y": 29
+  },
+  "stripped_warped_stem_top": {
+    "x": 7,
+    "y": 29
+  },
+  "structure_block": {
+    "x": 8,
+    "y": 29
+  },
+  "structure_block_corner": {
+    "x": 9,
+    "y": 29
+  },
+  "structure_block_data": {
+    "x": 10,
+    "y": 29
+  },
+  "structure_block_load": {
+    "x": 11,
+    "y": 29
+  },
+  "structure_block_save": {
+    "x": 12,
+    "y": 29
+  },
+  "sugar_cane": {
+    "x": 13,
+    "y": 29
+  },
+  "sunflower_back": {
+    "x": 14,
+    "y": 29
+  },
+  "sunflower_bottom": {
+    "x": 15,
+    "y": 29
+  },
+  "sunflower_front": {
+    "x": 16,
+    "y": 29
+  },
+  "sunflower_top": {
+    "x": 17,
+    "y": 29
+  },
+  "sweet_berry_bush_stage0": {
+    "x": 18,
+    "y": 29
+  },
+  "sweet_berry_bush_stage1": {
+    "x": 19,
+    "y": 29
+  },
+  "sweet_berry_bush_stage2": {
+    "x": 20,
+    "y": 29
+  },
+  "sweet_berry_bush_stage3": {
+    "x": 21,
+    "y": 29
+  },
+  "tall_grass_bottom": {
+    "x": 22,
+    "y": 29
+  },
+  "tall_grass_top": {
+    "x": 23,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@0": {
+    "x": 24,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@1": {
+    "x": 25,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@2": {
+    "x": 26,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@3": {
+    "x": 27,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@4": {
+    "x": 28,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@5": {
+    "x": 29,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@6": {
+    "x": 30,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@7": {
+    "x": 31,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@8": {
+    "x": 32,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@9": {
+    "x": 33,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@10": {
+    "x": 34,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@11": {
+    "x": 35,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@12": {
+    "x": 36,
+    "y": 29
+  },
+  "tall_seagrass_bottom@0@13": {
+    "x": 1,
+    "y": 30
+  },
+  "tall_seagrass_bottom@0@14": {
+    "x": 2,
+    "y": 30
+  },
+  "tall_seagrass_bottom@0@15": {
+    "x": 3,
+    "y": 30
+  },
+  "tall_seagrass_bottom@0@16": {
+    "x": 4,
+    "y": 30
+  },
+  "tall_seagrass_bottom@0@17": {
+    "x": 5,
+    "y": 30
+  },
+  "tall_seagrass_bottom@0@18": {
+    "x": 6,
+    "y": 30
+  },
+  "tall_seagrass_top@0@0": {
+    "x": 7,
+    "y": 30
+  },
+  "tall_seagrass_top@0@1": {
+    "x": 8,
+    "y": 30
+  },
+  "tall_seagrass_top@0@2": {
+    "x": 9,
+    "y": 30
+  },
+  "tall_seagrass_top@0@3": {
+    "x": 10,
+    "y": 30
+  },
+  "tall_seagrass_top@0@4": {
+    "x": 11,
+    "y": 30
+  },
+  "tall_seagrass_top@0@5": {
+    "x": 12,
+    "y": 30
+  },
+  "tall_seagrass_top@0@6": {
+    "x": 13,
+    "y": 30
+  },
+  "tall_seagrass_top@0@7": {
+    "x": 14,
+    "y": 30
+  },
+  "tall_seagrass_top@0@8": {
+    "x": 15,
+    "y": 30
+  },
+  "tall_seagrass_top@0@9": {
+    "x": 16,
+    "y": 30
+  },
+  "tall_seagrass_top@0@10": {
+    "x": 17,
+    "y": 30
+  },
+  "tall_seagrass_top@0@11": {
+    "x": 18,
+    "y": 30
+  },
+  "tall_seagrass_top@0@12": {
+    "x": 19,
+    "y": 30
+  },
+  "tall_seagrass_top@0@13": {
+    "x": 20,
+    "y": 30
+  },
+  "tall_seagrass_top@0@14": {
+    "x": 21,
+    "y": 30
+  },
+  "tall_seagrass_top@0@15": {
+    "x": 22,
+    "y": 30
+  },
+  "tall_seagrass_top@0@16": {
+    "x": 23,
+    "y": 30
+  },
+  "tall_seagrass_top@0@17": {
+    "x": 24,
+    "y": 30
+  },
+  "tall_seagrass_top@0@18": {
+    "x": 25,
+    "y": 30
+  },
+  "target_side": {
+    "x": 26,
+    "y": 30
+  },
+  "target_top": {
+    "x": 27,
+    "y": 30
+  },
+  "terracotta": {
+    "x": 28,
+    "y": 30
+  },
+  "tnt_bottom": {
+    "x": 29,
+    "y": 30
+  },
+  "tnt_side": {
+    "x": 30,
+    "y": 30
+  },
+  "tnt_top": {
+    "x": 31,
+    "y": 30
+  },
+  "torch": {
+    "x": 32,
+    "y": 30
+  },
+  "tripwire": {
+    "x": 33,
+    "y": 30
+  },
+  "tripwire_hook": {
+    "x": 34,
+    "y": 30
+  },
+  "tube_coral": {
+    "x": 35,
+    "y": 30
+  },
+  "tube_coral_block": {
+    "x": 36,
+    "y": 30
+  },
+  "tube_coral_fan": {
+    "x": 1,
+    "y": 31
+  },
+  "turtle_egg": {
+    "x": 2,
+    "y": 31
+  },
+  "turtle_egg_slightly_cracked": {
+    "x": 3,
+    "y": 31
+  },
+  "turtle_egg_very_cracked": {
+    "x": 4,
+    "y": 31
+  },
+  "twisting_vines": {
+    "x": 5,
+    "y": 31
+  },
+  "twisting_vines_plant": {
+    "x": 6,
+    "y": 31
+  },
+  "vine": {
+    "x": 7,
+    "y": 31
+  },
+  "warped_door_bottom": {
+    "x": 8,
+    "y": 31
+  },
+  "warped_door_top": {
+    "x": 9,
+    "y": 31
+  },
+  "warped_fungus": {
+    "x": 10,
+    "y": 31
+  },
+  "warped_nylium": {
+    "x": 11,
+    "y": 31
+  },
+  "warped_nylium_side": {
+    "x": 12,
+    "y": 31
+  },
+  "warped_planks": {
+    "x": 13,
+    "y": 31
+  },
+  "warped_roots": {
+    "x": 14,
+    "y": 31
+  },
+  "warped_roots_pot": {
+    "x": 15,
+    "y": 31
+  },
+  "warped_stem@0@0": {
+    "x": 16,
+    "y": 31
+  },
+  "warped_stem@0@1": {
+    "x": 17,
+    "y": 31
+  },
+  "warped_stem@0@2": {
+    "x": 18,
+    "y": 31
+  },
+  "warped_stem@0@3": {
+    "x": 19,
+    "y": 31
+  },
+  "warped_stem@0@4": {
+    "x": 20,
+    "y": 31
+  },
+  "warped_stem_top": {
+    "x": 21,
+    "y": 31
+  },
+  "warped_trapdoor": {
+    "x": 22,
+    "y": 31
+  },
+  "warped_wart_block": {
+    "x": 23,
+    "y": 31
+  },
+  "water_flow@0@0": {
+    "x": 24,
+    "y": 31
+  },
+  "water_flow@0@1": {
+    "x": 25,
+    "y": 31
+  },
+  "water_flow@0@2": {
+    "x": 26,
+    "y": 31
+  },
+  "water_flow@0@3": {
+    "x": 27,
+    "y": 31
+  },
+  "water_flow@0@4": {
+    "x": 28,
+    "y": 31
+  },
+  "water_flow@0@5": {
+    "x": 29,
+    "y": 31
+  },
+  "water_flow@0@6": {
+    "x": 30,
+    "y": 31
+  },
+  "water_flow@0@7": {
+    "x": 31,
+    "y": 31
+  },
+  "water_flow@0@8": {
+    "x": 32,
+    "y": 31
+  },
+  "water_flow@0@9": {
+    "x": 33,
+    "y": 31
+  },
+  "water_flow@0@10": {
+    "x": 34,
+    "y": 31
+  },
+  "water_flow@0@11": {
+    "x": 35,
+    "y": 31
+  },
+  "water_flow@0@12": {
+    "x": 36,
+    "y": 31
+  },
+  "water_flow@0@13": {
+    "x": 1,
+    "y": 32
+  },
+  "water_flow@0@14": {
+    "x": 2,
+    "y": 32
+  },
+  "water_flow@0@15": {
+    "x": 3,
+    "y": 32
+  },
+  "water_flow@0@16": {
+    "x": 4,
+    "y": 32
+  },
+  "water_flow@0@17": {
+    "x": 5,
+    "y": 32
+  },
+  "water_flow@0@18": {
+    "x": 6,
+    "y": 32
+  },
+  "water_flow@0@19": {
+    "x": 7,
+    "y": 32
+  },
+  "water_flow@0@20": {
+    "x": 8,
+    "y": 32
+  },
+  "water_flow@0@21": {
+    "x": 9,
+    "y": 32
+  },
+  "water_flow@0@22": {
+    "x": 10,
+    "y": 32
+  },
+  "water_flow@0@23": {
+    "x": 11,
+    "y": 32
+  },
+  "water_flow@0@24": {
+    "x": 12,
+    "y": 32
+  },
+  "water_flow@0@25": {
+    "x": 13,
+    "y": 32
+  },
+  "water_flow@0@26": {
+    "x": 14,
+    "y": 32
+  },
+  "water_flow@0@27": {
+    "x": 15,
+    "y": 32
+  },
+  "water_flow@0@28": {
+    "x": 16,
+    "y": 32
+  },
+  "water_flow@0@29": {
+    "x": 17,
+    "y": 32
+  },
+  "water_flow@0@30": {
+    "x": 18,
+    "y": 32
+  },
+  "water_flow@0@31": {
+    "x": 19,
+    "y": 32
+  },
+  "water_flow@0@32": {
+    "x": 20,
+    "y": 32
+  },
+  "water_flow@0@33": {
+    "x": 21,
+    "y": 32
+  },
+  "water_flow@0@34": {
+    "x": 22,
+    "y": 32
+  },
+  "water_flow@0@35": {
+    "x": 23,
+    "y": 32
+  },
+  "water_flow@0@36": {
+    "x": 24,
+    "y": 32
+  },
+  "water_flow@0@37": {
+    "x": 25,
+    "y": 32
+  },
+  "water_flow@0@38": {
+    "x": 26,
+    "y": 32
+  },
+  "water_flow@0@39": {
+    "x": 27,
+    "y": 32
+  },
+  "water_flow@0@40": {
+    "x": 28,
+    "y": 32
+  },
+  "water_flow@0@41": {
+    "x": 29,
+    "y": 32
+  },
+  "water_flow@0@42": {
+    "x": 30,
+    "y": 32
+  },
+  "water_flow@0@43": {
+    "x": 31,
+    "y": 32
+  },
+  "water_flow@0@44": {
+    "x": 32,
+    "y": 32
+  },
+  "water_flow@0@45": {
+    "x": 33,
+    "y": 32
+  },
+  "water_flow@0@46": {
+    "x": 34,
+    "y": 32
+  },
+  "water_flow@0@47": {
+    "x": 35,
+    "y": 32
+  },
+  "water_flow@0@48": {
+    "x": 36,
+    "y": 32
+  },
+  "water_flow@0@49": {
+    "x": 1,
+    "y": 33
+  },
+  "water_flow@0@50": {
+    "x": 2,
+    "y": 33
+  },
+  "water_flow@0@51": {
+    "x": 3,
+    "y": 33
+  },
+  "water_flow@0@52": {
+    "x": 4,
+    "y": 33
+  },
+  "water_flow@0@53": {
+    "x": 5,
+    "y": 33
+  },
+  "water_flow@0@54": {
+    "x": 6,
+    "y": 33
+  },
+  "water_flow@0@55": {
+    "x": 7,
+    "y": 33
+  },
+  "water_flow@0@56": {
+    "x": 8,
+    "y": 33
+  },
+  "water_flow@0@57": {
+    "x": 9,
+    "y": 33
+  },
+  "water_flow@0@58": {
+    "x": 10,
+    "y": 33
+  },
+  "water_flow@0@59": {
+    "x": 11,
+    "y": 33
+  },
+  "water_flow@0@60": {
+    "x": 12,
+    "y": 33
+  },
+  "water_flow@0@61": {
+    "x": 13,
+    "y": 33
+  },
+  "water_flow@0@62": {
+    "x": 14,
+    "y": 33
+  },
+  "water_flow@0@63": {
+    "x": 15,
+    "y": 33
+  },
+  "water_flow@1@0": {
+    "x": 16,
+    "y": 33
+  },
+  "water_flow@1@1": {
+    "x": 17,
+    "y": 33
+  },
+  "water_flow@1@2": {
+    "x": 18,
+    "y": 33
+  },
+  "water_flow@1@3": {
+    "x": 19,
+    "y": 33
+  },
+  "water_flow@1@4": {
+    "x": 20,
+    "y": 33
+  },
+  "water_flow@1@5": {
+    "x": 21,
+    "y": 33
+  },
+  "water_flow@1@6": {
+    "x": 22,
+    "y": 33
+  },
+  "water_flow@1@7": {
+    "x": 23,
+    "y": 33
+  },
+  "water_flow@1@8": {
+    "x": 24,
+    "y": 33
+  },
+  "water_flow@1@9": {
+    "x": 25,
+    "y": 33
+  },
+  "water_flow@1@10": {
+    "x": 26,
+    "y": 33
+  },
+  "water_flow@1@11": {
+    "x": 27,
+    "y": 33
+  },
+  "water_flow@1@12": {
+    "x": 28,
+    "y": 33
+  },
+  "water_flow@1@13": {
+    "x": 29,
+    "y": 33
+  },
+  "water_flow@1@14": {
+    "x": 30,
+    "y": 33
+  },
+  "water_flow@1@15": {
+    "x": 31,
+    "y": 33
+  },
+  "water_flow@1@16": {
+    "x": 32,
+    "y": 33
+  },
+  "water_flow@1@17": {
+    "x": 33,
+    "y": 33
+  },
+  "water_flow@1@18": {
+    "x": 34,
+    "y": 33
+  },
+  "water_flow@1@19": {
+    "x": 35,
+    "y": 33
+  },
+  "water_flow@1@20": {
+    "x": 36,
+    "y": 33
+  },
+  "water_flow@1@21": {
+    "x": 1,
+    "y": 34
+  },
+  "water_flow@1@22": {
+    "x": 2,
+    "y": 34
+  },
+  "water_flow@1@23": {
+    "x": 3,
+    "y": 34
+  },
+  "water_flow@1@24": {
+    "x": 4,
+    "y": 34
+  },
+  "water_flow@1@25": {
+    "x": 5,
+    "y": 34
+  },
+  "water_flow@1@26": {
+    "x": 6,
+    "y": 34
+  },
+  "water_flow@1@27": {
+    "x": 7,
+    "y": 34
+  },
+  "water_flow@1@28": {
+    "x": 8,
+    "y": 34
+  },
+  "water_flow@1@29": {
+    "x": 9,
+    "y": 34
+  },
+  "water_flow@1@30": {
+    "x": 10,
+    "y": 34
+  },
+  "water_flow@1@31": {
+    "x": 11,
+    "y": 34
+  },
+  "water_flow@1@32": {
+    "x": 12,
+    "y": 34
+  },
+  "water_flow@1@33": {
+    "x": 13,
+    "y": 34
+  },
+  "water_flow@1@34": {
+    "x": 14,
+    "y": 34
+  },
+  "water_flow@1@35": {
+    "x": 15,
+    "y": 34
+  },
+  "water_flow@1@36": {
+    "x": 16,
+    "y": 34
+  },
+  "water_flow@1@37": {
+    "x": 17,
+    "y": 34
+  },
+  "water_flow@1@38": {
+    "x": 18,
+    "y": 34
+  },
+  "water_flow@1@39": {
+    "x": 19,
+    "y": 34
+  },
+  "water_flow@1@40": {
+    "x": 20,
+    "y": 34
+  },
+  "water_flow@1@41": {
+    "x": 21,
+    "y": 34
+  },
+  "water_flow@1@42": {
+    "x": 22,
+    "y": 34
+  },
+  "water_flow@1@43": {
+    "x": 23,
+    "y": 34
+  },
+  "water_flow@1@44": {
+    "x": 24,
+    "y": 34
+  },
+  "water_flow@1@45": {
+    "x": 25,
+    "y": 34
+  },
+  "water_flow@1@46": {
+    "x": 26,
+    "y": 34
+  },
+  "water_flow@1@47": {
+    "x": 27,
+    "y": 34
+  },
+  "water_flow@1@48": {
+    "x": 28,
+    "y": 34
+  },
+  "water_flow@1@49": {
+    "x": 29,
+    "y": 34
+  },
+  "water_flow@1@50": {
+    "x": 30,
+    "y": 34
+  },
+  "water_flow@1@51": {
+    "x": 31,
+    "y": 34
+  },
+  "water_flow@1@52": {
+    "x": 32,
+    "y": 34
+  },
+  "water_flow@1@53": {
+    "x": 33,
+    "y": 34
+  },
+  "water_flow@1@54": {
+    "x": 34,
+    "y": 34
+  },
+  "water_flow@1@55": {
+    "x": 35,
+    "y": 34
+  },
+  "water_flow@1@56": {
+    "x": 36,
+    "y": 34
+  },
+  "water_flow@1@57": {
+    "x": 1,
+    "y": 35
+  },
+  "water_flow@1@58": {
+    "x": 2,
+    "y": 35
+  },
+  "water_flow@1@59": {
+    "x": 3,
+    "y": 35
+  },
+  "water_flow@1@60": {
+    "x": 4,
+    "y": 35
+  },
+  "water_flow@1@61": {
+    "x": 5,
+    "y": 35
+  },
+  "water_flow@1@62": {
+    "x": 6,
+    "y": 35
+  },
+  "water_flow@1@63": {
+    "x": 7,
+    "y": 35
+  },
+  "water_overlay": {
+    "x": 8,
+    "y": 35
+  },
+  "water_still@0@0": {
+    "x": 9,
+    "y": 35
+  },
+  "water_still@0@1": {
+    "x": 10,
+    "y": 35
+  },
+  "water_still@0@2": {
+    "x": 11,
+    "y": 35
+  },
+  "water_still@0@3": {
+    "x": 12,
+    "y": 35
+  },
+  "water_still@0@4": {
+    "x": 13,
+    "y": 35
+  },
+  "water_still@0@5": {
+    "x": 14,
+    "y": 35
+  },
+  "water_still@0@6": {
+    "x": 15,
+    "y": 35
+  },
+  "water_still@0@7": {
+    "x": 16,
+    "y": 35
+  },
+  "water_still@0@8": {
+    "x": 17,
+    "y": 35
+  },
+  "water_still@0@9": {
+    "x": 18,
+    "y": 35
+  },
+  "water_still@0@10": {
+    "x": 19,
+    "y": 35
+  },
+  "water_still@0@11": {
+    "x": 20,
+    "y": 35
+  },
+  "water_still@0@12": {
+    "x": 21,
+    "y": 35
+  },
+  "water_still@0@13": {
+    "x": 22,
+    "y": 35
+  },
+  "water_still@0@14": {
+    "x": 23,
+    "y": 35
+  },
+  "water_still@0@15": {
+    "x": 24,
+    "y": 35
+  },
+  "water_still@0@16": {
+    "x": 25,
+    "y": 35
+  },
+  "water_still@0@17": {
+    "x": 26,
+    "y": 35
+  },
+  "water_still@0@18": {
+    "x": 27,
+    "y": 35
+  },
+  "water_still@0@19": {
+    "x": 28,
+    "y": 35
+  },
+  "water_still@0@20": {
+    "x": 29,
+    "y": 35
+  },
+  "water_still@0@21": {
+    "x": 30,
+    "y": 35
+  },
+  "water_still@0@22": {
+    "x": 31,
+    "y": 35
+  },
+  "water_still@0@23": {
+    "x": 32,
+    "y": 35
+  },
+  "water_still@0@24": {
+    "x": 33,
+    "y": 35
+  },
+  "water_still@0@25": {
+    "x": 34,
+    "y": 35
+  },
+  "water_still@0@26": {
+    "x": 35,
+    "y": 35
+  },
+  "water_still@0@27": {
+    "x": 36,
+    "y": 35
+  },
+  "water_still@0@28": {
+    "x": 1,
+    "y": 36
+  },
+  "water_still@0@29": {
+    "x": 2,
+    "y": 36
+  },
+  "water_still@0@30": {
+    "x": 3,
+    "y": 36
+  },
+  "water_still@0@31": {
+    "x": 4,
+    "y": 36
+  },
+  "weeping_vines": {
+    "x": 5,
+    "y": 36
+  },
+  "weeping_vines_plant": {
+    "x": 6,
+    "y": 36
+  },
+  "wet_sponge": {
+    "x": 7,
+    "y": 36
+  },
+  "wheat_stage0": {
+    "x": 8,
+    "y": 36
+  },
+  "wheat_stage1": {
+    "x": 9,
+    "y": 36
+  },
+  "wheat_stage2": {
+    "x": 10,
+    "y": 36
+  },
+  "wheat_stage3": {
+    "x": 11,
+    "y": 36
+  },
+  "wheat_stage4": {
+    "x": 12,
+    "y": 36
+  },
+  "wheat_stage5": {
+    "x": 13,
+    "y": 36
+  },
+  "wheat_stage6": {
+    "x": 14,
+    "y": 36
+  },
+  "wheat_stage7": {
+    "x": 15,
+    "y": 36
+  },
+  "white_concrete": {
+    "x": 16,
+    "y": 36
+  },
+  "white_concrete_powder": {
+    "x": 17,
+    "y": 36
+  },
+  "white_glazed_terracotta": {
+    "x": 18,
+    "y": 36
+  },
+  "white_shulker_box": {
+    "x": 19,
+    "y": 36
+  },
+  "white_stained_glass": {
+    "x": 20,
+    "y": 36
+  },
+  "white_stained_glass_pane_top": {
+    "x": 21,
+    "y": 36
+  },
+  "white_terracotta": {
+    "x": 22,
+    "y": 36
+  },
+  "white_tulip": {
+    "x": 23,
+    "y": 36
+  },
+  "white_wool": {
+    "x": 24,
+    "y": 36
+  },
+  "wither_rose": {
+    "x": 25,
+    "y": 36
+  },
+  "yellow_concrete": {
+    "x": 26,
+    "y": 36
+  },
+  "yellow_concrete_powder": {
+    "x": 27,
+    "y": 36
+  },
+  "yellow_glazed_terracotta": {
+    "x": 28,
+    "y": 36
+  },
+  "yellow_shulker_box": {
+    "x": 29,
+    "y": 36
+  },
+  "yellow_stained_glass": {
+    "x": 30,
+    "y": 36
+  },
+  "yellow_stained_glass_pane_top": {
+    "x": 31,
+    "y": 36
+  },
+  "yellow_terracotta": {
+    "x": 32,
+    "y": 36
+  },
+  "yellow_wool": {
+    "x": 33,
+    "y": 36
+  }
+}

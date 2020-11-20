@@ -1,0 +1,231 @@
+
+body { margin: 0; background:black;}
+canvas {
+  display: block;
+  width:100%;
+  height:100%;
+  position:fixed;
+  top:0px;
+  left:0px
+}
+
+.cross{
+  z-index:9;
+  position:fixed;
+  top:50%;
+  left:50%;
+  margin-top:-15px;
+  margin-left:-15px;
+}
+
+.gameMenu{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  width:800px;
+  height:400px;
+  background:#303030;
+  z-index:10;
+  color:white;
+}
+
+.initLoading{
+  z-index:99;
+  position:fixed;
+  top:0px;
+  left:0px;
+  width:100%;
+  height:100%;
+  background-image: url("../../assets/images/back.png");
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+.loadingBar{
+  margin: 0;
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.loadingText{
+  margin-top:200px;
+}
+
+
+.progress{
+  margin:5px;
+  margin-right:20px;
+  margin-left:-3px;
+  background:#122a08;
+  border:1px solid black;
+}
+.progress-bar{
+  background:#487329;
+}
+.player_xp{
+  position:fixed;
+  transform: translateX(-50%);
+  left:50%;
+  bottom:62px;
+  z-index:10;
+  -webkit-text-stroke: 1px black;
+   color: #259c45;
+   text-shadow:
+       3px 3px 0 #000,
+     -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
+  font-size:20px;
+  font-weight:bold;
+}
+.chat{
+  position:fixed;
+  bottom:100px;
+  left:0px;
+  width:60%;
+  overflow-x:hidden;
+  overflow:scroll;
+  /* display:flex; */
+  /* flex-direction:column-reverse; */
+  -webkit-text-stroke: 1px black;
+   color: white;
+   text-shadow:
+       1px 1px 0 #000,
+     -1px -1px 0 #000,
+      1px -1px 0 #000,
+      -1px 1px 0 #000,
+       1px 1px 0 #000;
+  height:45%;
+  font-weight:bold;
+  font-size:20px;
+}
+.chat.focus{
+  background:rgba(0,0,0,0.5);
+}
+.chat.blur{
+  background:rgba(0,0,0,0);
+}
+.com{
+  position:fixed;
+  bottom:-30px;
+  padding:5px;
+  left:0px;
+  width:100%;
+  background:rgba(0,0,0,0.5);
+  z-index:11;
+}
+.chat::-webkit-scrollbar {
+    display: none;
+}
+.inv_bar{
+  image-rendering: pixelated;
+  position:fixed;
+  bottom:0px;
+  left:50%;
+  width:500px;
+  height:60px;;
+  transform: translateX(-50%);
+  background-image: url("/assets/gui/widgets.png");
+  background-repeat: no-repeat;
+  border:0px;
+  background-position: 0px 0px;
+  background-size: 703px auto;
+  border: none;
+  /* background-attachment: fixed; */
+}
+.player_hp{
+  position:fixed;
+  bottom:70px;
+  left:calc(50vw - 250px);
+  display:block;
+}
+:root{
+  --mn:0.910384068;
+  --box:calc(24.72px * var(--mn));
+  --st:calc(44px * var(--mn));
+}
+.hp,.food{
+  width:var(--box);
+  height:var(--box);
+  margin-right:-4px;
+  background-image: url("/assets/gui/icons.png"),url("/assets/gui/icons.png");
+  background-repeat: no-repeat,no-repeat;
+  background-size: 640px auto,640px auto;
+  display:inline-block;
+  image-rendering: crisp-edges;
+}
+
+.hp.full{
+  background-position: calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+}
+.hp.half{
+  background-position: calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+}
+.hp.empty{
+  background-position: calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+}
+.food.full{
+  background-position:calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+}
+.food.half{
+  background-position:calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+}
+.food.empty{
+  background-position:calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+}
+.xp_bar_empty,.xp_bar{
+  position:fixed;
+  bottom:61px;
+  left:calc(50vw - 250px);
+  width:500px;
+  height:14px;
+  background-image: url("/assets/gui/icons.png");
+  background-repeat: no-repeat;
+  border:0px;
+  background-size: 703px auto;
+  border: none;
+}
+.xp_bar_empty{
+  image-rendering: pixelated;
+  background-position: 0px -176px;
+}
+.xp_bar{
+  image-rendering: pixelated;
+  background-position: 0px -189px;
+}
+.player_food{
+  position:fixed;
+  bottom:70px;
+  right:calc(50vw - 245px);
+  display:block;
+}
+.inv_window{
+  z-index:10;
+  background-image: url("/assets/gui/inventory.png");
+  background-repeat: no-repeat;
+  background-size: 600px auto;
+  position:fixed;
+  top:50%;
+  left:50%;
+  width:412px;
+  height:388px;
+  transform: translate(-50%,-50%);
+}
+.inv_box{
+  background-repeat: no-repeat;
+  background-size: 43px 43px;
+  display:inline-block;
+  margin-left:9px;
+  margin-top:9px;
+  width:43px;
+  height:43px;
+  margin-right:-1px;
+}
