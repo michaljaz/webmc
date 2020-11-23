@@ -71,8 +71,12 @@ import {
   Chat
 } from './Chat.js';
 
+import {
+  Entities
+} from './Entities.js';
+
 init = function() {
-  var ambientLight, chat, color, directionalLight, eventMap, far, gui, i, near, rt;
+  var ambientLight, chat, color, directionalLight, ent, eventMap, far, gui, i, near, rt;
   //Płótno,renderer,scena i kamera
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -95,6 +99,8 @@ init = function() {
   scene.add(directionalLight);
   //Informacja o gpu komputera
   console.warn(gpuInfo());
+  //Moby
+  ent = new Entities({scene});
   //FPSy
   stats = new Stats();
   stats.showPanel(0);
@@ -180,6 +186,9 @@ init = function() {
         z: pos.z - 0.5
       };
       new TWEEN.Tween(camera.position).to(to, 100).easing(TWEEN.Easing.Quadratic.Out).start();
+    },
+    "entities": function(entities) {
+      return ent.update(entities);
     }
   };
   for (i in eventMap) {

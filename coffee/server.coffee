@@ -89,6 +89,7 @@ module.exports=(type)->
 				if inv isnt inv_new
 					inv=inv_new
 					emit ["inventory",bot().inventory.slots]
+				emit ["entities",bot().entities]
 				return
 			,100
 			socketEventMap={

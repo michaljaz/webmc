@@ -211,12 +211,12 @@ canvas {
   z-index:10;
   background-image: url("/assets/gui/inventory.png");
   background-repeat: no-repeat;
-  background-size: 600px auto;
+  background-size: 750px auto;
   position:fixed;
   top:50%;
   left:50%;
-  width:412px;
-  height:388px;
+  width:515px;
+  height:485px;
   transform: translate(-50%,-50%);
 }
 .inv_box{

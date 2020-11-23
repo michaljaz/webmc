@@ -11,6 +11,7 @@ import {InventoryBar} from './InventoryBar.js'
 import {RandomNick} from './RandomNick.js'
 import {GUI} from './jsm/libs/dat.gui.module.js'
 import {Chat} from './Chat.js'
+import {Entities} from './Entities.js'
 
 init = ()->
 	#Płótno,renderer,scena i kamera
@@ -38,6 +39,9 @@ init = ()->
 
 	#Informacja o gpu komputera
 	console.warn gpuInfo()
+
+	#Moby
+	ent=new Entities {scene}
 
 	#FPSy
 	stats = new Stats()
@@ -123,6 +127,8 @@ init = ()->
 				.easing TWEEN.Easing.Quadratic.Out
 				.start()
 			return
+		"entities":(entities)->
+			ent.update entities
 	}
 	for i of eventMap
 		socket.on i,eventMap[i]

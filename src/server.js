@@ -99,6 +99,7 @@
             inv = inv_new;
             emit(["inventory", bot().inventory.slots]);
           }
+          emit(["entities", bot().entities]);
         }, 100);
         socketEventMap = {
           "move": function(state, toggle) {
