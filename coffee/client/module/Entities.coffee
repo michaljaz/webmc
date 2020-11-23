@@ -11,7 +11,6 @@ class Entities
 			if entities[i].username isnt @nick
 				pos=[entities[i].position.x+offset[0],entities[i].position.y+offset[1],entities[i].position.z+offset[2]]
 				if @saved[entities[i].uuid] is undefined
-					console.log entities[i]
 					if entities[i].name is "item"
 						material = new THREE.MeshBasicMaterial( {color: new THREE.Color("blue")} )
 						geometry = new THREE.BoxGeometry( 0.5, 0.5, 0.5 )

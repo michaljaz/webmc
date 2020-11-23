@@ -34,7 +34,7 @@ class InventoryBar
 		$(".player_xp").text level
 		$(".xp_bar").css "width","#{500*progress}px"
 	setFocus:(num)->
-		$(".inv_cursor").css("left","calc(50vw - 251px + 55*#{num}px)")
+		$(".inv_cursor").css("left","calc(50vw - 253px + 55*#{num}px)")
 	listen:()->
 		focus=0
 		@setFocus focus

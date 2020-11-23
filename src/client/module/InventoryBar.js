@@ -53,7 +53,7 @@ InventoryBar = class InventoryBar {
   }
 
   setFocus(num) {
-    return $(".inv_cursor").css("left", `calc(50vw - 251px + 55*${num}px)`);
+    return $(".inv_cursor").css("left", `calc(50vw - 253px + 55*${num}px)`);
   }
 
   listen() {

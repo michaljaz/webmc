@@ -18,7 +18,6 @@ Entities = class Entities {
       if (entities[i].username !== this.nick) {
         pos = [entities[i].position.x + offset[0], entities[i].position.y + offset[1], entities[i].position.z + offset[2]];
         if (this.saved[entities[i].uuid] === void 0) {
-          console.log(entities[i]);
           if (entities[i].name === "item") {
             material = new THREE.MeshBasicMaterial({
               color: new THREE.Color("blue")
