@@ -100,7 +100,7 @@
             emit(["inventory", bot().inventory.slots]);
           }
           emit(["entities", bot().entities]);
-        }, 100);
+        }, 10);
         socketEventMap = {
           "move": function(state, toggle) {
             bot().setControlState(state, toggle);

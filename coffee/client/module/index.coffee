@@ -40,8 +40,14 @@ init = ()->
 	#Informacja o gpu komputera
 	console.warn gpuInfo()
 
+	#Nick gracza
+	nick=document.location.hash.substring(1,document.location.hash.length)
+	if nick is ""
+		nick=RandomNick()
+		document.location.href="\##{nick}"
+
 	#Moby
-	ent=new Entities {scene}
+	ent=new Entities {scene,nick,TWEEN}
 
 	#FPSy
 	stats = new Stats()
@@ -78,10 +84,6 @@ init = ()->
 		"connect":()->
 			console.log "Połączono z serverem!"
 			$('.loadingText').text "Za chwilę dołączysz do gry..."
-			nick=document.location.hash.substring(1,document.location.hash.length)
-			if nick is ""
-				nick=RandomNick()
-				document.location.href="\##{nick}"
 			console.log "User nick: 	#{nick}"
 			socket.emit "initClient", {
 				nick:nick

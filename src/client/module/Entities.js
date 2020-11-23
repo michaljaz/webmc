@@ -7,25 +7,36 @@ Entities = class Entities {
   constructor(options) {
     this.scene = options.scene;
     this.saved = {};
+    this.nick = options.nick;
+    this.TWEEN = options.TWEEN;
   }
 
   update(entities) {
-    var cube, geometry, i, material, results;
+    var cube, geometry, i, material, offset, pos, results;
+    offset = [-0.5, 16, -0.5];
     for (i in entities) {
-      if (entities[i].type !== "player") {
+      if (entities[i].username !== this.nick) {
+        pos = [entities[i].position.x + offset[0], entities[i].position.y + offset[1], entities[i].position.z + offset[2]];
         if (this.saved[entities[i].uuid] === void 0) {
           console.log(entities[i]);
-          geometry = new THREE.BoxGeometry(1, 1, 1);
-          material = new THREE.MeshBasicMaterial({
-            color: 0x00ff00
-          });
+          if (entities[i].name === "item") {
+            material = new THREE.MeshBasicMaterial({
+              color: new THREE.Color("blue")
+            });
+            geometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+          } else {
+            material = new THREE.MeshBasicMaterial({
+              color: new THREE.Color("red")
+            });
+            geometry = new THREE.BoxGeometry(1, 1, 1);
+          }
           cube = new THREE.Mesh(geometry, material);
           this.scene.add(cube);
-          cube.position.set(entities[i].position.x + 0.5, entities[i].position.y + 16, entities[i].position.z + 0.5);
           this.saved[entities[i].uuid] = cube;
+          this.saved[entities[i].uuid].position.set(...pos);
           this.saved[entities[i].uuid].active = true;
         } else {
-          this.saved[entities[i].uuid].position.set(entities[i].position.x + 0.5, entities[i].position.y + 16, entities[i].position.z + 0.5);
+          this.saved[entities[i].uuid].position.set(...pos);
           this.saved[entities[i].uuid].active = true;
         }
       }

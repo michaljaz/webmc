@@ -91,7 +91,7 @@ module.exports=(type)->
 					emit ["inventory",bot().inventory.slots]
 				emit ["entities",bot().entities]
 				return
-			,100
+			,10
 			socketEventMap={
 				"move":(state,toggle)->
 					bot().setControlState(state,toggle)
