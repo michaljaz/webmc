@@ -229,3 +229,14 @@ canvas {
   height:43px;
   margin-right:-1px;
 }
+.inv_cursor{
+	background-image: url("/assets/gui/widgets.png");
+	background-repeat: no-repeat;
+	border:0px;
+	background-position: 0px -61px;
+	background-size: 700px auto;
+	position:fixed;
+	bottom:-4px;
+	width:66px;
+	height:66px;
+}

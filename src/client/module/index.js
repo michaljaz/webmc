@@ -132,6 +132,7 @@ init = function() {
   chat = new Chat({FPC});
   //Utworzenie inventory
   inv_bar = new InventoryBar();
+  inv_bar.listen();
   //Komunikacja z serwerem websocket
   eventMap = {
     "connect": function() {

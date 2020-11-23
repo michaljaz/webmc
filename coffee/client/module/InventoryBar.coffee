@@ -33,4 +33,17 @@ class InventoryBar
 	setXp: (level,progress)->
 		$(".player_xp").text level
 		$(".xp_bar").css "width","#{500*progress}px"
+	setFocus:(num)->
+		$(".inv_cursor").css("left","calc(50vw - 251px + 55*#{num}px)")
+	listen:()->
+		focus=0
+		@setFocus focus
+		_this=@
+		$(window).on 'wheel', (e)->
+			if e.originalEvent.deltaY > 0
+				focus++
+			else
+				focus--
+			focus=focus %% 9
+			_this.setFocus focus
 export {InventoryBar}
