@@ -47,7 +47,10 @@ module.exports=(type)->
 				version: config.realServer.version
 			}
 			bot=()->
-				return socketInfo[socket.id].bot
+				if socketInfo[socket.id] isnt undefined
+					return socketInfo[socket.id].bot
+				else
+					return null
 			emit=(array)->
 				io.to(socket.id).emit array...
 			#Eventy otrzymywane z serwera minecraftowego
@@ -81,8 +84,12 @@ module.exports=(type)->
 					return
 			}
 			for i of botEventMap
-				socketInfo[socket.id].bot.on i, botEventMap[i]
-
+				((i)->
+					socketInfo[socket.id].bot.on i, ()->
+						if bot() isnt null
+							botEventMap[i] arguments...
+						return
+				)(i)
 			inv=""
 			socketInfo[socket.id].int=setInterval ()->
 				inv_new=JSON.stringify(bot().inventory.slots)

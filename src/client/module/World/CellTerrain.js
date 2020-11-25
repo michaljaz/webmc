@@ -10,7 +10,6 @@ CellTerrain = class CellTerrain {
   constructor(options) {
     this.cellSize = options.cellSize;
     this.cells = {};
-    this.biomes = {};
     this.loadedBlocks = {};
   }
 
@@ -82,23 +81,9 @@ CellTerrain = class CellTerrain {
     return this.cells[this.vec3(cellX, cellY, cellZ)] = buffer;
   }
 
-  setBiome(cellX, cellY, cellZ, biome) {
-    return this.biomes[this.vec3(cellX, cellY, cellZ)] = biome;
-  }
-
-  getBlockBiome(blockX, blockY, blockZ) {
-    var biome, voff;
-    biome = this.getCellForVoxel(blockX, blockY, blockZ);
-    if (!biome) {
-      return null;
-    }
-    voff = this.computeVoxelOffset(blockX, blockY, blockZ);
-    return biome[voff];
-  }
-
   getBlock(blockX, blockY, blockZ) {
     if (this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] === void 0) {
-      this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] = new Block.fromStateId(this.getVoxel(blockX, blockY, blockZ), this.getBlockBiome(blockX, blockY, blockZ));
+      this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] = new Block.fromStateId(this.getVoxel(blockX, blockY, blockZ));
     }
     return this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)];
   }

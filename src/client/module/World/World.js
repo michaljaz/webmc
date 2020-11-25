@@ -59,7 +59,7 @@ World = class World {
       for (j = 0, len1 = result.length; j < len1; j++) {
         i = result[j];
         if (i !== null) {
-          results.push(_this.setCell(i.x, i.y, i.z, i.cell, i.biome));
+          results.push(_this.setCell(i.x, i.y, i.z, i.cell));
         } else {
           results.push(void 0);
         }
@@ -69,11 +69,10 @@ World = class World {
     return;
   }
 
-  setCell(cellX, cellY, cellZ, buffer, biome) {
+  setCell(cellX, cellY, cellZ, buffer) {
     var j, len1, nei, neiCellId, ref, results;
-    this._setCell(cellX, cellY, cellZ, buffer, biome);
+    this._setCell(cellX, cellY, cellZ, buffer);
     this.cellTerrain.setCell(cellX, cellY, cellZ, buffer);
-    this.cellTerrain.setBiome(cellX, cellY, cellZ, biome);
     this.cellNeedsUpdate[this.cellTerrain.vec3(cellX, cellY, cellZ)] = true;
     ref = this.neighbours;
     results = [];
@@ -258,10 +257,10 @@ World = class World {
     intersection = this.intersectsRay(start, end);
     if (intersection) {
       posPlace = intersection.position.map(function(v, ndx) {
-        return v + intersection.normal[ndx] * 0.5;
+        return Math.floor(v + intersection.normal[ndx] * 0.5);
       });
       posBreak = intersection.position.map(function(v, ndx) {
-        return v + intersection.normal[ndx] * -0.5;
+        return Math.floor(v + intersection.normal[ndx] * -0.5);
       });
       return {posPlace, posBreak};
     } else {

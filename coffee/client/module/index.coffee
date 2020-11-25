@@ -107,10 +107,7 @@ init = ()->
 			inv_bar.setHp(points)
 			return
 		"inventory":(inv)->
-			for i in [36..44]
-				try
-					$(".inv_box").eq(i-36).css("background-image","url(/assets/items/#{inv[i].name}.png)")
-				# console.log inv[i]
+			inv_bar.updateInv inv
 			return
 		"food":(points)->
 			inv_bar.setFood(points)
@@ -149,25 +146,27 @@ init = ()->
 	)
 	scene.add cursor
 
-	#Mgła
-	color = new THREE.Color "#adc8ff"
-	near = 3*16-13
-	far = 3*16-3
-	scene.fog = new THREE.Fog color, near, far
-
 	#Interfejs dat.gui
 	gui = new GUI()
 	params={
-		fog:true
+		fog:false
 		chunkdist:4
 	}
 	gui.add( params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
 		if params.fog
+			#Mgła
+			color = new THREE.Color "#adc8ff"
+			near = 3*16-13
+			far = 3*16-3
 			scene.fog = new THREE.Fog color, near, far
 		else
 			scene.fog = null
 	gui.add( world.material, 'wireframe' ).name( 'Wireframe' ).listen()
 	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
+
+	$(document).mousedown (e)->
+		console.log world.cellTerrain.getVoxel world.getRayBlock().posBreak...
+		return
 
 	#Wprawienie w ruch funkcji animate
 	animate()
@@ -189,9 +188,6 @@ render = ->
 	rayBlock=world.getRayBlock()
 	if rayBlock
 		pos=rayBlock.posBreak
-		pos[0]=Math.floor pos[0]
-		pos[1]=Math.floor pos[1]
-		pos[2]=Math.floor pos[2]
 		cursor.position.set pos...
 		cursor.visible=true
 	else

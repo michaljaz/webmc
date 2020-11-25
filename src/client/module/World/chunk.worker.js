@@ -5,10 +5,6 @@ import {
   CellTerrain
 } from './CellTerrain.js';
 
-import {
-  BlockGeo
-} from './BlockGeo.js';
-
 console.log("CHUNK WORKER STARTED!");
 
 TerrainManager = class TerrainManager {
@@ -17,10 +13,70 @@ TerrainManager = class TerrainManager {
     this.cellTerrain = new CellTerrain({
       cellSize: this.cellSize
     });
-    this.BlockGeo = new BlockGeo({
-      toxelSize: options.toxelSize,
-      blocksMapping: options.blocksMapping
-    });
+    this.toxelSize = options.toxelSize;
+    this.q = 1 / this.toxelSize;
+    this.blocksMapping = options.blocksMapping;
+  }
+
+  genBlockFace(type, block, pos) {
+    var li, sh, toxX, toxY, uv, x1, x2, y1, y2;
+    if (block.name === "water") {
+      toxX = this.blocksMapping["water_flow"]["x"];
+      toxY = this.blocksMapping["water_flow"]["y"];
+    } else if (this.blocksMapping[block.name]) {
+      toxX = this.blocksMapping[block.name]["x"];
+      toxY = this.blocksMapping[block.name]["y"];
+    } else {
+      toxX = this.blocksMapping["debug"]["x"];
+      toxY = 28 - this.blocksMapping["debug"]["y"];
+    }
+    li = [255, 255, 255];
+    sh = [0, 0, 0];
+    toxX -= 1;
+    toxY -= 1;
+    x1 = this.q * toxX;
+    y1 = 1 - this.q * toxY - this.q;
+    x2 = this.q * toxX + this.q;
+    y2 = 1 - this.q * toxY;
+    uv = [[x1, y1], [x1, y2], [x2, y1], [x2, y2]];
+    switch (type) {
+      case "pz":
+        return {
+          pos: [-0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
+          norm: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+        };
+      case "nx":
+        return {
+          pos: [0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]],
+          norm: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+        };
+      case "nz":
+        return {
+          pos: [0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]],
+          norm: [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1],
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+        };
+      case "px":
+        return {
+          pos: [-0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
+          norm: [-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0],
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+        };
+      case "py":
+        return {
+          pos: [0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
+          norm: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+        };
+      case "ny":
+        return {
+          pos: [0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2]],
+          norm: [0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+        };
+    }
   }
 
   genCellGeo(cellX, cellY, cellZ) {
@@ -43,7 +99,7 @@ TerrainManager = class TerrainManager {
     };
     addFace = function(type, pos) {
       var col1, col2, col3, col4, faceVertex, l, loaded, m, n, x, y, z;
-      faceVertex = _this.BlockGeo.genBlockFace(type, _this.cellTerrain.getBlock(...pos), pos);
+      faceVertex = _this.genBlockFace(type, _this.cellTerrain.getBlock(...pos), pos);
       positions.push(...faceVertex.pos);
       normals.push(...faceVertex.norm);
       uvs.push(...faceVertex.uv);
@@ -196,7 +252,6 @@ handlers = {
     }
   },
   setCell: function(data) {
-    terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
-    return terrain.cellTerrain.setBiome(data[0], data[1], data[2], data[4]);
+    return terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
   }
 };

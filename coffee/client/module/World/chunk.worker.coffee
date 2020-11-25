@@ -1,5 +1,4 @@
 import {CellTerrain} from './CellTerrain.js'
-import {BlockGeo} from './BlockGeo.js'
 
 console.log "CHUNK WORKER STARTED!"
 
@@ -9,10 +8,70 @@ class TerrainManager
 		@cellTerrain=new CellTerrain {
 			cellSize:@cellSize
 		}
-		@BlockGeo=new BlockGeo {
-			toxelSize:options.toxelSize
-			blocksMapping:options.blocksMapping
-		}
+		@toxelSize=options.toxelSize
+		@q=1/@toxelSize
+		@blocksMapping=options.blocksMapping
+	genBlockFace: (type,block,pos)->
+		if block.name is "water"
+			toxX=@blocksMapping["water_flow"]["x"]
+			toxY=@blocksMapping["water_flow"]["y"]
+		else if @blocksMapping[block.name]
+			toxX=@blocksMapping[block.name]["x"]
+			toxY=@blocksMapping[block.name]["y"]
+		else
+			toxX=@blocksMapping["debug"]["x"]
+			toxY=28-@blocksMapping["debug"]["y"]
+		li = [255,255,255]
+		sh = [0,0,0]
+		toxX-=1
+		toxY-=1
+		x1=@q*toxX
+		y1=1-@q*toxY-@q
+		x2=@q*toxX+@q
+		y2=1-@q*toxY
+		uv=[
+			[x1,y1]
+			[x1,y2]
+			[x2,y1]
+			[x2,y2]
+		]
+		switch type
+			when "pz"
+				return {
+					pos:[-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1],  0.5+pos[2],0.5+pos[0],  0.5+pos[1],  0.5+pos[2]]
+					norm:[0,  0,  1,0,  0,  1,0,  0,  1,0,  0,  1,0,  0,  1,0,  0,  1]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
+			when "nx"
+				return {
+					pos:[ 0.5+pos[0], -0.5+pos[1],  0.5+pos[2], 0.5+pos[0], -0.5+pos[1], -0.5+pos[2],0.5+pos[0],  0.5+pos[1],  0.5+pos[2], 0.5+pos[0],  0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1], -0.5+pos[2], 0.5+pos[0],  0.5+pos[1], -0.5+pos[2]]
+					norm:[ 1,  0,  0, 1,  0,  0, 1,  0,  0, 1,  0,  0, 1,  0,  0, 1,  0,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
+			when "nz"
+				return {
+					pos:[ 0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1], -0.5+pos[2],0.5+pos[0],  0.5+pos[1], -0.5+pos[2], 0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2]]
+					norm:[ 0,  0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1, 0,  0, -1]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
+			when "px"
+				return {
+					pos:[-0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2]]
+					norm:[-1,  0,  0,-1,  0,  0,-1,  0,  0,-1,  0,  0,-1,  0,  0,-1,  0,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
+			when "py"
+				return {
+					pos:[ 0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],0.5+pos[0],  0.5+pos[1],  0.5+pos[2], 0.5+pos[0],  0.5+pos[1],  0.5+pos[2],-0.5+pos[0],  0.5+pos[1], -0.5+pos[2],-0.5+pos[0],  0.5+pos[1],  0.5+pos[2]]
+					norm:[ 0,  1,  0, 0,  1,  0, 0,  1,  0, 0,  1,  0, 0,  1,  0, 0,  1,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
+			when "ny"
+				return {
+					pos:[ 0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],0.5+pos[0], -0.5+pos[1], -0.5+pos[2], 0.5+pos[0], -0.5+pos[1], -0.5+pos[2],-0.5+pos[0], -0.5+pos[1],  0.5+pos[2],-0.5+pos[0], -0.5+pos[1], -0.5+pos[2]]
+					norm:[ 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1,  0, 0, -1,  0]
+					uv:[uv[0]...,uv[2]...,uv[1]...,uv[1]...,uv[2]...,uv[3]...]
+				}
 	genCellGeo: (cellX,cellY,cellZ)->
 		_this=@
 		positions=[]
@@ -29,7 +88,7 @@ class TerrainManager
 			else
 				return [0.3,0.3,0.3]
 		addFace=(type,pos)->
-			faceVertex=_this.BlockGeo.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
+			faceVertex=_this.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
 			positions.push faceVertex.pos...
 			normals.push faceVertex.norm...
 			uvs.push faceVertex.uv...
@@ -115,7 +174,6 @@ class TerrainManager
 			uvs
 			colors
 		}
-
 addEventListener "message", (e)->
 	fn = handlers[e.data.type]
 	if not fn
@@ -150,5 +208,4 @@ handlers={
 			}
 	setCell: (data)->
 		terrain.cellTerrain.setCell data[0],data[1],data[2],data[3]
-		terrain.cellTerrain.setBiome data[0],data[1],data[2],data[4]
 }

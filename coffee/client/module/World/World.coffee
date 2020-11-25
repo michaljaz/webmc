@@ -39,12 +39,11 @@ class World
 			result=data.data.result
 			for i in result
 				if i isnt null
-					_this.setCell i.x,i.y,i.z,i.cell,i.biome
+					_this.setCell i.x,i.y,i.z,i.cell
 		return
-	setCell: (cellX,cellY,cellZ,buffer,biome)->
-		@_setCell cellX,cellY,cellZ,buffer,biome
+	setCell: (cellX,cellY,cellZ,buffer)->
+		@_setCell cellX,cellY,cellZ,buffer
 		@cellTerrain.setCell cellX,cellY,cellZ,buffer
-		@cellTerrain.setBiome cellX,cellY,cellZ,biome
 		@cellNeedsUpdate[@cellTerrain.vec3(cellX,cellY,cellZ)]=true
 		for nei in @neighbours
 			neiCellId=@cellTerrain.vec3(cellX+nei[0],cellY+nei[1],cellZ+nei[2])
@@ -178,10 +177,13 @@ class World
 		intersection = @intersectsRay start, end
 		if intersection
 			posPlace = intersection.position.map (v, ndx) ->
-				return (v + intersection.normal[ndx] * 0.5)
+				return Math.floor(v + intersection.normal[ndx] * 0.5)
 			posBreak = intersection.position.map (v, ndx) ->
-				return (v + intersection.normal[ndx] *-0.5)
-			return {posPlace,posBreak}
+				return Math.floor(v + intersection.normal[ndx] *-0.5)
+			return {
+				posPlace
+				posBreak
+			}
 		else
 			return false
 	_setCell: (cellX,cellY,cellZ,buffer,biome)->

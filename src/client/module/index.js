@@ -76,7 +76,7 @@ import {
 } from './Entities.js';
 
 init = function() {
-  var ambientLight, chat, color, directionalLight, ent, eventMap, far, gui, i, near, nick, rt;
+  var ambientLight, chat, directionalLight, ent, eventMap, gui, i, nick, rt;
   //Płótno,renderer,scena i kamera
   canvas = document.querySelector('#c');
   renderer = new THREE.WebGLRenderer({
@@ -159,14 +159,8 @@ init = function() {
       inv_bar.setHp(points);
     },
     "inventory": function(inv) {
-      var i, j;
-      for (i = j = 36; j <= 44; i = ++j) {
-        try {
-          $(".inv_box").eq(i - 36).css("background-image", `url(/assets/items/${inv[i].name}.png)`);
-        } catch (error) {}
-      }
+      inv_bar.updateInv(inv);
     },
-    // console.log inv[i]
     "food": function(points) {
       inv_bar.setFood(points);
     },
@@ -201,19 +195,19 @@ init = function() {
     linewidth: 0.5
   }));
   scene.add(cursor);
-  //Mgła
-  color = new THREE.Color("#adc8ff");
-  near = 3 * 16 - 13;
-  far = 3 * 16 - 3;
-  scene.fog = new THREE.Fog(color, near, far);
   //Interfejs dat.gui
   gui = new GUI();
   params = {
-    fog: true,
+    fog: false,
     chunkdist: 4
   };
   gui.add(params, 'fog').name('Enable fog').listen().onChange(function() {
+    var color, far, near;
     if (params.fog) {
+      //Mgła
+      color = new THREE.Color("#adc8ff");
+      near = 3 * 16 - 13;
+      far = 3 * 16 - 3;
       return scene.fog = new THREE.Fog(color, near, far);
     } else {
       return scene.fog = null;
@@ -221,6 +215,9 @@ init = function() {
   });
   gui.add(world.material, 'wireframe').name('Wireframe').listen();
   gui.add(params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
+  $(document).mousedown(function(e) {
+    console.log(world.cellTerrain.getVoxel(...world.getRayBlock().posBreak));
+  });
   //Wprawienie w ruch funkcji animate
   animate();
 };
@@ -242,9 +239,6 @@ render = function() {
   rayBlock = world.getRayBlock();
   if (rayBlock) {
     pos = rayBlock.posBreak;
-    pos[0] = Math.floor(pos[0]);
-    pos[1] = Math.floor(pos[1]);
-    pos[2] = Math.floor(pos[2]);
     cursor.position.set(...pos);
     cursor.visible = true;
   } else {

@@ -56,6 +56,17 @@ InventoryBar = class InventoryBar {
     return $(".inv_cursor").css("left", `calc(50vw - 253px + 55*${num}px)`);
   }
 
+  updateInv(inv) {
+    var i, j;
+    for (i = j = 36; j <= 44; i = ++j) {
+      if (inv[i] !== null) {
+        $(".inv_box").eq(i - 36).css("background-image", `url(/assets/items/${inv[i].name}.png)`);
+      } else {
+        $(".inv_box").eq(i - 36).css("background-image", "");
+      }
+    }
+  }
+
   listen() {
     var _this, focus;
     focus = 0;

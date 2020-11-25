@@ -35,6 +35,13 @@ class InventoryBar
 		$(".xp_bar").css "width","#{500*progress}px"
 	setFocus:(num)->
 		$(".inv_cursor").css("left","calc(50vw - 253px + 55*#{num}px)")
+	updateInv:(inv)->
+		for i in [36..44]
+			if inv[i] isnt null
+				$(".inv_box").eq(i-36).css("background-image","url(/assets/items/#{inv[i].name}.png)")
+			else
+				$(".inv_box").eq(i-36).css("background-image","")
+		return
 	listen:()->
 		focus=0
 		@setFocus focus

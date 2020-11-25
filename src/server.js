@@ -52,7 +52,11 @@
           version: config.realServer.version
         });
         bot = function() {
-          return socketInfo[socket.id].bot;
+          if (socketInfo[socket.id] !== void 0) {
+            return socketInfo[socket.id].bot;
+          } else {
+            return null;
+          }
         };
         emit = function(array) {
           return io.to(socket.id).emit(...array);
@@ -89,7 +93,13 @@
           }
         };
         for (i in botEventMap) {
-          socketInfo[socket.id].bot.on(i, botEventMap[i]);
+          (function(i) {
+            return socketInfo[socket.id].bot.on(i, function() {
+              if (bot() !== null) {
+                botEventMap[i](...arguments);
+              }
+            });
+          })(i);
         }
         inv = "";
         socketInfo[socket.id].int = setInterval(function() {
