@@ -216,7 +216,7 @@ init = function() {
   gui.add(world.material, 'wireframe').name('Wireframe').listen();
   gui.add(params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
   $(document).mousedown(function(e) {
-    console.log(world.cellTerrain.getVoxel(...world.getRayBlock().posBreak));
+    console.log(world.cellTerrain.getBlock(...world.getRayBlock().posBreak));
   });
   //Wprawienie w ruch funkcji animate
   animate();

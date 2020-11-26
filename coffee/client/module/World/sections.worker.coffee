@@ -62,7 +62,7 @@ class ChunkDecoder
           y:0
           z:0
         }
-        cell=new Uint8Array 16*16*16
+        cell=new Uint32Array 16*16*16
         for x in [0..15]
           for y in [0..15]
             for z in [0..15]

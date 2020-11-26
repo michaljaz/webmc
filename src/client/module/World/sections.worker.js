@@ -86,7 +86,7 @@
             y: 0,
             z: 0
           };
-          cell = new Uint8Array(16 * 16 * 16);
+          cell = new Uint32Array(16 * 16 * 16);
           for (x = k = 0; k <= 15; x = ++k) {
             for (y = l = 0; l <= 15; y = ++l) {
               for (z = m = 0; m <= 15; z = ++m) {

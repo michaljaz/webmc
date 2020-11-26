@@ -41,7 +41,7 @@ CellTerrain = class CellTerrain {
     cellId = this.vec3(...this.computeCellForVoxel(voxelX, voxelY, voxelZ));
     cell = this.cells[cellId];
     if (!cell) {
-      cell = new Uint8Array(this.cellSize * this.cellSize * this.cellSize);
+      cell = new Uint32Array(this.cellSize * this.cellSize * this.cellSize);
       this.cells[cellId] = cell;
     }
     return cell;

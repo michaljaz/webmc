@@ -165,7 +165,7 @@ init = ()->
 	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
 
 	$(document).mousedown (e)->
-		console.log world.cellTerrain.getVoxel world.getRayBlock().posBreak...
+		console.log world.cellTerrain.getBlock world.getRayBlock().posBreak...
 		return
 
 	#Wprawienie w ruch funkcji animate
