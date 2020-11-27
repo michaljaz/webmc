@@ -61,7 +61,12 @@ InventoryBar = class InventoryBar {
   }
 
   setXp(level, progress) {
-    $(".player_xp").text(level);
+    if (level === 0) {
+      $(".player_xp").hide();
+    } else {
+      $(".player_xp").show();
+      $(".player_xp").text(level);
+    }
     return $(".xp_bar").css("width", `${500 * progress}px`);
   }
 

@@ -30,6 +30,7 @@ class World
 				blocksMapping: @al.get "blocksMapping"
 				toxelSize: @toxelSize
 				cellSize: @cellSize
+				blocksTex: @al.get "blocksTex"
 			}
 		}
 

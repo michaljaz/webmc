@@ -11,8 +11,51 @@ class TerrainManager
 		@toxelSize=options.toxelSize
 		@q=1/@toxelSize
 		@blocksMapping=options.blocksMapping
+		@blocksTex=options.blocksTex
+		console.log @blocksTex
 	genBlockFace: (type,block,pos)->
-		if block.name is "water"
+		if @blocksTex[block.name] isnt undefined
+			if @blocksTex[block.name]["all"] isnt undefined
+				toxX=@blocksMapping[@blocksTex[block.name].all]["x"]
+				toxY=@blocksMapping[@blocksTex[block.name].all]["y"]
+			else if @blocksTex[block.name]["side"] isnt undefined
+				mapka={
+					"py":"top"
+					"ny":"bottom"
+				}
+				if mapka[type] isnt undefined
+					toxX=@blocksMapping[@blocksTex[block.name][mapka[type]]]["x"]
+					toxY=@blocksMapping[@blocksTex[block.name][mapka[type]]]["y"]
+				else
+					toxX=@blocksMapping[@blocksTex[block.name]["side"]]["x"]
+					toxY=@blocksMapping[@blocksTex[block.name]["side"]]["y"]
+			else
+				toxX=@blocksMapping[@blocksTex[block.name][type]]["x"]
+				toxY=@blocksMapping[@blocksTex[block.name][type]]["y"]
+		else if @blocksTex[String(block.stateId)] isnt undefined
+			xd=@blocksTex[String(block.stateId)]
+			if xd["all"] isnt undefined
+				console.log "1"
+				toxX=@blocksMapping[xd.all]["x"]
+				toxY=@blocksMapping[xd.all]["y"]
+			else if xd["side"] isnt undefined
+				mapka={
+					"py":"top"
+					"ny":"bottom"
+				}
+				if mapka[type] isnt undefined
+					console.log "2"
+					toxX=@blocksMapping[xd[mapka[type]]]["x"]
+					toxY=@blocksMapping[xd[mapka[type]]]["y"]
+				else
+					console.log xd["side"]
+					toxX=@blocksMapping[xd["side"]]["x"]
+					toxY=@blocksMapping[xd["side"]]["y"]
+			else
+				console.log xd[type]
+				toxX=@blocksMapping[xd[type]]["x"]
+				toxY=@blocksMapping[xd[type]]["y"]
+		else if block.name is "water"
 			toxX=@blocksMapping["water_flow"]["x"]
 			toxY=@blocksMapping["water_flow"]["y"]
 		else if @blocksMapping[block.name]
@@ -20,7 +63,7 @@ class TerrainManager
 			toxY=@blocksMapping[block.name]["y"]
 		else
 			toxX=@blocksMapping["debug"]["x"]
-			toxY=28-@blocksMapping["debug"]["y"]
+			toxY=@blocksMapping["debug"]["y"]
 		li = [255,255,255]
 		sh = [0,0,0]
 		toxX-=1
@@ -195,6 +238,7 @@ handlers={
 			blocksMapping:data.blocksMapping
 			toxelSize:data.toxelSize
 			cellSize:data.cellSize
+			blocksTex:data.blocksTex
 		}
 		return
 	setVoxel:(data)->

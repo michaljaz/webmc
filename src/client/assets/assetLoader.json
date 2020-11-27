@@ -14,5 +14,9 @@
   "skybox":{
     "path":"assets/images/skybox.jpg",
     "type":"texture"
-  }
+  },
+	"blocksTex":{
+		"path":"assets/blocks/blocks.json",
+		"type":"text"
+	}
 }

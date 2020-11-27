@@ -16,11 +16,58 @@ TerrainManager = class TerrainManager {
     this.toxelSize = options.toxelSize;
     this.q = 1 / this.toxelSize;
     this.blocksMapping = options.blocksMapping;
+    this.blocksTex = options.blocksTex;
+    console.log(this.blocksTex);
   }
 
   genBlockFace(type, block, pos) {
-    var li, sh, toxX, toxY, uv, x1, x2, y1, y2;
-    if (block.name === "water") {
+    var li, mapka, sh, toxX, toxY, uv, x1, x2, xd, y1, y2;
+    if (this.blocksTex[block.name] !== void 0) {
+      if (this.blocksTex[block.name]["all"] !== void 0) {
+        toxX = this.blocksMapping[this.blocksTex[block.name].all]["x"];
+        toxY = this.blocksMapping[this.blocksTex[block.name].all]["y"];
+      } else if (this.blocksTex[block.name]["side"] !== void 0) {
+        mapka = {
+          "py": "top",
+          "ny": "bottom"
+        };
+        if (mapka[type] !== void 0) {
+          toxX = this.blocksMapping[this.blocksTex[block.name][mapka[type]]]["x"];
+          toxY = this.blocksMapping[this.blocksTex[block.name][mapka[type]]]["y"];
+        } else {
+          toxX = this.blocksMapping[this.blocksTex[block.name]["side"]]["x"];
+          toxY = this.blocksMapping[this.blocksTex[block.name]["side"]]["y"];
+        }
+      } else {
+        toxX = this.blocksMapping[this.blocksTex[block.name][type]]["x"];
+        toxY = this.blocksMapping[this.blocksTex[block.name][type]]["y"];
+      }
+    } else if (this.blocksTex[String(block.stateId)] !== void 0) {
+      xd = this.blocksTex[String(block.stateId)];
+      if (xd["all"] !== void 0) {
+        console.log("1");
+        toxX = this.blocksMapping[xd.all]["x"];
+        toxY = this.blocksMapping[xd.all]["y"];
+      } else if (xd["side"] !== void 0) {
+        mapka = {
+          "py": "top",
+          "ny": "bottom"
+        };
+        if (mapka[type] !== void 0) {
+          console.log("2");
+          toxX = this.blocksMapping[xd[mapka[type]]]["x"];
+          toxY = this.blocksMapping[xd[mapka[type]]]["y"];
+        } else {
+          console.log(xd["side"]);
+          toxX = this.blocksMapping[xd["side"]]["x"];
+          toxY = this.blocksMapping[xd["side"]]["y"];
+        }
+      } else {
+        console.log(xd[type]);
+        toxX = this.blocksMapping[xd[type]]["x"];
+        toxY = this.blocksMapping[xd[type]]["y"];
+      }
+    } else if (block.name === "water") {
       toxX = this.blocksMapping["water_flow"]["x"];
       toxY = this.blocksMapping["water_flow"]["y"];
     } else if (this.blocksMapping[block.name]) {
@@ -28,7 +75,7 @@ TerrainManager = class TerrainManager {
       toxY = this.blocksMapping[block.name]["y"];
     } else {
       toxX = this.blocksMapping["debug"]["x"];
-      toxY = 28 - this.blocksMapping["debug"]["y"];
+      toxY = this.blocksMapping["debug"]["y"];
     }
     li = [255, 255, 255];
     sh = [0, 0, 0];
@@ -235,7 +282,8 @@ handlers = {
       blocks: data.blocks,
       blocksMapping: data.blocksMapping,
       toxelSize: data.toxelSize,
-      cellSize: data.cellSize
+      cellSize: data.cellSize,
+      blocksTex: data.blocksTex
     });
   },
   setVoxel: function(data) {

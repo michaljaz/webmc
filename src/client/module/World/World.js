@@ -45,7 +45,8 @@ World = class World {
       data: {
         blocksMapping: this.al.get("blocksMapping"),
         toxelSize: this.toxelSize,
-        cellSize: this.cellSize
+        cellSize: this.cellSize,
+        blocksTex: this.al.get("blocksTex")
       }
     });
     //Utworzenie Workera do przekształcania bufforów otrzymanych z serwera

@@ -38,7 +38,11 @@ class InventoryBar
 			$(".food").eq(10-i).addClass(lista[10-i])
 		return
 	setXp: (level,progress)->
-		$(".player_xp").text level
+		if level is 0
+			$(".player_xp").hide()
+		else
+			$(".player_xp").show()
+			$(".player_xp").text level
 		$(".xp_bar").css "width","#{500*progress}px"
 	setFocus:(num)->
 		$(".inv_cursor").css("left","calc(50vw - 253px + 55*#{num}px)")
