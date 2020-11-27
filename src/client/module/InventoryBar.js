@@ -3,6 +3,19 @@ var InventoryBar,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
 InventoryBar = class InventoryBar {
+  constructor(options) {
+    var i, j, k, l;
+    for (i = j = 0; j <= 9; i = ++j) {
+      $(".player_hp").append("<span class='hp'></span> ");
+    }
+    for (i = k = 0; k <= 9; i = ++k) {
+      $(".player_food").append("<span class='food'></span> ");
+    }
+    for (i = l = 1; l <= 9; i = ++l) {
+      $(".inv_bar").append("<span class='inv_box'></span> ");
+    }
+  }
+
   setHp(points) {
     var i, j, k, l, lista, ref;
     lista = {};

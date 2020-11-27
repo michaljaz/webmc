@@ -26,6 +26,11 @@
     } else {
       app.use(express.static(__dirname + "/client/"));
     }
+    app.set('view engine', 'ejs');
+    app.set('views', `${__dirname}/views`);
+    app.get("/", function(req, res) {
+      return res.render("index");
+    });
     app.use(function(req, res, next) {
       res.set('Cache-Control', 'no-store');
       return next();

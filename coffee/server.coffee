@@ -24,6 +24,10 @@ module.exports=(type)->
 		app.use express.static(__dirname + "/dist/")
 	else
 		app.use express.static(__dirname + "/client/")
+	app.set 'view engine', 'ejs'
+	app.set 'views', "#{__dirname}/views"
+	app.get "/", (req,res)->
+		res.render "index"
 	app.use (req, res, next) ->
 		res.set 'Cache-Control', 'no-store'
 		next()

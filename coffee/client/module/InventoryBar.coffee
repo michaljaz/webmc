@@ -1,5 +1,12 @@
 
 class InventoryBar
+	constructor:(options)->
+		for i in [0..9]
+			$(".player_hp").append("<span class='hp'></span> ")
+		for i in [0..9]
+			$(".player_food").append("<span class='food'></span> ")
+		for i in [1..9]
+			$(".inv_bar").append("<span class='inv_box'></span> ")
 	setHp: (points)->
 		lista={}
 		for i in [1..10]
