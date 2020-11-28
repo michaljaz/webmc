@@ -249,6 +249,7 @@ render = function() {
   //Updatowanie sceny i animacji TWEEN
   TWEEN.update();
   renderer.render(scene, camera);
+  inv_bar.tick();
 };
 
 //Funkcja animate

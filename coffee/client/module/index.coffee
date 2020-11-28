@@ -197,8 +197,9 @@ render = ->
 	world.updateCellsAroundPlayer camera.position,params.chunkdist
 
 	#Updatowanie sceny i animacji TWEEN
-	TWEEN.update();
+	TWEEN.update()
 	renderer.render scene, camera
+	inv_bar.tick()
 	return
 
 #Funkcja animate

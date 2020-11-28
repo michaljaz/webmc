@@ -12,7 +12,7 @@ InventoryBar = class InventoryBar {
       $(".player_food").append("<span class='food'></span> ");
     }
     for (i = l = 1; l <= 9; i = ++l) {
-      $(".inv_bar").append("<span class='inv_box'></span> ");
+      $(".inv_bar").append("<span class='inv_box item' data-texture=''></span> ");
     }
   }
 
@@ -78,9 +78,11 @@ InventoryBar = class InventoryBar {
     var i, j;
     for (i = j = 36; j <= 44; i = ++j) {
       if (inv[i] !== null) {
-        $(".inv_box").eq(i - 36).css("background-image", `url(/assets/items/${inv[i].name}.png)`);
+        $(".inv_box").eq(i - 36).attr("data-texture", inv[i].name);
+        $(".inv_box").eq(i - 36).attr("data-amount", String(inv[i].count));
       } else {
-        $(".inv_box").eq(i - 36).css("background-image", "");
+        $(".inv_box").eq(i - 36).attr("data-texture", "");
+        $(".inv_box").eq(i - 36).attr("data-amount", "0");
       }
     }
   }
@@ -99,6 +101,28 @@ InventoryBar = class InventoryBar {
       focus = modulo(focus, 9);
       return _this.setFocus(focus);
     });
+  }
+
+  tick() {
+    var i, j, list, ref, results, url;
+    //background-image:url('/assets/items/' attr(data-texture) '.png');
+    list = $(".item");
+    results = [];
+    for (i = j = 0, ref = list.length - 1; (0 <= ref ? j <= ref : j >= ref); i = 0 <= ref ? ++j : --j) {
+      if ($(list[i]).attr('data-texture') === "") {
+        url = "";
+      } else {
+        url = `'/assets/items/${$(list[i]).attr('data-texture')}.png'`;
+      }
+      $(list[i]).css("background-image", `url(${url})`);
+      $(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>" + $(list[i]).attr('data-amount') + "</div>");
+      if ($(list[i]).attr('data-amount') === "0" || $(list[i]).attr('data-amount') === "1") {
+        results.push($(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>&#8291</div>"));
+      } else {
+        results.push(void 0);
+      }
+    }
+    return results;
   }
 
 };

@@ -14,28 +14,12 @@ class TerrainManager
 		@blocksTex=options.blocksTex
 		console.log @blocksTex
 	genBlockFace: (type,block,pos)->
-		if @blocksTex[block.name] isnt undefined
-			if @blocksTex[block.name]["all"] isnt undefined
-				toxX=@blocksMapping[@blocksTex[block.name].all]["x"]
-				toxY=@blocksMapping[@blocksTex[block.name].all]["y"]
-			else if @blocksTex[block.name]["side"] isnt undefined
-				mapka={
-					"py":"top"
-					"ny":"bottom"
-				}
-				if mapka[type] isnt undefined
-					toxX=@blocksMapping[@blocksTex[block.name][mapka[type]]]["x"]
-					toxY=@blocksMapping[@blocksTex[block.name][mapka[type]]]["y"]
-				else
-					toxX=@blocksMapping[@blocksTex[block.name]["side"]]["x"]
-					toxY=@blocksMapping[@blocksTex[block.name]["side"]]["y"]
+		if @blocksTex[block.name] isnt undefined or @blocksTex[String(block.stateId)] isnt undefined
+			if @blocksTex[String(block.stateId)] isnt undefined
+				xd=@blocksTex[String(block.stateId)]
 			else
-				toxX=@blocksMapping[@blocksTex[block.name][type]]["x"]
-				toxY=@blocksMapping[@blocksTex[block.name][type]]["y"]
-		else if @blocksTex[String(block.stateId)] isnt undefined
-			xd=@blocksTex[String(block.stateId)]
+				xd=@blocksTex[block.name]
 			if xd["all"] isnt undefined
-				console.log "1"
 				toxX=@blocksMapping[xd.all]["x"]
 				toxY=@blocksMapping[xd.all]["y"]
 			else if xd["side"] isnt undefined
@@ -44,15 +28,12 @@ class TerrainManager
 					"ny":"bottom"
 				}
 				if mapka[type] isnt undefined
-					console.log "2"
 					toxX=@blocksMapping[xd[mapka[type]]]["x"]
 					toxY=@blocksMapping[xd[mapka[type]]]["y"]
 				else
-					console.log xd["side"]
 					toxX=@blocksMapping[xd["side"]]["x"]
 					toxY=@blocksMapping[xd["side"]]["y"]
 			else
-				console.log xd[type]
 				toxX=@blocksMapping[xd[type]]["x"]
 				toxY=@blocksMapping[xd[type]]["y"]
 		else if block.name is "water"

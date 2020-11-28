@@ -28,8 +28,7 @@ module.exports = {
     new CopyWebpackPlugin({
       patterns:[
         {from: 'src/client/assets',to: 'assets'},
-        {from: 'src/client/css',to: 'css'},
-        {from: 'src/client/index.html',to: 'index.html'}
+        {from: 'src/client/css',to: 'css'}
       ]
     })
   ]

@@ -22,30 +22,13 @@ TerrainManager = class TerrainManager {
 
   genBlockFace(type, block, pos) {
     var li, mapka, sh, toxX, toxY, uv, x1, x2, xd, y1, y2;
-    if (this.blocksTex[block.name] !== void 0) {
-      if (this.blocksTex[block.name]["all"] !== void 0) {
-        toxX = this.blocksMapping[this.blocksTex[block.name].all]["x"];
-        toxY = this.blocksMapping[this.blocksTex[block.name].all]["y"];
-      } else if (this.blocksTex[block.name]["side"] !== void 0) {
-        mapka = {
-          "py": "top",
-          "ny": "bottom"
-        };
-        if (mapka[type] !== void 0) {
-          toxX = this.blocksMapping[this.blocksTex[block.name][mapka[type]]]["x"];
-          toxY = this.blocksMapping[this.blocksTex[block.name][mapka[type]]]["y"];
-        } else {
-          toxX = this.blocksMapping[this.blocksTex[block.name]["side"]]["x"];
-          toxY = this.blocksMapping[this.blocksTex[block.name]["side"]]["y"];
-        }
+    if (this.blocksTex[block.name] !== void 0 || this.blocksTex[String(block.stateId)] !== void 0) {
+      if (this.blocksTex[String(block.stateId)] !== void 0) {
+        xd = this.blocksTex[String(block.stateId)];
       } else {
-        toxX = this.blocksMapping[this.blocksTex[block.name][type]]["x"];
-        toxY = this.blocksMapping[this.blocksTex[block.name][type]]["y"];
+        xd = this.blocksTex[block.name];
       }
-    } else if (this.blocksTex[String(block.stateId)] !== void 0) {
-      xd = this.blocksTex[String(block.stateId)];
       if (xd["all"] !== void 0) {
-        console.log("1");
         toxX = this.blocksMapping[xd.all]["x"];
         toxY = this.blocksMapping[xd.all]["y"];
       } else if (xd["side"] !== void 0) {
@@ -54,16 +37,13 @@ TerrainManager = class TerrainManager {
           "ny": "bottom"
         };
         if (mapka[type] !== void 0) {
-          console.log("2");
           toxX = this.blocksMapping[xd[mapka[type]]]["x"];
           toxY = this.blocksMapping[xd[mapka[type]]]["y"];
         } else {
-          console.log(xd["side"]);
           toxX = this.blocksMapping[xd["side"]]["x"];
           toxY = this.blocksMapping[xd["side"]]["y"];
         }
       } else {
-        console.log(xd[type]);
         toxX = this.blocksMapping[xd[type]]["x"];
         toxY = this.blocksMapping[xd[type]]["y"];
       }

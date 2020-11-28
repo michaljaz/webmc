@@ -6,7 +6,7 @@ class InventoryBar
 		for i in [0..9]
 			$(".player_food").append("<span class='food'></span> ")
 		for i in [1..9]
-			$(".inv_bar").append("<span class='inv_box'></span> ")
+			$(".inv_bar").append("<span class='inv_box item' data-texture=''></span> ")
 	setHp: (points)->
 		lista={}
 		for i in [1..10]
@@ -49,9 +49,11 @@ class InventoryBar
 	updateInv:(inv)->
 		for i in [36..44]
 			if inv[i] isnt null
-				$(".inv_box").eq(i-36).css("background-image","url(/assets/items/#{inv[i].name}.png)")
+				$(".inv_box").eq(i-36).attr("data-texture",inv[i].name)
+				$(".inv_box").eq(i-36).attr("data-amount",String(inv[i].count))
 			else
-				$(".inv_box").eq(i-36).css("background-image","")
+				$(".inv_box").eq(i-36).attr("data-texture","")
+				$(".inv_box").eq(i-36).attr("data-amount","0")
 		return
 	listen:()->
 		focus=0
@@ -64,4 +66,17 @@ class InventoryBar
 				focus--
 			focus=focus %% 9
 			_this.setFocus focus
+	tick:()->
+		#background-image:url('/assets/items/' attr(data-texture) '.png');
+		list = $(".item")
+		for i in [0..list.length-1]
+			if $(list[i]).attr('data-texture') is ""
+				url=""
+			else
+				url="'/assets/items/#{$(list[i]).attr('data-texture')}.png'"
+			$(list[i]).css("background-image","url(#{url})")
+			$(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>"+$(list[i]).attr('data-amount')+"</div>")
+			if $(list[i]).attr('data-amount') is "0" or $(list[i]).attr('data-amount') is "1"
+				$(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>&#8291</div>")
+
 export {InventoryBar}
