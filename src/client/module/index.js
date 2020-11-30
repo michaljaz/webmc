@@ -97,6 +97,18 @@ init = function() {
   directionalLight = new THREE.DirectionalLight(0x333333, 2);
   directionalLight.position.set(1, 1, 0.5).normalize();
   scene.add(directionalLight);
+  //Text geometry
+  // new THREE.TextGeometry 'Hello three.js!', {
+  // 	size: 80
+  // 	height: 5
+  // 	curveSegments: 12
+  // 	bevelEnabled: true
+  // 	bevelThickness: 10
+  // 	bevelSize: 8
+  // 	bevelOffset: 0
+  // 	bevelSegments: 5
+  // }
+
   //Informacja o gpu komputera
   console.warn(gpuInfo());
   //Nick gracza

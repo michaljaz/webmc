@@ -31,7 +31,7 @@ World = class World {
     });
     this.material = this.ATA.material;
     this.cellUpdateTime = null;
-    this.renderTime = 500;
+    this.renderTime = 100;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     //Utworzenie Workera do obliczania geometrii chunków
     this.chunkWorker = new Worker("/module/World/chunk.worker.js", {

@@ -17,7 +17,7 @@ class World
 		@ATA=new AnimatedTextureAtlas {al:@al}
 		@material=@ATA.material
 		@cellUpdateTime=null
-		@renderTime=500
+		@renderTime=100
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 
 		#Utworzenie Workera do obliczania geometrii chunków

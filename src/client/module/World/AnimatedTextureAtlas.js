@@ -95,7 +95,7 @@ TextureAtlasCreator = class TextureAtlasCreator {
 
 AnimatedTextureAtlas = class AnimatedTextureAtlas {
   constructor(options) {
-    var _this, i, k, savedTextures, t, tekstura, tickq;
+    var _this, i, k, savedTextures, t, tekstura, tickq, xd;
     _this = this;
     this.al = options.al;
     this.material = new THREE.MeshStandardMaterial({
@@ -103,6 +103,38 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
       map: null,
       vertexColors: true
     });
+    xd = true;
+    this.material.onBeforeCompile = function(shader) {
+      var materialShader;
+      console.log(shader);
+      //Uniforms
+      shader.uniforms.u_fogColor = {
+        value: [0.8, 0.9, 1, 1]
+      };
+      shader.uniforms.u_fogAmount = {
+        value: 0.2
+      };
+      shader.uniforms.u_fogNear = {
+        value: 10
+      };
+      shader.uniforms.u_fogFar = {
+        value: 30
+      };
+      shader.uniforms.time = {
+        value: 0
+      };
+      setInterval(function() {
+        return shader.uniforms.time.value += 0.05;
+      }, 10);
+      //Fragment shader
+      shader.fragmentShader = ["uniform vec4 u_fogColor;", "uniform float u_fogNear;", "uniform float u_fogFar;", "uniform float u_fogAmount;", shader.fragmentShader].join("\n");
+      // # shader.fragmentShader="uniform vec4 fogColor;\nuniform float fogAmount;\n"+shader.fragmentShader
+      shader.fragmentShader = shader.fragmentShader.replace("gl_FragColor = vec4( outgoingLight, diffuseColor.a );", ["gl_FragColor = vec4( outgoingLight, diffuseColor.a );", "gl_FragColor = mix(gl_FragColor,u_fogColor,u_fogAmount);"].join("\n"));
+      //Vertex shader
+      shader.vertexShader = ["uniform float time;", "uniform mat4 u_worldView;", "attribute vec4 a_position;", shader.vertexShader].join("\n");
+      shader.vertexShader = shader.vertexShader.replace("#include <begin_vertex>", "vec3 transformed = vec3( position.x + sin( time + position.y ) / 8.0, position.y, position.z );");
+      materialShader = shader;
+    };
     this.atlasCreator = new TextureAtlasCreator({
       textureX: this.al.get("blocksAtlasFull"),
       textureMapping: this.al.get("blocksMappingFull")
@@ -112,6 +144,7 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
       t = this.atlasCreator.gen(i).toDataURL();
       tekstura = new THREE.TextureLoader().load(t);
       tekstura.magFilter = THREE.NearestFilter;
+      tekstura.minFilter = THREE.NearestFilter;
       savedTextures.push(tekstura);
     }
     tickq = 0;
