@@ -270,12 +270,15 @@ handlers = {
     return terrain.cellTerrain.setVoxel(...data);
   },
   genCellGeo: function(data) {
-    var geo;
+    var geo, p1, p2;
     if (((terrain.cellTerrain.vec3(...data)) in terrain.cellTerrain.cells) === true) {
+      p1 = performance.now();
       geo = terrain.genCellGeo(...data);
+      p2 = performance.now();
       return postMessage({
         cell: geo,
-        info: data
+        info: data,
+        p: performance.now()
       });
     }
   },

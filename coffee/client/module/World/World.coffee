@@ -97,6 +97,11 @@ class World
 		geometry.setAttribute 'color',new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
 		if mesh is undefined
 			@cellMesh[cellId]=new THREE.Mesh geometry,@material
+			@cellMesh[cellId].frustumCulled = false
+			_this=@
+			@cellMesh[cellId].onAfterRender = ()->
+				_this.cellMesh[cellId].frustumCulled = true
+				_this.cellMesh[cellId].onAfterRender = ->
 			@scene.add @cellMesh[cellId]
 		else
 			@cellMesh[cellId].geometry=geometry
@@ -189,6 +194,7 @@ class World
 			return false
 	_setCell: (cellX,cellY,cellZ,buffer,biome)->
 		#Wysyłanie do ChunkWorkera informacji nowej komórce
+
 		@cellUpdateTime=performance.now()
 		@chunkWorker.postMessage {
 			type:"setCell"

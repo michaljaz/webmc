@@ -226,10 +226,13 @@ handlers={
 		terrain.cellTerrain.setVoxel data...
 	genCellGeo: (data)->
 		if ((terrain.cellTerrain.vec3 data...) of terrain.cellTerrain.cells) is true
+			p1=performance.now()
 			geo=terrain.genCellGeo data...
+			p2=performance.now()
 			postMessage {
 				cell:geo
 				info:data
+				p:performance.now()
 			}
 	setCell: (data)->
 		terrain.cellTerrain.setCell data[0],data[1],data[2],data[3]

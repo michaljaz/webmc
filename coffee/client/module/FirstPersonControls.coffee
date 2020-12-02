@@ -11,6 +11,7 @@ class FirstPersonControls
 			16:"sneak"
 			82:"sprint"
 		}
+		@fov=options.fov
 		@keys={}
 		@canvas=options.canvas
 		@camera=options.camera
@@ -69,7 +70,7 @@ class FirstPersonControls
 			if _this.kc[z.keyCode] isnt undefined and _this.gameState is "gameLock"
 				_this.socket.emit "move",_this.kc[z.keyCode],true
 				if _this.kc[z.keyCode] is "sprint"
-					to={fov:105}
+					to={fov:_this.fov+10}
 					new _this.TWEEN.Tween _this.camera
 						.to to, 200
 						.easing _this.TWEEN.Easing.Quadratic.Out
@@ -85,7 +86,7 @@ class FirstPersonControls
 			if _this.kc[z.keyCode] isnt undefined
 				_this.socket.emit "move",_this.kc[z.keyCode],false
 				if _this.kc[z.keyCode] is "sprint"
-					to={fov:95}
+					to={fov:_this.fov}
 					new _this.TWEEN.Tween _this.camera
 						.to to, 200
 						.easing _this.TWEEN.Easing.Quadratic.Out
@@ -120,7 +121,7 @@ class FirstPersonControls
 		document.exitPointerLock()
 	state:(state)->
 		@gameState=state
-		console.log "Game state: "+state
+		# console.log "Game state: "+state
 	resetState:()->
 		$(".chat").removeClass("focus")
 		$(".chat").addClass("blur")

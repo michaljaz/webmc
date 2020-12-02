@@ -21,14 +21,12 @@ init = ()->
 		PixelRatio:window.devicePixelRatio
 	}
 	scene=new THREE.Scene
-	camera = new THREE.PerspectiveCamera 95, 2, 0.1, 1000
+	camera = new THREE.PerspectiveCamera 70, 2, 0.1, 1000
 	camera.rotation.order = "YXZ"
 	camera.position.set 26, 26, 26
 
 	#Skybox
-	rt = new THREE.WebGLCubeRenderTarget al.get("skybox").image.height
-	rt.fromEquirectangularTexture renderer, al.get "skybox"
-	scene.background = rt
+	scene.background = new THREE.Color("#adc8ff")
 
 	#Światła
 	ambientLight=new THREE.AmbientLight 0xcccccc
@@ -36,17 +34,6 @@ init = ()->
 	directionalLight = new THREE.DirectionalLight 0x333333, 2
 	directionalLight.position.set(1, 1, 0.5).normalize()
 	scene.add directionalLight
-	#Text geometry
-	# new THREE.TextGeometry 'Hello three.js!', {
-	# 	size: 80
-	# 	height: 5
-	# 	curveSegments: 12
-	# 	bevelEnabled: true
-	# 	bevelThickness: 10
-	# 	bevelSize: 8
-	# 	bevelOffset: 0
-	# 	bevelSegments: 5
-	# }
 
 	#Informacja o gpu komputera
 	console.warn gpuInfo()
@@ -82,6 +69,7 @@ init = ()->
 		micromove: 0.3
 		socket
 		TWEEN
+		fov:70
 	}
 
 	#Czat
@@ -160,15 +148,16 @@ init = ()->
 	#Interfejs dat.gui
 	gui = new GUI()
 	params={
-		fog:false
-		chunkdist:4
+		fog:true
+		chunkdist:3
 	}
+	color = new THREE.Color "#adc8ff"
+	near = 0.5*16
+	far = 3*16
+	scene.fog = new THREE.Fog color, near, far
 	gui.add( params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
 		if params.fog
 			#Mgła
-			color = new THREE.Color "#adc8ff"
-			near = 3*16-13
-			far = 3*16-3
 			scene.fog = new THREE.Fog color, near, far
 		else
 			scene.fog = null

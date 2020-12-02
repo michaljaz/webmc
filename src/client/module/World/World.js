@@ -162,7 +162,7 @@ World = class World {
   }
 
   updateCell(data) {
-    var cell, cellId, geometry, mesh;
+    var _this, cell, cellId, geometry, mesh;
     //Updatowanie komórki z już obliczoną geometrią
     cellId = this.cellTerrain.vec3(...data.info);
     cell = data.cell;
@@ -174,6 +174,12 @@ World = class World {
     geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cell.colors), 3));
     if (mesh === void 0) {
       this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
+      this.cellMesh[cellId].frustumCulled = false;
+      _this = this;
+      this.cellMesh[cellId].onAfterRender = function() {
+        _this.cellMesh[cellId].frustumCulled = true;
+        return _this.cellMesh[cellId].onAfterRender = function() {};
+      };
       this.scene.add(this.cellMesh[cellId]);
     } else {
       this.cellMesh[cellId].geometry = geometry;

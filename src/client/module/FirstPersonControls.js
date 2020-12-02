@@ -14,6 +14,7 @@ FirstPersonControls = class FirstPersonControls {
       16: "sneak",
       82: "sprint"
     };
+    this.fov = options.fov;
     this.keys = {};
     this.canvas = options.canvas;
     this.camera = options.camera;
@@ -83,7 +84,7 @@ FirstPersonControls = class FirstPersonControls {
         _this.socket.emit("move", _this.kc[z.keyCode], true);
         if (_this.kc[z.keyCode] === "sprint") {
           to = {
-            fov: 105
+            fov: _this.fov + 10
           };
           new _this.TWEEN.Tween(_this.camera).to(to, 200).easing(_this.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
             return _this.camera.updateProjectionMatrix();
@@ -100,7 +101,7 @@ FirstPersonControls = class FirstPersonControls {
         _this.socket.emit("move", _this.kc[z.keyCode], false);
         if (_this.kc[z.keyCode] === "sprint") {
           to = {
-            fov: 95
+            fov: _this.fov
           };
           new _this.TWEEN.Tween(_this.camera).to(to, 200).easing(_this.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
             return _this.camera.updateProjectionMatrix();
@@ -142,10 +143,10 @@ FirstPersonControls = class FirstPersonControls {
   }
 
   state(state) {
-    this.gameState = state;
-    return console.log("Game state: " + state);
+    return this.gameState = state;
   }
 
+  // console.log "Game state: "+state
   resetState() {
     $(".chat").removeClass("focus");
     $(".chat").addClass("blur");
