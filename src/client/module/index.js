@@ -115,7 +115,8 @@ init = function() {
     cellSize: 16,
     scene,
     camera,
-    al
+    al,
+    renderer
   });
   //Połączenie z serwerem i kontrolki gracza
   socket = io.connect(`${document.location.host}`);

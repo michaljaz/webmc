@@ -15,6 +15,7 @@ World = class World {
   constructor(options) {
     var _this;
     _this = this;
+    this.cellBlackList = {};
     this.cellMesh = {};
     this.cellNeedsUpdate = {};
     this.models = {};
@@ -32,6 +33,7 @@ World = class World {
     this.material = this.ATA.material;
     this.cellUpdateTime = null;
     this.renderTime = 100;
+    this.renderer = options.renderer;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     //Utworzenie Workera do obliczania geometrii chunków
     this.chunkWorker = new Worker("/module/World/chunk.worker.js", {
@@ -105,59 +107,59 @@ World = class World {
   }
 
   updateCellsAroundPlayer(pos, radius) {
-    var _this, cell, i, j, k, odw, ref, ref1, results, up, v, x, y, z;
+    var _this, cell, cellBlackList, i, j, k, l, m, n, odw, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, up, v, x, y, z;
     //Updatowanie komórek wokół gracza w danym zasięgu
     _this = this;
     if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > this.renderTime)) {
+      //Ustawianie z defaultu, żeby każdy Mesh był wykasowywany
+      cellBlackList = {};
       ref = this.cellMesh;
       for (k in ref) {
         v = ref[k];
-        v.visible = false;
+        if (v !== "disposed") {
+          cellBlackList[k] = true;
+        }
       }
       cell = this.cellTerrain.computeCellForVoxel(Math.floor(pos.x), Math.floor(pos.y), Math.floor(pos.z));
       up = function(x, y, z) {
-        var pcell;
+        var cellId, pcell;
         pcell = [cell[0] + x, cell[1] + y, cell[2] + z];
-        if (_this.cellMesh[_this.cellTerrain.vec3(...pcell)]) {
-          _this.cellMesh[_this.cellTerrain.vec3(...pcell)].visible = true;
-        }
-        if (_this.cellNeedsUpdate[_this.cellTerrain.vec3(...pcell)]) {
+        cellId = _this.cellTerrain.vec3(...pcell);
+        //Updatowanie mesha, jeśli był disposed lub potrzebuje updatu
+        if (_this.cellNeedsUpdate[cellId] || _this.cellMesh[cellId] === "disposed") {
+          if (_this.cellNeedsUpdate[cellId]) {
+            delete _this.cellNeedsUpdate[cellId];
+          }
+          if (_this.cellMesh[cellId] === "disposed") {
+            _this.cellMesh[cellId] = "disposedX";
+          }
           _this._genCellGeo(...pcell);
-          delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(...pcell)];
         }
+        cellBlackList[cellId] = false;
       };
       odw = {};
-      results = [];
       for (i = j = 0, ref1 = radius; (0 <= ref1 ? j <= ref1 : j >= ref1); i = 0 <= ref1 ? ++j : --j) {
-        results.push((function() {
-          var l, ref2, ref3, results1;
-          results1 = [];
-          for (x = l = ref2 = -i, ref3 = i; (ref2 <= ref3 ? l <= ref3 : l >= ref3); x = ref2 <= ref3 ? ++l : --l) {
-            results1.push((function() {
-              var m, ref4, ref5, results2;
-              results2 = [];
-              for (y = m = ref4 = -i, ref5 = i; (ref4 <= ref5 ? m <= ref5 : m >= ref5); y = ref4 <= ref5 ? ++m : --m) {
-                results2.push((function() {
-                  var n, ref6, ref7, results3;
-                  results3 = [];
-                  for (z = n = ref6 = -i, ref7 = i; (ref6 <= ref7 ? n <= ref7 : n >= ref7); z = ref6 <= ref7 ? ++n : --n) {
-                    if (!odw[`${x}:${y}:${z}`]) {
-                      up(x, y, z);
-                      results3.push(odw[`${x}:${y}:${z}`] = true);
-                    } else {
-                      results3.push(void 0);
-                    }
-                  }
-                  return results3;
-                })());
+        for (x = l = ref2 = -i, ref3 = i; (ref2 <= ref3 ? l <= ref3 : l >= ref3); x = ref2 <= ref3 ? ++l : --l) {
+          for (y = m = ref4 = -i, ref5 = i; (ref4 <= ref5 ? m <= ref5 : m >= ref5); y = ref4 <= ref5 ? ++m : --m) {
+            for (z = n = ref6 = -i, ref7 = i; (ref6 <= ref7 ? n <= ref7 : n >= ref7); z = ref6 <= ref7 ? ++n : --n) {
+              if (!odw[`${x}:${y}:${z}`]) {
+                up(x, y, z);
+                odw[`${x}:${y}:${z}`] = true;
               }
-              return results2;
-            })());
+            }
           }
-          return results1;
-        })());
+        }
       }
-      return results;
+//Kasowanie Meshy, które mają znacznik .todel
+      for (i in cellBlackList) {
+        if (cellBlackList[i] === true) {
+          this.cellMesh[i].geometry.dispose();
+          this.cellMesh[i].material.dispose();
+          this.scene.remove(this.cellMesh[i]);
+          this.cellMesh[i] = "disposed";
+        }
+      }
+      return this.renderer.renderLists.dispose();
     }
   }
 
@@ -172,7 +174,7 @@ World = class World {
     geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(cell.normals), 3));
     geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(cell.uvs), 2));
     geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cell.colors), 3));
-    if (mesh === void 0) {
+    if (mesh === void 0 || mesh === "disposedX") {
       this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
       this.cellMesh[cellId].frustumCulled = false;
       _this = this;

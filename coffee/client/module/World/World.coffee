@@ -5,6 +5,7 @@ import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
 class World
 	constructor: (options) ->
 		_this=@
+		@cellBlackList={}
 		@cellMesh={}
 		@cellNeedsUpdate={}
 		@models={}
@@ -18,6 +19,7 @@ class World
 		@material=@ATA.material
 		@cellUpdateTime=null
 		@renderTime=100
+		@renderer=options.renderer
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 
 		#Utworzenie Workera do obliczania geometrii chunków
@@ -66,16 +68,24 @@ class World
 		#Updatowanie komórek wokół gracza w danym zasięgu
 		_this=@
 		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>@renderTime)
+			#Ustawianie z defaultu, żeby każdy Mesh był wykasowywany
+			cellBlackList={}
 			for k,v of @cellMesh
-				v.visible=false
+				if v isnt "disposed"
+					cellBlackList[k]=true
 			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
 			up=(x,y,z)->
 				pcell=[cell[0]+x,cell[1]+y,cell[2]+z]
-				if _this.cellMesh[_this.cellTerrain.vec3(pcell...)]
-					_this.cellMesh[_this.cellTerrain.vec3(pcell...)].visible=true
-				if _this.cellNeedsUpdate[_this.cellTerrain.vec3(pcell...)]
+				cellId=_this.cellTerrain.vec3(pcell...)
+				#Updatowanie mesha, jeśli był disposed lub potrzebuje updatu
+				if _this.cellNeedsUpdate[cellId] or _this.cellMesh[cellId] is "disposed"
+
+					if _this.cellNeedsUpdate[cellId]
+						delete _this.cellNeedsUpdate[cellId]
+					if _this.cellMesh[cellId] is "disposed"
+						_this.cellMesh[cellId]="disposedX"
 					_this._genCellGeo pcell...
-					delete _this.cellNeedsUpdate[_this.cellTerrain.vec3(pcell...)]
+				cellBlackList[cellId]=false
 				return
 			odw={}
 			for i in [0..radius]
@@ -85,6 +95,14 @@ class World
 							if not odw["#{x}:#{y}:#{z}"]
 								up(x,y,z)
 								odw["#{x}:#{y}:#{z}"]=true
+			#Kasowanie Meshy, które mają znacznik .todel
+			for i of cellBlackList
+				if cellBlackList[i] is true
+					@cellMesh[i].geometry.dispose()
+					@cellMesh[i].material.dispose()
+					@scene.remove @cellMesh[i]
+					@cellMesh[i]="disposed"
+			@renderer.renderLists.dispose()
 	updateCell: (data)->
 		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
@@ -95,7 +113,7 @@ class World
 		geometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
 		geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
 		geometry.setAttribute 'color',new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
-		if mesh is undefined
+		if mesh is undefined or mesh is "disposedX"
 			@cellMesh[cellId]=new THREE.Mesh geometry,@material
 			@cellMesh[cellId].frustumCulled = false
 			_this=@

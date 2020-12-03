@@ -59,6 +59,7 @@ init = ()->
 		scene
 		camera
 		al
+		renderer
 	})
 
 	#Połączenie z serwerem i kontrolki gracza
