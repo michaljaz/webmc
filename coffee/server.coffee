@@ -32,9 +32,24 @@ module.exports=(type)->
 		res.set 'Cache-Control', 'no-store'
 		next()
 	server.listen config["port"],()->
-		console.log "Server is running on \x1b[34mhttp://localhost:#{config["port"]}\x1b[0m"
+		console.log "Server is running on \x1b[34m*:#{config["port"]}\x1b[0m"
 		# opn("http://#{config.host}:#{config['express-port']}")
 
+	#Raytracing
+	rayTraceBlock=(b)->
+		maxSteps = 20
+		vectorLength=5/16
+		cursor=b.entity.position.offset 0,b.entity.height,0
+		x = -Math.sin(b.entity.yaw) * Math.cos(b.entity.pitch)
+		y = Math.sin(b.entity.pitch)
+		z = -Math.cos(b.entity.yaw) * Math.cos(b.entity.pitch)
+		step=vec3(x,y,z).scaled(vectorLength)
+		for i in [0..maxSteps-1]
+			cursor.add(step)
+			block=b.blockAt(cursor)
+			if block and block.type isnt 0 and block.name isnt "cave_air"
+				return block
+		return false
 	#websocket
 	io.sockets.on "connection", (socket)->
 		socketInfo[socket.id]={}
@@ -106,12 +121,14 @@ module.exports=(type)->
 			socketEventMap={
 				"move":(state,toggle)->
 					bot().setControlState(state,toggle)
+					emit ["rayBlock",rayTraceBlock bot()]
 					return
 				"command":(com)->
 					bot().chat(com)
 					return
 				"rotate":(data)->
 					bot().look data...
+					emit ["rayBlock",rayTraceBlock bot()]
 					return
 				"disconnect":()->
 					try

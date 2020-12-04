@@ -102,7 +102,7 @@ class World
 					@cellMesh[i].material.dispose()
 					@scene.remove @cellMesh[i]
 					@cellMesh[i]="disposed"
-			@renderer.renderLists.dispose()
+					@renderer.renderLists.dispose()
 	updateCell: (data)->
 		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
@@ -121,7 +121,7 @@ class World
 				_this.cellMesh[cellId].frustumCulled = true
 				_this.cellMesh[cellId].onAfterRender = ->
 			@scene.add @cellMesh[cellId]
-		else
+		else if mesh isnt "disposed"
 			@cellMesh[cellId].geometry=geometry
 		return
 	intersectsRay: (start,end) ->
