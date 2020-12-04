@@ -193,7 +193,7 @@ World = class World {
   }
 
   intersectsRay(start, end) {
-    var dx, dy, dz, ix, iy, iz, len, lenSq, stepX, stepY, stepZ, steppedIndex, t, txDelta, txMax, tyDelta, tyMax, tzDelta, tzMax, voxel, xDist, yDist, zDist;
+    var block, dx, dy, dz, ix, iy, iz, len, lenSq, stepX, stepY, stepZ, steppedIndex, t, txDelta, txMax, tyDelta, tyMax, tzDelta, tzMax, voxel, xDist, yDist, zDist;
     start.x += 0.5;
     start.y += 0.5;
     start.z += 0.5;
@@ -226,7 +226,12 @@ World = class World {
     tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
     steppedIndex = -1;
     while (t <= len) {
-      voxel = this.cellTerrain.getVoxel(ix, iy, iz);
+      block = this.cellTerrain.getBlock(ix, iy, iz);
+      if (block.name === "air" || block.name === "cave_air" || block.name === "void_air") {
+        voxel = 0;
+      } else {
+        voxel = 1;
+      }
       if (voxel) {
         return {
           position: [start.x + t * dx, start.y + t * dy, start.z + t * dz],

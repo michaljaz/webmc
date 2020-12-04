@@ -1,4 +1,3 @@
-
 scene=null;materials=null;parameters=null;canvas=null;renderer=null;camera=null;world=null;cursor=null;FPC=null;socket=null;stats=null;worker=null;playerObject=null;inv_bar=null;params=null
 import * as THREE from './build/three.module.js'
 import {SkeletonUtils} from './jsm/utils/SkeletonUtils.js'
@@ -80,17 +79,6 @@ init = ()->
 	inv_bar = new InventoryBar()
 	inv_bar.listen()
 
-	#Kursor raycastowania
-	cursor=new THREE.LineSegments(
-		new THREE.EdgesGeometry(
-			new THREE.BoxGeometry 1, 1, 1
-		),
-		new THREE.LineBasicMaterial {
-			color: 0x000000,
-			linewidth: 0.5
-		}
-	)
-	scene.add cursor
 
 	#Komunikacja z serwerem websocket
 	eventMap={
@@ -141,16 +129,21 @@ init = ()->
 			return
 		"entities":(entities)->
 			ent.update entities
-		"rayBlock":(block)->
-			if block isnt false
-				pos=block.position
-				cursor.position.set pos.x,pos.y+16,pos.z
-				cursor.visible=true
-			else
-				cursor.visible=false
 	}
 	for i of eventMap
 		socket.on i,eventMap[i]
+
+	#Kursor raycastowania
+	cursor=new THREE.LineSegments(
+		new THREE.EdgesGeometry(
+			new THREE.BoxGeometry 1, 1, 1
+		),
+		new THREE.LineBasicMaterial {
+			color: 0x000000,
+			linewidth: 0.5
+		}
+	)
+	scene.add cursor
 
 	#Interfejs dat.gui
 	gui = new GUI()
@@ -172,7 +165,8 @@ init = ()->
 	gui.add( params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
 
 	$(document).mousedown (e)->
-		console.log world.cellTerrain.getBlock world.getRayBlock().posBreak...
+		if FPC.gameState is "gameLock"
+			console.log world.cellTerrain.getBlock world.getRayBlock().posBreak...
 		return
 
 	#Wprawienie w ruch funkcji animate
@@ -190,6 +184,15 @@ render = ->
 		renderer.setSize width,height,false
 		camera.aspect = width / height
 		camera.updateProjectionMatrix()
+
+	#Raycastowany block
+	rayBlock=world.getRayBlock()
+	if rayBlock
+		pos=rayBlock.posBreak
+		cursor.position.set pos...
+		cursor.visible=true
+	else
+		cursor.visible=false
 
 	#Updatowanie komórek wokół gracza
 	world.updateCellsAroundPlayer camera.position,params.chunkdist

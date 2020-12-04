@@ -157,7 +157,11 @@ class World
 		tzMax = if tzDelta < Infinity then tzDelta * zDist else Infinity
 		steppedIndex = -1
 		while t <= len
-			voxel = @cellTerrain.getVoxel ix, iy, iz
+			block = @cellTerrain.getBlock ix, iy, iz
+			if block.name is "air" or block.name is "cave_air" or block.name is "void_air"
+				voxel=0
+			else
+				voxel=1
 			if voxel
 				return {
 					position: [

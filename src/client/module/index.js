@@ -133,12 +133,6 @@ init = function() {
   //Utworzenie inventory
   inv_bar = new InventoryBar();
   inv_bar.listen();
-  //Kursor raycastowania
-  cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
-    color: 0x000000,
-    linewidth: 0.5
-  }));
-  scene.add(cursor);
   //Komunikacja z serwerem websocket
   eventMap = {
     "connect": function() {
@@ -190,21 +184,17 @@ init = function() {
     },
     "entities": function(entities) {
       return ent.update(entities);
-    },
-    "rayBlock": function(block) {
-      var pos;
-      if (block !== false) {
-        pos = block.position;
-        cursor.position.set(pos.x, pos.y + 16, pos.z);
-        return cursor.visible = true;
-      } else {
-        return cursor.visible = false;
-      }
     }
   };
   for (i in eventMap) {
     socket.on(i, eventMap[i]);
   }
+  //Kursor raycastowania
+  cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
+    color: 0x000000,
+    linewidth: 0.5
+  }));
+  scene.add(cursor);
   //Interfejs dat.gui
   gui = new GUI();
   params = {
@@ -226,7 +216,9 @@ init = function() {
   gui.add(world.material, 'wireframe').name('Wireframe').listen();
   gui.add(params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
   $(document).mousedown(function(e) {
-    console.log(world.cellTerrain.getBlock(...world.getRayBlock().posBreak));
+    if (FPC.gameState === "gameLock") {
+      console.log(world.cellTerrain.getBlock(...world.getRayBlock().posBreak));
+    }
   });
   //Wprawienie w ruch funkcji animate
   animate();
@@ -234,7 +226,7 @@ init = function() {
 
 //Renderowanie
 render = function() {
-  var height, width;
+  var height, pos, rayBlock, width;
   //Automatyczne zmienianie rozmiaru renderera
   width = window.innerWidth;
   height = window.innerHeight;
@@ -244,6 +236,15 @@ render = function() {
     renderer.setSize(width, height, false);
     camera.aspect = width / height;
     camera.updateProjectionMatrix();
+  }
+  //Raycastowany block
+  rayBlock = world.getRayBlock();
+  if (rayBlock) {
+    pos = rayBlock.posBreak;
+    cursor.position.set(...pos);
+    cursor.visible = true;
+  } else {
+    cursor.visible = false;
   }
   //Updatowanie komórek wokół gracza
   world.updateCellsAroundPlayer(camera.position, params.chunkdist);
