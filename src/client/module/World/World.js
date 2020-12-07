@@ -107,7 +107,7 @@ World = class World {
   }
 
   updateCellsAroundPlayer(pos, radius) {
-    var _this, cell, cellBlackList, i, j, k, l, m, n, odw, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, results, up, v, x, y, z;
+    var _this, cell, cellBlackList, i, j, k, l, m, n, odw, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, up, v, x, y, z;
     //Updatowanie komórek wokół gracza w danym zasięgu
     _this = this;
     if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > this.renderTime)) {
@@ -151,19 +151,15 @@ World = class World {
         }
       }
 //Kasowanie Meshy, które mają znacznik .todel
-      results = [];
       for (i in cellBlackList) {
         if (cellBlackList[i] === true) {
           this.cellMesh[i].geometry.dispose();
           this.cellMesh[i].material.dispose();
           this.scene.remove(this.cellMesh[i]);
           this.cellMesh[i] = "disposed";
-          results.push(this.renderer.renderLists.dispose());
-        } else {
-          results.push(void 0);
         }
       }
-      return results;
+      return this.renderer.renderLists.dispose();
     }
   }
 

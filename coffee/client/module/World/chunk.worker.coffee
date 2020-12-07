@@ -39,6 +39,9 @@ class TerrainManager
 		else if block.name is "water"
 			toxX=@blocksMapping["water_flow"]["x"]
 			toxY=@blocksMapping["water_flow"]["y"]
+		else if block.name is "lava"
+			toxX=@blocksMapping["lava_flow"]["x"]
+			toxY=@blocksMapping["lava_flow"]["y"]
 		else if @blocksMapping[block.name]
 			toxX=@blocksMapping[block.name]["x"]
 			toxY=@blocksMapping[block.name]["y"]
@@ -179,7 +182,7 @@ class TerrainManager
 							addFace "pz",pos
 						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).boundingBox isnt "block")
 							addFace "nz",pos
-					else if @cellTerrain.getBlock(pos...).name is "water"
+					else if @cellTerrain.getBlock(pos...).name is "water" or @cellTerrain.getBlock(pos...).name is "lava"
 						if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).name is "air")
 							addFace "nx",pos
 						if (@cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).name is "air")

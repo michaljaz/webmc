@@ -102,7 +102,7 @@ class World
 					@cellMesh[i].material.dispose()
 					@scene.remove @cellMesh[i]
 					@cellMesh[i]="disposed"
-					@renderer.renderLists.dispose()
+			@renderer.renderLists.dispose()
 	updateCell: (data)->
 		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...

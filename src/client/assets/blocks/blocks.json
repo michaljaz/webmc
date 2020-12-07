@@ -21,5 +21,18 @@
 		"py":"spruce_log",
 		"nz":"spruce_log",
 		"pz":"spruce_log"
+	},
+	"basalt":{
+		"top":"basalt_top",
+		"side":"basalt_side",
+		"bottom":"basalt_top"
+	},
+	"magma_block":{
+		"all":"magma"
+	},
+	"bone_block":{
+		"top":"bone_block_top",
+		"side":"bone_block_side",
+		"bottom":"bone_block_top"
 	}
 }

@@ -29,10 +29,8 @@ npm run production
 <br>
 <h4>Screenshoty:</h4>
 
-[<img src="https://i.ibb.co/kmhv1tF/screen1.png" alt="screen1" width="260">](https://i.ibb.co/kmhv1tF/screen1.png)
-[<img src="https://i.ibb.co/Q9WCSXR/screen2.png" alt="screen2" width="260">](https://i.ibb.co/Q9WCSXR/screen2.png)
-[<img src="https://i.ibb.co/HKwR1kK/screen3.png" alt="screen3" width="260">](https://i.ibb.co/HKwR1kK/screen3.png)
 [<img src="https://i.ibb.co/9pRSqVM/Screenshot-from-2020-11-01-18-03-37.png" alt="screen3" width="260">](https://i.ibb.co/9pRSqVM/Screenshot-from-2020-11-01-18-03-37.png)
 [<img src="https://i.ibb.co/CnXjfVB/screen5.png" alt="screen5" width="260">](https://i.ibb.co/CnXjfVB/screen5.png)
 [<img src="https://i.ibb.co/92CcWR7/screen6.png" alt="screen6" width="260">](https://i.ibb.co/92CcWR7/screen6.png)
 [<img src="https://i.ibb.co/bgVgNRM/screen7.png" alt="screen6" width="260">](https://i.ibb.co/bgVgNRM/screen7.png)
+[<img src="https://i.ibb.co/Snq5b56/screen.png" alt="screen6" width="260">](https://i.ibb.co/Snq5b56/screen.png)

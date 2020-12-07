@@ -50,6 +50,9 @@ TerrainManager = class TerrainManager {
     } else if (block.name === "water") {
       toxX = this.blocksMapping["water_flow"]["x"];
       toxY = this.blocksMapping["water_flow"]["y"];
+    } else if (block.name === "lava") {
+      toxX = this.blocksMapping["lava_flow"]["x"];
+      toxY = this.blocksMapping["lava_flow"]["y"];
     } else if (this.blocksMapping[block.name]) {
       toxX = this.blocksMapping[block.name]["x"];
       toxY = this.blocksMapping[block.name]["y"];
@@ -208,7 +211,7 @@ TerrainManager = class TerrainManager {
             if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).boundingBox !== "block") {
               addFace("nz", pos);
             }
-          } else if (this.cellTerrain.getBlock(...pos).name === "water") {
+          } else if (this.cellTerrain.getBlock(...pos).name === "water" || this.cellTerrain.getBlock(...pos).name === "lava") {
             if (this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).name === "air") {
               addFace("nx", pos);
             }
