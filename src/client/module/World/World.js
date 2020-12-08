@@ -116,7 +116,7 @@ World = class World {
       ref = this.cellMesh;
       for (k in ref) {
         v = ref[k];
-        if (v !== "disposed") {
+        if (v !== "disposed" && v !== "disposedX") {
           cellBlackList[k] = true;
         }
       }
@@ -153,6 +153,7 @@ World = class World {
 //Kasowanie Meshy, które mają znacznik .todel
       for (i in cellBlackList) {
         if (cellBlackList[i] === true) {
+          console.log(this.cellMesh[i]);
           this.cellMesh[i].geometry.dispose();
           this.cellMesh[i].material.dispose();
           this.scene.remove(this.cellMesh[i]);

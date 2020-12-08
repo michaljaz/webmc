@@ -71,7 +71,7 @@ class World
 			#Ustawianie z defaultu, żeby każdy Mesh był wykasowywany
 			cellBlackList={}
 			for k,v of @cellMesh
-				if v isnt "disposed"
+				if v isnt "disposed" and v isnt "disposedX"
 					cellBlackList[k]=true
 			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
 			up=(x,y,z)->
@@ -98,6 +98,7 @@ class World
 			#Kasowanie Meshy, które mają znacznik .todel
 			for i of cellBlackList
 				if cellBlackList[i] is true
+					console.log @cellMesh[i]
 					@cellMesh[i].geometry.dispose()
 					@cellMesh[i].material.dispose()
 					@scene.remove @cellMesh[i]

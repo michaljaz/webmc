@@ -8,8 +8,17 @@ import {
 } from './jsm/loaders/FBXLoader.js';
 
 AssetLoader = class AssetLoader {
-  constructor(options) {
+  constructor(init) {
+    var _this;
     this.assets = {};
+    _this = this;
+    $.get("assets/assetLoader.json", function(assets) {
+      _this.load(assets, function() {
+        console.log("AssetLoader: done loading!");
+        init(_this);
+      });
+    });
+    return;
   }
 
   load(assets, callback) {

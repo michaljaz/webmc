@@ -8,12 +8,12 @@ Entities = class Entities {
     this.scene = options.scene;
     this.nick = options.nick;
     this.TWEEN = options.TWEEN;
-    this.mobMeshMaterial = new THREE.MeshBasicMaterial({
+    this.mobMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color("red")
     });
-    this.mobMeshGeometry = new THREE.BoxGeometry(1, 1, 1);
-    this.maxCount = 200;
-    this.mobMesh = new THREE.InstancedMesh(this.mobMeshGeometry, this.mobMeshMaterial, this.maxCount);
+    this.mobGeometry = new THREE.BoxGeometry(1, 1, 1);
+    this.mobMaxCount = 200;
+    this.mobMesh = new THREE.InstancedMesh(this.mobGeometry, this.mobMaterial, this.mobMaxCount);
     this.mobMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
     this.scene.add(this.mobMesh);
     this.dummy = new THREE.Object3D();
@@ -21,21 +21,21 @@ Entities = class Entities {
   }
 
   update(entities) {
-    var i, num, offset;
+    var i, mobs, offset;
     offset = [-0.5, 16, -0.5];
-    num = 0;
+    mobs = 0;
     for (i in entities) {
       if (entities[i].type === "mob") {
-        num++;
+        mobs++;
       }
     }
-    this.mobMesh.count = num;
-    num = 0;
+    this.mobMesh.count = mobs;
+    mobs = 0;
     for (i in entities) {
       if (entities[i].type === "mob") {
         this.dummy.position.set(entities[i].position.x + offset[0], entities[i].position.y + offset[1], entities[i].position.z + offset[2]);
         this.dummy.updateMatrix();
-        this.mobMesh.setMatrixAt(num++, this.dummy.matrix);
+        this.mobMesh.setMatrixAt(mobs++, this.dummy.matrix);
       }
     }
     this.mobMesh.instanceMatrix.needsUpdate = true;

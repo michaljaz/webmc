@@ -2,8 +2,16 @@ import * as THREE from './build/three.module.js'
 import {FBXLoader} from './jsm/loaders/FBXLoader.js'
 
 class AssetLoader
-	constructor: (options)->
+	constructor: (init)->
 		@assets={}
+		_this=@
+		$.get "assets/assetLoader.json", (assets)->
+			_this.load assets,()->
+				console.log "AssetLoader: done loading!"
+				init _this
+				return
+			return
+		return
 	load: (assets,callback) ->
 		_this=@
 		textureLoader = new THREE.TextureLoader

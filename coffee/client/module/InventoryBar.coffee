@@ -7,6 +7,7 @@ class InventoryBar
 			$(".player_food").append("<span class='food'></span> ")
 		for i in [1..9]
 			$(".inv_bar").append("<span class='inv_box item' data-texture=''></span> ")
+		@listen()
 	setHp: (points)->
 		lista={}
 		for i in [1..10]
@@ -67,7 +68,6 @@ class InventoryBar
 			focus=focus %% 9
 			_this.setFocus focus
 	tick:()->
-		#background-image:url('/assets/items/' attr(data-texture) '.png');
 		list = $(".item")
 		for i in [0..list.length-1]
 			if $(list[i]).attr('data-texture') is ""

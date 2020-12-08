@@ -14,6 +14,7 @@ InventoryBar = class InventoryBar {
     for (i = l = 1; l <= 9; i = ++l) {
       $(".inv_bar").append("<span class='inv_box item' data-texture=''></span> ");
     }
+    this.listen();
   }
 
   setHp(points) {
@@ -105,7 +106,6 @@ InventoryBar = class InventoryBar {
 
   tick() {
     var i, j, list, ref, results, url;
-    //background-image:url('/assets/items/' attr(data-texture) '.png');
     list = $(".item");
     results = [];
     for (i = j = 0, ref = list.length - 1; (0 <= ref ? j <= ref : j >= ref); i = 0 <= ref ? ++j : --j) {
