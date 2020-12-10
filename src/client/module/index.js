@@ -45,12 +45,21 @@ import {
   Entities
 } from './Entities.js';
 
+import {
+  PlayerInInventory
+} from './PlayerInInventory.js';
+
 Game = class Game {
   constructor(options) {
     var _this, color, directionalLight, eventMap, far, gui, i, near;
     _this = this;
     this.al = options.al;
     this.canvas = document.querySelector('#c');
+    this.pcanvas = document.querySelector('#c_player');
+    this.pii = new PlayerInInventory({
+      canvas: this.pcanvas,
+      al: this.al
+    });
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       PixelRatio: window.devicePixelRatio
@@ -92,7 +101,8 @@ Game = class Game {
       camera: this.camera,
       socket: this.socket,
       TWEEN,
-      fov: 70
+      fov: 70,
+      pii: this.pii
     });
     this.chat = new Chat({
       FPC: this.FPC
@@ -219,6 +229,9 @@ Game = class Game {
     this.world.updateCellsAroundPlayer(this.camera.position, this.params.chunkdist);
     TWEEN.update();
     this.renderer.render(this.scene, this.camera);
+    if (this.FPC.gameState === "inventory") {
+      this.pii.render();
+    }
     this.inv_bar.tick();
   }
 

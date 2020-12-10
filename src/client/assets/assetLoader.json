@@ -18,5 +18,13 @@
 	"blocksTex":{
 		"path":"assets/blocks/blocks.json",
 		"type":"text"
+	},
+	"player":{
+		"path":"assets/models/player.fbx",
+		"type":"fbx"
+	},
+	"playerTex":{
+		"path":"assets/models/player.png",
+		"type":"texture"
 	}
 }

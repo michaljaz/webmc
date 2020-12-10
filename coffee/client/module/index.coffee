@@ -11,12 +11,20 @@ import {RandomNick} from './RandomNick.js'
 import {GUI} from './jsm/libs/dat.gui.module.js'
 import {Chat} from './Chat.js'
 import {Entities} from './Entities.js'
+import {PlayerInInventory} from './PlayerInInventory.js'
 
 class Game
 	constructor:(options)->
 		_this=@
 		@al=options.al
 		@canvas=document.querySelector '#c'
+		@pcanvas=document.querySelector '#c_player'
+
+		@pii=new PlayerInInventory {
+			canvas:@pcanvas
+			al:@al
+		}
+
 		@renderer=new THREE.WebGLRenderer {
 			canvas:@canvas
 			PixelRatio:window.devicePixelRatio
@@ -66,6 +74,7 @@ class Game
 			socket:@socket
 			TWEEN
 			fov:70
+			pii:@pii
 		}
 
 		@chat=new Chat {
@@ -188,6 +197,8 @@ class Game
 
 		TWEEN.update()
 		@renderer.render @scene, @camera
+		if @FPC.gameState is "inventory"
+			@pii.render()
 		@inv_bar.tick()
 		return
 new AssetLoader (al)->

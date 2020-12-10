@@ -14,6 +14,7 @@ FirstPersonControls = class FirstPersonControls {
       16: "sneak",
       82: "sprint"
     };
+    this.pii = options.pii;
     this.fov = options.fov;
     this.keys = {};
     this.canvas = options.canvas;
@@ -143,10 +144,16 @@ FirstPersonControls = class FirstPersonControls {
   }
 
   state(state) {
-    return this.gameState = state;
+    this.gameState = state;
+    if (state === "inventory") {
+      return this.pii.show();
+    } else {
+      return this.pii.hide();
+    }
   }
 
-  // console.log "Game state: "+state
+  
+    // console.log "Game state: "+state
   resetState() {
     $(".chat").removeClass("focus");
     $(".chat").addClass("blur");

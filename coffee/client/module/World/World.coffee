@@ -98,7 +98,6 @@ class World
 			#Kasowanie Meshy, które mają znacznik .todel
 			for i of cellBlackList
 				if cellBlackList[i] is true
-					console.log @cellMesh[i]
 					@cellMesh[i].geometry.dispose()
 					@cellMesh[i].material.dispose()
 					@scene.remove @cellMesh[i]

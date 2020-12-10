@@ -11,6 +11,7 @@ class FirstPersonControls
 			16:"sneak"
 			82:"sprint"
 		}
+		@pii=options.pii
 		@fov=options.fov
 		@keys={}
 		@canvas=options.canvas
@@ -121,6 +122,10 @@ class FirstPersonControls
 		document.exitPointerLock()
 	state:(state)->
 		@gameState=state
+		if state is "inventory"
+			@pii.show()
+		else
+			@pii.hide() 
 		# console.log "Game state: "+state
 	resetState:()->
 		$(".chat").removeClass("focus")
