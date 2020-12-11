@@ -99,7 +99,7 @@ class World
 			for i of cellBlackList
 				if cellBlackList[i] is true
 					@cellMesh[i].geometry.dispose()
-					@cellMesh[i].material.dispose()
+					# @cellMesh[i].material.dispose()
 					@scene.remove @cellMesh[i]
 					@cellMesh[i]="disposed"
 			@renderer.renderLists.dispose()

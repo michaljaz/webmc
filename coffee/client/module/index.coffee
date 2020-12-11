@@ -152,7 +152,7 @@ class Game
 		}
 		color = new THREE.Color "#adc8ff"
 		near = 0.5*16
-		far = 3*16
+		far = 2.5*16
 		# scene.fog = new THREE.Fog color, near, far
 		gui.add( @params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
 			if _this.params.fog

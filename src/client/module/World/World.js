@@ -154,7 +154,7 @@ World = class World {
       for (i in cellBlackList) {
         if (cellBlackList[i] === true) {
           this.cellMesh[i].geometry.dispose();
-          this.cellMesh[i].material.dispose();
+          // @cellMesh[i].material.dispose()
           this.scene.remove(this.cellMesh[i]);
           this.cellMesh[i] = "disposed";
         }
