@@ -86,6 +86,12 @@ module.exports=(type)->
 				"blockUpdate":(oldb,newb)->
 					emit ["blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]]
 					return
+				"diggingCompleted":(block)->
+					emit ["diggingCompleted",block]
+					return
+				"diggingAborted":(block)->
+					emit ["diggingAborted",block]
+					return
 			}
 			for i of botEventMap
 				((i)->
@@ -120,6 +126,21 @@ module.exports=(type)->
 						socketInfo[socket.id].bot.end()
 						delete socketInfo[socket.id]
 					return
+				"dig":(pos)->
+					block=bot().blockAt(vec3(pos[0],pos[1]-16,pos[2]))
+					if block isnt null
+						digTime=bot().digTime(block)
+						if bot().targetDigBlock isnt null
+							console.log "Already digging..."
+							bot().stopDigging()
+						emit ["digTime",digTime,block]
+						bot().dig block,false,()->
+					return
+				"stopDigging":(callback)->
+					bot().stopDigging()
+					return
 			}
 			for i of socketEventMap
 				socket.on i,socketEventMap[i]
+			return
+		return

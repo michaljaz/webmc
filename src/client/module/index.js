@@ -49,6 +49,10 @@ import {
   PlayerInInventory
 } from './PlayerInInventory.js';
 
+import {
+  BlockBreak
+} from './BlockBreak.js';
+
 Game = class Game {
   constructor(options) {
     var _this, color, directionalLight, eventMap, far, gui, i, near;
@@ -157,17 +161,25 @@ Game = class Game {
         new TWEEN.Tween(_this.camera.position).to(to, 100).easing(TWEEN.Easing.Quadratic.Out).start();
       },
       "entities": function(entities) {
-        return _this.ent.update(entities);
+        _this.ent.update(entities);
+      },
+      "diggingCompleted": function(block) {
+        _this.bb.done = true;
+      },
+      "diggingAborted": function(block) {},
+      "digTime": function(time, block) {
+        _this.bb.startDigging(time);
       }
     };
     for (i in eventMap) {
       this.socket.on(i, eventMap[i]);
     }
-    this.cursor = new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(1, 1, 1)), new THREE.LineBasicMaterial({
-      color: 0x000000,
-      linewidth: 0.5
-    }));
-    this.scene.add(this.cursor);
+    this.bb = new BlockBreak({
+      scene: this.scene,
+      al: this.al,
+      world: this.world,
+      socket: this.socket
+    });
     gui = new GUI();
     this.params = {
       fog: false,
@@ -186,10 +198,16 @@ Game = class Game {
     });
     gui.add(this.world.material, 'wireframe').name('Wireframe').listen();
     gui.add(this.params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
+    this.mouse = false;
     $(document).mousedown(function(e) {
+      _this.mouse = true;
       if (_this.FPC.gameState === "gameLock") {
-        console.log(_this.world.cellTerrain.getBlock(..._this.world.getRayBlock().posBreak));
+        _this.bb.digRequest();
       }
+    });
+    $(document).mouseup(function(e) {
+      _this.mouse = false;
+      return _this.bb.stopDigging();
     });
     this.animate();
   }
@@ -208,7 +226,8 @@ Game = class Game {
   }
 
   render() {
-    var height, pos, rayBlock, width;
+    var _this, height, width;
+    _this = this;
     width = window.innerWidth;
     height = window.innerHeight;
     if (this.canvas.width !== width || this.canvas.height !== height) {
@@ -218,14 +237,14 @@ Game = class Game {
       this.camera.aspect = width / height;
       this.camera.updateProjectionMatrix();
     }
-    rayBlock = this.world.getRayBlock();
-    if (rayBlock) {
-      pos = rayBlock.posBreak;
-      this.cursor.position.set(...pos);
-      this.cursor.visible = true;
-    } else {
-      this.cursor.visible = false;
-    }
+    this.bb.updatePos(function() {
+      if (_this.bb.isDigging) {
+        _this.bb.stopDigging();
+      }
+      if (_this.mouse && _this.bb.done) {
+        return _this.bb.digRequest();
+      }
+    });
     this.world.updateCellsAroundPlayer(this.camera.position, this.params.chunkdist);
     TWEEN.update();
     this.renderer.render(this.scene, this.camera);

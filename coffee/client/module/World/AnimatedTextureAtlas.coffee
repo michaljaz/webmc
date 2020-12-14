@@ -118,4 +118,4 @@ class AnimatedTextureAtlas
 			return
 		,100)
 
-export {AnimatedTextureAtlas}
+export {AnimatedTextureAtlas,TextureAtlasCreator}

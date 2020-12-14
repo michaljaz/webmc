@@ -147,5 +147,6 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
 };
 
 export {
-  AnimatedTextureAtlas
+  AnimatedTextureAtlas,
+  TextureAtlasCreator
 };

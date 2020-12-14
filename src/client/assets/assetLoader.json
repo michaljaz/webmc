@@ -26,5 +26,9 @@
 	"playerTex":{
 		"path":"assets/models/player.png",
 		"type":"texture"
+	},
+	"blocksAtlasSnap":{
+		"path":"assets/blocks/blocksAtlas-snap.png",
+		"type":"texture"
 	}
 }

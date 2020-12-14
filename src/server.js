@@ -45,8 +45,8 @@
       var bot;
       socketInfo[socket.id] = {};
       bot = socketInfo[socket.id];
-      return socket.on("initClient", function(data) {
-        var botEventMap, emit, i, inv, results, socketEventMap;
+      socket.on("initClient", function(data) {
+        var botEventMap, emit, i, inv, socketEventMap;
         console.log("[\x1b[32m+\x1b[0m] " + data.nick);
         //Dodawanie informacji o graczu do socketInfo
         socketInfo[socket.id] = data;
@@ -95,6 +95,12 @@
           },
           "blockUpdate": function(oldb, newb) {
             emit(["blockUpdate", [newb.position.x, newb.position.y, newb.position.z, newb.stateId]]);
+          },
+          "diggingCompleted": function(block) {
+            emit(["diggingCompleted", block]);
+          },
+          "diggingAborted": function(block) {
+            emit(["diggingAborted", block]);
           }
         };
         for (i in botEventMap) {
@@ -133,13 +139,27 @@
               socketInfo[socket.id].bot.end();
               delete socketInfo[socket.id];
             } catch (error) {}
+          },
+          "dig": function(pos) {
+            var block, digTime;
+            block = bot().blockAt(vec3(pos[0], pos[1] - 16, pos[2]));
+            if (block !== null) {
+              digTime = bot().digTime(block);
+              if (bot().targetDigBlock !== null) {
+                console.log("Already digging...");
+                bot().stopDigging();
+              }
+              emit(["digTime", digTime, block]);
+              bot().dig(block, false, function() {});
+            }
+          },
+          "stopDigging": function(callback) {
+            bot().stopDigging();
           }
         };
-        results = [];
         for (i in socketEventMap) {
-          results.push(socket.on(i, socketEventMap[i]));
+          socket.on(i, socketEventMap[i]);
         }
-        return results;
       });
     });
   };

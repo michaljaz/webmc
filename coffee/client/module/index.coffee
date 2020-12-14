@@ -12,6 +12,7 @@ import {GUI} from './jsm/libs/dat.gui.module.js'
 import {Chat} from './Chat.js'
 import {Entities} from './Entities.js'
 import {PlayerInInventory} from './PlayerInInventory.js'
+import {BlockBreak} from './BlockBreak.js'
 
 class Game
 	constructor:(options)->
@@ -131,20 +132,25 @@ class Game
 				return
 			"entities":(entities)->
 				_this.ent.update entities
+				return
+			"diggingCompleted":(block)->
+				_this.bb.done=true
+				return
+			"diggingAborted":(block)->
+				return
+			"digTime":(time,block)->
+				_this.bb.startDigging time
+				return
 		}
 		for i of eventMap
 			@socket.on i,eventMap[i]
 
-		@cursor=new THREE.LineSegments(
-			new THREE.EdgesGeometry(
-				new THREE.BoxGeometry 1, 1, 1
-			),
-			new THREE.LineBasicMaterial {
-				color: 0x000000,
-				linewidth: 0.5
-			}
-		)
-		@scene.add @cursor
+		@bb=new BlockBreak {
+			scene:@scene
+			al:@al
+			world:@world
+			socket:@socket
+		}
 		gui = new GUI()
 		@params={
 			fog:false
@@ -161,10 +167,15 @@ class Game
 				_this.scene.fog = null
 		gui.add( @world.material, 'wireframe' ).name( 'Wireframe' ).listen()
 		gui.add( @params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
+		@mouse=false
 		$(document).mousedown (e)->
+			_this.mouse=true
 			if _this.FPC.gameState is "gameLock"
-				console.log _this.world.cellTerrain.getBlock _this.world.getRayBlock().posBreak...
+				_this.bb.digRequest()
 			return
+		$(document).mouseup (e)->
+			_this.mouse=false
+			_this.bb.stopDigging()
 		@animate()
 	animate:()->
 		_this=@
@@ -176,6 +187,7 @@ class Game
 			_this.animate()
 		return
 	render:()->
+		_this=@
 		width=window.innerWidth
 		height=window.innerHeight
 		if @canvas.width isnt width or @canvas.height isnt height
@@ -185,13 +197,11 @@ class Game
 			@camera.aspect = width / height
 			@camera.updateProjectionMatrix()
 
-		rayBlock=@world.getRayBlock()
-		if rayBlock
-			pos=rayBlock.posBreak
-			@cursor.position.set pos...
-			@cursor.visible=true
-		else
-			@cursor.visible=false
+		@bb.updatePos ()->
+			if _this.bb.isDigging
+				_this.bb.stopDigging()
+			if _this.mouse and _this.bb.done
+				_this.bb.digRequest()
 
 		@world.updateCellsAroundPlayer @camera.position,@params.chunkdist
 
