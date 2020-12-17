@@ -12,28 +12,23 @@ import {
 } from './AnimatedTextureAtlas.js';
 
 World = class World {
-  constructor(options) {
+  constructor(game) {
     var _this;
     _this = this;
+    this.game = game;
     this.cellBlackList = {};
     this.cellMesh = {};
     this.cellNeedsUpdate = {};
     this.models = {};
-    this.cellSize = options.cellSize;
-    this.camera = options.camera;
-    this.scene = options.scene;
-    this.toxelSize = options.toxelSize;
-    this.al = options.al;
     this.cellTerrain = new CellTerrain({
-      cellSize: this.cellSize
+      cellSize: this.game.cellSize
     });
     this.ATA = new AnimatedTextureAtlas({
-      al: this.al
+      al: this.game.al
     });
     this.material = this.ATA.material;
     this.cellUpdateTime = null;
     this.renderTime = 100;
-    this.renderer = options.renderer;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     //Utworzenie Workera do obliczania geometrii chunków
     this.chunkWorker = new Worker("/module/World/chunk.worker.js", {
@@ -45,10 +40,10 @@ World = class World {
     this.chunkWorker.postMessage({
       type: 'init',
       data: {
-        blocksMapping: this.al.get("blocksMapping"),
-        toxelSize: this.toxelSize,
-        cellSize: this.cellSize,
-        blocksTex: this.al.get("blocksTex")
+        blocksMapping: this.game.al.get("blocksMapping"),
+        toxelSize: this.game.toxelSize,
+        cellSize: this.game.cellSize,
+        blocksTex: this.game.al.get("blocksTex")
       }
     });
     //Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
@@ -155,11 +150,11 @@ World = class World {
         if (cellBlackList[i] === true) {
           this.cellMesh[i].geometry.dispose();
           // @cellMesh[i].material.dispose()
-          this.scene.remove(this.cellMesh[i]);
+          this.game.scene.remove(this.cellMesh[i]);
           this.cellMesh[i] = "disposed";
         }
       }
-      return this.renderer.renderLists.dispose();
+      return this.game.renderer.renderLists.dispose();
     }
   }
 
@@ -174,15 +169,17 @@ World = class World {
     geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(cell.normals), 3));
     geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(cell.uvs), 2));
     geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cell.colors), 3));
+    geometry.matrixAutoUpdate = false;
     if (mesh === void 0 || mesh === "disposedX") {
       this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
+      this.cellMesh[cellId].matrixAutoUpdate = false;
       this.cellMesh[cellId].frustumCulled = false;
       _this = this;
       this.cellMesh[cellId].onAfterRender = function() {
         _this.cellMesh[cellId].frustumCulled = true;
         return _this.cellMesh[cellId].onAfterRender = function() {};
       };
-      this.scene.add(this.cellMesh[cellId]);
+      this.game.scene.add(this.cellMesh[cellId]);
     } else if (mesh !== "disposed") {
       this.cellMesh[cellId].geometry = geometry;
     }
@@ -266,8 +263,8 @@ World = class World {
 
   getRayBlock() {
     var end, intersection, posBreak, posPlace, start;
-    start = new THREE.Vector3().setFromMatrixPosition(this.camera.matrixWorld);
-    end = new THREE.Vector3().set(0, 0, 1).unproject(this.camera);
+    start = new THREE.Vector3().setFromMatrixPosition(this.game.camera.matrixWorld);
+    end = new THREE.Vector3().set(0, 0, 1).unproject(this.game.camera);
     intersection = this.intersectsRay(start, end);
     if (intersection) {
       posPlace = intersection.position.map(function(v, ndx) {

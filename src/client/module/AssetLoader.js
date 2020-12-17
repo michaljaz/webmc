@@ -15,7 +15,9 @@ AssetLoader = class AssetLoader {
     $.get("assets/assetLoader.json", function(assets) {
       _this.load(assets, function() {
         console.log("AssetLoader: done loading!");
-        init(_this);
+        if (init !== null) {
+          init(_this);
+        }
       });
     });
     return;

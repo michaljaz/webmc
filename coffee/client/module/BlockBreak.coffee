@@ -1,12 +1,10 @@
 import * as THREE from './build/three.module.js'
 
 class BlockBreak
-	constructor:(options)->
-		@scene=options.scene
-		@al=options.al
-		@world=options.world
-		@socket=options.socket
-		@texture=@al.get "blocksAtlasSnap"
+	constructor:(game)->
+		console.log game
+		@game=game
+		@texture=@game.al.get "blocksAtlasSnap"
 		@texture.magFilter=THREE.NearestFilter
 		@cursor=new THREE.Mesh(
 			new THREE.BoxBufferGeometry(1.001, 1.001, 1.001)
@@ -20,7 +18,7 @@ class BlockBreak
 			new THREE.EdgesGeometry( @cursor.geometry )
 			new THREE.LineBasicMaterial( { color: 0x000000 } )
 		)
-		@scene.add @cursor, @cursorOut
+		@game.scene.add @cursor, @cursorOut
 		@uv={}
 		@isDigging=false
 		@done=true
@@ -58,7 +56,7 @@ class BlockBreak
 						@cursor.geometry.attributes.uv.array[i]=1-q*toxY
 			@cursor.geometry.attributes.uv.needsUpdate = true
 	updatePos:(cb)->
-		rayBlock=@world.getRayBlock()
+		rayBlock=@game.world.getRayBlock()
 		if JSON.stringify(@lastPos) != JSON.stringify(rayBlock)
 			@lastPos=rayBlock
 			cb()
@@ -74,11 +72,11 @@ class BlockBreak
 	digRequest:()->
 		console.log "REQUESTING DIGGING..."
 		_this=@
-		pos=@world.getRayBlock().posBreak
+		pos=@game.world.getRayBlock().posBreak
 		if pos isnt undefined
-			block=@world.cellTerrain.getBlock pos...
+			block=@game.world.cellTerrain.getBlock pos...
 			if block.diggable
-				@socket.emit "dig", pos
+				@game.socket.emit "dig", pos
 				@done=false
 		return
 	startDigging:(time)->
@@ -101,7 +99,7 @@ class BlockBreak
 		@done=true
 		@isDigging=false
 		console.log "Digging Stopped!"
-		@socket.emit "stopDigging",(xd)->
+		@game.socket.emit "stopDigging",(xd)->
 			callback(xd)
 		@setState 0
 		clearInterval @int

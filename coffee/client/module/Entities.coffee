@@ -1,15 +1,13 @@
 import * as THREE from './build/three.module.js'
 class Entities
-	constructor:(options)->
-		@scene=options.scene
-		@nick=options.nick
-		@TWEEN=options.TWEEN
+	constructor:(game)->
+		@game=game
 		@mobMaterial = new THREE.MeshBasicMaterial {color: new THREE.Color "red" }
 		@mobGeometry = new THREE.BoxGeometry 1, 1, 1
 		@mobMaxCount=200
 		@mobMesh=new THREE.InstancedMesh @mobGeometry,@mobMaterial,@mobMaxCount
 		@mobMesh.instanceMatrix.setUsage THREE.DynamicDrawUsage
-		@scene.add @mobMesh
+		@game.scene.add @mobMesh
 		@dummy = new THREE.Object3D()
 		return
 	update:(entities)->

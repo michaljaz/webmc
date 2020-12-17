@@ -3,23 +3,18 @@ import {CellTerrain} from './CellTerrain.js'
 import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
 
 class World
-	constructor: (options) ->
+	constructor: (game) ->
 		_this=@
+		@game=game
 		@cellBlackList={}
 		@cellMesh={}
 		@cellNeedsUpdate={}
 		@models={}
-		@cellSize=options.cellSize
-		@camera=options.camera
-		@scene=options.scene
-		@toxelSize=options.toxelSize
-		@al=options.al
-		@cellTerrain=new CellTerrain {cellSize:@cellSize}
-		@ATA=new AnimatedTextureAtlas {al:@al}
+		@cellTerrain=new CellTerrain {cellSize:@game.cellSize}
+		@ATA=new AnimatedTextureAtlas {al:@game.al}
 		@material=@ATA.material
 		@cellUpdateTime=null
 		@renderTime=100
-		@renderer=options.renderer
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 
 		#Utworzenie Workera do obliczania geometrii chunków
@@ -29,10 +24,10 @@ class World
 		@chunkWorker.postMessage {
 			type:'init'
 			data:{
-				blocksMapping: @al.get "blocksMapping"
-				toxelSize: @toxelSize
-				cellSize: @cellSize
-				blocksTex: @al.get "blocksTex"
+				blocksMapping: @game.al.get "blocksMapping"
+				toxelSize: @game.toxelSize
+				cellSize: @game.cellSize
+				blocksTex: @game.al.get "blocksTex"
 			}
 		}
 
@@ -100,9 +95,9 @@ class World
 				if cellBlackList[i] is true
 					@cellMesh[i].geometry.dispose()
 					# @cellMesh[i].material.dispose()
-					@scene.remove @cellMesh[i]
+					@game.scene.remove @cellMesh[i]
 					@cellMesh[i]="disposed"
-			@renderer.renderLists.dispose()
+			@game.renderer.renderLists.dispose()
 	updateCell: (data)->
 		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
@@ -113,14 +108,16 @@ class World
 		geometry.setAttribute 'normal',new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
 		geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
 		geometry.setAttribute 'color',new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
+		geometry.matrixAutoUpdate=false
 		if mesh is undefined or mesh is "disposedX"
 			@cellMesh[cellId]=new THREE.Mesh geometry,@material
+			@cellMesh[cellId].matrixAutoUpdate=false
 			@cellMesh[cellId].frustumCulled = false
 			_this=@
 			@cellMesh[cellId].onAfterRender = ()->
 				_this.cellMesh[cellId].frustumCulled = true
 				_this.cellMesh[cellId].onAfterRender = ->
-			@scene.add @cellMesh[cellId]
+			@game.scene.add @cellMesh[cellId]
 		else if mesh isnt "disposed"
 			@cellMesh[cellId].geometry=geometry
 		return
@@ -200,8 +197,8 @@ class World
 					steppedIndex = 2
 		return null
 	getRayBlock: ->
-		start = new THREE.Vector3().setFromMatrixPosition(@camera.matrixWorld)
-		end = new THREE.Vector3().set(0,0, 1).unproject(@camera)
+		start = new THREE.Vector3().setFromMatrixPosition(@game.camera.matrixWorld)
+		end = new THREE.Vector3().set(0,0, 1).unproject(@game.camera)
 		intersection = @intersectsRay start, end
 		if intersection
 			posPlace = intersection.position.map (v, ndx) ->

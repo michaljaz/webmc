@@ -134,7 +134,12 @@ module.exports=(type)->
 							console.log "Already digging..."
 							bot().stopDigging()
 						emit ["digTime",digTime,block]
-						bot().dig block,false,()->
+						console.log "Start"
+						bot().dig block,false,(xd)->
+							if xd is undefined
+								console.log "SUCCESS"
+							else
+								console.log "FAIL"
 					return
 				"stopDigging":(callback)->
 					bot().stopDigging()

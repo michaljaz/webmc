@@ -4,10 +4,8 @@ var Entities;
 import * as THREE from './build/three.module.js';
 
 Entities = class Entities {
-  constructor(options) {
-    this.scene = options.scene;
-    this.nick = options.nick;
-    this.TWEEN = options.TWEEN;
+  constructor(game) {
+    this.game = game;
     this.mobMaterial = new THREE.MeshBasicMaterial({
       color: new THREE.Color("red")
     });
@@ -15,7 +13,7 @@ Entities = class Entities {
     this.mobMaxCount = 200;
     this.mobMesh = new THREE.InstancedMesh(this.mobGeometry, this.mobMaterial, this.mobMaxCount);
     this.mobMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-    this.scene.add(this.mobMesh);
+    this.game.scene.add(this.mobMesh);
     this.dummy = new THREE.Object3D();
     return;
   }

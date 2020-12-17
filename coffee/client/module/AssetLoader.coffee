@@ -8,7 +8,8 @@ class AssetLoader
 		$.get "assets/assetLoader.json", (assets)->
 			_this.load assets,()->
 				console.log "AssetLoader: done loading!"
-				init _this
+				if init isnt null
+					init _this
 				return
 			return
 		return

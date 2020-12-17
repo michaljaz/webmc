@@ -55,22 +55,30 @@ import {
 
 Game = class Game {
   constructor(options) {
+    var _this;
+    _this = this;
+    this.al = new AssetLoader(function() {
+      _this.init();
+    });
+  }
+
+  init(al) {
     var _this, color, directionalLight, eventMap, far, gui, i, near;
     _this = this;
-    this.al = options.al;
+    this.TWEEN = TWEEN;
+    this.fov = 70;
+    this.toxelSize = 27;
+    this.cellSize = 16;
     this.canvas = document.querySelector('#c');
     this.pcanvas = document.querySelector('#c_player');
-    this.pii = new PlayerInInventory({
-      canvas: this.pcanvas,
-      al: this.al
-    });
+    this.socket = io.connect(`${document.location.host}`);
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       PixelRatio: window.devicePixelRatio
     });
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#adc8ff");
-    this.camera = new THREE.PerspectiveCamera(70, 2, 0.1, 1000);
+    this.camera = new THREE.PerspectiveCamera(this.fov, 2, 0.1, 1000);
     this.camera.rotation.order = "YXZ";
     this.camera.position.set(26, 26, 26);
     this.scene.add(new THREE.AmbientLight(0xcccccc));
@@ -83,34 +91,16 @@ Game = class Game {
       this.nick = RandomNick();
       document.location.href = `\#${this.nick}`;
     }
-    this.ent = new Entities({
-      scene: this.scene,
-      nick: this.nick,
-      TWEEN
-    });
     this.stats = new Stats();
-    this.stats.showPanel(0);
+    this.drawcalls = this.stats.addPanel(new Stats.Panel('calls', '#ff8', '#221'));
+    this.stats.showPanel(3);
     document.body.appendChild(this.stats.dom);
-    this.world = new World({
-      toxelSize: 27,
-      cellSize: 16,
-      scene: this.scene,
-      camera: this.camera,
-      al: this.al,
-      renderer: this.renderer
-    });
-    this.socket = io.connect(`${document.location.host}`);
-    this.FPC = new FirstPersonControls({
-      canvas: this.canvas,
-      camera: this.camera,
-      socket: this.socket,
-      TWEEN,
-      fov: 70,
-      pii: this.pii
-    });
-    this.chat = new Chat({
-      FPC: this.FPC
-    });
+    this.pii = new PlayerInInventory(this);
+    this.ent = new Entities(this);
+    this.bb = new BlockBreak(this);
+    this.world = new World(this);
+    this.chat = new Chat(this);
+    this.FPC = new FirstPersonControls(this);
     this.inv_bar = new InventoryBar();
     eventMap = {
       "connect": function() {
@@ -165,21 +155,19 @@ Game = class Game {
       },
       "diggingCompleted": function(block) {
         _this.bb.done = true;
+        console.warn("SERVER-DONE");
       },
-      "diggingAborted": function(block) {},
+      "diggingAborted": function(block) {
+        console.warn("SERVER-ABORT");
+      },
       "digTime": function(time, block) {
+        console.warn("SERVER-START");
         _this.bb.startDigging(time);
       }
     };
     for (i in eventMap) {
       this.socket.on(i, eventMap[i]);
     }
-    this.bb = new BlockBreak({
-      scene: this.scene,
-      al: this.al,
-      world: this.world,
-      socket: this.socket
-    });
     gui = new GUI();
     this.params = {
       fog: false,
@@ -209,7 +197,7 @@ Game = class Game {
       _this.mouse = false;
       return _this.bb.stopDigging();
     });
-    this.animate();
+    return this.animate();
   }
 
   animate() {
@@ -247,15 +235,14 @@ Game = class Game {
     });
     this.world.updateCellsAroundPlayer(this.camera.position, this.params.chunkdist);
     TWEEN.update();
-    this.renderer.render(this.scene, this.camera);
+    this.drawcalls.update(this.renderer.info.render.calls, 100);
     if (this.FPC.gameState === "inventory") {
       this.pii.render();
     }
     this.inv_bar.tick();
+    this.renderer.render(this.scene, this.camera);
   }
 
 };
 
-new AssetLoader(function(al) {
-  new Game({al});
-});
+new Game();

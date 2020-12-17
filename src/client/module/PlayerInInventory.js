@@ -4,20 +4,19 @@ var PlayerInInventory;
 import * as THREE from './build/three.module.js';
 
 PlayerInInventory = class PlayerInInventory {
-  constructor(options) {
+  constructor(game) {
     var light, player, playerTex;
-    this.canvas = options.canvas;
-    this.al = options.al;
+    this.game = game;
     this.renderer = new THREE.WebGLRenderer({
-      canvas: this.canvas,
+      canvas: this.game.pcanvas,
       PixelRatio: window.devicePixelRatio
     });
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("black");
     light = new THREE.AmbientLight(0xffffff);
     this.scene.add(light);
-    player = this.al.get("player");
-    playerTex = this.al.get("playerTex");
+    player = this.game.al.get("player");
+    playerTex = this.game.al.get("playerTex");
     playerTex.magFilter = THREE.NearestFilter;
     player.children[0].material.map = playerTex;
     this.scene.add(player);
@@ -53,11 +52,11 @@ PlayerInInventory = class PlayerInInventory {
   }
 
   show() {
-    return this.canvas.style.display = "block";
+    return this.game.pcanvas.style.display = "block";
   }
 
   hide() {
-    return this.canvas.style.display = "none";
+    return this.game.pcanvas.style.display = "none";
   }
 
 };

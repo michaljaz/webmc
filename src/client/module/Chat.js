@@ -2,12 +2,11 @@
 var Chat;
 
 Chat = class Chat {
-  constructor(options) {
-    var _this;
-    _this = this;
-    this.FPC = options.FPC;
+  constructor(game) {
+    this.game = game;
     this.chatDiv = document.querySelector(".chat");
     this.listen();
+    this.history = [];
     return;
   }
 
@@ -15,7 +14,7 @@ Chat = class Chat {
     var _this;
     _this = this;
     window.addEventListener("wheel", function(e) {
-      if (_this.FPC.gameState !== "chat") {
+      if (_this.game.FPC.gameState !== "chat") {
         e.preventDefault();
       }
     }, {
@@ -41,6 +40,13 @@ Chat = class Chat {
     $(".chat").append(message + "<br>");
     if (atBottom) {
       this.scrollToBottom(this.chatDiv);
+    }
+  }
+
+  command(com) {
+    if (com !== "") {
+      this.history.push(com);
+      return this.game.socket.emit("command", com);
     }
   }
 

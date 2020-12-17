@@ -4,12 +4,10 @@ var BlockBreak;
 import * as THREE from './build/three.module.js';
 
 BlockBreak = class BlockBreak {
-  constructor(options) {
-    this.scene = options.scene;
-    this.al = options.al;
-    this.world = options.world;
-    this.socket = options.socket;
-    this.texture = this.al.get("blocksAtlasSnap");
+  constructor(game) {
+    console.log(game);
+    this.game = game;
+    this.texture = this.game.al.get("blocksAtlasSnap");
     this.texture.magFilter = THREE.NearestFilter;
     this.cursor = new THREE.Mesh(new THREE.BoxBufferGeometry(1.001, 1.001, 1.001), new THREE.MeshBasicMaterial({
       map: this.texture,
@@ -19,7 +17,7 @@ BlockBreak = class BlockBreak {
     this.cursorOut = new THREE.LineSegments(new THREE.EdgesGeometry(this.cursor.geometry), new THREE.LineBasicMaterial({
       color: 0x000000
     }));
-    this.scene.add(this.cursor, this.cursorOut);
+    this.game.scene.add(this.cursor, this.cursorOut);
     this.uv = {};
     this.isDigging = false;
     this.done = true;
@@ -72,7 +70,7 @@ BlockBreak = class BlockBreak {
 
   updatePos(cb) {
     var pos, rayBlock;
-    rayBlock = this.world.getRayBlock();
+    rayBlock = this.game.world.getRayBlock();
     if (JSON.stringify(this.lastPos) !== JSON.stringify(rayBlock)) {
       this.lastPos = rayBlock;
       cb();
@@ -93,11 +91,11 @@ BlockBreak = class BlockBreak {
     var _this, block, pos;
     console.log("REQUESTING DIGGING...");
     _this = this;
-    pos = this.world.getRayBlock().posBreak;
+    pos = this.game.world.getRayBlock().posBreak;
     if (pos !== void 0) {
-      block = this.world.cellTerrain.getBlock(...pos);
+      block = this.game.world.cellTerrain.getBlock(...pos);
       if (block.diggable) {
-        this.socket.emit("dig", pos);
+        this.game.socket.emit("dig", pos);
         this.done = false;
       }
     }
@@ -126,7 +124,7 @@ BlockBreak = class BlockBreak {
     this.done = true;
     this.isDigging = false;
     console.log("Digging Stopped!");
-    this.socket.emit("stopDigging", function(xd) {
+    this.game.socket.emit("stopDigging", function(xd) {
       return callback(xd);
     });
     this.setState(0);

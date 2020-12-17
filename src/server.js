@@ -150,7 +150,14 @@
                 bot().stopDigging();
               }
               emit(["digTime", digTime, block]);
-              bot().dig(block, false, function() {});
+              console.log("Start");
+              bot().dig(block, false, function(xd) {
+                if (xd === void 0) {
+                  return console.log("SUCCESS");
+                } else {
+                  return console.log("FAIL");
+                }
+              });
             }
           },
           "stopDigging": function(callback) {

@@ -1,7 +1,8 @@
 import * as THREE from './build/three.module.js'
 
 class FirstPersonControls
-	constructor: (options)->
+	constructor: (game)->
+		@game=game
 		@kc={
 			87:"forward"
 			65:"right"
@@ -11,25 +12,19 @@ class FirstPersonControls
 			16:"sneak"
 			82:"sprint"
 		}
-		@pii=options.pii
-		@fov=options.fov
 		@keys={}
-		@canvas=options.canvas
-		@camera=options.camera
-		@socket=options.socket
-		@TWEEN=options.TWEEN
 		@setState "menu"
 		@listen()
 	updatePosition: (e)->
 		#Updatowanie kursora
 		if @gameState is "gameLock"
-			@camera.rotation.x -= THREE.MathUtils.degToRad e.movementY / 10
-			@camera.rotation.y -= THREE.MathUtils.degToRad e.movementX / 10
-			if THREE.MathUtils.radToDeg( @camera.rotation.x ) < -90
-				@camera.rotation.x = THREE.MathUtils.degToRad -90
-			if THREE.MathUtils.radToDeg( @camera.rotation.x ) > 90
-				@camera.rotation.x = THREE.MathUtils.degToRad 90
-			@socket.emit "rotate", [@camera.rotation.y,@camera.rotation.x]
+			@game.camera.rotation.x -= THREE.MathUtils.degToRad e.movementY / 10
+			@game.camera.rotation.y -= THREE.MathUtils.degToRad e.movementX / 10
+			if THREE.MathUtils.radToDeg( @game.camera.rotation.x ) < -90
+				@game.camera.rotation.x = THREE.MathUtils.degToRad -90
+			if THREE.MathUtils.radToDeg( @game.camera.rotation.x ) > 90
+				@game.camera.rotation.x = THREE.MathUtils.degToRad 90
+			@game.socket.emit "rotate", [@game.camera.rotation.y,@game.camera.rotation.x]
 		return
 	listen: ->
 		_this=@
@@ -43,7 +38,7 @@ class FirstPersonControls
 
 			#Klawisz Enter
 			if z.keyCode is 13 and _this.gameState is "chat"
-				_this.socket.emit "command",$(".com_i").val()
+				_this.game.chat.command $(".com_i").val()
 				$(".com_i").val("")
 
 			#Klawisz E
@@ -69,14 +64,14 @@ class FirstPersonControls
 
 			#Wysyłanie state'u do serwera
 			if _this.kc[z.keyCode] isnt undefined and _this.gameState is "gameLock"
-				_this.socket.emit "move",_this.kc[z.keyCode],true
+				_this.game.socket.emit "move",_this.kc[z.keyCode],true
 				if _this.kc[z.keyCode] is "sprint"
-					to={fov:_this.fov+10}
-					new _this.TWEEN.Tween _this.camera
+					to={fov:_this.game.fov+10}
+					new _this.game.TWEEN.Tween _this.game.camera
 						.to to, 200
-						.easing _this.TWEEN.Easing.Quadratic.Out
+						.easing _this.game.TWEEN.Easing.Quadratic.Out
 						.onUpdate ()->
-							_this.camera.updateProjectionMatrix()
+							_this.game.camera.updateProjectionMatrix()
 						.start()
 			return
 		$(document).keyup (z) ->
@@ -85,14 +80,14 @@ class FirstPersonControls
 
 			#Wysyłanie state'u do serwera
 			if _this.kc[z.keyCode] isnt undefined
-				_this.socket.emit "move",_this.kc[z.keyCode],false
+				_this.game.socket.emit "move",_this.kc[z.keyCode],false
 				if _this.kc[z.keyCode] is "sprint"
-					to={fov:_this.fov}
-					new _this.TWEEN.Tween _this.camera
+					to={fov:_this.game.fov}
+					new _this.game.TWEEN.Tween _this.game.camera
 						.to to, 200
-						.easing _this.TWEEN.Easing.Quadratic.Out
+						.easing _this.game.TWEEN.Easing.Quadratic.Out
 						.onUpdate ()->
-							_this.camera.updateProjectionMatrix()
+							_this.game.camera.updateProjectionMatrix()
 						.start()
 
 			return
@@ -100,7 +95,7 @@ class FirstPersonControls
 			_this.setState "game"
 			return
 		lockChangeAlert=()->
-			if document.pointerLockElement is _this.canvas or document.mozPointerLockElement is _this.canvas
+			if document.pointerLockElement is _this.game.canvas or document.mozPointerLockElement is _this.game.canvas
 				#Lock
 				if _this.gameState is "game"
 					_this.setState "gameLock"
@@ -116,16 +111,16 @@ class FirstPersonControls
 		, false
 		return @
 	reqLock:()->
-		@canvas.requestPointerLock()
+		@game.canvas.requestPointerLock()
 	unLock:()->
 		document.exitPointerLock = document.exitPointerLock or document.mozExitPointerLock
 		document.exitPointerLock()
 	state:(state)->
 		@gameState=state
 		if state is "inventory"
-			@pii.show()
+			@game.pii.show()
 		else
-			@pii.hide() 
+			@game.pii.hide()
 		# console.log "Game state: "+state
 	resetState:()->
 		$(".chat").removeClass("focus")

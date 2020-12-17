@@ -17,26 +17,28 @@ import {BlockBreak} from './BlockBreak.js'
 class Game
 	constructor:(options)->
 		_this=@
-		@al=options.al
+		@al=new AssetLoader ()->
+			_this.init()
+			return
+	init:(al)->
+		_this=@
+		@TWEEN=TWEEN
+		@fov=70
+		@toxelSize=27
+		@cellSize=16
 		@canvas=document.querySelector '#c'
 		@pcanvas=document.querySelector '#c_player'
 
-		@pii=new PlayerInInventory {
-			canvas:@pcanvas
-			al:@al
-		}
+		@socket=io.connect "#{document.location.host}"
 
-		@renderer=new THREE.WebGLRenderer {
+		@renderer=new THREE.WebGLRenderer
 			canvas:@canvas
 			PixelRatio:window.devicePixelRatio
-		}
 		@scene=new THREE.Scene
 		@scene.background = new THREE.Color "#adc8ff"
-
-		@camera = new THREE.PerspectiveCamera 70, 2, 0.1, 1000
+		@camera = new THREE.PerspectiveCamera @fov, 2, 0.1, 1000
 		@camera.rotation.order = "YXZ"
 		@camera.position.set 26, 26, 26
-
 		@scene.add new THREE.AmbientLight 0xcccccc
 		directionalLight = new THREE.DirectionalLight 0x333333, 2
 		directionalLight.position.set(1, 1, 0.5).normalize()
@@ -49,39 +51,17 @@ class Game
 			@nick=RandomNick()
 			document.location.href="\##{@nick}"
 
-		@ent=new Entities {
-			scene:@scene
-			nick:@nick
-			TWEEN
-		}
-
 		@stats=new Stats
-		@stats.showPanel 0
+		@drawcalls=@stats.addPanel new Stats.Panel( 'calls', '#ff8', '#221' )
+		@stats.showPanel 3
 		document.body.appendChild @stats.dom
 
-		@world=new World {
-			toxelSize:27
-			cellSize:16
-			scene:@scene
-			camera:@camera
-			al:@al
-			renderer:@renderer
-		}
-
-		@socket=io.connect "#{document.location.host}"
-		@FPC = new FirstPersonControls {
-			canvas:@canvas
-			camera:@camera
-			socket:@socket
-			TWEEN
-			fov:70
-			pii:@pii
-		}
-
-		@chat=new Chat {
-			FPC:@FPC
-		}
-
+		@pii=new PlayerInInventory @
+		@ent=new Entities @
+		@bb=new BlockBreak @
+		@world=new World @
+		@chat=new Chat @
+		@FPC = new FirstPersonControls @
 		@inv_bar = new InventoryBar
 
 		eventMap={
@@ -89,9 +69,8 @@ class Game
 				console.log "Połączono z serverem!"
 				$('.loadingText').text "Za chwilę dołączysz do gry..."
 				console.log "User nick: #{_this.nick}"
-				_this.socket.emit "initClient", {
+				_this.socket.emit "initClient",
 					nick:_this.nick
-				}
 				return
 			"blockUpdate":(block)->
 				_this.world.setBlock block[0],block[1]+16,block[2],block[3]
@@ -118,13 +97,16 @@ class Game
 				_this.chat.log(msg)
 				return
 			"kicked":(reason)->
-				_this.chat.log("You have been kicked!")
+				_this.chat.log "You have been kicked!"
 				return
 			"xp":(xp)->
 				_this.inv_bar.setXp xp.level,xp.progress
 				return
 			"move":(pos)->
-				to={x:pos.x-0.5,y:pos.y+17,z:pos.z-0.5}
+				to=
+					x:pos.x-0.5
+					y:pos.y+17
+					z:pos.z-0.5
 				new TWEEN.Tween _this.camera.position
 					.to to, 100
 					.easing TWEEN.Easing.Quadratic.Out
@@ -135,27 +117,24 @@ class Game
 				return
 			"diggingCompleted":(block)->
 				_this.bb.done=true
+				console.warn "SERVER-DONE"
 				return
 			"diggingAborted":(block)->
+				console.warn "SERVER-ABORT"
 				return
 			"digTime":(time,block)->
+				console.warn "SERVER-START"
 				_this.bb.startDigging time
 				return
 		}
 		for i of eventMap
 			@socket.on i,eventMap[i]
 
-		@bb=new BlockBreak {
-			scene:@scene
-			al:@al
-			world:@world
-			socket:@socket
-		}
+
 		gui = new GUI()
-		@params={
+		@params=
 			fog:false
 			chunkdist:3
-		}
 		color = new THREE.Color "#adc8ff"
 		near = 0.5*16
 		far = 2.5*16
@@ -202,17 +181,13 @@ class Game
 				_this.bb.stopDigging()
 			if _this.mouse and _this.bb.done
 				_this.bb.digRequest()
-
 		@world.updateCellsAroundPlayer @camera.position,@params.chunkdist
-
 		TWEEN.update()
-		@renderer.render @scene, @camera
+		@drawcalls.update @renderer.info.render.calls,100
 		if @FPC.gameState is "inventory"
 			@pii.render()
 		@inv_bar.tick()
+		
+		@renderer.render @scene, @camera
 		return
-new AssetLoader (al)->
-	new Game {
-		al
-	}
-	return
+new Game()

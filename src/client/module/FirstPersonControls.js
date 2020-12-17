@@ -4,7 +4,8 @@ var FirstPersonControls;
 import * as THREE from './build/three.module.js';
 
 FirstPersonControls = class FirstPersonControls {
-  constructor(options) {
+  constructor(game) {
+    this.game = game;
     this.kc = {
       87: "forward",
       65: "right",
@@ -14,13 +15,7 @@ FirstPersonControls = class FirstPersonControls {
       16: "sneak",
       82: "sprint"
     };
-    this.pii = options.pii;
-    this.fov = options.fov;
     this.keys = {};
-    this.canvas = options.canvas;
-    this.camera = options.camera;
-    this.socket = options.socket;
-    this.TWEEN = options.TWEEN;
     this.setState("menu");
     this.listen();
   }
@@ -28,15 +23,15 @@ FirstPersonControls = class FirstPersonControls {
   updatePosition(e) {
     //Updatowanie kursora
     if (this.gameState === "gameLock") {
-      this.camera.rotation.x -= THREE.MathUtils.degToRad(e.movementY / 10);
-      this.camera.rotation.y -= THREE.MathUtils.degToRad(e.movementX / 10);
-      if (THREE.MathUtils.radToDeg(this.camera.rotation.x) < -90) {
-        this.camera.rotation.x = THREE.MathUtils.degToRad(-90);
+      this.game.camera.rotation.x -= THREE.MathUtils.degToRad(e.movementY / 10);
+      this.game.camera.rotation.y -= THREE.MathUtils.degToRad(e.movementX / 10);
+      if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) < -90) {
+        this.game.camera.rotation.x = THREE.MathUtils.degToRad(-90);
       }
-      if (THREE.MathUtils.radToDeg(this.camera.rotation.x) > 90) {
-        this.camera.rotation.x = THREE.MathUtils.degToRad(90);
+      if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) > 90) {
+        this.game.camera.rotation.x = THREE.MathUtils.degToRad(90);
       }
-      this.socket.emit("rotate", [this.camera.rotation.y, this.camera.rotation.x]);
+      this.game.socket.emit("rotate", [this.game.camera.rotation.y, this.game.camera.rotation.x]);
     }
   }
 
@@ -53,7 +48,7 @@ FirstPersonControls = class FirstPersonControls {
       }
       //Klawisz Enter
       if (z.keyCode === 13 && _this.gameState === "chat") {
-        _this.socket.emit("command", $(".com_i").val());
+        _this.game.chat.command($(".com_i").val());
         $(".com_i").val("");
       }
       //Klawisz E
@@ -82,13 +77,13 @@ FirstPersonControls = class FirstPersonControls {
       }
       //Wysyłanie state'u do serwera
       if (_this.kc[z.keyCode] !== void 0 && _this.gameState === "gameLock") {
-        _this.socket.emit("move", _this.kc[z.keyCode], true);
+        _this.game.socket.emit("move", _this.kc[z.keyCode], true);
         if (_this.kc[z.keyCode] === "sprint") {
           to = {
-            fov: _this.fov + 10
+            fov: _this.game.fov + 10
           };
-          new _this.TWEEN.Tween(_this.camera).to(to, 200).easing(_this.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
-            return _this.camera.updateProjectionMatrix();
+          new _this.game.TWEEN.Tween(_this.game.camera).to(to, 200).easing(_this.game.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
+            return _this.game.camera.updateProjectionMatrix();
           }).start();
         }
       }
@@ -99,13 +94,13 @@ FirstPersonControls = class FirstPersonControls {
       delete _this.keys[z.keyCode];
       //Wysyłanie state'u do serwera
       if (_this.kc[z.keyCode] !== void 0) {
-        _this.socket.emit("move", _this.kc[z.keyCode], false);
+        _this.game.socket.emit("move", _this.kc[z.keyCode], false);
         if (_this.kc[z.keyCode] === "sprint") {
           to = {
-            fov: _this.fov
+            fov: _this.game.fov
           };
-          new _this.TWEEN.Tween(_this.camera).to(to, 200).easing(_this.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
-            return _this.camera.updateProjectionMatrix();
+          new _this.game.TWEEN.Tween(_this.game.camera).to(to, 200).easing(_this.game.TWEEN.Easing.Quadratic.Out).onUpdate(function() {
+            return _this.game.camera.updateProjectionMatrix();
           }).start();
         }
       }
@@ -114,7 +109,7 @@ FirstPersonControls = class FirstPersonControls {
       _this.setState("game");
     });
     lockChangeAlert = function() {
-      if (document.pointerLockElement === _this.canvas || document.mozPointerLockElement === _this.canvas) {
+      if (document.pointerLockElement === _this.game.canvas || document.mozPointerLockElement === _this.game.canvas) {
         //Lock
         if (_this.gameState === "game") {
           _this.setState("gameLock");
@@ -135,7 +130,7 @@ FirstPersonControls = class FirstPersonControls {
   }
 
   reqLock() {
-    return this.canvas.requestPointerLock();
+    return this.game.canvas.requestPointerLock();
   }
 
   unLock() {
@@ -146,14 +141,13 @@ FirstPersonControls = class FirstPersonControls {
   state(state) {
     this.gameState = state;
     if (state === "inventory") {
-      return this.pii.show();
+      return this.game.pii.show();
     } else {
-      return this.pii.hide();
+      return this.game.pii.hide();
     }
   }
 
-  
-    // console.log "Game state: "+state
+  // console.log "Game state: "+state
   resetState() {
     $(".chat").removeClass("focus");
     $(".chat").addClass("blur");

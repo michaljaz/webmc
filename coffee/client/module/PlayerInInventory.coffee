@@ -1,10 +1,9 @@
 import * as THREE from './build/three.module.js'
 class PlayerInInventory
-	constructor:(options)->
-		@canvas=options.canvas
-		@al=options.al
+	constructor:(game)->
+		@game=game
 		@renderer=new THREE.WebGLRenderer {
-			canvas:@canvas
+			canvas:@game.pcanvas
 			PixelRatio:window.devicePixelRatio
 		}
 		@scene=new THREE.Scene
@@ -12,8 +11,8 @@ class PlayerInInventory
 		light = new THREE.AmbientLight( 0xffffff )
 		@scene.add( light );
 
-		player=@al.get "player"
-		playerTex=@al.get "playerTex"
+		player=@game.al.get "player"
+		playerTex=@game.al.get "playerTex"
 
 		playerTex.magFilter=THREE.NearestFilter;
 		player.children[0].material.map=playerTex;
@@ -42,7 +41,7 @@ class PlayerInInventory
 	render:()->
 		@renderer.render @scene, @camera
 	show:()->
-		@canvas.style.display="block"
+		@game.pcanvas.style.display="block"
 	hide:()->
-		@canvas.style.display="none"
+		@game.pcanvas.style.display="none"
 export {PlayerInInventory}
