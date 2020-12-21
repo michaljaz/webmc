@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node src/server-development.js",
-    "coffee": "coffee -o src/ -cw coffee/",
+    "coffee": "coffee -o . -cw coffee/",
     "atlas": "node src/atlas.js",
     "items": "node src/items.js",
     "build": "webpack",
