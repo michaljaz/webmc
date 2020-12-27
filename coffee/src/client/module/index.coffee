@@ -61,8 +61,8 @@ class Game
 		@bb=new BlockBreak @
 		@world=new World @
 		@chat=new Chat @
+		@inv_bar = new InventoryBar @
 		@FPC = new FirstPersonControls @
-		@inv_bar = new InventoryBar
 
 		eventMap={
 			"connect":()->
@@ -187,7 +187,7 @@ class Game
 		if @FPC.gameState is "inventory"
 			@pii.render()
 		@inv_bar.tick()
-		
+
 		@renderer.render @scene, @camera
 		return
 new Game()

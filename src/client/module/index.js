@@ -100,8 +100,8 @@ Game = class Game {
     this.bb = new BlockBreak(this);
     this.world = new World(this);
     this.chat = new Chat(this);
+    this.inv_bar = new InventoryBar(this);
     this.FPC = new FirstPersonControls(this);
-    this.inv_bar = new InventoryBar();
     eventMap = {
       "connect": function() {
         console.log("Połączono z serverem!");

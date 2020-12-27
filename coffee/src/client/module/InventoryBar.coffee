@@ -1,6 +1,7 @@
 
 class InventoryBar
-	constructor:(options)->
+	constructor:(game)->
+		@game=game
 		for i in [0..9]
 			$(".player_hp").append("<span class='hp'></span> ")
 		for i in [0..9]
@@ -61,12 +62,13 @@ class InventoryBar
 		@setFocus focus
 		_this=@
 		$(window).on 'wheel', (e)->
-			if e.originalEvent.deltaY > 0
-				focus++
-			else
-				focus--
-			focus=focus %% 9
-			_this.setFocus focus
+			if _this.game.FPC.gameState is "gameLock"
+				if e.originalEvent.deltaY > 0
+					focus++
+				else
+					focus--
+				focus=focus %% 9
+				_this.setFocus focus
 	tick:()->
 		list = $(".item")
 		for i in [0..list.length-1]

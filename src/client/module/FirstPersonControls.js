@@ -46,6 +46,14 @@ FirstPersonControls = class FirstPersonControls {
       if (z.keyCode === 27 && _this.gameState === "inventory") {
         _this.setState("menu");
       }
+      //Strzałki
+      if (z.keyCode === 38 && _this.gameState === "chat") {
+        _this.game.chat.chatGoBack();
+      }
+      if (z.keyCode === 40 && _this.gameState === "chat") {
+        _this.game.chat.chatGoForward();
+      }
+      
       //Klawisz Enter
       if (z.keyCode === 13 && _this.gameState === "chat") {
         _this.game.chat.command($(".com_i").val());

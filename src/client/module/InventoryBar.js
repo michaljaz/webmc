@@ -3,8 +3,9 @@ var InventoryBar,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
 InventoryBar = class InventoryBar {
-  constructor(options) {
+  constructor(game) {
     var i, j, k, l;
+    this.game = game;
     for (i = j = 0; j <= 9; i = ++j) {
       $(".player_hp").append("<span class='hp'></span> ");
     }
@@ -94,13 +95,15 @@ InventoryBar = class InventoryBar {
     this.setFocus(focus);
     _this = this;
     return $(window).on('wheel', function(e) {
-      if (e.originalEvent.deltaY > 0) {
-        focus++;
-      } else {
-        focus--;
+      if (_this.game.FPC.gameState === "gameLock") {
+        if (e.originalEvent.deltaY > 0) {
+          focus++;
+        } else {
+          focus--;
+        }
+        focus = modulo(focus, 9);
+        return _this.setFocus(focus);
       }
-      focus = modulo(focus, 9);
-      return _this.setFocus(focus);
     });
   }
 

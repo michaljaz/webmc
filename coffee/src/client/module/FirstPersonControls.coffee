@@ -36,6 +36,12 @@ class FirstPersonControls
 			if z.keyCode is 27 and _this.gameState is "inventory"
 				_this.setState "menu"
 
+			#Strzałki
+			if z.keyCode is 38 and _this.gameState is "chat"
+				_this.game.chat.chatGoBack()
+			if z.keyCode is 40 and _this.gameState is "chat"
+				_this.game.chat.chatGoForward()
+			
 			#Klawisz Enter
 			if z.keyCode is 13 and _this.gameState is "chat"
 				_this.game.chat.command $(".com_i").val()

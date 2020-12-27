@@ -3,11 +3,32 @@ var Chat;
 
 Chat = class Chat {
   constructor(game) {
+    var _this;
     this.game = game;
     this.chatDiv = document.querySelector(".chat");
     this.listen();
-    this.history = [];
+    this.history = [""];
+    this.histState = 0;
+    _this = this;
+    $(".com_i").on("input", function() {
+      _this.history[_this.history.length - 1] = $(".com_i").val();
+      return console.log(_this.history);
+    });
     return;
+  }
+
+  chatGoBack() {
+    if (this.histState > 0) {
+      this.histState--;
+      $(".com_i").val(this.history[this.histState]);
+    }
+  }
+
+  chatGoForward() {
+    if (this.histState < this.history.length - 1) {
+      this.histState++;
+      $(".com_i").val(this.history[this.histState]);
+    }
   }
 
   listen() {
@@ -35,17 +56,16 @@ Chat = class Chat {
   }
 
   log(message) {
-    var atBottom;
-    atBottom = this.isElementScrolledToBottom(this.chatDiv);
-    $(".chat").append(message + "<br>");
-    if (atBottom) {
-      this.scrollToBottom(this.chatDiv);
-    }
+    $(".chat").append(`<span>${message}<br></span>`);
+    this.scrollToBottom(this.chatDiv);
   }
 
   command(com) {
     if (com !== "") {
-      this.history.push(com);
+      this.history[this.history.length - 1] = com;
+      this.history.push("");
+      this.histState = this.history.length - 1;
+      console.log(this.history);
       return this.game.socket.emit("command", com);
     }
   }
