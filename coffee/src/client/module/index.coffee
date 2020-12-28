@@ -13,6 +13,7 @@ import {Chat} from './Chat.js'
 import {Entities} from './Entities.js'
 import {PlayerInInventory} from './PlayerInInventory.js'
 import {BlockBreak} from './BlockBreak.js'
+import {BlockPlace} from './BlockPlace.js'
 
 class Game
 	constructor:(options)->
@@ -59,6 +60,7 @@ class Game
 		@pii=new PlayerInInventory @
 		@ent=new Entities @
 		@bb=new BlockBreak @
+		@bp=new BlockPlace @
 		@world=new World @
 		@chat=new Chat @
 		@inv_bar = new InventoryBar @
@@ -148,13 +150,17 @@ class Game
 		gui.add( @params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
 		@mouse=false
 		$(document).mousedown (e)->
-			_this.mouse=true
-			if _this.FPC.gameState is "gameLock"
-				_this.bb.digRequest()
+			if e.which is 1
+				_this.mouse=true
+				if _this.FPC.gameState is "gameLock"
+					_this.bb.digRequest()
+			else if e.which is 3
+				_this.bp.placeBlock()
 			return
 		$(document).mouseup (e)->
-			_this.mouse=false
-			_this.bb.stopDigging()
+			if e.which is 1
+				_this.mouse=false
+				_this.bb.stopDigging()
 		@animate()
 	animate:()->
 		_this=@

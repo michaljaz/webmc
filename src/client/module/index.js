@@ -53,6 +53,10 @@ import {
   BlockBreak
 } from './BlockBreak.js';
 
+import {
+  BlockPlace
+} from './BlockPlace.js';
+
 Game = class Game {
   constructor(options) {
     var _this;
@@ -98,6 +102,7 @@ Game = class Game {
     this.pii = new PlayerInInventory(this);
     this.ent = new Entities(this);
     this.bb = new BlockBreak(this);
+    this.bp = new BlockPlace(this);
     this.world = new World(this);
     this.chat = new Chat(this);
     this.inv_bar = new InventoryBar(this);
@@ -188,14 +193,20 @@ Game = class Game {
     gui.add(this.params, 'chunkdist', 0, 10, 1).name('Render distance').listen();
     this.mouse = false;
     $(document).mousedown(function(e) {
-      _this.mouse = true;
-      if (_this.FPC.gameState === "gameLock") {
-        _this.bb.digRequest();
+      if (e.which === 1) {
+        _this.mouse = true;
+        if (_this.FPC.gameState === "gameLock") {
+          _this.bb.digRequest();
+        }
+      } else if (e.which === 3) {
+        _this.bp.placeBlock();
       }
     });
     $(document).mouseup(function(e) {
-      _this.mouse = false;
-      return _this.bb.stopDigging();
+      if (e.which === 1) {
+        _this.mouse = false;
+        return _this.bb.stopDigging();
+      }
     });
     return this.animate();
   }

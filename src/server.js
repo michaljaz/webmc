@@ -130,6 +130,15 @@
           emit(["entities", bot().entities]);
         }, 10);
         socketEventMap = {
+          "blockPlace": function(pos, vec) {
+            var block, vecx;
+            console.log(pos, vec);
+            block = bot().blockAt(new vec3(...pos));
+            vecx = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0]];
+            bot().placeBlock(block, new vec3(...vec), function(r) {
+              console.log(r);
+            });
+          },
           "invc": function(num) {
             var item;
             item = bot().inventory.slots[num + 36];

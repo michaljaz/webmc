@@ -117,6 +117,21 @@ module.exports=(type)->
 				return
 			,10
 			socketEventMap={
+				"blockPlace":(pos,vec)->
+					console.log pos,vec
+					block=bot().blockAt(new vec3(pos...))
+					vecx=[
+						[1,0,0]
+						[-1,0,0]
+						[0,1,0]
+						[0,-1,0]
+					]
+					bot().placeBlock block,new vec3(vec...),(r)->
+						console.log r
+						return
+
+
+					return
 				"invc":(num)->
 					item=bot().inventory.slots[num+36]
 					if item isnt null
