@@ -48,6 +48,8 @@ class InventoryBar
 		$(".xp_bar").css "width","#{500*progress}px"
 	setFocus:(num)->
 		$(".inv_cursor").css("left","calc(50vw - 253px + 55*#{num}px)")
+		@game.socket.emit "invc",num
+		return
 	updateInv:(inv)->
 		for i in [36..44]
 			if inv[i] isnt null
@@ -69,6 +71,7 @@ class InventoryBar
 					focus--
 				focus=focus %% 9
 				_this.setFocus focus
+		return
 	tick:()->
 		list = $(".item")
 		for i in [0..list.length-1]
@@ -80,5 +83,5 @@ class InventoryBar
 			$(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>"+$(list[i]).attr('data-amount')+"</div>")
 			if $(list[i]).attr('data-amount') is "0" or $(list[i]).attr('data-amount') is "1"
 				$(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>&#8291</div>")
-
+		return
 export {InventoryBar}

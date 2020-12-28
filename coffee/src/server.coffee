@@ -72,6 +72,13 @@ module.exports=(type)->
 					emit ["food",bot().food]
 					return
 				"spawn":()->
+					# diamond=bot().inventory.slots[36]
+					# ac=bot().inventory.slots[37]
+					# console.log diamond,ac
+					# bot().equip ac,"hand"
+					# bot().heldItem.slot=37
+					# console.log bot().updateHeldItem()
+					# console.log bot().heldItem
 					emit ["spawn",bot().entity.yaw,bot().entity.pitch]
 					return
 				"kicked":(reason,loggedIn)->
@@ -110,6 +117,15 @@ module.exports=(type)->
 				return
 			,10
 			socketEventMap={
+				"invc":(num)->
+					item=bot().inventory.slots[num+36]
+					if item isnt null
+						console.log item
+						try
+							bot().equip item,"hand"
+					else
+						bot().unequip "hand"
+					return
 				"move":(state,toggle)->
 					bot().setControlState(state,toggle)
 					return

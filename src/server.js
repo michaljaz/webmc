@@ -82,6 +82,13 @@
             emit(["food", bot().food]);
           },
           "spawn": function() {
+            // diamond=bot().inventory.slots[36]
+            // ac=bot().inventory.slots[37]
+            // console.log diamond,ac
+            // bot().equip ac,"hand"
+            // bot().heldItem.slot=37
+            // console.log bot().updateHeldItem()
+            // console.log bot().heldItem
             emit(["spawn", bot().entity.yaw, bot().entity.pitch]);
           },
           "kicked": function(reason, loggedIn) {
@@ -123,6 +130,18 @@
           emit(["entities", bot().entities]);
         }, 10);
         socketEventMap = {
+          "invc": function(num) {
+            var item;
+            item = bot().inventory.slots[num + 36];
+            if (item !== null) {
+              console.log(item);
+              try {
+                bot().equip(item, "hand");
+              } catch (error) {}
+            } else {
+              bot().unequip("hand");
+            }
+          },
           "move": function(state, toggle) {
             bot().setControlState(state, toggle);
           },

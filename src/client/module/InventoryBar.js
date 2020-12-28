@@ -73,7 +73,8 @@ InventoryBar = class InventoryBar {
   }
 
   setFocus(num) {
-    return $(".inv_cursor").css("left", `calc(50vw - 253px + 55*${num}px)`);
+    $(".inv_cursor").css("left", `calc(50vw - 253px + 55*${num}px)`);
+    this.game.socket.emit("invc", num);
   }
 
   updateInv(inv) {
@@ -94,7 +95,7 @@ InventoryBar = class InventoryBar {
     focus = 0;
     this.setFocus(focus);
     _this = this;
-    return $(window).on('wheel', function(e) {
+    $(window).on('wheel', function(e) {
       if (_this.game.FPC.gameState === "gameLock") {
         if (e.originalEvent.deltaY > 0) {
           focus++;
@@ -108,9 +109,8 @@ InventoryBar = class InventoryBar {
   }
 
   tick() {
-    var i, j, list, ref, results, url;
+    var i, j, list, ref, url;
     list = $(".item");
-    results = [];
     for (i = j = 0, ref = list.length - 1; (0 <= ref ? j <= ref : j >= ref); i = 0 <= ref ? ++j : --j) {
       if ($(list[i]).attr('data-texture') === "") {
         url = "";
@@ -120,12 +120,9 @@ InventoryBar = class InventoryBar {
       $(list[i]).css("background-image", `url(${url})`);
       $(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>" + $(list[i]).attr('data-amount') + "</div>");
       if ($(list[i]).attr('data-amount') === "0" || $(list[i]).attr('data-amount') === "1") {
-        results.push($(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>&#8291</div>"));
-      } else {
-        results.push(void 0);
+        $(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>&#8291</div>");
       }
     }
-    return results;
   }
 
 };
