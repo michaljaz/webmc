@@ -6,7 +6,7 @@
 
   module.exports = function(env) {
     return {
-      mode: (env && env.prod) ? 'production' : 'development',
+      mode: "development",
       entry: './js/index.js',
       output: {
         path: buildPath,
@@ -19,13 +19,7 @@
       stats: {
         modules: false
       },
-      devtool: 'cheap-source-map',
-      devServer: {
-        contentBase: buildPath,
-        inline: true,
-        host: "0.0.0.0",
-        stats: "minimal"
-      },
+      devtool: 'source-map',
       module: {
         rules: [
           {

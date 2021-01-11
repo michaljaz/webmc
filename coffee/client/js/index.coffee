@@ -14,6 +14,9 @@ import {Entities} from './Entities.js'
 import {PlayerInInventory} from './PlayerInInventory.js'
 import {BlockBreak} from './BlockBreak.js'
 import {BlockPlace} from './BlockPlace.js'
+import io from 'socket.io-client'
+import TWEEN from "@tweenjs/tween.js"
+
 
 class Game
 	constructor:(options)->

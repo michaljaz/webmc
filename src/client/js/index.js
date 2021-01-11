@@ -57,6 +57,10 @@ import {
   BlockPlace
 } from './BlockPlace.js';
 
+import io from 'socket.io-client';
+
+import TWEEN from "@tweenjs/tween.js";
+
 Game = class Game {
   constructor(options) {
     var _this;

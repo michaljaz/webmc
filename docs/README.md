@@ -19,11 +19,13 @@ npm i
 #Coffeescript transpilation
 npm run coffee
 
-#Websocket server (on port 8081)
+#Websocket server and development server
 npm start
-
-#Development server (on port 8080)
 npm run dev
+
+#Production build
+npm run build
+
 
 ```
 <br>

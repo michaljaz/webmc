@@ -4,11 +4,13 @@
   "scripts": {
     "start": "node src/server",
     "coffee": "coffee -o src/ -cw coffee/",
-    "dev": "cd src/client && webpack serve",
+    "dev": "cd src/client && webpack serve --config webpack.dev.js",
+		"build": "cd src/client && webpack --config webpack.prod.js",
     "atlas": "node src/atlas",
     "items": "node src/items"
   },
   "dependencies": {
+    "@tweenjs/tween.js": "^18.6.4",
     "ansi-to-html": "^0.6.14",
     "canvas": "^2.6.1",
     "ejs": "^3.1.5",
@@ -24,6 +26,7 @@
     "replace-color": "^2.3.0",
     "request": "^2.88.2",
     "socket.io": "^2.3.0",
+    "socket.io-client": "^2.3.0",
     "webpack-dev-server": "^3.11.1",
     "worker-loader": "^3.0.7"
   },

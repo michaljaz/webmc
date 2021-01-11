@@ -2,7 +2,7 @@
 buildPath="#{__dirname}/public"
 
 module.exports=(env)->
-	mode: if (env and env.prod) then 'production' else 'development'
+	mode: "development"
 	entry: './js/index.js'
 	output:
 		path: buildPath
@@ -12,12 +12,7 @@ module.exports=(env)->
 		maxAssetSize: 1.5e6
 	stats:
 		modules: false
-	devtool: 'cheap-source-map'
-	devServer:
-		contentBase: buildPath
-		inline: true
-		host: "0.0.0.0"
-		stats: "minimal"
+	devtool: 'source-map'
 	module:
 		rules: [
 			{
