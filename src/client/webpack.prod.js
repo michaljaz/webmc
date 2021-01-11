@@ -19,6 +19,7 @@
       stats: {
         modules: false
       },
+      devtool: 'source-map',
       module: {
         rules: [
           {

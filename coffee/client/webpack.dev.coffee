@@ -12,7 +12,13 @@ module.exports=(env)->
 		maxAssetSize: 1.5e6
 	stats:
 		modules: false
-	devtool: 'source-map'
+	devtool: 'cheap-source-map'
+	devServer:
+		contentBase: buildPath
+		inline: true
+		host: "0.0.0.0"
+		stats: "minimal"
+		port: 8080
 	module:
 		rules: [
 			{

@@ -12,6 +12,7 @@ module.exports=(env)->
 		maxAssetSize: 1.5e6
 	stats:
 		modules: false
+	devtool: 'source-map'
 	module:
 		rules: [
 			{
