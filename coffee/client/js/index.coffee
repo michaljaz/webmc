@@ -30,7 +30,7 @@ class Game
 		@canvas=document.querySelector '#c'
 		@pcanvas=document.querySelector '#c_player'
 
-		@socket=io.connect "#{document.location.host}"
+		@socket=io.connect ":8081"
 
 		@renderer=new THREE.WebGLRenderer
 			canvas:@canvas

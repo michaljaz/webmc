@@ -1,8 +1,0 @@
-{
-	"port":8080,
-	"realServer":{
-		"ip":"localhost",
-		"port":25565,
-		"version":"1.16.3"
-	}
-}

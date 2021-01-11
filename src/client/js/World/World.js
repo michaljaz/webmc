@@ -11,6 +11,10 @@ import {
   AnimatedTextureAtlas
 } from './AnimatedTextureAtlas.js';
 
+import chunkWorker from "./chunk.worker.js";
+
+import sectionsWorker from "./sections.worker.js";
+
 World = class World {
   constructor(game) {
     var _this;
@@ -31,9 +35,7 @@ World = class World {
     this.renderTime = 100;
     this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
     //Utworzenie Workera do obliczania geometrii chunków
-    this.chunkWorker = new Worker("/module/World/chunk.worker.js", {
-      type: 'module'
-    });
+    this.chunkWorker = new chunkWorker();
     this.chunkWorker.onmessage = function(message) {
       return _this.updateCell(message.data);
     };
@@ -47,9 +49,7 @@ World = class World {
       }
     });
     //Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
-    this.sectionsWorker = new Worker("/module/World/sections.worker.js", {
-      type: 'module'
-    });
+    this.sectionsWorker = new sectionsWorker();
     this.sectionsWorker.onmessage = function(data) {
       var i, j, len1, result, results;
       result = data.data.result;

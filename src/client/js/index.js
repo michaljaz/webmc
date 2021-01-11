@@ -75,7 +75,7 @@ Game = class Game {
     this.cellSize = 16;
     this.canvas = document.querySelector('#c');
     this.pcanvas = document.querySelector('#c_player');
-    this.socket = io.connect(`${document.location.host}`);
+    this.socket = io.connect(":8081");
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       PixelRatio: window.devicePixelRatio

@@ -2,6 +2,9 @@ import * as THREE from './../build/three.module.js'
 import {CellTerrain} from './CellTerrain.js'
 import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
 
+import chunkWorker from "./chunk.worker.js"
+import sectionsWorker from "./sections.worker.js"
+
 class World
 	constructor: (game) ->
 		_this=@
@@ -18,7 +21,7 @@ class World
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 
 		#Utworzenie Workera do obliczania geometrii chunków
-		@chunkWorker=new Worker "/module/World/chunk.worker.js", {type:'module'}
+		@chunkWorker=new chunkWorker
 		@chunkWorker.onmessage=(message)->
 			_this.updateCell message.data
 		@chunkWorker.postMessage {
@@ -32,7 +35,7 @@ class World
 		}
 
 		#Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
-		@sectionsWorker=new Worker "/module/World/sections.worker.js", {type:'module'}
+		@sectionsWorker=new sectionsWorker
 		@sectionsWorker.onmessage=(data)->
 			result=data.data.result
 			for i in result
