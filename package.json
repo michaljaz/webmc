@@ -4,8 +4,8 @@
   "scripts": {
     "start": "node src/server",
     "coffee": "coffee -o src/ -cw coffee/",
-    "dev": "cd src/client && webpack serve --config webpack.dev.js",
-		"build": "cd src/client && webpack --config webpack.prod.js",
+    "dev": "cd src/client && webpack serve --open --config webpack.dev.js",
+    "build": "cd src/client && webpack --config webpack.prod.js",
     "atlas": "node src/atlas",
     "items": "node src/items"
   },
@@ -28,6 +28,8 @@
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
     "webpack-dev-server": "^3.11.1",
+    "webpack-merge": "^5.7.3",
+    "webpackbar": "^5.0.0-3",
     "worker-loader": "^3.0.7"
   },
   "devDependencies": {
