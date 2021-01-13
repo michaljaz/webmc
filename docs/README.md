@@ -24,7 +24,13 @@ npm start
 npm run dev
 
 #Production build
+npm run clean
 npm run build
+
+#Developer tools
+npm run atlas
+npm run items
+npm run blocks-def
 
 
 ```

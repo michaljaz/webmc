@@ -11,13 +11,13 @@ TerrainManager = class TerrainManager {
   constructor(options) {
     this.cellSize = options.cellSize;
     this.cellTerrain = new CellTerrain({
-      cellSize: this.cellSize
+      cellSize: this.cellSize,
+      blocksDef: options.blocksDef
     });
     this.toxelSize = options.toxelSize;
     this.q = 1 / this.toxelSize;
     this.blocksMapping = options.blocksMapping;
     this.blocksTex = options.blocksTex;
-    console.log(this.blocksTex);
   }
 
   genBlockFace(type, block, pos) {
@@ -266,7 +266,8 @@ handlers = {
       blocksMapping: data.blocksMapping,
       toxelSize: data.toxelSize,
       cellSize: data.cellSize,
-      blocksTex: data.blocksTex
+      blocksTex: data.blocksTex,
+      blocksDef: data.blocksDef
     });
   },
   setVoxel: function(data) {

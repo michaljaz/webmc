@@ -1,21 +1,20 @@
 
-import * as THREE from './build/three.module.js'
-import {SkeletonUtils} from './jsm/utils/SkeletonUtils.js'
-import Stats from './jsm/libs/stats.module.js'
-import {World} from './World/World.js'
-import {FirstPersonControls} from './FirstPersonControls.js'
-import {gpuInfo} from './gpuInfo.js'
-import {AssetLoader} from './AssetLoader.js'
-import {InventoryBar} from './InventoryBar.js'
-import {RandomNick} from './RandomNick.js'
-import {GUI} from './jsm/libs/dat.gui.module.js'
-import {Chat} from './Chat.js'
-import {Entities} from './Entities.js'
-import {PlayerInInventory} from './PlayerInInventory.js'
-import {BlockBreak} from './BlockBreak.js'
-import {BlockPlace} from './BlockPlace.js'
-import io from 'socket.io-client'
+import * as THREE from "three"
+import Stats from "stats-js"
+import * as dat from "dat.gui"
+import io from "socket.io-client"
 import TWEEN from "@tweenjs/tween.js"
+import {World} from "./World/World.js"
+import {FirstPersonControls} from "./FirstPersonControls.js"
+import {gpuInfo} from "./gpuInfo.js"
+import {AssetLoader} from "./AssetLoader.js"
+import {InventoryBar} from "./InventoryBar.js"
+import {RandomNick} from "./RandomNick.js"
+import {Chat} from "./Chat.js"
+import {Entities} from "./Entities.js"
+import {PlayerInInventory} from "./PlayerInInventory.js"
+import {BlockBreak} from "./BlockBreak.js"
+import {BlockPlace} from "./BlockPlace.js"
 
 class Game
 	constructor:(options)->
@@ -29,8 +28,8 @@ class Game
 		@fov=70
 		@toxelSize=27
 		@cellSize=16
-		@canvas=document.querySelector '#c'
-		@pcanvas=document.querySelector '#c_player'
+		@canvas=document.querySelector "#c"
+		@pcanvas=document.querySelector "#c_player"
 
 		@socket=io.connect ":8081"
 
@@ -55,7 +54,7 @@ class Game
 			document.location.href="\##{@nick}"
 
 		@stats=new Stats
-		@drawcalls=@stats.addPanel new Stats.Panel( 'calls', '#ff8', '#221' )
+		@drawcalls=@stats.addPanel new Stats.Panel( "calls", "#ff8", "#221" )
 		@stats.showPanel 3
 		document.body.appendChild @stats.dom
 
@@ -71,7 +70,7 @@ class Game
 		eventMap={
 			"connect":()->
 				console.log "Połączono z serverem!"
-				$('.loadingText').text "Za chwilę dołączysz do gry..."
+				$(".loadingText").text "Za chwilę dołączysz do gry..."
 				console.log "User nick: #{_this.nick}"
 				_this.socket.emit "initClient",
 					nick:_this.nick
@@ -135,7 +134,7 @@ class Game
 			@socket.on i,eventMap[i]
 
 
-		gui = new GUI()
+		gui = new dat.GUI
 		@params=
 			fog:false
 			chunkdist:3
@@ -143,13 +142,13 @@ class Game
 		near = 0.5*16
 		far = 2.5*16
 		# scene.fog = new THREE.Fog color, near, far
-		gui.add( @params, 'fog' ).name( 'Enable fog' ).listen().onChange ()->
+		gui.add( @params, "fog" ).name( "Enable fog" ).listen().onChange ()->
 			if _this.params.fog
 				_this.scene.fog = new THREE.Fog color, near, far
 			else
 				_this.scene.fog = null
-		gui.add( @world.material, 'wireframe' ).name( 'Wireframe' ).listen()
-		gui.add( @params, 'chunkdist',0,10,1).name( 'Render distance' ).listen()
+		gui.add( @world.material, "wireframe" ).name( "Wireframe" ).listen()
+		gui.add( @params, "chunkdist",0,10,1).name( "Render distance" ).listen()
 		@mouse=false
 		$(document).mousedown (e)->
 			if e.which is 1

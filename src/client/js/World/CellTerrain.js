@@ -2,15 +2,11 @@
 var CellTerrain,
   modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
 
-import {
-  Block
-} from './../build/Block.js';
-
 CellTerrain = class CellTerrain {
   constructor(options) {
     this.cellSize = options.cellSize;
     this.cells = {};
-    this.loadedBlocks = {};
+    this.blocksDef = options.blocksDef;
   }
 
   vec3(x, y, z) {
@@ -82,10 +78,23 @@ CellTerrain = class CellTerrain {
   }
 
   getBlock(blockX, blockY, blockZ) {
-    if (this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] === void 0) {
-      this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)] = new Block.fromStateId(this.getVoxel(blockX, blockY, blockZ));
+    var boundingBox, def, stateId;
+    stateId = this.getVoxel(blockX, blockY, blockZ);
+    def = this.blocksDef[stateId];
+    if (def !== void 0) {
+      if (def[1] === 1) {
+        boundingBox = "block";
+      } else {
+        boundingBox = "empty";
+      }
+      return {
+        name: def[0],
+        stateId,
+        boundingBox
+      };
+    } else {
+      return false;
     }
-    return this.loadedBlocks[this.getVoxel(blockX, blockY, blockZ)];
   }
 
 };

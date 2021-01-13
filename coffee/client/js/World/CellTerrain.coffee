@@ -1,9 +1,9 @@
-import {Block} from './../build/Block.js'
+
 class CellTerrain
 	constructor: (options)->
 		@cellSize=options.cellSize
 		@cells={}
-		@loadedBlocks={}
+		@blocksDef=options.blocksDef
 	vec3: (x,y,z)->
 		x=parseInt x
 		y=parseInt y
@@ -47,7 +47,18 @@ class CellTerrain
 	setCell:(cellX,cellY,cellZ,buffer)->
 		@cells[@vec3(cellX,cellY,cellZ)]=buffer
 	getBlock:(blockX,blockY,blockZ)->
-		if @loadedBlocks[@getVoxel(blockX,blockY,blockZ)] is undefined
-			@loadedBlocks[@getVoxel(blockX,blockY,blockZ)]=new Block.fromStateId @getVoxel(blockX,blockY,blockZ)
-		return @loadedBlocks[@getVoxel(blockX,blockY,blockZ)]
+		stateId=@getVoxel(blockX,blockY,blockZ)
+		def=@blocksDef[stateId]
+		if def isnt undefined
+			if def[1] is 1
+				boundingBox="block"
+			else
+				boundingBox="empty"
+			return {
+				name:def[0]
+				stateId
+				boundingBox
+			}
+		else
+			return false
 export {CellTerrain}

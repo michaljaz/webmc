@@ -1,4 +1,4 @@
-import * as THREE from './build/three.module.js'
+import * as THREE from 'three'
 
 class FirstPersonControls
 	constructor: (game)->
@@ -41,7 +41,7 @@ class FirstPersonControls
 				_this.game.chat.chatGoBack()
 			if z.keyCode is 40 and _this.gameState is "chat"
 				_this.game.chat.chatGoForward()
-			
+
 			#Klawisz Enter
 			if z.keyCode is 13 and _this.gameState is "chat"
 				_this.game.chat.command $(".com_i").val()

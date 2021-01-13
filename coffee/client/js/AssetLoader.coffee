@@ -1,5 +1,5 @@
-import * as THREE from './build/three.module.js'
-import {FBXLoader} from './jsm/loaders/FBXLoader.js'
+import * as THREE from "three"
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js"
 
 class AssetLoader
 	constructor: (init)->

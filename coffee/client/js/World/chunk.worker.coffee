@@ -7,12 +7,12 @@ class TerrainManager
 		@cellSize=options.cellSize
 		@cellTerrain=new CellTerrain {
 			cellSize:@cellSize
+			blocksDef:options.blocksDef
 		}
 		@toxelSize=options.toxelSize
 		@q=1/@toxelSize
 		@blocksMapping=options.blocksMapping
 		@blocksTex=options.blocksTex
-		console.log @blocksTex
 	genBlockFace: (type,block,pos)->
 		if @blocksTex[block.name] isnt undefined or @blocksTex[String(block.stateId)] isnt undefined
 			if @blocksTex[String(block.stateId)] isnt undefined
@@ -223,6 +223,7 @@ handlers={
 			toxelSize:data.toxelSize
 			cellSize:data.cellSize
 			blocksTex:data.blocksTex
+			blocksDef:data.blocksDef
 		}
 		return
 	setVoxel:(data)->

@@ -1,4 +1,4 @@
-import * as THREE from './build/three.module.js'
+import * as THREE from "three"
 
 class BlockBreak
 	constructor:(game)->
@@ -75,9 +75,8 @@ class BlockBreak
 		pos=@game.world.getRayBlock().posBreak
 		if pos isnt undefined
 			block=@game.world.cellTerrain.getBlock pos...
-			if block.diggable
-				@game.socket.emit "dig", pos
-				@done=false
+			@game.socket.emit "dig", pos
+			@done=false
 		return
 	startDigging:(time)->
 		_this=@

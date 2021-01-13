@@ -1,4 +1,4 @@
-import * as THREE from './../build/three.module.js'
+import * as THREE from 'three'
 import {CellTerrain} from './CellTerrain.js'
 import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
 
@@ -12,8 +12,9 @@ class World
 		@cellBlackList={}
 		@cellMesh={}
 		@cellNeedsUpdate={}
+		@blocksDef=@game.al.get "blocksDef"
 		@models={}
-		@cellTerrain=new CellTerrain {cellSize:@game.cellSize}
+		@cellTerrain=new CellTerrain {cellSize:@game.cellSize,blocksDef:@blocksDef}
 		@ATA=new AnimatedTextureAtlas {al:@game.al}
 		@material=@ATA.material
 		@cellUpdateTime=null
@@ -31,6 +32,7 @@ class World
 				toxelSize: @game.toxelSize
 				cellSize: @game.cellSize
 				blocksTex: @game.al.get "blocksTex"
+				blocksDef: @blocksDef
 			}
 		}
 
