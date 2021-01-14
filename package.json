@@ -4,12 +4,10 @@
   "scripts": {
     "start": "node src/server/server",
     "coffee": "coffee -o src/ -cw coffee/",
-    "dev": "cd src/client && webpack serve --open --config webpack.dev.js",
+    "dev": "npm run prebuild && cd src/client && webpack serve --open --config webpack.dev.js",
     "build": "cd src/client && webpack --config webpack.prod.js",
-    "clean": "rimraf src/client/dist/*",
-    "atlas": "node src/server/atlas",
-    "items": "node src/server/items",
-    "blocks-def": "node src/server/blocksDef"
+    "prebuild": "node src/server/prebuild",
+    "clean": "rimraf src/client/dist/*"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",

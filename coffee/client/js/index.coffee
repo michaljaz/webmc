@@ -16,6 +16,7 @@ import {PlayerInInventory} from "./PlayerInInventory.js"
 import {BlockBreak} from "./BlockBreak.js"
 import {BlockPlace} from "./BlockPlace.js"
 
+
 class Game
 	constructor:(options)->
 		_this=@
@@ -138,17 +139,19 @@ class Game
 		@params=
 			fog:false
 			chunkdist:3
-		color = new THREE.Color "#adc8ff"
-		near = 0.5*16
-		far = 2.5*16
-		# scene.fog = new THREE.Fog color, near, far
 		gui.add( @params, "fog" ).name( "Enable fog" ).listen().onChange ()->
 			if _this.params.fog
-				_this.scene.fog = new THREE.Fog color, near, far
+				_this.scene.fog = new THREE.Fog (new THREE.Color "#adc8ff"), (_this.params.chunkdist-2.5)*16, (_this.params.chunkdist-0.5)*16
 			else
 				_this.scene.fog = null
 		gui.add( @world.material, "wireframe" ).name( "Wireframe" ).listen()
-		gui.add( @params, "chunkdist",0,10,1).name( "Render distance" ).listen()
+		chunkDist=gui.add( @params, "chunkdist",0,10,1).name( "Render distance" ).listen()
+		chunkDist.onChange (val)->
+			if _this.scene.fog isnt null
+				_this.scene.fog.near=(val-2.5)*16
+				_this.scene.fog.far=(val-0.5)*16
+			console.log val
+			return
 		@mouse=false
 		$(document).mousedown (e)->
 			if e.which is 1

@@ -34,5 +34,9 @@
 	"blocksDef":{
 		"path":"assets/blocks/blocksDef.json",
 		"type":"text"
-	}
+	},
+	"itemsMapping":{
+    "path":"assets/items/itemsMapping-full.json",
+    "type":"text"
+  }
 }

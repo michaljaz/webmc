@@ -65,7 +65,7 @@ Game = class Game {
   }
 
   init(al) {
-    var _this, color, directionalLight, eventMap, far, gui, i, near;
+    var _this, chunkDist, directionalLight, eventMap, gui, i;
     _this = this;
     this.TWEEN = TWEEN;
     this.fov = 70;
@@ -176,19 +176,22 @@ Game = class Game {
       fog: false,
       chunkdist: 3
     };
-    color = new THREE.Color("#adc8ff");
-    near = 0.5 * 16;
-    far = 2.5 * 16;
-    // scene.fog = new THREE.Fog color, near, far
     gui.add(this.params, "fog").name("Enable fog").listen().onChange(function() {
       if (_this.params.fog) {
-        return _this.scene.fog = new THREE.Fog(color, near, far);
+        return _this.scene.fog = new THREE.Fog(new THREE.Color("#adc8ff"), (_this.params.chunkdist - 2.5) * 16, (_this.params.chunkdist - 0.5) * 16);
       } else {
         return _this.scene.fog = null;
       }
     });
     gui.add(this.world.material, "wireframe").name("Wireframe").listen();
-    gui.add(this.params, "chunkdist", 0, 10, 1).name("Render distance").listen();
+    chunkDist = gui.add(this.params, "chunkdist", 0, 10, 1).name("Render distance").listen();
+    chunkDist.onChange(function(val) {
+      if (_this.scene.fog !== null) {
+        _this.scene.fog.near = (val - 2.5) * 16;
+        _this.scene.fog.far = (val - 0.5) * 16;
+      }
+      console.log(val);
+    });
     this.mouse = false;
     $(document).mousedown(function(e) {
       if (e.which === 1) {

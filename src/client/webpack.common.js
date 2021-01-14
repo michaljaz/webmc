@@ -20,13 +20,12 @@
     entry: './js/index.js',
     output: {
       path: `${__dirname}/dist`,
-      filename: '[name].bundle.js'
+      filename: '[contenthash].js'
     },
     performance: {
       maxEntrypointSize: 1.5e6,
       maxAssetSize: 1.5e6
     },
-    devtool: 'inline-source-map',
     module: {
       rules: [
         {

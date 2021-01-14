@@ -8,7 +8,8 @@ for i in [0..maxStateId]
 	else
 		bbox=0
 	result.push [Block.fromStateId(i).name,bbox]
-console.log result
 buildPath="#{__dirname}/../client/static/assets/blocks"
 
 fs.writeFileSync "#{buildPath}/blocksDef.json", JSON.stringify(result)
+
+console.log "\x1b[32mGenerated blocksDefinitions: #{buildPath}/blocksDef.json\x1b[0m\n"

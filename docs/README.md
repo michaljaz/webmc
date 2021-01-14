@@ -19,8 +19,10 @@ npm i
 #Coffeescript transpilation
 npm run coffee
 
-#Websocket server and development server
+#Start node websocket bridge server
 npm start
+
+#Development server
 npm run dev
 
 #Production build
@@ -28,10 +30,7 @@ npm run clean
 npm run build
 
 #Developer tools
-npm run atlas
-npm run items
-npm run blocks-def
-
+npm run prebuild
 
 ```
 <br>

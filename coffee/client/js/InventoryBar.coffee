@@ -78,7 +78,13 @@ class InventoryBar
 			if $(list[i]).attr('data-texture') is ""
 				url=""
 			else
-				url="'/assets/items/#{$(list[i]).attr('data-texture')}.png'"
+				url="/assets/items/itemsAtlas-full.png"
+				tex=43
+				items=@game.al.get "itemsMapping"
+				$(list[i]).css("background-repeat","no-repeat")
+				pos=items[$(list[i]).attr('data-texture')]
+				$(list[i]).css("background-position","-#{(pos.x-1)*tex}px -#{(pos.y-1)*tex}px")
+				$(list[i]).css("background-size","calc(1600px * #{tex/50})")
 			$(list[i]).css("background-image","url(#{url})")
 			$(list[i]).html("<div style='z-index:99;text-align:right;position:relative;bottom:-22px;color:white;font-weight:bold;'>"+$(list[i]).attr('data-amount')+"</div>")
 			if $(list[i]).attr('data-amount') is "0" or $(list[i]).attr('data-amount') is "1"
