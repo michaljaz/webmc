@@ -47,7 +47,7 @@
     socketInfo[socket.id] = {};
     bot = socketInfo[socket.id];
     socket.on("initClient", function(data) {
-      var botEventMap, emit, i, inv, socketEventMap;
+      var botEventMap, emit, i, inv, socketEventMap, war;
       console.log("[\x1b[32m+\x1b[0m] " + data.nick);
       //Dodawanie informacji o graczu do socketInfo
       socketInfo[socket.id] = data;
@@ -68,13 +68,28 @@
         return io.to(socket.id).emit(...array);
       };
       //Eventy otrzymywane z serwera minecraftowego
+      war = true;
       bot()._client.on("map_chunk", function(packet) {
-        var cell;
+        var cell, i, j, light;
         cell = new Chunk();
-        cell.load(packet.chunkData, packet.bitMap, false, true);
+        cell.load(packet.chunkData, packet.bitMap, true, true);
+        for (i = j = 0; j <= 255; i = ++j) {
+          light = cell.getBlockLight(0, i, 0);
+          if (light !== 0) {
+            console.log(light);
+            break;
+          }
+        }
+        // emit ["dimension",bot().game.dimension]
         emit(["mapChunk", cell.sections, packet.x, packet.z, packet.biomes]);
       });
+      bot()._client.on("respawn", function(packet) {
+        emit(["dimension", packet.dimension.value.effects.value]);
+      });
       botEventMap = {
+        "login": function() {
+          emit(["dimension", bot().game.dimension]);
+        },
         "move": function() {
           emit(["move", bot().entity.position]);
         },
@@ -133,8 +148,8 @@
       socketEventMap = {
         "blockPlace": function(pos, vec) {
           var block, vecx;
-          console.log(pos, vec);
           block = bot().blockAt(new vec3(...pos));
+          console.log(block);
           vecx = [[1, 0, 0], [-1, 0, 0], [0, 1, 0], [0, -1, 0]];
           bot().placeBlock(block, new vec3(...vec), function(r) {
             console.log(r);

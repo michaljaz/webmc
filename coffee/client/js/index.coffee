@@ -16,7 +16,6 @@ import {PlayerInInventory} from "./PlayerInInventory.js"
 import {BlockBreak} from "./BlockBreak.js"
 import {BlockPlace} from "./BlockPlace.js"
 
-
 class Game
 	constructor:(options)->
 		_this=@
@@ -31,7 +30,7 @@ class Game
 		@cellSize=16
 		@canvas=document.querySelector "#c"
 		@pcanvas=document.querySelector "#c_player"
-
+		@dimension=null
 		@socket=io.connect ":8081"
 
 		@renderer=new THREE.WebGLRenderer
@@ -85,8 +84,12 @@ class Game
 				_this.camera.rotation.y=yaw
 				_this.camera.rotation.x=pitch
 				return
-			"mapChunk":(sections,x,z,biomes)->
-				_this.world._computeSections sections,x,z,biomes
+			"dimension":(dim)->
+				_this.dimension=dim
+				console.log "Player dimension has been changed: #{dim}"
+				return
+			"mapChunk":(sections,x,z,biomes,dim)->
+				_this.world._computeSections sections,x,z,biomes,dim
 				return
 			"hp":(points)->
 				_this.inv_bar.setHp(points)

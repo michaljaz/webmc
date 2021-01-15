@@ -73,6 +73,7 @@ Game = class Game {
     this.cellSize = 16;
     this.canvas = document.querySelector("#c");
     this.pcanvas = document.querySelector("#c_player");
+    this.dimension = null;
     this.socket = io.connect(":8081");
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
@@ -123,8 +124,12 @@ Game = class Game {
         _this.camera.rotation.y = yaw;
         _this.camera.rotation.x = pitch;
       },
-      "mapChunk": function(sections, x, z, biomes) {
-        _this.world._computeSections(sections, x, z, biomes);
+      "dimension": function(dim) {
+        _this.dimension = dim;
+        console.log(`Player dimension has been changed: ${dim}`);
+      },
+      "mapChunk": function(sections, x, z, biomes, dim) {
+        _this.world._computeSections(sections, x, z, biomes, dim);
       },
       "hp": function(points) {
         _this.inv_bar.setHp(points);

@@ -39,20 +39,37 @@ io.sockets.on "connection", (socket)->
 			username: socketInfo[socket.id].nick
 			version: config.version
 		}
+
 		bot=()->
 			if socketInfo[socket.id] isnt undefined
 				return socketInfo[socket.id].bot
 			else
 				return null
+
 		emit=(array)->
 			io.to(socket.id).emit array...
+
+
 		#Eventy otrzymywane z serwera minecraftowego
+		war=true
 		bot()._client.on "map_chunk",(packet)->
 			cell=new Chunk()
-			cell.load packet.chunkData,packet.bitMap,false,true
+			cell.load packet.chunkData,packet.bitMap,true,true
+			for i in [0..255]
+				light=cell.getBlockLight 0, i, 0
+				if light isnt 0
+					console.log light
+					break
+			# emit ["dimension",bot().game.dimension]
 			emit ["mapChunk", cell.sections,packet.x,packet.z,packet.biomes]
 			return
+		bot()._client.on "respawn",(packet)->
+			emit ["dimension",packet.dimension.value.effects.value]
+			return
 		botEventMap={
+			"login":()->
+				emit ["dimension",bot().game.dimension]
+				return
 			"move":()->
 				emit ["move",bot().entity.position]
 				return
@@ -107,8 +124,8 @@ io.sockets.on "connection", (socket)->
 		,10
 		socketEventMap={
 			"blockPlace":(pos,vec)->
-				console.log pos,vec
 				block=bot().blockAt(new vec3(pos...))
+				console.log block
 				vecx=[
 					[1,0,0]
 					[-1,0,0]
