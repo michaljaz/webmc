@@ -103,6 +103,15 @@ class World
 					@game.scene.remove @cellMesh[i]
 					@cellMesh[i]="disposed"
 			@game.renderer.renderLists.dispose()
+	resetWorld: ()->
+		for i of @cellMesh
+			if @cellMesh[i].geometry isnt undefined
+				@cellMesh[i].geometry.dispose()
+				@game.scene.remove @cellMesh[i]
+			delete @cellMesh[i]
+		@cellTerrain.cells={}
+		@_resetWorld()
+		return
 	updateCell: (data)->
 		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
@@ -224,6 +233,12 @@ class World
 			type:"setCell"
 			data:[cellX,cellY,cellZ,buffer,biome]
 		}
+	_resetWorld: ()->
+		@chunkWorker.postMessage {
+			type:"resetWorld"
+			data:null
+		}
+		return
 	_setVoxel: (voxelX,voxelY,voxelZ,value)->
 		#Wysyłanie do ChunkWorkera informacji o nowym Voxelu
 		@chunkWorker.postMessage {

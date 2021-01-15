@@ -161,6 +161,19 @@ World = class World {
     }
   }
 
+  resetWorld() {
+    var i;
+    for (i in this.cellMesh) {
+      if (this.cellMesh[i].geometry !== void 0) {
+        this.cellMesh[i].geometry.dispose();
+        this.game.scene.remove(this.cellMesh[i]);
+      }
+      delete this.cellMesh[i];
+    }
+    this.cellTerrain.cells = {};
+    this._resetWorld();
+  }
+
   updateCell(data) {
     var _this, cell, cellId, geometry, mesh;
     //Updatowanie komórki z już obliczoną geometrią
@@ -288,6 +301,13 @@ World = class World {
     return this.chunkWorker.postMessage({
       type: "setCell",
       data: [cellX, cellY, cellZ, buffer, biome]
+    });
+  }
+
+  _resetWorld() {
+    this.chunkWorker.postMessage({
+      type: "resetWorld",
+      data: null
     });
   }
 

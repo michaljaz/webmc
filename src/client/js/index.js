@@ -127,6 +127,7 @@ Game = class Game {
       "dimension": function(dim) {
         _this.dimension = dim;
         console.log(`Player dimension has been changed: ${dim}`);
+        _this.world.resetWorld();
       },
       "mapChunk": function(sections, x, z, biomes, dim) {
         _this.world._computeSections(sections, x, z, biomes, dim);

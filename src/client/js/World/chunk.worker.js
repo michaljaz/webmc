@@ -288,5 +288,9 @@ handlers = {
   },
   setCell: function(data) {
     return terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
+  },
+  resetWorld: function(data) {
+    console.log("RESET WORLD!");
+    terrain.cellTerrain.cells = {};
   }
 };
