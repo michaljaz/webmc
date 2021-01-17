@@ -2,7 +2,8 @@
   "name": "web-minecraft",
   "version": "1.0.0",
   "scripts": {
-    "start": "node src/server/server",
+		"start-dev": "node src/server/serverDevelopment",
+    "start": "node src/server/serverProduction",
     "coffee": "coffee -o src/ -cw coffee/",
     "dev": "npm run prebuild && cd src/client && webpack serve --open --config webpack.dev.js",
     "build": "cd src/client && webpack --config webpack.prod.js",

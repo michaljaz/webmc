@@ -74,7 +74,13 @@ Game = class Game {
     this.canvas = document.querySelector("#c");
     this.pcanvas = document.querySelector("#c_player");
     this.dimension = null;
-    this.socket = io.connect(":8081");
+    if (PRODUCTION) {
+      console.log("Running in production mode");
+      this.socket = io();
+    } else {
+      console.log("Running in development mode");
+      this.socket = io.connect(":8081");
+    }
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.canvas,
       PixelRatio: window.devicePixelRatio

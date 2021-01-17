@@ -31,7 +31,12 @@ class Game
 		@canvas=document.querySelector "#c"
 		@pcanvas=document.querySelector "#c_player"
 		@dimension=null
-		@socket=io.connect ":8081"
+		if PRODUCTION
+			console.log "Running in production mode"
+			@socket=io()
+		else
+			console.log "Running in development mode"
+			@socket=io.connect ":8081"
 
 		@renderer=new THREE.WebGLRenderer
 			canvas:@canvas
