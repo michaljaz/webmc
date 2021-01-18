@@ -20,7 +20,7 @@ module.exports=(mode)->
 	socketInfo={}
 
 	if mode is "production"
-		port=8080
+		port=process.env.PORT || 8080
 		app.use express.static "#{__dirname}/../client/dist"
 	else
 		port=8081
