@@ -2,10 +2,9 @@
   "name": "web-minecraft",
   "version": "1.0.0",
   "scripts": {
-		"start-dev": "node src/server/serverDevelopment",
     "start": "node src/server/serverProduction",
     "coffee": "coffee -o src/ -cw coffee/",
-    "dev": "npm run prebuild && cd src/client && webpack serve --open --config webpack.dev.js",
+    "dev": "npm run prebuild && node src/server/serverDevelopment",
     "build": "cd src/client && webpack --config webpack.prod.js",
     "prebuild": "node src/server/prebuild",
     "clean": "rimraf src/client/dist/*"
@@ -48,6 +47,7 @@
     "copy-webpack-plugin": "^6.3.1",
     "webpack": "^5.9.0",
     "webpack-cli": "^4.2.0",
+    "webpack-hot-middleware": "^2.25.0",
     "webpack-node-externals": "^2.5.2"
   }
 }

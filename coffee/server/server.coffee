@@ -14,16 +14,18 @@ module.exports=(mode)->
 	vec3=require "vec3"
 	Convert = require 'ansi-to-html'
 	convert = new Convert()
-
 	#początkowe zmienne
 	sf={}
 	socketInfo={}
-
+	port=process.env.PORT || 8080
 	if mode is "production"
-		port=process.env.PORT || 8080
 		app.use express.static "#{__dirname}/../client/dist"
 	else
-		port=8081
+		webpack = require "webpack"
+		middleware = require "webpack-dev-middleware"
+		devconfig=require "#{__dirname}/../client/webpack.dev"
+		compiler = webpack devconfig
+		app.use middleware(compiler)
 
 	#Konfiguracja serwera express
 	server.listen port,()->

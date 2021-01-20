@@ -3,12 +3,13 @@ WebpackBar=require "webpackbar"
 UglifyJsPlugin=require "uglifyjs-webpack-plugin"
 HtmlWebpackPlugin = require "html-webpack-plugin"
 CopyPlugin = require "copy-webpack-plugin"
+webpack=require "webpack"
 LodashModuleReplacementPlugin = require 'lodash-webpack-plugin'
 module.exports=
 	stats:"detailed"
 	performance:
 		hints: false
-	entry: './js/index.js'
+	entry: "#{__dirname}/js/index.js"
 	output:
 		path: "#{__dirname}/dist"
 		filename: '[contenthash].js'
@@ -27,15 +28,15 @@ module.exports=
 	plugins:[
 		new HtmlWebpackPlugin({
 			filename: "index.html"
-			template: "./static/html/index.html"
+			template: "#{__dirname}/static/html/index.html"
 			inject: "head"
 		})
 		new LodashModuleReplacementPlugin()
 		new WebpackBar()
 		new CopyPlugin({
 			patterns: [
-				{ from: "static/assets", to: "assets" }
-				{ from: "static/css", to: "css" }
+				{ from: "#{__dirname}/static/assets", to: "assets" }
+				{ from: "#{__dirname}/static/css", to: "css" }
 			]
 		})
 	]

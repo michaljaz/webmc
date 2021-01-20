@@ -27,11 +27,8 @@ npm install
 #Coffeescript transpilation (In TERMINAL 1)
 npm run coffee
 
-#Start development webpack server (In TERMINAL 2)
+#Start node server with webpack middleware (In TERMINAL 2)
 npm run dev
-
-#Start node server (In TERMINAL 3)
-npm run start-dev
 
 ```
 
