@@ -40,7 +40,10 @@ class Game
 			canvas:@canvas
 			PixelRatio:window.devicePixelRatio
 		@scene=new THREE.Scene
-		@scene.background = new THREE.Color "#adc8ff"
+		@dimBg=
+			"minecraft:overworld":new THREE.Color "#adc8ff"
+			"minecraft:the_end":new THREE.Color "#011433"
+			"minecraft:the_nether":new THREE.Color "#85280f"
 		@camera = new THREE.PerspectiveCamera @fov, 2, 0.1, 1000
 		@camera.rotation.order = "YXZ"
 		@camera.position.set 26, 26, 26
@@ -91,6 +94,8 @@ class Game
 				_this.dimension=dim
 				console.log "Player dimension has been changed: #{dim}"
 				_this.world.resetWorld()
+				_this.scene.background=_this.dimBg[dim]
+				_this.scene.fog.color=_this.dimBg[dim]
 				return
 			"mapChunk":(sections,x,z,biomes,dim)->
 				_this.world._computeSections sections,x,z,biomes,dim
@@ -148,7 +153,7 @@ class Game
 			chunkdist:3
 		gui.add( @params, "fog" ).name( "Enable fog" ).listen().onChange ()->
 			if _this.params.fog
-				_this.scene.fog = new THREE.Fog (new THREE.Color "#adc8ff"), (_this.params.chunkdist-2.5)*16, (_this.params.chunkdist-0.5)*16
+				_this.scene.fog = new THREE.Fog _this.dimBg[_this.dimension], (_this.params.chunkdist-2.5)*16, (_this.params.chunkdist-0.5)*16
 			else
 				_this.scene.fog = null
 		gui.add( @world.material, "wireframe" ).name( "Wireframe" ).listen()
