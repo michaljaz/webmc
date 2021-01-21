@@ -29,7 +29,7 @@
     "replace-color": "^2.3.0",
     "request": "^2.88.2",
     "rimraf": "^3.0.2",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.4.0",
     "socket.io-client": "^2.3.0",
     "stats-js": "^1.0.1",
     "three": "^0.124.0",
