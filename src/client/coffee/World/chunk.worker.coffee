@@ -1,4 +1,4 @@
-import {CellTerrain} from './CellTerrain.js'
+import {CellTerrain} from './CellTerrain.coffee'
 
 console.log "CHUNK WORKER STARTED!"
 

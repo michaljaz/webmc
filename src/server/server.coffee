@@ -1,4 +1,3 @@
-
 module.exports=(mode)->
 	#biblioteki
 	opn=require "opn"
@@ -23,7 +22,7 @@ module.exports=(mode)->
 	else
 		webpack = require "webpack"
 		middleware = require "webpack-dev-middleware"
-		devconfig=require "#{__dirname}/../client/webpack.dev"
+		devconfig=require "#{__dirname}/../client/webpack.dev.coffee"
 		compiler = webpack devconfig
 		app.use middleware(compiler)
 

@@ -1,9 +1,9 @@
 import * as THREE from 'three'
-import {CellTerrain} from './CellTerrain.js'
-import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.js'
+import {CellTerrain} from './CellTerrain.coffee'
+import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.coffee'
 
-import chunkWorker from "./chunk.worker.js"
-import sectionsWorker from "./sections.worker.js"
+import chunkWorker from "./chunk.worker.coffee"
+import sectionsWorker from "./sections.worker.coffee"
 
 class World
 	constructor: (game) ->

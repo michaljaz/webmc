@@ -5,11 +5,12 @@ HtmlWebpackPlugin = require "html-webpack-plugin"
 CopyPlugin = require "copy-webpack-plugin"
 webpack=require "webpack"
 LodashModuleReplacementPlugin = require 'lodash-webpack-plugin'
+
 module.exports=
 	stats:"detailed"
 	performance:
 		hints: false
-	entry: "#{__dirname}/js/index.js"
+	entry: "#{__dirname}/coffee/index.coffee"
 	output:
 		path: "#{__dirname}/dist"
 		filename: '[contenthash].js'
@@ -20,9 +21,13 @@ module.exports=
 		rules: [
 			{
 				loader: "worker-loader"
-				test: /\.worker\.js$/
+				test: /\.worker\.coffee$/
 				options:
 					filename: "[contenthash].js"
+			}
+			{
+				test: /\.coffee$/
+				loader: 'coffee-loader'
 			}
 		]
 	plugins:[
