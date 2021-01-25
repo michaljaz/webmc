@@ -2,10 +2,10 @@
   "name": "web-minecraft",
   "version": "1.0.0",
   "scripts": {
-    "start": "coffee src/server/serverProduction.coffee",
-    "dev": "npm run prebuild && coffee src/server/serverDevelopment.coffee",
+    "start": "node index.js prod",
+    "dev": "npm run prebuild && node index.js dev",
     "build": "cd src/client && webpack --config webpack.prod.coffee",
-    "prebuild": "coffee src/server/prebuild.coffee",
+    "prebuild": "node index.js preb",
     "clean": "rimraf src/client/dist/*"
   },
   "dependencies": {
@@ -13,7 +13,6 @@
     "ansi-to-html": "^0.6.14",
     "canvas": "^2.6.1",
     "dat.gui": "^0.7.7",
-    "ejs": "^3.1.5",
     "express": "^4.17.1",
     "html-webpack-plugin": "^4.5.1",
     "http": "0.0.1-security",
@@ -39,15 +38,11 @@
     "worker-loader": "^3.0.7"
   },
   "devDependencies": {
-    "@babel/core": "^7.12.9",
-    "@babel/preset-env": "^7.12.7",
-    "babel-loader": "^8.2.2",
     "coffee-loader": "^2.0.0",
     "coffeescript": "^2.5.1",
     "copy-webpack-plugin": "^6.3.1",
     "webpack": "^5.9.0",
     "webpack-cli": "^4.2.0",
-    "webpack-hot-middleware": "^2.25.0",
     "webpack-node-externals": "^2.5.2"
   }
 }

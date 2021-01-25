@@ -28,6 +28,7 @@ module.exports=(mode)->
 
 	#Konfiguracja serwera express
 	server.listen port,()->
+		opn "http://localhost:#{port}"
 		console.log "Server is running on \x1b[34m*:#{port}\x1b[0m"
 
 	#websocket
