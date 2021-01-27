@@ -6,12 +6,13 @@
 
 ## About
 
-**This is Minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
+**Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
 
-<i>
-</i>
+> **_IMPORTANT:_** To run this game you need to start real minecraft server (by default it is 1.16.3 offline mode java edition on ip localhost:25565). 
 
-#### Installation
+> By default node.js server is served at http://localhost:8080.
+
+### Installation
 ```bash
 #Clone repo
 git clone https://github.com/michaljaz/web-minecraft
@@ -21,28 +22,30 @@ cd web-minecraft
 npm install
 
 ```
-#### Development setup
 
+### OPTION 1: Development setup 
+> **_NOTE:_** Run it if you are developer and want to change code and view realtime changes.
 ```bash
-#Start node server with webpack middleware
+#Start node server with webpack middleware (That will start webserver at http://localhost:8080)
 npm run dev
 
 ```
 
-#### Production setup
+### OPTION 2: Production setup
+> **_NOTE:_** Run it if you want to only build and serve production app.
 ```bash
-#Cleaning dist folder
+#Cleaning dist folder (old game bundles)
 npm run clean
 
 #Building app bundle
 npm run build
 
-#Start node server and serve bundle files
+#Start node server and serve bundle files (That will start webserver ad http://localhost:8080)
 npm start
 
 ```
 
-#### Screenshots
-
-[<img src="https://i.ibb.co/bgVgNRM/screen7.png" alt="screen6" width="600">](https://i.ibb.co/bgVgNRM/screen7.png)
-[<img src="https://i.ibb.co/Snq5b56/screen.png" alt="screen6" width="600">](https://i.ibb.co/Snq5b56/screen.png)
+### Screenshots
+[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="600">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
+[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="600">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
+[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="600">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)
