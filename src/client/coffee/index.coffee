@@ -41,9 +41,9 @@ class Game
 			PixelRatio:window.devicePixelRatio
 		@scene=new THREE.Scene
 		@dimBg=
-			"minecraft:overworld":new THREE.Color "#adc8ff"
-			"minecraft:the_end":new THREE.Color "#011433"
-			"minecraft:the_nether":new THREE.Color "#85280f"
+			"minecraft:overworld":[173/255, 200/255, 255/255]
+			"minecraft:the_end":[1/255, 20/255, 51/255]
+			"minecraft:the_nether":[133/255, 40/255, 15/255]
 		@camera = new THREE.PerspectiveCamera @fov, 2, 0.1, 1000
 		@camera.rotation.order = "YXZ"
 		@camera.position.set 26, 26, 26
@@ -51,7 +51,6 @@ class Game
 		directionalLight = new THREE.DirectionalLight 0x333333, 2
 		directionalLight.position.set(1, 1, 0.5).normalize()
 		@scene.add directionalLight
-
 		console.warn gpuInfo()
 
 		@nick=document.location.hash.substring 1,document.location.hash.length
@@ -94,8 +93,12 @@ class Game
 				_this.dimension=dim
 				console.log "Player dimension has been changed: #{dim}"
 				_this.world.resetWorld()
-				_this.scene.background=_this.dimBg[dim]
-				_this.scene.fog.color=_this.dimBg[dim]
+				bg=_this.dimBg[dim]
+				_this.scene.background=new THREE.Color bg...
+				_this.world.ATA.uni.color.x=bg[0]
+				_this.world.ATA.uni.color.y=bg[1]
+				_this.world.ATA.uni.color.z=bg[2]
+				_this.world.ATA.uni.color.w=1
 				return
 			"mapChunk":(sections,x,z,biomes,dim)->
 				_this.world._computeSections sections,x,z,biomes,dim
@@ -149,19 +152,14 @@ class Game
 
 		gui = new dat.GUI
 		@params=
-			fog:false
 			chunkdist:3
-		gui.add( @params, "fog" ).name( "Enable fog" ).listen().onChange ()->
-			if _this.params.fog
-				_this.scene.fog = new THREE.Fog _this.dimBg[_this.dimension], (_this.params.chunkdist-2.5)*16, (_this.params.chunkdist-0.5)*16
-			else
-				_this.scene.fog = null
+		@world.ATA.uni.farnear.x=(@params.chunkdist-1.5)*16
+		@world.ATA.uni.farnear.y=(@params.chunkdist-0.5)*16
 		gui.add( @world.material, "wireframe" ).name( "Wireframe" ).listen()
 		chunkDist=gui.add( @params, "chunkdist",0,10,1).name( "Render distance" ).listen()
 		chunkDist.onChange (val)->
-			if _this.scene.fog isnt null
-				_this.scene.fog.near=(val-2.5)*16
-				_this.scene.fog.far=(val-0.5)*16
+			_this.world.ATA.uni.farnear.x=(val-1.5)*16
+			_this.world.ATA.uni.farnear.y=(val-0.5)*16
 			console.log val
 			return
 		@mouse=false
@@ -209,6 +207,7 @@ class Game
 		if @FPC.gameState is "inventory"
 			@pii.render()
 		@inv_bar.tick()
+		@world.ATA.uni.view.copy(@camera.position).applyMatrix4(@camera.matrixWorldInverse)
 
 		@renderer.render @scene, @camera
 		return

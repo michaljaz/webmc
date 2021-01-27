@@ -15,7 +15,7 @@ class World
 		@blocksDef=@game.al.get "blocksDef"
 		@models={}
 		@cellTerrain=new CellTerrain {cellSize:@game.cellSize,blocksDef:@blocksDef}
-		@ATA=new AnimatedTextureAtlas {al:@game.al}
+		@ATA=new AnimatedTextureAtlas @game
 		@material=@ATA.material
 		@cellUpdateTime=null
 		@renderTime=100
