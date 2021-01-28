@@ -5,4 +5,6 @@ if(process.argv[2]==="dev"){
     require("./src/server/server.coffee")("production");
 }else if(process.argv[2]==="preb"){
     require("./src/server/prebuild.coffee");
+}else if(process.argv[2]==="items"){
+    require("./src/server/itemDump.coffee");
 }
