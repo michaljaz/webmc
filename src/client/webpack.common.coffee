@@ -10,7 +10,7 @@ module.exports=
 	stats:"detailed"
 	performance:
 		hints: false
-	entry: "#{__dirname}/coffee/index.coffee"
+	entry: "#{__dirname}/scripts/index.coffee"
 	output:
 		path: "#{__dirname}/dist"
 		filename: '[contenthash].js'
@@ -29,19 +29,60 @@ module.exports=
 				test: /\.coffee$/
 				loader: 'coffee-loader'
 			}
+			{
+				test: /\.(scss)$/
+				use: [
+					{
+						#Adds CSS to the DOM by injecting a `<style>` tag
+						loader: 'style-loader'
+					}
+					{
+						#Interprets `@import` and `url()` like `import/require()` and will resolve them
+						loader: 'css-loader'
+					}
+					{
+						#Loader for webpack to process CSS with PostCSS
+						loader: 'postcss-loader'
+						options: 
+							plugins: ()->
+								return [
+									require 'autoprefixer'
+								]
+					}
+					{
+						#Loads a SASS/SCSS file and compiles it to CSS
+						loader: 'sass-loader'
+					}
+				]
+			}
+			{
+				test: /\.css$/i
+				use: ["style-loader", "css-loader"]
+			}
+			{
+				test: /\.(png|jpe?g|gif)$/i
+				use: [
+					{
+						loader: 'file-loader'
+					}
+				]
+			}
 		]
 	plugins:[
+		new webpack.ProvidePlugin({
+			$: 'jquery'
+			jQuery: 'jquery'
+		})
 		new HtmlWebpackPlugin({
 			filename: "index.html"
-			template: "#{__dirname}/static/html/index.html"
+			template: "#{__dirname}/html/index.html"
 			inject: "head"
 		})
 		new LodashModuleReplacementPlugin()
 		new WebpackBar()
 		new CopyPlugin({
 			patterns: [
-				{ from: "#{__dirname}/static/assets", to: "assets" }
-				{ from: "#{__dirname}/static/css", to: "css" }
+				{ from: "#{__dirname}/assets", to: "assets" }
 			]
 		})
 	]

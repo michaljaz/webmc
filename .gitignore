@@ -1,8 +1,8 @@
 node_modules
 src/client/dist
-src/client/static/assets/blocks/blocksDef.json
-src/client/static/assets/blocks/blocksAtlas-full.png
-src/client/static/assets/blocks/blocksMapping-full.json
-src/client/static/assets/blocks/blocksMapping.json
-src/client/static/assets/items
+src/client/assets/blocks/blocksDef.json
+src/client/assets/blocks/blocksAtlas-full.png
+src/client/assets/blocks/blocksMapping-full.json
+src/client/assets/blocks/blocksMapping.json
+src/client/assets/items
 src/world

@@ -1,3 +1,4 @@
+
 class Chat
 	constructor:(game)->
 		@game=game

@@ -15,6 +15,9 @@ import {Entities} from "./Entities.coffee"
 import {PlayerInInventory} from "./PlayerInInventory.coffee"
 import {BlockBreak} from "./BlockBreak.coffee"
 import {BlockPlace} from "./BlockPlace.coffee"
+import "bootstrap"
+import './../styles/style.scss'
+import './../styles/style.css'
 
 class Game
 	constructor:(options)->
@@ -22,6 +25,7 @@ class Game
 		@al=new AssetLoader ()->
 			_this.init()
 			return
+		return
 	init:(al)->
 		_this=@
 		@TWEEN=TWEEN
@@ -74,8 +78,8 @@ class Game
 
 		eventMap={
 			"connect":()->
-				console.log "Połączono z serverem!"
-				$(".loadingText").text "Za chwilę dołączysz do gry..."
+				console.log "Connected to server!"
+				$(".loadingText").text "Joining server..."
 				console.log "User nick: #{_this.nick}"
 				_this.socket.emit "initClient",
 					nick:_this.nick
@@ -84,7 +88,7 @@ class Game
 				_this.world.setBlock block[0],block[1]+16,block[2],block[3]
 				return
 			"spawn":(yaw,pitch)->
-				console.log "Gracz dołączył do gry!"
+				console.log "Player joined the game!"
 				$(".initLoading").css "display","none"
 				_this.camera.rotation.y=yaw
 				_this.camera.rotation.x=pitch

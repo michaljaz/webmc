@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Web-Minecraft</title>
+		<!-- META TAGS -->
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta charset="utf-8">
+	</head>
+	<body>
+		<!-- RENDER CANVAS -->
+		<canvas id="c"></canvas>
+
+		<!-- Minecraft Player View Canvas -->
+		<canvas id="c_player"></canvas>
+
+		<!-- LOADING SCREEN -->
+		<div class="initLoading">
+			<div class="loadingBar text-center">
+				<img src="assets/images/logo.png">
+				<h1 class="loadingText">Loading assets...</h1>
+				<div class="status"></div>
+				<img src="assets/images/loadingx.gif">
+			</div>
+		</div>
+
+		<!-- Chat -->
+		<div class="chat"></div>
+		<div class="md-form com">
+			<input type="text" class="form-control text-light com_i" placeholder="Enter message or command">
+		</div>
+
+		<!-- Bottom inventory bar -->
+		<span class="player_hp"></span>
+		<span class="player_xp"></span>
+		<span class="player_food"></span>
+		<div class="xp_bar_empty"></div>
+		<div class="xp_bar"></div>
+		<div class="inv_bar"></div>
+		<div class="inv_cursor"></div>
+
+		<!-- Inventory window -->
+		<div class="inv_window"></div>
+
+		<!-- MENU -->
+		<div class="gameMenu">
+			<div class="row">
+
+				<!-- FIRST COLUMN -->
+				<div class="col-4 pl-5 pt-4">
+					Web-minecraft v.1.0<br>
+					Made by: michaljaz
+				</div>
+
+				<!--SECOND COLUMN -->
+				<div class="col-4 text-center p-3">
+					<h3>Game paused</h3>
+					<button class="gameOn btn btn-secondary w-100">
+						Play
+					</button>
+				</div>
+
+				<!-- THIRD COLUMN -->
+				<div class="col-4 p-3">
+					Controls
+					<li>
+						<button class="btn btn-dark">W</button> forward
+					</li>
+					<li>
+						<button class="btn btn-dark">S</button> backward
+					</li>
+					<li>
+						<button class="btn btn-dark">A</button> left
+					</li>
+					<li>
+						<button class="btn btn-dark">D</button> right
+					</li>
+					<li>
+						<button class="btn btn-dark">R</button> sprint
+					</li>
+					<li>
+						<button class="btn btn-dark">E</button> equipment
+					</li>
+					<li>
+						<button class="btn btn-dark">Space</button> jump
+					</li>
+					<li>
+						<button class="btn btn-dark">Shift</button> sneak
+					</li>
+					<li>
+						<button class="btn btn-dark">`</button> Escape
+					</li>
+					<li>
+						<button class="btn btn-dark">/</button> <button class="btn btn-dark">T</button> chat
+					</li>
+				</div>
+			</div>
+		</div>
+
+		<!-- VIEW CROSS -->
+		<div class="cross">
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+				<line x1="15" y1="0" x2="15" y2="30" stroke="black" stroke-width="1" />
+				<line x1="0" y1="15" x2="30" y2="15" stroke="black" stroke-width="1" />
+			</svg>
+		</div>
+
+	</body>
+</html>
