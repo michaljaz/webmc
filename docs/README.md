@@ -6,11 +6,8 @@
 
 ## About
 
-**Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
+**Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser. By default node.js server is served at http://localhost:8080.
 
-> **_IMPORTANT:_** To run this game you need to start real minecraft server (by default it is 1.16.3 offline mode java edition on ip localhost:25565). 
-
-> By default node.js server is served at http://localhost:8080.
 
 ### Installation
 ```bash
@@ -23,8 +20,17 @@ npm install
 
 ```
 
+### Minecraft server setup
+
+To run this game you need to start real minecraft server (by default it is 1.16.1 offline mode java edition on ip localhost:25565) you can also define it in */src/server.json* file. 
+
+```bash
+#Optionally you can run lite minecraft server (flying-squid)
+npm run server
+
+```
+
 ### OPTION 1: Development setup 
-> **_NOTE:_** Run it if you are developer and want to change code and view realtime changes.
 ```bash
 #Start node server with webpack middleware (That will start webserver at http://localhost:8080)
 npm run dev
@@ -32,7 +38,6 @@ npm run dev
 ```
 
 ### OPTION 2: Production setup
-> **_NOTE:_** Run it if you want to only build and serve production app.
 ```bash
 #Cleaning dist folder (old game bundles)
 npm run clean

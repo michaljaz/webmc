@@ -17,15 +17,15 @@ for i in [0..maxStateId]
 	else
 		bbox=0
 	result.push [pBlock.fromStateId(i).name,bbox]
-buildPath="#{__dirname}/../client/static/assets/blocks/blocksDef.json"
+buildPath="#{__dirname}/client/static/assets/blocks/blocksDef.json"
 fs.writeFileSync buildPath, JSON.stringify(result)
 console.log "\x1b[32mGenerated blocksDefinitions: #{buildPath}\x1b[0m\n"
 
 new atlasCreator {
     pref:"items"
     size:50
-    xpath:"#{__dirname}/items"
-    buildPath:"#{__dirname}/../client/static/assets/items"
+    xpath:"#{__dirname}/assets/items"
+    buildPath:"#{__dirname}/client/static/assets/items"
     totalImages:975
     atlasSize:32
     mini:false
@@ -34,8 +34,8 @@ new atlasCreator {
 new atlasCreator {
     pref:"blocks"
     size:16
-    xpath:"#{__dirname}/blocks"
-    buildPath:"#{__dirname}/../client/static/assets/blocks"
+    xpath:"#{__dirname}/assets/blocks"
+    buildPath:"#{__dirname}/client/static/assets/blocks"
     totalImages:694
     atlasSize:36
     mini:true

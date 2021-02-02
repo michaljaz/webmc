@@ -1,10 +1,12 @@
 require("coffeescript/register");
 if(process.argv[2]==="dev"){
-    require("./src/server/server.coffee")("development");
+    require("./src/index.coffee")("development");
 }else if(process.argv[2]==="prod"){
-    require("./src/server/server.coffee")("production");
+    require("./src/index.coffee")("production");
 }else if(process.argv[2]==="preb"){
-    require("./src/server/prebuild.coffee");
+    require("./src/prebuild.coffee");
 }else if(process.argv[2]==="items"){
-    require("./src/server/itemDump.coffee");
+    require("./src/itemDump.coffee");
+}else if(process.argv[2]==="server"){
+    require("./src/minecraft.coffee");
 }

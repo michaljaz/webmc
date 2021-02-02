@@ -3,8 +3,8 @@ axios = require 'axios'
 JSSoup = require('jssoup').default
 fs = require 'fs'
 
-if not fs.existsSync "#{__dirname}/items/"
-  fs.mkdirSync "#{__dirname}/items/"
+if not fs.existsSync "#{__dirname}/assets/items/"
+  fs.mkdirSync "#{__dirname}/assets/items/"
 
 removeBg=()->
 	replaceColor = require 'replace-color'
@@ -25,10 +25,10 @@ removeBg=()->
 				if err
 					return console.log err
 
-	dir_path="#{__dirname}/items/"
+	dir_path="#{__dirname}/assets/items/"
 	fs.readdir dir_path, (err, files)->
 		files.forEach (file)->
-			filePath="#{__dirname}/items/"+file
+			filePath="#{__dirname}/assets/items/"+file
 			removeBg filePath
 			return
 		return
@@ -43,7 +43,7 @@ axios({
 	ile=0
 	zal=0
 	req=(type,url)->
-		file=fs.createWriteStream "#{__dirname}/items/#{type}.png"
+		file=fs.createWriteStream "#{__dirname}/assets/items/#{type}.png"
 		axios({
 			method:"GET"
 			url

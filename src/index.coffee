@@ -18,11 +18,11 @@ module.exports=(mode)->
 	socketInfo={}
 	port=process.env.PORT || 8080
 	if mode is "production"
-		app.use express.static "#{__dirname}/../client/dist"
+		app.use express.static "#{__dirname}/client/dist"
 	else
 		webpack = require "webpack"
 		middleware = require "webpack-dev-middleware"
-		devconfig=require "#{__dirname}/../client/webpack.dev.coffee"
+		devconfig=require "#{__dirname}/client/webpack.dev.coffee"
 		compiler = webpack devconfig
 		app.use middleware(compiler)
 
