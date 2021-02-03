@@ -10,7 +10,12 @@ module.exports=
 	stats:"detailed"
 	performance:
 		hints: false
-	entry: "#{__dirname}/scripts/index.coffee"
+	entry: [
+		"#{__dirname}/scripts/index.coffee"
+		"#{__dirname}/styles/style.scss"
+		"#{__dirname}/styles/style.css"
+		"bootstrap"
+	]
 	output:
 		path: "#{__dirname}/dist"
 		filename: '[contenthash].js'

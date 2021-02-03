@@ -1,22 +1,22 @@
 {
-  "blocksMapping":{
-    "path":"/assets/blocks/blocksMapping.json",
-    "type":"text"
-  },
-  "blocksAtlasFull":{
-    "path":"/assets/blocks/blocksAtlas-full.png",
-    "type":"image"
-  },
-  "blocksMappingFull":{
-    "path":"/assets/blocks/blocksMapping-full.json",
-    "type":"text"
-  },
-  "skybox":{
-    "path":"/assets/images/skybox.jpg",
-    "type":"texture"
-  },
+	"blocksMapping":{
+		"path":"/assets/blocks/blocksSnap-Mapping.json",
+		"type":"text"
+	},
+	"blocksAtlasFull":{
+		"path":"/assets/blocks/blocks-Atlas.png",
+		"type":"image"
+	},
+	"blocksMappingFull":{
+		"path":"/assets/blocks/blocks-Mapping.json",
+		"type":"text"
+	},
+	"skybox":{
+		"path":"/assets/images/skybox.jpg",
+		"type":"texture"
+	},
 	"blocksTex":{
-		"path":"/assets/blocks/blocks.json",
+		"path":"/assets/blocks.json",
 		"type":"text"
 	},
 	"player":{
@@ -28,7 +28,7 @@
 		"type":"texture"
 	},
 	"blocksAtlasSnap":{
-		"path":"/assets/blocks/blocksAtlas-snap.png",
+		"path":"/assets/blocks/blocksSnap-Atlas.png",
 		"type":"texture"
 	},
 	"blocksDef":{
@@ -36,7 +36,7 @@
 		"type":"text"
 	},
 	"itemsMapping":{
-    "path":"/assets/items/itemsMapping-full.json",
-    "type":"text"
-  }
+		"path":"/assets/items/items-Mapping.json",
+		"type":"text"
+	}
 }

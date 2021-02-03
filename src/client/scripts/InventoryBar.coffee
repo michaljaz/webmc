@@ -78,7 +78,7 @@ class InventoryBar
 			if $(list[i]).attr('data-texture') is ""
 				url=""
 			else
-				url="/assets/items/itemsAtlas-full.png"
+				url="/assets/items/items-Atlas.png"
 				tex=43
 				items=@game.al.get "itemsMapping"
 				$(list[i]).css("background-repeat","no-repeat")

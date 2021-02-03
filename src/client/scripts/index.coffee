@@ -15,9 +15,6 @@ import {Entities} from "./Entities.coffee"
 import {PlayerInInventory} from "./PlayerInInventory.coffee"
 import {BlockBreak} from "./BlockBreak.coffee"
 import {BlockPlace} from "./BlockPlace.coffee"
-import "bootstrap"
-import './../styles/style.scss'
-import './../styles/style.css'
 
 class Game
 	constructor:(options)->
