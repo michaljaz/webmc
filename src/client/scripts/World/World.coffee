@@ -60,6 +60,7 @@ class World
 		voxelZ=parseInt voxelZ
 		if (@cellTerrain.getVoxel voxelX,voxelY,voxelZ) isnt value
 			@_setVoxel voxelX,voxelY,voxelZ,value
+			@cellTerrain.setVoxel voxelX,voxelY,voxelZ,value
 		return
 	resetWorld: ()->
 		for i of @cellMesh
