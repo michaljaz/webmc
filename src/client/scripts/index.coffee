@@ -48,10 +48,10 @@ class Game
 		@camera = new THREE.PerspectiveCamera @fov, 2, 0.1, 1000
 		@camera.rotation.order = "YXZ"
 		@camera.position.set 26, 26, 26
-		@scene.add new THREE.AmbientLight 0xcccccc
-		directionalLight = new THREE.DirectionalLight 0x333333, 2
-		directionalLight.position.set(1, 1, 0.5).normalize()
-		@scene.add directionalLight
+		@scene.add new THREE.AmbientLight 0xffffff
+		# directionalLight = new THREE.DirectionalLight 0x333333, 2
+		# directionalLight.position.set(1, 1, 0.5).normalize()
+		# @scene.add directionalLight
 		console.warn gpuInfo()
 
 		@nick=document.location.hash.substring 1,document.location.hash.length

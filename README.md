@@ -3,6 +3,7 @@
 [![Join the chat at https://gitter.im/web-minecraft/community](https://badges.gitter.im/web-minecraft/community.svg)](https://gitter.im/web-minecraft/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/h6DQzDx2G7)
 
+<img src="src/client/assets/images/logo.png" alt="screen6" width="100%">
 
 ## About
 
@@ -51,6 +52,6 @@ npm start
 ```
 
 ### Screenshots
-[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="600">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
-[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="600">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
-[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="600">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)
+[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="100%">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
+[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="100%">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
+[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="100%">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)

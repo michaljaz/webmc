@@ -100,7 +100,7 @@ class AnimatedTextureAtlas
 					"float dist=length(u_viewPos-vViewPosition);"
 					"float fogAmount = smoothstep(u_farnear.x, u_farnear.y, dist);"
 					"gl_FragColor = vec4( outgoingLight, diffuseColor.a );"
-					"gl_FragColor = mix(gl_FragColor,u_fogColor,max(0.15,fogAmount));"
+					"gl_FragColor = mix(gl_FragColor,u_fogColor,max(0.1,fogAmount));"
 				].join("\n")
 			)
 

@@ -15,6 +15,7 @@ class TerrainManager
 		@blocksTex=options.blocksTex
 		@cellNeedsUpdate={}
 		@loadedMeshes={}
+		@undefinedBlock="black_shulker_box"
 	genBlockFace: (type,block,pos)->
 		if @blocksTex[block.name] isnt undefined or @blocksTex[String(block.stateId)] isnt undefined
 			if @blocksTex[String(block.stateId)] isnt undefined
@@ -48,8 +49,8 @@ class TerrainManager
 			toxX=@blocksMapping[block.name]["x"]
 			toxY=@blocksMapping[block.name]["y"]
 		else
-			toxX=@blocksMapping["debug"]["x"]
-			toxY=@blocksMapping["debug"]["y"]
+			toxX=@blocksMapping[@undefinedBlock]["x"]
+			toxY=@blocksMapping[@undefinedBlock]["y"]
 		li = [255,255,255]
 		sh = [0,0,0]
 		toxX-=1
