@@ -61,7 +61,7 @@ class Game
 
 		@stats=new Stats
 		@drawcalls=@stats.addPanel new Stats.Panel( "calls", "#ff8", "#221" )
-		@stats.showPanel 3
+		@stats.showPanel 0
 		document.body.appendChild @stats.dom
 
 		@pii=new PlayerInInventory @
@@ -202,7 +202,7 @@ class Game
 				_this.bb.stopDigging()
 			if _this.mouse and _this.bb.done
 				_this.bb.digRequest()
-		@world.updateCellsAroundPlayer @camera.position,@params.chunkdist
+		@world._updateCellsAroundPlayer @params.chunkdist
 		TWEEN.update()
 		@drawcalls.update @renderer.info.render.calls,100
 		if @FPC.gameState is "inventory"

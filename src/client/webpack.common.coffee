@@ -7,7 +7,6 @@ webpack=require "webpack"
 LodashModuleReplacementPlugin = require 'lodash-webpack-plugin'
 
 module.exports=
-	stats:"detailed"
 	performance:
 		hints: false
 	entry: [

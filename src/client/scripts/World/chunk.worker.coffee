@@ -1,6 +1,6 @@
 import {CellTerrain} from './CellTerrain.coffee'
 
-console.log "CHUNK WORKER STARTED!"
+terrain=null
 
 class TerrainManager
 	constructor: (options)->
@@ -13,6 +13,8 @@ class TerrainManager
 		@q=1/@toxelSize
 		@blocksMapping=options.blocksMapping
 		@blocksTex=options.blocksTex
+		@cellNeedsUpdate={}
+		@loadedMeshes={}
 	genBlockFace: (type,block,pos)->
 		if @blocksTex[block.name] isnt undefined or @blocksTex[String(block.stateId)] isnt undefined
 			if @blocksTex[String(block.stateId)] isnt undefined
@@ -201,21 +203,9 @@ class TerrainManager
 			uvs
 			colors
 		}
-addEventListener "message", (e)->
-	fn = handlers[e.data.type]
-	if not fn
-		throw new Error('no handler for type: ' + e.data.type)
-	fn(e.data.data)
-	return
-State={
-	init:null
-	world:{}
-}
-terrain=null
-time=0
-handlers={
+
+handlers=
 	init:(data)->
-		State.init=data
 		terrain=new TerrainManager {
 			models:data.models
 			blocks:data.blocks
@@ -228,20 +218,78 @@ handlers={
 		return
 	setVoxel:(data)->
 		terrain.cellTerrain.setVoxel data...
+		#TODO: cellNeedsUpdate update
+		cellId=terrain.cellTerrain.vec3 terrain.cellTerrain.computeCellForVoxel(data[0],data[1],data[2])...
+		terrain.cellNeedsUpdate[cellId]=true
+		neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+		for i in neighbours
+			neiCellId=terrain.cellTerrain.vec3 terrain.cellTerrain.computeCellForVoxel(data[0]+nei[0],data[1]+nei[1],data[2]+nei[2])...
+			terrain.cellNeedsUpdate[neiCellId]=true
+		return
 	genCellGeo: (data)->
 		if ((terrain.cellTerrain.vec3 data...) of terrain.cellTerrain.cells) is true
 			p1=performance.now()
 			geo=terrain.genCellGeo data...
 			p2=performance.now()
 			postMessage {
-				cell:geo
-				info:data
-				p:performance.now()
+				type:"cellGeo"
+				data:
+					cell:geo
+					info:data
+					p:performance.now()
 			}
+		return
 	setCell: (data)->
+		neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
+		terrain.cellNeedsUpdate[terrain.cellTerrain.vec3 data[0],data[1],data[2]]=true
 		terrain.cellTerrain.setCell data[0],data[1],data[2],data[3]
+		for nei in neighbours
+			neiCellId=terrain.cellTerrain.vec3(data[0]+nei[0],data[1]+nei[1],data[2]+nei[2])
+			terrain.cellNeedsUpdate[neiCellId]=true
+		return
 	resetWorld: (data)->
 		console.log "RESET WORLD!"
 		terrain.cellTerrain.cells={}
 		return
-}
+	updateCellsAroundPlayer:(data)->
+		cell=data[0]
+		radius=data[1]
+		odw={}
+		cellBlackList={}
+		for k,v of terrain.loadedMeshes
+			if v is true 
+				cellBlackList[k]=true
+		for i in [0..radius]
+			for x in [-i..i]
+				for y in [-i..i]
+					for z in [-i..i]
+						if not odw["#{x}:#{y}:#{z}"]
+							odw["#{x}:#{y}:#{z}"]=true
+							pcell=[cell[0]+x,cell[1]+y,cell[2]+z]
+							cellId=terrain.cellTerrain.vec3 pcell...
+							cellBlackList[cellId]=false
+							gen=false
+							if terrain.cellNeedsUpdate[cellId]
+								delete terrain.cellNeedsUpdate[cellId]
+								handlers.genCellGeo pcell
+								gen=true
+							if terrain.loadedMeshes[cellId] is "disposed"
+								if not gen
+									handlers.genCellGeo pcell
+							terrain.loadedMeshes[cellId]=true
+		for k,v of cellBlackList
+			if v is true
+				terrain.loadedMeshes[k]="disposed"
+				postMessage {
+					type:"removeCell"
+					data:k
+				}
+		return
+
+addEventListener "message", (e)->
+	fn = handlers[e.data.type]
+	if not fn
+		throw new Error "no handler for type: #{e.data.type}"
+	fn e.data.data
+	return
+

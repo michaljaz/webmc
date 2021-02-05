@@ -24,7 +24,14 @@ class World
 		#Utworzenie Workera do obliczania geometrii chunków
 		@chunkWorker=new chunkWorker
 		@chunkWorker.onmessage=(message)->
-			_this.updateCell message.data
+			if message.data.type is "cellGeo"
+				_this.updateCell message.data.data
+			else if message.data.type is "removeCell"
+				if _this.cellMesh[message.data.data] isnt undefined
+					_this.cellMesh[message.data.data].geometry.dispose()
+					_this.game.scene.remove _this.cellMesh[message.data.data]
+					delete _this.cellMesh[message.data.data]
+					_this.game.renderer.renderLists.dispose()
 		@chunkWorker.postMessage {
 			type:'init'
 			data:{
@@ -47,62 +54,13 @@ class World
 	setCell: (cellX,cellY,cellZ,buffer)->
 		@_setCell cellX,cellY,cellZ,buffer
 		@cellTerrain.setCell cellX,cellY,cellZ,buffer
-		@cellNeedsUpdate[@cellTerrain.vec3(cellX,cellY,cellZ)]=true
-		for nei in @neighbours
-			neiCellId=@cellTerrain.vec3(cellX+nei[0],cellY+nei[1],cellZ+nei[2])
-			@cellNeedsUpdate[neiCellId]=true
 	setBlock: (voxelX,voxelY,voxelZ,value) ->
 		voxelX=parseInt voxelX
 		voxelY=parseInt voxelY
 		voxelZ=parseInt voxelZ
 		if (@cellTerrain.getVoxel voxelX,voxelY,voxelZ) isnt value
 			@_setVoxel voxelX,voxelY,voxelZ,value
-			@cellTerrain.setVoxel voxelX,voxelY,voxelZ,value
-			cellId=@cellTerrain.vec3 @cellTerrain.computeCellForVoxel(voxelX,voxelY,voxelZ)...
-			@cellNeedsUpdate[cellId]=true
-			for nei in @neighbours
-				neiCellId=@cellTerrain.vec3 @cellTerrain.computeCellForVoxel(voxelX+nei[0],voxelY+nei[1],voxelZ+nei[2])...
-				@cellNeedsUpdate[neiCellId]=true
 		return
-	updateCellsAroundPlayer: (pos,radius)->
-		#Updatowanie komórek wokół gracza w danym zasięgu
-		_this=@
-		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>@renderTime)
-			#Ustawianie z defaultu, żeby każdy Mesh był wykasowywany
-			cellBlackList={}
-			for k,v of @cellMesh
-				if v isnt "disposed" and v isnt "disposedX"
-					cellBlackList[k]=true
-			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
-			up=(x,y,z)->
-				pcell=[cell[0]+x,cell[1]+y,cell[2]+z]
-				cellId=_this.cellTerrain.vec3(pcell...)
-				#Updatowanie mesha, jeśli był disposed lub potrzebuje updatu
-				if _this.cellNeedsUpdate[cellId] or _this.cellMesh[cellId] is "disposed"
-
-					if _this.cellNeedsUpdate[cellId]
-						delete _this.cellNeedsUpdate[cellId]
-					if _this.cellMesh[cellId] is "disposed"
-						_this.cellMesh[cellId]="disposedX"
-					_this._genCellGeo pcell...
-				cellBlackList[cellId]=false
-				return
-			odw={}
-			for i in [0..radius]
-				for x in [-i..i]
-					for y in [-i..i]
-						for z in [-i..i]
-							if not odw["#{x}:#{y}:#{z}"]
-								up(x,y,z)
-								odw["#{x}:#{y}:#{z}"]=true
-			#Kasowanie Meshy, które mają znacznik .todel
-			for i of cellBlackList
-				if cellBlackList[i] is true
-					@cellMesh[i].geometry.dispose()
-					# @cellMesh[i].material.dispose()
-					@game.scene.remove @cellMesh[i]
-					@cellMesh[i]="disposed"
-			@game.renderer.renderLists.dispose()
 	resetWorld: ()->
 		for i of @cellMesh
 			if @cellMesh[i].geometry isnt undefined
@@ -123,7 +81,7 @@ class World
 		geometry.setAttribute 'uv',new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
 		geometry.setAttribute 'color',new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
 		geometry.matrixAutoUpdate=false
-		if mesh is undefined or mesh is "disposedX"
+		if mesh is undefined
 			@cellMesh[cellId]=new THREE.Mesh geometry,@material
 			@cellMesh[cellId].matrixAutoUpdate=false
 			@cellMesh[cellId].frustumCulled = false
@@ -132,7 +90,7 @@ class World
 				_this.cellMesh[cellId].frustumCulled = true
 				_this.cellMesh[cellId].onAfterRender = ->
 			@game.scene.add @cellMesh[cellId]
-		else if mesh isnt "disposed"
+		else
 			@cellMesh[cellId].geometry=geometry
 		return
 	intersectsRay: (start,end) ->
@@ -254,6 +212,15 @@ class World
 			type:"genCellGeo"
 			data:[cellX,cellY,cellZ]
 		}
+	_updateCellsAroundPlayer: (radius)->
+		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>@renderTime)
+			pos=@game.camera.position
+			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
+			@chunkWorker.postMessage {
+				type:"updateCellsAroundPlayer"
+				data:[cell,radius]
+			}
+		return
 	_computeSections: (sections,x,z,biomes)->
 		#Wysyłanie do SectionsWorkera Buffora, który ma przekształcić w łatwiejszą postać
 		@sectionsWorker.postMessage {

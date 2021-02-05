@@ -1,6 +1,4 @@
 
-console.log "SECTIONS WORKER STARTED!"
-
 class BitArray
 	constructor: (options)->
 		if options is null
