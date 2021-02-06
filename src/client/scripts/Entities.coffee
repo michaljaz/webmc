@@ -14,15 +14,13 @@ class Entities
 		offset=[-0.5,16,-0.5]
 		mobs=0
 		for i of entities
-			if entities[i].type is "mob"
-				mobs++
+			mobs++
 		@mobMesh.count=mobs
 		mobs=0
 		for i of entities
-			if entities[i].type is "mob"
-				@dummy.position.set entities[i].position.x+offset[0],entities[i].position.y+offset[1],entities[i].position.z+offset[2]
-				@dummy.updateMatrix()
-				@mobMesh.setMatrixAt mobs++, @dummy.matrix
+			@dummy.position.set entities[i][0]+offset[0],entities[i][1]+offset[1],entities[i][2]+offset[2]
+			@dummy.updateMatrix()
+			@mobMesh.setMatrixAt mobs++, @dummy.matrix
 		@mobMesh.instanceMatrix.needsUpdate = true
 		return
 export {Entities}

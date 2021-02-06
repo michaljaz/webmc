@@ -126,7 +126,11 @@ module.exports=(mode)->
 				if inv isnt inv_new
 					inv=inv_new
 					emit ["inventory",bot().inventory.slots]
-				emit ["entities",bot().entities]
+				entities=[]
+				for k,v of bot().entities
+					if v.type is "mob"
+						entities.push [v.position.x,v.position.y,v.position.z]
+				emit ["entities",entities]
 				return
 			,10
 			socketEventMap={
