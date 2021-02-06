@@ -1,9 +1,8 @@
 import * as THREE from 'three'
 import {CellTerrain} from './CellTerrain.coffee'
 import {AnimatedTextureAtlas} from './AnimatedTextureAtlas.coffee'
-
+import {SectionComputer} from "./SectionComputer.coffee"
 import chunkWorker from "./chunk.worker.coffee"
-import sectionsWorker from "./sections.worker.coffee"
 
 class World
 	constructor: (game) ->
@@ -42,14 +41,6 @@ class World
 				blocksDef: @blocksDef
 			}
 		}
-
-		#Utworzenie Workera do przekształcania bufforów otrzymanych z serwera
-		@sectionsWorker=new sectionsWorker
-		@sectionsWorker.onmessage=(data)->
-			result=data.data.result
-			for i in result
-				if i isnt null
-					_this.setCell i.x,i.y,i.z,i.cell
 		return
 	setCell: (cellX,cellY,cellZ,buffer)->
 		@_setCell cellX,cellY,cellZ,buffer
@@ -223,11 +214,8 @@ class World
 			}
 		return
 	_computeSections: (sections,x,z,biomes)->
-		#Wysyłanie do SectionsWorkera Buffora, który ma przekształcić w łatwiejszą postać
-		@sectionsWorker.postMessage {
-			type:"computeSections"
-			data:{
-				sections,x,z,biomes
-			}
-		}
+		result=SectionComputer {sections,x,z,biomes}
+		for i in result
+			if i isnt null
+				@setCell i.x,i.y,i.z,i.cell
 export {World}
