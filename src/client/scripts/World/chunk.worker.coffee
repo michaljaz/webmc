@@ -223,7 +223,7 @@ handlers=
 		cellId=terrain.cellTerrain.vec3 terrain.cellTerrain.computeCellForVoxel(data[0],data[1],data[2])...
 		terrain.cellNeedsUpdate[cellId]=true
 		neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
-		for i in neighbours
+		for nei in neighbours
 			neiCellId=terrain.cellTerrain.vec3 terrain.cellTerrain.computeCellForVoxel(data[0]+nei[0],data[1]+nei[1],data[2]+nei[2])...
 			terrain.cellNeedsUpdate[neiCellId]=true
 		return
