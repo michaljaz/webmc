@@ -14,6 +14,12 @@ module.exports=(mode)->
 	sf={}
 	socketInfo={}
 	port=process.env.PORT or 8080
+
+	app.use (req, res, next)->
+		res.setHeader 'Content-Security-Policy', 'worker-src *'
+		next()
+		return
+
 	if mode is "production"
 		app.use express.static "#{__dirname}/client/dist"
 	else
@@ -127,7 +133,7 @@ module.exports=(mode)->
 						[0,1,0]
 						[0,-1,0]
 					]
-					if socketInfo[socket.id].held isnt undefined socketInfo[socket.id].held isnt null
+					if socketInfo[socket.id].held isnt undefined and socketInfo[socket.id].held isnt null
 						console.log socketInfo[socket.id].held
 						bot().placeBlock block,new vec3(vec...),(r)->
 							console.log r
