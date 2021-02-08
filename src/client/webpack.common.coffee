@@ -81,6 +81,7 @@ module.exports=
 			filename: "index.html"
 			template: "#{__dirname}/html/index.html"
 			inject: "head"
+			favicon: "#{__dirname}/assets/images/favicon.png"
 		})
 		new LodashModuleReplacementPlugin()
 		new WebpackBar()
