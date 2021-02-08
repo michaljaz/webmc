@@ -1,22 +1,19 @@
 module.exports=(mode)->
-	#biblioteki
 	opn=require "opn"
 	fs=require "fs"
 	config=JSON.parse fs.readFileSync "#{__dirname}/server.json"
-	http=require "http"
-	express=require 'express'
-	app=express()
-	server=http.createServer(app)
+	app=require("express")()
+	server=require("http").createServer(app)
 	io=require("socket.io")(server)
-	mineflayer = require 'mineflayer'
+	mineflayer = require "mineflayer"
 	Chunk = require("prismarine-chunk")(config.version)
 	vec3=require "vec3"
-	Convert = require 'ansi-to-html'
+	Convert = require "ansi-to-html"
 	convert = new Convert()
-	#początkowe zmienne
+
 	sf={}
 	socketInfo={}
-	port=process.env.PORT || 8080
+	port=process.env.PORT or 8080
 	if mode is "production"
 		app.use express.static "#{__dirname}/client/dist"
 	else
@@ -26,19 +23,16 @@ module.exports=(mode)->
 		compiler = webpack devconfig
 		app.use middleware(compiler)
 
-	#Konfiguracja serwera express
 	server.listen port,()->
 		opn "http://localhost:#{port}"
 		console.log "Server is running on \x1b[34m*:#{port}\x1b[0m"
 
-	#websocket
 	io.sockets.on "connection", (socket)->
 		socketInfo[socket.id]={}
 		bot=socketInfo[socket.id]
 		socket.on "initClient",(data)->
-			console.log "[\x1b[32m+\x1b[0m] "+data.nick
+			console.log "[\x1b[32m+\x1b[0m] #{data.nick}"
 
-			#Dodawanie informacji o graczu do socketInfo
 			socketInfo[socket.id]=data
 			socketInfo[socket.id].bot=mineflayer.createBot {
 				host: config.ip
@@ -56,24 +50,23 @@ module.exports=(mode)->
 			emit=(array)->
 				io.to(socket.id).emit array...
 
-
-			#Eventy otrzymywane z serwera minecraftowego
-			war=true
 			bot()._client.on "map_chunk",(packet)->
 				cell=new Chunk()
 				cell.load packet.chunkData,packet.bitMap,true,true
-				for i in [0..255]
-					light=cell.getBlockLight 0, i, 0
-					if light isnt 0
-						console.log light
-						break
-				# emit ["dimension",bot().game.dimension]
+				# for i in [0..255]
+				# 	light=cell.getBlockLight 0, i, 0
+				# 	if light isnt 0
+				# 		console.log light
+				# 		break
 				emit ["mapChunk", cell.sections,packet.x,packet.z,packet.biomes]
 				return
 			bot()._client.on "respawn",(packet)->
 				emit ["dimension",packet.dimension.value.effects.value]
 				return
-			botEventMap={
+			botEventMap=
+				"heldItemChanged":(item)->
+					socketInfo[socket.id].held=item
+					return
 				"login":()->
 					emit ["dimension",bot().game.dimension]
 					return
@@ -85,13 +78,6 @@ module.exports=(mode)->
 					emit ["food",bot().food]
 					return
 				"spawn":()->
-					# diamond=bot().inventory.slots[36]
-					# ac=bot().inventory.slots[37]
-					# console.log diamond,ac
-					# bot().equip ac,"hand"
-					# bot().heldItem.slot=37
-					# console.log bot().updateHeldItem()
-					# console.log bot().heldItem
 					emit ["spawn",bot().entity.yaw,bot().entity.pitch]
 					return
 				"kicked":(reason,loggedIn)->
@@ -112,7 +98,6 @@ module.exports=(mode)->
 				"diggingAborted":(block)->
 					emit ["diggingAborted",block]
 					return
-			}
 			for i of botEventMap
 				((i)->
 					socketInfo[socket.id].bot.on i, ()->
@@ -133,29 +118,26 @@ module.exports=(mode)->
 				emit ["entities",entities]
 				return
 			,10
-			socketEventMap={
+			socketEventMap=
 				"blockPlace":(pos,vec)->
 					block=bot().blockAt(new vec3(pos...))
-					console.log block
 					vecx=[
 						[1,0,0]
 						[-1,0,0]
 						[0,1,0]
 						[0,-1,0]
 					]
-					bot().placeBlock block,new vec3(vec...),(r)->
-						console.log r
-						return
-
-
+					if socketInfo[socket.id].held isnt undefined socketInfo[socket.id].held isnt null
+						console.log socketInfo[socket.id].held
+						bot().placeBlock block,new vec3(vec...),(r)->
+							console.log r
+							return
 					return
 				"invc":(num)->
 					item=bot().inventory.slots[num+36]
-					if item isnt null
-						console.log item
-						try
-							bot().equip item,"hand"
-					else
+					if item isnt null and item isnt undefined
+						bot().equip item,"hand"
+					else if socketInfo[socket.id].held isnt undefined
 						bot().unequip "hand"
 					return
 				"move":(state,toggle)->
@@ -170,7 +152,7 @@ module.exports=(mode)->
 				"disconnect":()->
 					try
 						clearInterval socketInfo[socket.id].int
-						console.log "[\x1b[31m-\x1b[0m] "+socketInfo[socket.id].nick
+						console.log "[\x1b[31m-\x1b[0m] #{socketInfo[socket.id].nick}"
 						socketInfo[socket.id].bot.end()
 						delete socketInfo[socket.id]
 					return
@@ -192,7 +174,6 @@ module.exports=(mode)->
 				"stopDigging":(callback)->
 					bot().stopDigging()
 					return
-			}
 			for i of socketEventMap
 				socket.on i,socketEventMap[i]
 			return
