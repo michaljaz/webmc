@@ -32,7 +32,6 @@ class Game
 		@canvas=document.querySelector "#c"
 		@pcanvas=document.querySelector "#c_player"
 		@dimension=null
-		@socket=io()
 		if PRODUCTION
 			console.log "Running in production mode"
 		else
@@ -58,6 +57,11 @@ class Game
 		if @nick is ""
 			@nick=RandomNick()
 			document.location.href="\##{@nick}"
+
+		@socket=io {
+			query:
+				nick:@nick
+		}
 
 		@stats=new Stats
 		@drawcalls=@stats.addPanel new Stats.Panel( "calls", "#ff8", "#221" )

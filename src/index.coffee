@@ -13,8 +13,7 @@ module.exports=(mode)->
 	convert = new Convert()
 	helmet = require "helmet"
 
-	sf={}
-	socketInfo={}
+	playerSocket={}
 	port=process.env.PORT or 8080
 
 	app.use helmet()
@@ -26,161 +25,153 @@ module.exports=(mode)->
 		middleware = require "webpack-dev-middleware"
 		devconfig=require "#{__dirname}/client/webpack.dev.coffee"
 		compiler = webpack devconfig
-		app.use middleware(compiler)
+		app.use middleware compiler
 
 	server.listen port,()->
 		opn "http://localhost:#{port}"
 		console.log "Server is running on \x1b[34m*:#{port}\x1b[0m"
 
 	io.sockets.on "connection", (socket)->
-		socketInfo[socket.id]={}
-		bot=socketInfo[socket.id]
-		socket.on "initClient",(data)->
-			console.log "[\x1b[32m+\x1b[0m] #{data.nick}"
+		query=socket.handshake.query
+		console.log "[\x1b[32m+\x1b[0m] #{query.nick}"
 
-			socketInfo[socket.id]=data
-			socketInfo[socket.id].bot=mineflayer.createBot {
+		playerSocket[socket.id]=
+			bot:mineflayer.createBot {
 				host: config.ip
 				port: config.port
-				username: socketInfo[socket.id].nick
+				username: query.nick
 				version: config.version
 			}
 
-			bot=()->
-				if socketInfo[socket.id] isnt undefined
-					return socketInfo[socket.id].bot
-				else
-					return null
+		bot=()->
+			if playerSocket[socket.id] isnt undefined
+				return playerSocket[socket.id].bot
+			else
+				return null
 
-			emit=(array)->
-				io.to(socket.id).emit array...
+		emit=(array)->
+			io.to(socket.id).emit array...
 
-			bot()._client.on "map_chunk",(packet)->
-				cell=new Chunk()
-				cell.load packet.chunkData,packet.bitMap,true,true
-				# for i in [0..255]
-				# 	light=cell.getBlockLight 0, i, 0
-				# 	if light isnt 0
-				# 		console.log light
-				# 		break
-				emit ["mapChunk", cell.sections,packet.x,packet.z,packet.biomes]
-				return
-			bot()._client.on "respawn",(packet)->
-				emit ["dimension",packet.dimension.value.effects.value]
-				return
-			botEventMap=
-				"heldItemChanged":(item)->
-					socketInfo[socket.id].held=item
-					return
-				"login":()->
-					emit ["dimension",bot().game.dimension]
-					return
-				"move":()->
-					emit ["move",bot().entity.position]
-					return
-				"health":()->
-					emit ["hp",bot().health]
-					emit ["food",bot().food]
-					return
-				"spawn":()->
-					emit ["spawn",bot().entity.yaw,bot().entity.pitch]
-					return
-				"kicked":(reason,loggedIn)->
-					emit ["kicked",reason]
-					return
-				"message":(msg)->
-					emit ["msg",convert.toHtml(msg.toAnsi())]
-					return
-				"experience":()->
-					emit ["xp",bot().experience]
-					return
-				"blockUpdate":(oldb,newb)->
-					emit ["blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]]
-					return
-				"diggingCompleted":(block)->
-					emit ["diggingCompleted",block]
-					return
-				"diggingAborted":(block)->
-					emit ["diggingAborted",block]
-					return
-			for i of botEventMap
-				((i)->
-					socketInfo[socket.id].bot.on i, ()->
-						if bot() isnt null
-							botEventMap[i] arguments...
-						return
-				)(i)
-			inv=""
-			socketInfo[socket.id].int=setInterval ()->
-				inv_new=JSON.stringify(bot().inventory.slots)
-				if inv isnt inv_new
-					inv=inv_new
-					emit ["inventory",bot().inventory.slots]
-				entities=[]
-				for k,v of bot().entities
-					if v.type is "mob"
-						entities.push [v.position.x,v.position.y,v.position.z]
-				emit ["entities",entities]
-				return
-			,10
-			socketEventMap=
-				"blockPlace":(pos,vec)->
-					block=bot().blockAt(new vec3(pos...))
-					vecx=[
-						[1,0,0]
-						[-1,0,0]
-						[0,1,0]
-						[0,-1,0]
-					]
-					if socketInfo[socket.id].held isnt undefined and socketInfo[socket.id].held isnt null
-						console.log socketInfo[socket.id].held
-						bot().placeBlock block,new vec3(vec...),(r)->
-							console.log r
-							return
-					return
-				"invc":(num)->
-					item=bot().inventory.slots[num+36]
-					if item isnt null and item isnt undefined
-						bot().equip item,"hand"
-					else if socketInfo[socket.id].held isnt undefined
-						bot().unequip "hand"
-					return
-				"move":(state,toggle)->
-					bot().setControlState(state,toggle)
-					return
-				"command":(com)->
-					bot().chat(com)
-					return
-				"rotate":(data)->
-					bot().look data...
-					return
-				"disconnect":()->
-					try
-						clearInterval socketInfo[socket.id].int
-						console.log "[\x1b[31m-\x1b[0m] #{socketInfo[socket.id].nick}"
-						socketInfo[socket.id].bot.end()
-						delete socketInfo[socket.id]
-					return
-				"dig":(pos)->
-					block=bot().blockAt(vec3(pos[0],pos[1]-16,pos[2]))
-					if block isnt null
-						digTime=bot().digTime(block)
-						if bot().targetDigBlock isnt null
-							console.log "Already digging..."
-							bot().stopDigging()
-						emit ["digTime",digTime,block]
-						console.log "Start"
-						bot().dig block,false,(xd)->
-							if xd is undefined
-								console.log "SUCCESS"
-							else
-								console.log "FAIL"
-					return
-				"stopDigging":(callback)->
-					bot().stopDigging()
-					return
-			for i of socketEventMap
-				socket.on i,socketEventMap[i]
+		bot()._client.on "map_chunk",(packet)->
+			cell=new Chunk()
+			cell.load packet.chunkData,packet.bitMap,true,true
+			emit ["mapChunk", cell.sections,packet.x,packet.z,packet.biomes]
 			return
+		bot()._client.on "respawn",(packet)->
+			emit ["dimension",packet.dimension.value.effects.value]
+			return
+		botEventMap=
+			"heldItemChanged":(item)->
+				playerSocket[socket.id].held=item
+				return
+			"login":()->
+				emit ["dimension",bot().game.dimension]
+				return
+			"move":()->
+				emit ["move",bot().entity.position]
+				return
+			"health":()->
+				emit ["hp",bot().health]
+				emit ["food",bot().food]
+				return
+			"spawn":()->
+				emit ["spawn",bot().entity.yaw,bot().entity.pitch]
+				return
+			"kicked":(reason,loggedIn)->
+				emit ["kicked",reason]
+				return
+			"message":(msg)->
+				emit ["msg",convert.toHtml(msg.toAnsi())]
+				return
+			"experience":()->
+				emit ["xp",bot().experience]
+				return
+			"blockUpdate":(oldb,newb)->
+				emit ["blockUpdate",[newb.position.x,newb.position.y,newb.position.z,newb.stateId]]
+				return
+			"diggingCompleted":(block)->
+				emit ["diggingCompleted",block]
+				return
+			"diggingAborted":(block)->
+				emit ["diggingAborted",block]
+				return
+		for i of botEventMap
+			((i)->
+				playerSocket[socket.id].bot.on i, ()->
+					if bot() isnt null
+						botEventMap[i] arguments...
+					return
+			)(i)
+		inv=""
+		playerSocket[socket.id].int=setInterval ()->
+			inv_new=JSON.stringify(bot().inventory.slots)
+			if inv isnt inv_new
+				inv=inv_new
+				emit ["inventory",bot().inventory.slots]
+			entities=[]
+			for k,v of bot().entities
+				if v.type is "mob"
+					entities.push [v.position.x,v.position.y,v.position.z]
+			emit ["entities",entities]
+			return
+		,10
+		socketEventMap=
+			"blockPlace":(pos,vec)->
+				block=bot().blockAt(new vec3(pos...))
+				vecx=[
+					[1,0,0]
+					[-1,0,0]
+					[0,1,0]
+					[0,-1,0]
+				]
+				if playerSocket[socket.id].held isnt undefined and playerSocket[socket.id].held isnt null
+					console.log playerSocket[socket.id].held
+					bot().placeBlock block,new vec3(vec...),(r)->
+						console.log r
+						return
+				return
+			"invc":(num)->
+				item=bot().inventory.slots[num+36]
+				if item isnt null and item isnt undefined
+					bot().equip item,"hand"
+				else if playerSocket[socket.id].held isnt undefined
+					bot().unequip "hand"
+				return
+			"move":(state,toggle)->
+				bot().setControlState(state,toggle)
+				return
+			"command":(com)->
+				bot().chat(com)
+				return
+			"rotate":(data)->
+				bot().look data...
+				return
+			"disconnect":()->
+				try
+					clearInterval playerSocket[socket.id].int
+					console.log "[\x1b[31m-\x1b[0m] #{query.nick}"
+					playerSocket[socket.id].bot.end()
+					delete playerSocket[socket.id]
+				return
+			"dig":(pos)->
+				block=bot().blockAt(vec3(pos[0],pos[1]-16,pos[2]))
+				if block isnt null
+					digTime=bot().digTime(block)
+					if bot().targetDigBlock isnt null
+						console.log "Already digging..."
+						bot().stopDigging()
+					emit ["digTime",digTime,block]
+					console.log "Start"
+					bot().dig block,false,(xd)->
+						if xd is undefined
+							console.log "SUCCESS"
+						else
+							console.log "FAIL"
+				return
+			"stopDigging":(callback)->
+				bot().stopDigging()
+				return
+		for i of socketEventMap
+			socket.on i,socketEventMap[i]
 		return
 	return
