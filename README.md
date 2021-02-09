@@ -6,15 +6,11 @@
 
 ## About
 
-**Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser. By default node.js server is served at http://localhost:8080.
+**Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
 
 
 ### Installation
 ```bash
-#Clone repo
-git clone https://github.com/michaljaz/web-minecraft
-cd web-minecraft
-
 #Install node.js libraries
 npm install
 
@@ -30,14 +26,14 @@ npm run server
 
 ```
 
-### OPTION 1: Development setup 
+### Development setup 
 ```bash
 #Start node server with webpack middleware
 npm run dev
 
 ```
 
-### OPTION 2: Production setup
+### Production setup
 ```bash
 #Cleaning dist folder (old game bundles)
 npm run clean
@@ -51,6 +47,6 @@ npm start
 ```
 
 ### Screenshots
-[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="300">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
-[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="300">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
-[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="300">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)
+[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="30%">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
+[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="30%">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
+[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="30%">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)

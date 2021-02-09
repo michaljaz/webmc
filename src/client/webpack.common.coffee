@@ -1,6 +1,5 @@
 
 WebpackBar=require "webpackbar"
-UglifyJsPlugin=require "uglifyjs-webpack-plugin"
 HtmlWebpackPlugin = require "html-webpack-plugin"
 CopyPlugin = require "copy-webpack-plugin"
 webpack=require "webpack"
@@ -12,7 +11,6 @@ module.exports=
 	entry: [
 		"#{__dirname}/scripts/index.coffee"
 		"#{__dirname}/styles/style.scss"
-		"#{__dirname}/styles/style.css"
 		"bootstrap"
 	]
 	output:
@@ -37,15 +35,12 @@ module.exports=
 				test: /\.(scss)$/
 				use: [
 					{
-						#Adds CSS to the DOM by injecting a `<style>` tag
 						loader: 'style-loader'
 					}
 					{
-						#Interprets `@import` and `url()` like `import/require()` and will resolve them
 						loader: 'css-loader'
 					}
 					{
-						#Loader for webpack to process CSS with PostCSS
 						loader: 'postcss-loader'
 						options: 
 							plugins: ()->
@@ -54,7 +49,6 @@ module.exports=
 								]
 					}
 					{
-						#Loads a SASS/SCSS file and compiles it to CSS
 						loader: 'sass-loader'
 					}
 				]
