@@ -20,7 +20,6 @@ class World
 		@renderTime=100
 		@neighbours=[[-1, 0, 0],[1, 0, 0],[0, -1, 0],[0, 1, 0],[0, 0, -1],[0, 0, 1]]
 
-		#Utworzenie Workera do obliczania geometrii chunków
 		@chunkWorker=new chunkWorker
 		@chunkWorker.onmessage=(message)->
 			if message.data.type is "cellGeo"
@@ -41,6 +40,9 @@ class World
 				blocksDef: @blocksDef
 			}
 		}
+		return
+	updateRenderOrder: (cell)->
+		#Here will be ordering meshes
 		return
 	setCell: (cellX,cellY,cellZ,buffer)->
 		@_setCell cellX,cellY,cellZ,buffer
@@ -63,7 +65,6 @@ class World
 		@_resetWorld()
 		return
 	updateCell: (data)->
-		#Updatowanie komórki z już obliczoną geometrią
 		cellId=@cellTerrain.vec3 data.info...
 		cell=data.cell
 		mesh=@cellMesh[cellId]
@@ -176,8 +177,6 @@ class World
 		else
 			return false
 	_setCell: (cellX,cellY,cellZ,buffer,biome)->
-		#Wysyłanie do ChunkWorkera informacji nowej komórce
-
 		@cellUpdateTime=performance.now()
 		@chunkWorker.postMessage {
 			type:"setCell"
@@ -190,13 +189,11 @@ class World
 		}
 		return
 	_setVoxel: (voxelX,voxelY,voxelZ,value)->
-		#Wysyłanie do ChunkWorkera informacji o nowym Voxelu
 		@chunkWorker.postMessage {
 			type:"setVoxel"
 			data:[voxelX,voxelY,voxelZ,value]
 		}
 	_genCellGeo: (cellX,cellY,cellZ)->
-		#Wysyłanie do ChunkWorkera prośby o wygenerowanie geometrii komórki
 		cellX=parseInt cellX
 		cellY=parseInt cellY
 		cellZ=parseInt cellZ
@@ -208,6 +205,7 @@ class World
 		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>@renderTime)
 			pos=@game.camera.position
 			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
+			@updateRenderOrder cell
 			@chunkWorker.postMessage {
 				type:"updateCellsAroundPlayer"
 				data:[cell,radius]

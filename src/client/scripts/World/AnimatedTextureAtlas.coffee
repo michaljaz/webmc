@@ -72,7 +72,9 @@ class AnimatedTextureAtlas
 		@material=new THREE.MeshStandardMaterial({
 			side: 0
 			map:null
-			vertexColors: true
+			vertexColors:true
+			transparent:true
+			depthTest:true
 		})
 		@uni=
 			view:new THREE.Vector3

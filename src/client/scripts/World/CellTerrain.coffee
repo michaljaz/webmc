@@ -58,6 +58,7 @@ class CellTerrain
 				name:def[0]
 				stateId
 				boundingBox
+				transparent:def[2]
 			}
 		else
 			return false

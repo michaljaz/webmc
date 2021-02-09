@@ -39,6 +39,7 @@ class Game
 		@renderer=new THREE.WebGLRenderer
 			canvas:@canvas
 			PixelRatio:window.devicePixelRatio
+		@renderer.sortObjects=false
 		@scene=new THREE.Scene
 		@dimBg=
 			"minecraft:overworld":[173/255, 200/255, 255/255]
@@ -213,7 +214,6 @@ class Game
 			@pii.render()
 		@inv_bar.tick()
 		@world.ATA.uni.view.copy(@camera.position).applyMatrix4(@camera.matrixWorldInverse)
-
 		@renderer.render @scene, @camera
 		return
 new Game()
