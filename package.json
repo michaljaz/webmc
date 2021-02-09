@@ -19,6 +19,7 @@
     "dat.gui": "^0.7.7",
     "express": "^4.17.1",
     "flying-squid": "^1.4.0",
+    "helmet": "^4.4.1",
     "html-webpack-plugin": "^4.5.1",
     "http": "0.0.1-security",
     "https": "^1.0.0",

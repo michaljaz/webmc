@@ -10,15 +10,13 @@ module.exports=(mode)->
 	vec3=require "vec3"
 	Convert = require "ansi-to-html"
 	convert = new Convert()
+	helmet = require "helmet"
 
 	sf={}
 	socketInfo={}
 	port=process.env.PORT or 8080
 
-	app.use (req, res, next)->
-		res.setHeader 'Content-Security-Policy', 'worker-src *'
-		next()
-		return
+	app.use helmet()
 
 	if mode is "production"
 		app.use express.static "#{__dirname}/client/dist"
