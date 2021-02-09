@@ -183,18 +183,32 @@ class TerrainManager
 				for k in [0..@cellSize-1]
 					pos=[cellX*@cellSize+i,cellY*@cellSize+j,cellZ*@cellSize+k]
 					if @cellTerrain.getBlock(pos...).boundingBox is "block"
-						if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).boundingBox isnt "block")
-							addFace "nx",pos
-						if (@cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).boundingBox isnt "block")
-							addFace "px",pos
-						if (@cellTerrain.getBlock(pos[0],pos[1]-1,pos[2]).boundingBox isnt "block")
-							addFace "ny",pos
-						if (@cellTerrain.getBlock(pos[0],pos[1]+1,pos[2]).boundingBox isnt "block")
-							addFace "py",pos
-						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]+1).boundingBox isnt "block")
-							addFace "pz",pos
-						if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).boundingBox isnt "block")
-							addFace "nz",pos
+						if @cellTerrain.getBlock(pos...).transparent
+							if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).boundingBox isnt "block")
+								addFace "nx",pos
+							if (@cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).boundingBox isnt "block")
+								addFace "px",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1]-1,pos[2]).boundingBox isnt "block")
+								addFace "ny",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1]+1,pos[2]).boundingBox isnt "block")
+								addFace "py",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]+1).boundingBox isnt "block")
+								addFace "pz",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).boundingBox isnt "block")
+								addFace "nz",pos
+						else
+							if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).boundingBox isnt "block" or @cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).transparent)
+								addFace "nx",pos
+							if (@cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).boundingBox isnt "block" or @cellTerrain.getBlock(pos[0]-1,pos[1],pos[2]).transparent)
+								addFace "px",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1]-1,pos[2]).boundingBox isnt "block" or @cellTerrain.getBlock(pos[0],pos[1]-1,pos[2]).transparent)
+								addFace "ny",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1]+1,pos[2]).boundingBox isnt "block" or @cellTerrain.getBlock(pos[0],pos[1]+1,pos[2]).transparent)
+								addFace "py",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]+1).boundingBox isnt "block" or @cellTerrain.getBlock(pos[0],pos[1],pos[2]+1).transparent)
+								addFace "pz",pos
+							if (@cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).boundingBox isnt "block" or @cellTerrain.getBlock(pos[0],pos[1],pos[2]-1).transparent)
+								addFace "nz",pos
 					else if @cellTerrain.getBlock(pos...).name is "water" or @cellTerrain.getBlock(pos...).name is "lava"
 						if (@cellTerrain.getBlock(pos[0]+1,pos[1],pos[2]).name is "air")
 							addFace "nx",pos
