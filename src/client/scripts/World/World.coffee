@@ -127,7 +127,7 @@ class World
 		steppedIndex = -1
 		while t <= len
 			block = @cellTerrain.getBlock ix, iy, iz
-			if block.name is "air" or block.name is "cave_air" or block.name is "void_air"
+			if block.name is "air" or block.name is "cave_air" or block.name is "void_air" or block.name is "water"
 				voxel=0
 			else
 				voxel=1
