@@ -25,7 +25,7 @@
     "jquery": "^3.5.1",
     "jssoup": "0.0.12",
     "lodash-webpack-plugin": "^0.11.6",
-    "mineflayer": "^2.40.1",
+    "mineflayer": "^3.0.0",
     "opn": "^6.0.0",
     "popper.js": "^1.16.1",
     "prismarine-block": "^1.7.3",
