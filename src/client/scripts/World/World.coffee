@@ -208,11 +208,12 @@ class World
 			type:"genCellGeo"
 			data:[cellX,cellY,cellZ]
 		}
+	
 	_updateCellsAroundPlayer: (radius)->
+		pos=@game.camera.position
+		cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x+0.5),(Math.floor pos.y+0.5),(Math.floor pos.z+0.5)
+		@updateRenderOrder cell
 		if @cellUpdateTime isnt null and (performance.now()-@cellUpdateTime>@renderTime)
-			pos=@game.camera.position
-			cell=@cellTerrain.computeCellForVoxel (Math.floor pos.x),(Math.floor pos.y),(Math.floor pos.z)
-			@updateRenderOrder cell
 			@chunkWorker.postMessage {
 				type:"updateCellsAroundPlayer"
 				data:[cell,radius]
