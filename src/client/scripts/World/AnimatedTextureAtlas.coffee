@@ -74,7 +74,6 @@ class AnimatedTextureAtlas
 			map:null
 			vertexColors:true
 			transparent:true
-			depthTest:true
 		})
 		@uni=
 			view:new THREE.Vector3

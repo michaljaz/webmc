@@ -39,7 +39,7 @@ class Game
 		@renderer=new THREE.WebGLRenderer
 			canvas:@canvas
 			PixelRatio:window.devicePixelRatio
-		@renderer.sortObjects=false
+		@renderer.sortObjects=true
 		@scene=new THREE.Scene
 		@dimBg=
 			"minecraft:overworld":[173/255, 200/255, 255/255]
@@ -49,9 +49,6 @@ class Game
 		@camera.rotation.order = "YXZ"
 		@camera.position.set 26, 26, 26
 		@scene.add new THREE.AmbientLight 0xffffff
-		# directionalLight = new THREE.DirectionalLight 0x333333, 2
-		# directionalLight.position.set(1, 1, 0.5).normalize()
-		# @scene.add directionalLight
 		console.warn gpuInfo()
 
 		@nick=document.location.hash.substring 1,document.location.hash.length
