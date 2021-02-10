@@ -67,6 +67,11 @@ class FirstPersonControls
 					_this.setState "menu"
 			if z.keyCode is 27 and _this.gameState is "chat"
 				_this.setState "menu"
+			
+			#Flying
+			if z.keyCode is 70
+				_this.game.flying=not _this.game.flying
+				_this.game.socket.emit "fly",_this.game.flying
 
 			#Wysyłanie state'u do serwera
 			if _this.kc[z.keyCode] isnt undefined and _this.gameState is "gameLock"

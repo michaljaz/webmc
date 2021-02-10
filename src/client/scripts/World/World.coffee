@@ -43,13 +43,11 @@ class World
 		}
 		return
 	updateRenderOrder: (cell)->
-		#Here will be ordering meshes
 		c=new vec3 cell...
 		for i of @cellMesh
 			n=i.split ":"
 			x=new vec3 parseInt(n[0]),parseInt(n[1]),parseInt(n[2])
 			@cellMesh[i].renderOrder=-c.distanceTo x
-		@game.renderer.clearDepth()
 		return
 	setCell: (cellX,cellY,cellZ,buffer)->
 		@_setCell cellX,cellY,cellZ,buffer

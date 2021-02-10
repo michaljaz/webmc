@@ -32,6 +32,7 @@ class Game
 		@canvas=document.querySelector "#c"
 		@pcanvas=document.querySelector "#c_player"
 		@dimension=null
+		@flying=false
 		if PRODUCTION
 			console.log "Running in production mode"
 		else

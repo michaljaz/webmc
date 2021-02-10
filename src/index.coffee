@@ -109,6 +109,12 @@ module.exports=(mode)->
 			return
 		,10
 		socketEventMap=
+			"fly":(toggle)->
+				if toggle
+					bot.creative.startFlying()
+				else
+					bot.creative.stopFlying()
+				return
 			"blockPlace":(pos,vec)->
 				block=bot.blockAt(new vec3(pos...))
 				vecx=[
