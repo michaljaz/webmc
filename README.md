@@ -8,45 +8,73 @@
 
 **Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
 
+## Instructions
 
-### Installation
+<details>
+<summary>Install localy</summary>
+
 ```bash
-#Install node.js libraries
-npm install
+git clone https://github.com/michaljaz/web-minecraft
+cd web-minecraft
+yarn install
 
-```
+``` 
+</details>
 
-### Minecraft server setup
 
-To run this game you need to start real minecraft server (by default it is 1.16.1 offline mode java edition on ip localhost:25565) you can also define it in */src/server.json* file. 
+
+
+<details>
+<summary>Minecraft server setup</summary>
+To run this game you need to start real minecraft server (by default it is 1.16.1 offline mode java edition on ip localhost:25565) you can also define it in */src/server.json* file.
 
 ```bash
 #Optionally you can run lite minecraft server (flying-squid)
-npm run server
+yarn server
 
-```
+``` 
+</details>
 
-### Development setup 
+
+
+
+<details>
+<summary>Development setup </summary>
+
 ```bash
 #Start node server with webpack middleware
-npm run dev
+yarn dev
 
 ```
+</details>
+<details>
+<summary>Production setup</summary>
 
-### Production setup
 ```bash
 #Cleaning dist folder (old game bundles)
-npm run clean
+yarn clean
 
 #Building app bundle
-npm run build
+yarn build
 
 #Start node server and serve bundle files
-npm start
+yarn start
 
 ```
 
-### Screenshots
-[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="30%">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
-[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="30%">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
-[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="30%">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)
+</details>
+
+<details>
+<summary>Browser support</summary>
+
+It is prefered to run this game on [Google Chrome](https://www.google.pl/chrome/) (best performance), but it could work on other browsers.
+</details>
+
+
+
+
+
+## Screenshots
+[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="100%">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
+[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="100%">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
+[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="100%">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)
