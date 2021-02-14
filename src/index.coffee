@@ -15,7 +15,9 @@ module.exports=(mode)->
 
 	port=process.env.PORT or 8080
 
-	app.use helmet()
+	app.use helmet {
+		contentSecurityPolicy: false
+	}
 
 	if mode is "production"
 		app.use express.static "#{__dirname}/client/dist"
