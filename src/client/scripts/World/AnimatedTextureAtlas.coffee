@@ -75,52 +75,6 @@ class AnimatedTextureAtlas
 			vertexColors:true
 			transparent:true
 		})
-		@uni=
-			view:new THREE.Vector3
-			farnear:new THREE.Vector2
-			color:new THREE.Vector4
-		@material.onBeforeCompile=(shader)->
-
-			#Uniforms
-			shader.uniforms.u_viewPos={value:_this.uni.view}
-			shader.uniforms.u_fogColor={value:_this.uni.color}
-			shader.uniforms.u_farnear={value:_this.uni.farnear}
-			#Fragment shader
-			shader.fragmentShader=[
-				"uniform vec3 u_viewPos;"
-				"uniform vec4 u_fogColor;"
-				"uniform float u_fogNear;"
-				"uniform float u_fogFar;"
-				"uniform vec2 u_farnear;"
-				shader.fragmentShader
-			].join("\n")
-			# # shader.fragmentShader="uniform vec4 fogColor;\nuniform float fogAmount;\n"+shader.fragmentShader
-			shader.fragmentShader=shader.fragmentShader.replace(
-				"gl_FragColor = vec4( outgoingLight, diffuseColor.a );"
-				[
-					"float dist=length(u_viewPos-vViewPosition);"
-					"float fogAmount = smoothstep(u_farnear.x, u_farnear.y, dist);"
-					"gl_FragColor = vec4( outgoingLight, diffuseColor.a );"
-					"gl_FragColor = mix(gl_FragColor,u_fogColor,max(0.1,fogAmount));"
-				].join("\n")
-			)
-
-			#Vertex shader
-			shader.vertexShader=[
-				"uniform float time;"
-				"uniform mat4 u_worldView;"
-				"attribute vec4 a_position;"
-				shader.vertexShader
-			].join("\n")
-			shader.vertexShader=shader.vertexShader.replace(
-				"#include <fog_vertex>"
-				[
-					"vec4 vViewPosition4 = modelViewMatrix * vec4(position, 1);"
-					"vViewPosition = vViewPosition4.xyz;"
-				].join("\n")
-				
-			)
-			return
 		@atlasCreator=new TextureAtlasCreator({
 			textureX:@game.al.get "blocksAtlasFull"
 			textureMapping:@game.al.get "blocksMappingFull"

@@ -15,6 +15,7 @@ import {Entities} from "./Entities.coffee"
 import {PlayerInInventory} from "./PlayerInInventory.coffee"
 import {BlockBreak} from "./BlockBreak.coffee"
 import {BlockPlace} from "./BlockPlace.coffee"
+import {DistanceBasedFog} from "./DistanceBasedFog.coffee"
 
 class Game
 	constructor:(options)->
@@ -43,13 +44,22 @@ class Game
 		@renderer.sortObjects=true
 		@scene=new THREE.Scene
 		@dimBg=
-			"minecraft:overworld":[173/255, 200/255, 255/255]
+		
+			"minecraft:overworld":[165/255, 192/255, 254/255]
 			"minecraft:the_end":[1/255, 20/255, 51/255]
 			"minecraft:the_nether":[133/255, 40/255, 15/255]
 		@camera = new THREE.PerspectiveCamera @fov, 2, 0.1, 1000
 		@camera.rotation.order = "YXZ"
 		@camera.position.set 26, 26, 26
 		@scene.add new THREE.AmbientLight 0xffffff
+		loader = new THREE.TextureLoader()
+		texture = loader.load('assets/images/skybox.jpg',()->
+			rt = new THREE.WebGLCubeRenderTarget(texture.image.height)
+			rt.fromEquirectangularTexture(_this.renderer, texture)
+			_this.rt = rt
+			return
+		)
+		@distanceBasedFog=new DistanceBasedFog
 		console.warn gpuInfo()
 
 		@nick=document.location.hash.substring 1,document.location.hash.length
@@ -68,14 +78,16 @@ class Game
 		document.body.appendChild @stats.dom
 
 		@pii=new PlayerInInventory @
-		@ent=new Entities @
 		@bb=new BlockBreak @
 		@bp=new BlockPlace @
 		@world=new World @
+		@ent=new Entities @
 		@chat=new Chat @
-		@inv_bar = new InventoryBar @
-		@FPC = new FirstPersonControls @
-
+		@inv_bar=new InventoryBar @
+		@FPC=new FirstPersonControls @
+		@distanceBasedFog.addShaderToMaterial @world.material
+		# @distanceBasedFog.addShaderToMaterial @ent.mobMaterial
+		# console.log @ent.mobMaterial
 		eventMap={
 			"connect":()->
 				console.log "Connected to server!"
@@ -98,11 +110,14 @@ class Game
 				console.log "Player dimension has been changed: #{dim}"
 				_this.world.resetWorld()
 				bg=_this.dimBg[dim]
-				_this.scene.background=new THREE.Color bg...
-				_this.world.ATA.uni.color.x=bg[0]
-				_this.world.ATA.uni.color.y=bg[1]
-				_this.world.ATA.uni.color.z=bg[2]
-				_this.world.ATA.uni.color.w=1
+				if dim is "minecraft:overworld"
+					_this.scene.background=_this.rt
+				else
+					_this.scene.background=new THREE.Color bg...
+				_this.distanceBasedFog.color.x=bg[0]
+				_this.distanceBasedFog.color.y=bg[1]
+				_this.distanceBasedFog.color.z=bg[2]
+				_this.distanceBasedFog.color.w=1
 				return
 			"mapChunk":(sections,x,z,biomes,dim)->
 				_this.world._computeSections sections,x,z,biomes,dim
@@ -157,13 +172,13 @@ class Game
 		gui = new dat.GUI
 		@params=
 			chunkdist:3
-		@world.ATA.uni.farnear.x=(@params.chunkdist-1.5)*16
-		@world.ATA.uni.farnear.y=(@params.chunkdist-0.5)*16
+		@distanceBasedFog.farnear.x=(@params.chunkdist-1)*16
+		@distanceBasedFog.farnear.y=(@params.chunkdist)*16
 		gui.add( @world.material, "wireframe" ).name( "Wireframe" ).listen()
 		chunkDist=gui.add( @params, "chunkdist",0,10,1).name( "Render distance" ).listen()
 		chunkDist.onChange (val)->
-			_this.world.ATA.uni.farnear.x=(val-1.5)*16
-			_this.world.ATA.uni.farnear.y=(val-0.5)*16
+			_this.distanceBasedFog.farnear.x=(val-1)*16
+			_this.distanceBasedFog.farnear.y=(val)*16
 			console.log val
 			return
 		@mouse=false
@@ -211,7 +226,7 @@ class Game
 		if @FPC.gameState is "inventory"
 			@pii.render()
 		@inv_bar.tick()
-		@world.ATA.uni.view.copy(@camera.position).applyMatrix4(@camera.matrixWorldInverse)
+		@distanceBasedFog.view.copy(@camera.position).applyMatrix4(@camera.matrixWorldInverse)
 		@renderer.render @scene, @camera
 		return
 new Game()

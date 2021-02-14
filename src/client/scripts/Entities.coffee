@@ -2,10 +2,12 @@ import * as THREE from 'three'
 class Entities
 	constructor:(game)->
 		@game=game
-		@mobMaterial = new THREE.MeshBasicMaterial {color: new THREE.Color "red" }
+		@material = new THREE.MeshStandardMaterial {
+			color: new THREE.Color "red"
+		}
 		@mobGeometry = new THREE.BoxGeometry 1, 1, 1
 		@mobMaxCount=200
-		@mobMesh=new THREE.InstancedMesh @mobGeometry,@mobMaterial,@mobMaxCount
+		@mobMesh=new THREE.InstancedMesh @mobGeometry,@material,@mobMaxCount
 		@mobMesh.instanceMatrix.setUsage THREE.DynamicDrawUsage
 		@game.scene.add @mobMesh
 		@dummy = new THREE.Object3D()
