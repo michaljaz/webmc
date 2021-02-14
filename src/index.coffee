@@ -103,10 +103,15 @@ module.exports=(mode)->
 			if inv isnt inv_new
 				inv=inv_new
 				emit ["inventory",bot.inventory.slots]
-			entities=[]
+			entities={
+				mobs:[]
+				players:[]
+			}
 			for k,v of bot.entities
 				if v.type is "mob"
-					entities.push [v.position.x,v.position.y,v.position.z]
+					entities.mobs.push [v.position.x,v.position.y,v.position.z]
+				if v.type is "player"
+					entities.players.push [v.username,v.position.x,v.position.y,v.position.z]
 			emit ["entities",entities]
 			return
 		,10
