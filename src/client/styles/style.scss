@@ -29,17 +29,21 @@ body { margin: 0; background:black;}
 }
 
 .gameMenu{
-  margin: 0;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  -ms-transform: translate(-50%, -50%);
-  transform: translate(-50%, -50%);
-  width:800px;
-  height:500px;
-  background:#303030;
+  margin: 0px;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0, 0.7);
   z-index:10;
   color:white;
+}
+.gameMenuX{
+  position:fixed;
+  top:50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
 }
 
 .initLoading{

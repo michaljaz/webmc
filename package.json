@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "scripts": {
     "start": "node index.js prod",
-    "dev": "npm run prebuild && node index.js dev",
+    "dev": "node index.js preb && node index.js dev",
     "build": "cd src/client && webpack --config webpack.prod.coffee",
     "prebuild": "node index.js preb",
     "clean": "rimraf src/client/dist/*",

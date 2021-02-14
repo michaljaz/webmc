@@ -11,12 +11,12 @@
 ## Instructions
 
 <details>
-<summary>Install localy</summary>
+<summary>Install locally</summary>
 
 ```bash
 git clone https://github.com/michaljaz/web-minecraft
 cd web-minecraft
-yarn install
+npm i
 
 ``` 
 </details>
@@ -30,7 +30,7 @@ To run this game you need to start real minecraft server (by default it is 1.16.
 
 ```bash
 #Optionally you can run lite minecraft server (flying-squid)
-yarn server
+npm run server
 
 ``` 
 </details>
@@ -43,7 +43,7 @@ yarn server
 
 ```bash
 #Start node server with webpack middleware
-yarn dev
+npm run dev
 
 ```
 </details>
@@ -52,13 +52,12 @@ yarn dev
 
 ```bash
 #Cleaning dist folder (old game bundles)
-yarn clean
+npm run clean
 
 #Building app bundle
-yarn build
-
+npm run build
 #Start node server and serve bundle files
-yarn start
+npm start
 
 ```
 
@@ -67,7 +66,7 @@ yarn start
 <details>
 <summary>Browser support</summary>
 
-It is prefered to run this game on [Google Chrome](https://www.google.pl/chrome/) (best performance), but it could work on other browsers.
+It is preferred to run this game on [Google Chrome](https://www.google.pl/chrome/) (best performance), but it could work on other browsers.
 </details>
 
 
