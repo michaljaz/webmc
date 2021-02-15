@@ -2,12 +2,12 @@
   "name": "web-minecraft",
   "version": "1.0.0",
   "scripts": {
-    "start": "node index.js prod",
-    "dev": "node index.js preb && node index.js dev",
-    "build": "cd src/client && webpack --config webpack.prod.coffee",
-    "prebuild": "node index.js preb",
+    "start": "node src/index.js production",
+    "dev": "npm run prebuild && node src/index.js development",
+    "build": "cd src/client && webpack --config webpack.prod.js",
+    "prebuild": "node src/prebuild.js",
     "clean": "rimraf src/client/dist/*",
-    "items": "node index.js items"
+    "items": "node src/itemDump.js"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",
@@ -41,8 +41,6 @@
   },
   "devDependencies": {
     "autoprefixer": "^9.0.0",
-    "coffee-loader": "^2.0.0",
-    "coffeescript": "^2.5.1",
     "copy-webpack-plugin": "^6.3.1",
     "css-loader": "^5.0.1",
     "exports-loader": "^2.0.0",
