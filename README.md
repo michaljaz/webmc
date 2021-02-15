@@ -28,11 +28,6 @@ npm i
 <summary>Minecraft server setup</summary>
 To run this game you need to start real minecraft server (by default it is 1.16.1 offline mode java edition on ip localhost:25565) you can also define it in */src/server.json* file.
 
-```bash
-#Optionally you can run lite minecraft server (flying-squid)
-npm run server
-
-``` 
 </details>
 
 
@@ -56,6 +51,7 @@ npm run clean
 
 #Building app bundle
 npm run build
+
 #Start node server and serve bundle files
 npm start
 

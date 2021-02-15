@@ -122,7 +122,8 @@ class TerrainManager
 			else
 				return [0.3,0.3,0.3]
 		addFace=(type,pos)->
-			faceVertex=_this.genBlockFace type,_this.cellTerrain.getBlock(pos...),pos
+			block=_this.cellTerrain.getBlock pos...
+			faceVertex=_this.genBlockFace type,block,pos
 			# _this.cellTerrain.getBlock(pos[0],pos[1],pos[2])
 			loaded={}
 			for x in [-1..1]
@@ -166,6 +167,38 @@ class TerrainManager
 				col4=aoColor(loaded["0:1:-1"]+loaded["-1:1:-1"]+loaded["-1:0:-1"])
 				col1=aoColor(loaded["0:-1:-1"]+loaded["1:-1:-1"]+loaded["1:0:-1"])
 				col2=aoColor(loaded["0:1:-1"]+loaded["1:1:-1"]+loaded["1:0:-1"])
+
+			if block.name is "water"
+				ile=4
+				col1[0]/=ile
+				col1[1]/=ile
+				col2[0]/=ile
+				col2[1]/=ile
+				col3[0]/=ile
+				col3[1]/=ile
+				col4[0]/=ile
+				col4[1]/=ile
+			else if block.name is "grass_block" and type is "py"
+				ile=4
+				col1[0]/=ile
+				col1[2]/=ile
+				col2[0]/=ile
+				col2[2]/=ile
+				col3[0]/=ile
+				col3[2]/=ile
+				col4[0]/=ile
+				col4[2]/=ile
+			else if block.name.includes "leaves"
+				ile=4
+				col1[0]/=ile
+				col1[2]/=ile
+				col2[0]/=ile
+				col2[2]/=ile
+				col3[0]/=ile
+				col3[2]/=ile
+				col4[0]/=ile
+				col4[2]/=ile
+			
 			if _this.cellTerrain.getBlock(pos...).transparent
 				t_positions.push faceVertex.pos...
 				t_normals.push faceVertex.norm...

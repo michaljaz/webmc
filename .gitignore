@@ -2,4 +2,3 @@ node_modules
 src/client/dist
 src/client/assets/blocks
 src/client/assets/items
-src/world

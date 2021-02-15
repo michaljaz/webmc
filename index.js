@@ -7,6 +7,4 @@ if(process.argv[2]==="dev"){
     require("./src/prebuild.coffee");
 }else if(process.argv[2]==="items"){
     require("./src/itemDump.coffee");
-}else if(process.argv[2]==="server"){
-    require("./src/minecraft.coffee");
 }
