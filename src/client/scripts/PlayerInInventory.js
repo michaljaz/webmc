@@ -1,7 +1,6 @@
-
 var PlayerInInventory;
 
-import * as THREE from 'three';
+import * as THREE from "three";
 
 PlayerInInventory = class PlayerInInventory {
   constructor(game) {
@@ -9,7 +8,7 @@ PlayerInInventory = class PlayerInInventory {
     this.game = game;
     this.renderer = new THREE.WebGLRenderer({
       canvas: this.game.pcanvas,
-      PixelRatio: window.devicePixelRatio
+      PixelRatio: window.devicePixelRatio,
     });
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("black");
@@ -24,7 +23,7 @@ PlayerInInventory = class PlayerInInventory {
     this.camera.rotation.order = "YXZ";
     this.camera.position.z = 210;
     this.camera.position.y = 120;
-    $(window).mousemove(function(z) {
+    $(window).mousemove(function (z) {
       var bottom, left, right, top, wych_x, wych_y, xoff, yoff;
       xoff = z.pageX - window.innerWidth / 2 + 112;
       yoff = z.pageY - window.innerHeight / 2 + 170;
@@ -40,9 +39,11 @@ PlayerInInventory = class PlayerInInventory {
         player.rotation.y = wych_x * left;
       }
       if (yoff > 0) {
-        return player.children[1].children[0].children[2].children[0].children[0].rotation.x = wych_y * bottom;
+        return (player.children[1].children[0].children[2].children[0].children[0].rotation.x =
+          wych_y * bottom);
       } else {
-        return player.children[1].children[0].children[2].children[0].children[0].rotation.x = wych_y * top;
+        return (player.children[1].children[0].children[2].children[0].children[0].rotation.x =
+          wych_y * top);
       }
     });
   }
@@ -52,15 +53,12 @@ PlayerInInventory = class PlayerInInventory {
   }
 
   show() {
-    return this.game.pcanvas.style.display = "block";
+    return (this.game.pcanvas.style.display = "block");
   }
 
   hide() {
-    return this.game.pcanvas.style.display = "none";
+    return (this.game.pcanvas.style.display = "none");
   }
-
 };
 
-export {
-  PlayerInInventory
-};
+export { PlayerInInventory };

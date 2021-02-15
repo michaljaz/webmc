@@ -1,19 +1,12 @@
-
 var World;
 
-import * as THREE from 'three';
+import * as THREE from "three";
 
-import {
-  CellTerrain
-} from './CellTerrain.js';
+import { CellTerrain } from "./CellTerrain.js";
 
-import {
-  AnimatedTextureAtlas
-} from './AnimatedTextureAtlas.js';
+import { AnimatedTextureAtlas } from "./AnimatedTextureAtlas.js";
 
-import {
-  SectionComputer
-} from "./SectionComputer.js";
+import { SectionComputer } from "./SectionComputer.js";
 
 import vec3 from "vec3";
 
@@ -31,15 +24,22 @@ World = class World {
     this.models = {};
     this.cellTerrain = new CellTerrain({
       cellSize: this.game.cellSize,
-      blocksDef: this.blocksDef
+      blocksDef: this.blocksDef,
     });
     this.ATA = new AnimatedTextureAtlas(this.game);
     this.material = this.ATA.material;
     this.cellUpdateTime = null;
     this.renderTime = 100;
-    this.neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
+    this.neighbours = [
+      [-1, 0, 0],
+      [1, 0, 0],
+      [0, -1, 0],
+      [0, 1, 0],
+      [0, 0, -1],
+      [0, 0, 1],
+    ];
     this.chunkWorker = new chunkWorker();
-    this.chunkWorker.onmessage = function(message) {
+    this.chunkWorker.onmessage = function (message) {
       if (message.data.type === "cellGeo") {
         return _this.updateCell(message.data.data);
       } else if (message.data.type === "removeCell") {
@@ -52,14 +52,14 @@ World = class World {
       }
     };
     this.chunkWorker.postMessage({
-      type: 'init',
+      type: "init",
       data: {
         blocksMapping: this.game.al.get("blocksMapping"),
         toxelSize: this.game.toxelSize,
         cellSize: this.game.cellSize,
         blocksTex: this.game.al.get("blocksTex"),
-        blocksDef: this.blocksDef
-      }
+        blocksDef: this.blocksDef,
+      },
     });
     return;
   }
@@ -83,7 +83,7 @@ World = class World {
     voxelX = parseInt(voxelX);
     voxelY = parseInt(voxelY);
     voxelZ = parseInt(voxelZ);
-    if ((this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ)) !== value) {
+    if (this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ) !== value) {
       this._setVoxel(voxelX, voxelY, voxelZ, value);
       this.cellTerrain.setVoxel(voxelX, voxelY, voxelZ, value);
     }
@@ -108,19 +108,31 @@ World = class World {
     cell = data.cell;
     mesh = this.cellMesh[cellId];
     geometry = new THREE.BufferGeometry();
-    geometry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(cell.positions), 3));
-    geometry.setAttribute('normal', new THREE.BufferAttribute(new Float32Array(cell.normals), 3));
-    geometry.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(cell.uvs), 2));
-    geometry.setAttribute('color', new THREE.BufferAttribute(new Float32Array(cell.colors), 3));
+    geometry.setAttribute(
+      "position",
+      new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
+    );
+    geometry.setAttribute(
+      "normal",
+      new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
+    );
+    geometry.setAttribute(
+      "uv",
+      new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
+    );
+    geometry.setAttribute(
+      "color",
+      new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
+    );
     geometry.matrixAutoUpdate = false;
     if (mesh === void 0) {
       this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
       this.cellMesh[cellId].matrixAutoUpdate = false;
       this.cellMesh[cellId].frustumCulled = false;
       _this = this;
-      this.cellMesh[cellId].onAfterRender = function() {
+      this.cellMesh[cellId].onAfterRender = function () {
         _this.cellMesh[cellId].frustumCulled = true;
-        return _this.cellMesh[cellId].onAfterRender = function() {};
+        return (_this.cellMesh[cellId].onAfterRender = function () {});
       };
       this.game.scene.add(this.cellMesh[cellId]);
     } else {
@@ -129,7 +141,30 @@ World = class World {
   }
 
   intersectsRay(start, end) {
-    var block, dx, dy, dz, ix, iy, iz, len, lenSq, stepX, stepY, stepZ, steppedIndex, t, txDelta, txMax, tyDelta, tyMax, tzDelta, tzMax, voxel, xDist, yDist, zDist;
+    var block,
+      dx,
+      dy,
+      dz,
+      ix,
+      iy,
+      iz,
+      len,
+      lenSq,
+      stepX,
+      stepY,
+      stepZ,
+      steppedIndex,
+      t,
+      txDelta,
+      txMax,
+      tyDelta,
+      tyMax,
+      tzDelta,
+      tzMax,
+      voxel,
+      xDist,
+      yDist,
+      zDist;
     start.x += 0.5;
     start.y += 0.5;
     start.z += 0.5;
@@ -163,7 +198,12 @@ World = class World {
     steppedIndex = -1;
     while (t <= len) {
       block = this.cellTerrain.getBlock(ix, iy, iz);
-      if (block.name === "air" || block.name === "cave_air" || block.name === "void_air" || block.name === "water") {
+      if (
+        block.name === "air" ||
+        block.name === "cave_air" ||
+        block.name === "void_air" ||
+        block.name === "water"
+      ) {
         voxel = 0;
       } else {
         voxel = 1;
@@ -171,8 +211,12 @@ World = class World {
       if (voxel) {
         return {
           position: [start.x + t * dx, start.y + t * dy, start.z + t * dz],
-          normal: [steppedIndex === 0 ? -stepX : 0, steppedIndex === 1 ? -stepY : 0, steppedIndex === 2 ? -stepZ : 0],
-          voxel
+          normal: [
+            steppedIndex === 0 ? -stepX : 0,
+            steppedIndex === 1 ? -stepY : 0,
+            steppedIndex === 2 ? -stepZ : 0,
+          ],
+          voxel,
         };
       }
       if (txMax < tyMax) {
@@ -206,17 +250,19 @@ World = class World {
 
   getRayBlock() {
     var end, intersection, posBreak, posPlace, start;
-    start = new THREE.Vector3().setFromMatrixPosition(this.game.camera.matrixWorld);
+    start = new THREE.Vector3().setFromMatrixPosition(
+      this.game.camera.matrixWorld
+    );
     end = new THREE.Vector3().set(0, 0, 1).unproject(this.game.camera);
     intersection = this.intersectsRay(start, end);
     if (intersection) {
-      posPlace = intersection.position.map(function(v, ndx) {
+      posPlace = intersection.position.map(function (v, ndx) {
         return Math.floor(v + intersection.normal[ndx] * 0.5);
       });
-      posBreak = intersection.position.map(function(v, ndx) {
+      posBreak = intersection.position.map(function (v, ndx) {
         return Math.floor(v + intersection.normal[ndx] * -0.5);
       });
-      return {posPlace, posBreak};
+      return { posPlace, posBreak };
     } else {
       return false;
     }
@@ -226,21 +272,21 @@ World = class World {
     this.cellUpdateTime = performance.now();
     return this.chunkWorker.postMessage({
       type: "setCell",
-      data: [cellX, cellY, cellZ, buffer, biome]
+      data: [cellX, cellY, cellZ, buffer, biome],
     });
   }
 
   _resetWorld() {
     this.chunkWorker.postMessage({
       type: "resetWorld",
-      data: null
+      data: null,
     });
   }
 
   _setVoxel(voxelX, voxelY, voxelZ, value) {
     return this.chunkWorker.postMessage({
       type: "setVoxel",
-      data: [voxelX, voxelY, voxelZ, value]
+      data: [voxelX, voxelY, voxelZ, value],
     });
   }
 
@@ -250,26 +296,33 @@ World = class World {
     cellZ = parseInt(cellZ);
     return this.chunkWorker.postMessage({
       type: "genCellGeo",
-      data: [cellX, cellY, cellZ]
+      data: [cellX, cellY, cellZ],
     });
   }
 
   _updateCellsAroundPlayer(radius) {
     var cell, pos;
     pos = this.game.camera.position;
-    cell = this.cellTerrain.computeCellForVoxel(Math.floor(pos.x + 0.5), Math.floor(pos.y + 0.5), Math.floor(pos.z + 0.5));
+    cell = this.cellTerrain.computeCellForVoxel(
+      Math.floor(pos.x + 0.5),
+      Math.floor(pos.y + 0.5),
+      Math.floor(pos.z + 0.5)
+    );
     this.updateRenderOrder(cell);
-    if (this.cellUpdateTime !== null && (performance.now() - this.cellUpdateTime > this.renderTime)) {
+    if (
+      this.cellUpdateTime !== null &&
+      performance.now() - this.cellUpdateTime > this.renderTime
+    ) {
       this.chunkWorker.postMessage({
         type: "updateCellsAroundPlayer",
-        data: [cell, radius]
+        data: [cell, radius],
       });
     }
   }
 
   _computeSections(sections, x, z, biomes) {
     var i, j, len1, result, results;
-    result = SectionComputer({sections, x, z, biomes});
+    result = SectionComputer({ sections, x, z, biomes });
     results = [];
     for (j = 0, len1 = result.length; j < len1; j++) {
       i = result[j];
@@ -281,9 +334,6 @@ World = class World {
     }
     return results;
   }
-
 };
 
-export {
-  World
-};
+export { World };

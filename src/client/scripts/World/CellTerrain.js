@@ -1,6 +1,7 @@
-
 var CellTerrain,
-  modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
+  modulo = function (a, b) {
+    return ((+a % (b = +b)) + b) % b;
+  };
 
 CellTerrain = class CellTerrain {
   constructor(options) {
@@ -69,12 +70,12 @@ CellTerrain = class CellTerrain {
     return cell[voff];
   }
 
-  getCell(cellX, cellY, cellZ) {
+  getCell(x, y, z) {
     return this.cells[this.vec3(x, y, z)];
   }
 
   setCell(cellX, cellY, cellZ, buffer) {
-    return this.cells[this.vec3(cellX, cellY, cellZ)] = buffer;
+    return (this.cells[this.vec3(cellX, cellY, cellZ)] = buffer);
   }
 
   getBlock(blockX, blockY, blockZ) {
@@ -91,15 +92,12 @@ CellTerrain = class CellTerrain {
         name: def[0],
         stateId,
         boundingBox,
-        transparent: def[2]
+        transparent: def[2],
       };
     } else {
       return false;
     }
   }
-
 };
 
-export {
-  CellTerrain
-};
+export { CellTerrain };

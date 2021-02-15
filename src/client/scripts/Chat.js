@@ -1,4 +1,3 @@
-
 var Chat;
 
 Chat = class Chat {
@@ -10,7 +9,7 @@ Chat = class Chat {
     this.history = [""];
     this.histState = 0;
     _this = this;
-    $(".com_i").on("input", function() {
+    $(".com_i").on("input", function () {
       _this.history[_this.history.length - 1] = $(".com_i").val();
       return console.log(_this.history);
     });
@@ -34,18 +33,22 @@ Chat = class Chat {
   listen() {
     var _this;
     _this = this;
-    window.addEventListener("wheel", function(e) {
-      if (_this.game.FPC.gameState !== "chat") {
-        e.preventDefault();
+    window.addEventListener(
+      "wheel",
+      function (e) {
+        if (_this.game.FPC.gameState !== "chat") {
+          e.preventDefault();
+        }
+      },
+      {
+        passive: false,
       }
-    }, {
-      passive: false
-    });
+    );
     return this;
   }
 
   isElementScrolledToBottom(el) {
-    if (el.scrollTop >= (el.scrollHeight - el.offsetHeight)) {
+    if (el.scrollTop >= el.scrollHeight - el.offsetHeight) {
       return true;
     }
     return false;
@@ -69,9 +72,6 @@ Chat = class Chat {
       return this.game.socket.emit("command", com);
     }
   }
-
 };
 
-export {
-  Chat
-};
+export { Chat };

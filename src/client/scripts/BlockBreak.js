@@ -8,14 +8,20 @@ BlockBreak = class BlockBreak {
     this.game = game;
     this.texture = this.game.al.get("blocksAtlasSnap");
     this.texture.magFilter = THREE.NearestFilter;
-    this.cursor = new THREE.Mesh(new THREE.BoxBufferGeometry(1.001, 1.001, 1.001), new THREE.MeshBasicMaterial({
-      map: this.texture,
-      transparent: true
-    }));
+    this.cursor = new THREE.Mesh(
+      new THREE.BoxBufferGeometry(1.001, 1.001, 1.001),
+      new THREE.MeshBasicMaterial({
+        map: this.texture,
+        transparent: true,
+      })
+    );
     this.lastPos = [];
-    this.cursorOut = new THREE.LineSegments(new THREE.EdgesGeometry(this.cursor.geometry), new THREE.LineBasicMaterial({
-      color: 0x000000
-    }));
+    this.cursorOut = new THREE.LineSegments(
+      new THREE.EdgesGeometry(this.cursor.geometry),
+      new THREE.LineBasicMaterial({
+        color: 0x000000,
+      })
+    );
     this.game.scene.add(this.cursor, this.cursorOut);
     this.uv = {};
     this.isDigging = false;
@@ -27,13 +33,17 @@ BlockBreak = class BlockBreak {
     var i, j, q, ref, toxX, toxY;
     //od 0 do 9
     if (state === 0) {
-      return this.cursor.material.visible = false;
+      return (this.cursor.material.visible = false);
     } else {
       this.cursor.material.visible = true;
       toxX = 6 + state;
       toxY = 8;
       q = 1 / 27;
-      for (i = j = 0, ref = this.cursor.geometry.attributes.uv.array.length; (0 <= ref ? j <= ref : j >= ref); i = 0 <= ref ? ++j : --j) {
+      for (
+        i = j = 0, ref = this.cursor.geometry.attributes.uv.array.length;
+        0 <= ref ? j <= ref : j >= ref;
+        i = 0 <= ref ? ++j : --j
+      ) {
         if (this.uv[i] === void 0) {
           if (i % 2 === 0) {
             if (this.cursor.geometry.attributes.uv.array[i] === 0) {
@@ -63,7 +73,7 @@ BlockBreak = class BlockBreak {
           }
         }
       }
-      return this.cursor.geometry.attributes.uv.needsUpdate = true;
+      return (this.cursor.geometry.attributes.uv.needsUpdate = true);
     }
   }
 
@@ -79,20 +89,18 @@ BlockBreak = class BlockBreak {
       this.cursor.position.set(...pos);
       this.cursor.visible = true;
       this.cursorOut.position.set(...pos);
-      return this.cursorOut.visible = true;
+      return (this.cursorOut.visible = true);
     } else {
       this.cursor.visible = false;
-      return this.cursorOut.visible = false;
+      return (this.cursorOut.visible = false);
     }
   }
 
   digRequest() {
-    var _this, block, pos;
+    var pos;
     console.log("REQUESTING DIGGING...");
-    _this = this;
     pos = this.game.world.getRayBlock().posBreak;
     if (pos !== void 0) {
-      block = this.game.world.cellTerrain.getBlock(...pos);
       this.game.socket.emit("dig", pos);
       this.done = false;
     }
@@ -104,7 +112,7 @@ BlockBreak = class BlockBreak {
     ile = 0;
     if (this.isDigging === false) {
       this.isDigging = true;
-      this.int = setInterval(function() {
+      this.int = setInterval(function () {
         if (ile === 11) {
           _this.setState(0);
           clearInterval(_this.int);
@@ -121,15 +129,12 @@ BlockBreak = class BlockBreak {
     this.done = true;
     this.isDigging = false;
     console.log("Digging Stopped!");
-    this.game.socket.emit("stopDigging", function(xd) {
+    this.game.socket.emit("stopDigging", function (xd) {
       return callback(xd);
     });
     this.setState(0);
     clearInterval(this.int);
   }
-
 };
 
-export {
-  BlockBreak
-};
+export { BlockBreak };

@@ -1,6 +1,10 @@
-
-var BitArray, ChunkDecoder, SectionComputer, cd,
-  modulo = function(a, b) { return (+a % (b = +b) + b) % b; };
+var BitArray,
+  ChunkDecoder,
+  SectionComputer,
+  cd,
+  modulo = function (a, b) {
+    return ((+a % (b = +b)) + b) % b;
+  };
 
 BitArray = class BitArray {
   constructor(options) {
@@ -9,10 +13,10 @@ BitArray = class BitArray {
       return;
     }
     if (!options.bitsPerValue > 0) {
-      console.error('bits per value must at least 1');
+      console.error("bits per value must at least 1");
     }
     if (!(options.bitsPerValue <= 32)) {
-      console.error('bits per value exceeds 32');
+      console.error("bits per value exceeds 32");
     }
     valuesPerLong = Math.floor(64 / options.bitsPerValue);
     length = Math.ceil(options.capacity / valuesPerLong);
@@ -29,12 +33,19 @@ BitArray = class BitArray {
   }
 
   get(index) {
-    var endBitOffset, endLong, indexInLong, indexInStartLong, result, startLong, startLongIndex;
+    var endBitOffset,
+      endLong,
+      indexInLong,
+      indexInStartLong,
+      result,
+      startLong,
+      startLongIndex;
     if (!(index >= 0 && index < this.capacity)) {
-      console.error('index is out of bounds');
+      console.error("index is out of bounds");
     }
     startLongIndex = Math.floor(index / this.valuesPerLong);
-    indexInLong = (index - startLongIndex * this.valuesPerLong) * this.bitsPerValue;
+    indexInLong =
+      (index - startLongIndex * this.valuesPerLong) * this.bitsPerValue;
     if (indexInLong >= 32) {
       indexInStartLong = indexInLong - 32;
       startLong = this.data[startLongIndex * 2 + 1];
@@ -50,7 +61,6 @@ BitArray = class BitArray {
     }
     return result & this.valueMask;
   }
-
 };
 
 ChunkDecoder = class ChunkDecoder {
@@ -67,7 +77,7 @@ ChunkDecoder = class ChunkDecoder {
   }
 
   computeSections(packet) {
-    var cell, data, i, j, k, l, len, m, num, palette, pos, result, sections, solidBlockCount, x, y, z;
+    var cell, data, i, j, k, l, len, m, num, palette, result, sections, x, y, z;
     sections = packet.sections;
     num = 0;
     result = [];
@@ -75,19 +85,14 @@ ChunkDecoder = class ChunkDecoder {
       i = sections[j];
       num += 1;
       if (i !== null) {
-        solidBlockCount = i.solidBlockCount;
         palette = i.palette;
         data = new BitArray(i.data);
-        pos = {
-          x: 0,
-          y: 0,
-          z: 0
-        };
         cell = new Uint32Array(16 * 16 * 16);
         for (x = k = 0; k <= 15; x = ++k) {
           for (y = l = 0; l <= 15; y = ++l) {
             for (z = m = 0; m <= 15; z = ++m) {
-              cell[this.cvo(x, y, z)] = palette[data.get(this.getBlockIndex({x, y, z}))];
+              cell[this.cvo(x, y, z)] =
+                palette[data.get(this.getBlockIndex({ x, y, z }))];
             }
           }
         }
@@ -95,7 +100,7 @@ ChunkDecoder = class ChunkDecoder {
           x: packet.x,
           y: num,
           z: packet.z,
-          cell
+          cell,
         });
       } else {
         result.push(null);
@@ -103,24 +108,12 @@ ChunkDecoder = class ChunkDecoder {
     }
     return result;
   }
-
 };
-
-addEventListener("message", function(e) {
-  var fn;
-  fn = handlers[e.data.type];
-  if (!fn) {
-    throw new Error('no handler for type: ' + e.data.type);
-  }
-  fn(e.data.data);
-});
 
 cd = new ChunkDecoder();
 
-SectionComputer = function(data) {
+SectionComputer = function (data) {
   return cd.computeSections(data);
 };
 
-export {
-  SectionComputer
-};
+export { SectionComputer };

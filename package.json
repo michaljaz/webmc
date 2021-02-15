@@ -8,8 +8,8 @@
     "prebuild": "node src/prebuild.js",
     "clean": "rimraf src/client/dist/*",
     "items": "node src/itemDump.js",
-    "lint": "eslint src/**/*.js",
-    "lint:fix": "eslint --fix src/**/*.js"
+    "lint": "eslint --fix src/",
+    "lint:fix": "eslint --fix src/"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.6.4",

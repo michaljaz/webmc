@@ -1,9 +1,6 @@
-
 var TerrainManager, handlers, terrain;
 
-import {
-  CellTerrain
-} from './CellTerrain.js';
+import { CellTerrain } from "./CellTerrain.js";
 
 terrain = null;
 
@@ -12,7 +9,7 @@ TerrainManager = class TerrainManager {
     this.cellSize = options.cellSize;
     this.cellTerrain = new CellTerrain({
       cellSize: this.cellSize,
-      blocksDef: options.blocksDef
+      blocksDef: options.blocksDef,
     });
     this.toxelSize = options.toxelSize;
     this.q = 1 / this.toxelSize;
@@ -24,8 +21,11 @@ TerrainManager = class TerrainManager {
   }
 
   genBlockFace(type, block, pos) {
-    var li, mapka, sh, toxX, toxY, uv, x1, x2, xd, y1, y2;
-    if (this.blocksTex[block.name] !== void 0 || this.blocksTex[String(block.stateId)] !== void 0) {
+    var mapka, toxX, toxY, uv, x1, x2, xd, y1, y2;
+    if (
+      this.blocksTex[block.name] !== void 0 ||
+      this.blocksTex[String(block.stateId)] !== void 0
+    ) {
       if (this.blocksTex[String(block.stateId)] !== void 0) {
         xd = this.blocksTex[String(block.stateId)];
       } else {
@@ -36,8 +36,8 @@ TerrainManager = class TerrainManager {
         toxY = this.blocksMapping[xd.all]["y"];
       } else if (xd["side"] !== void 0) {
         mapka = {
-          "py": "top",
-          "ny": "bottom"
+          py: "top",
+          ny: "bottom",
         };
         if (mapka[type] !== void 0) {
           toxX = this.blocksMapping[xd[mapka[type]]]["x"];
@@ -63,57 +63,194 @@ TerrainManager = class TerrainManager {
       toxX = this.blocksMapping[this.undefinedBlock]["x"];
       toxY = this.blocksMapping[this.undefinedBlock]["y"];
     }
-    li = [255, 255, 255];
-    sh = [0, 0, 0];
     toxX -= 1;
     toxY -= 1;
     x1 = this.q * toxX;
     y1 = 1 - this.q * toxY - this.q;
     x2 = this.q * toxX + this.q;
     y2 = 1 - this.q * toxY;
-    uv = [[x1, y1], [x1, y2], [x2, y1], [x2, y2]];
+    uv = [
+      [x1, y1],
+      [x1, y2],
+      [x2, y1],
+      [x2, y2],
+    ];
     switch (type) {
       case "pz":
         return {
-          pos: [-0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
+          pos: [
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+          ],
           norm: [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
         };
       case "nx":
         return {
-          pos: [0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]],
+          pos: [
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+          ],
           norm: [1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
         };
       case "nz":
         return {
-          pos: [0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]],
+          pos: [
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+          ],
           norm: [0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
         };
       case "px":
         return {
-          pos: [-0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
+          pos: [
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+          ],
           norm: [-1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
         };
       case "py":
         return {
-          pos: [0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]],
+          pos: [
+            0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            0.5 + pos[1],
+            0.5 + pos[2],
+          ],
           norm: [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
         };
       case "ny":
         return {
-          pos: [0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], 0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2], -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2]],
+          pos: [
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            0.5 + pos[2],
+            -0.5 + pos[0],
+            -0.5 + pos[1],
+            -0.5 + pos[2],
+          ],
           norm: [0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0, 0, -1, 0],
-          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+          uv: [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]],
         };
     }
   }
 
   genCellGeo(cellX, cellY, cellZ) {
-    var _this, addFace, aoColor, colors, i, j, k, l, m, n, normals, pos, positions, ref, ref1, ref2, t_colors, t_normals, t_positions, t_uvs, uvs;
+    var _this,
+      addFace,
+      aoColor,
+      colors,
+      i,
+      j,
+      k,
+      l,
+      m,
+      n,
+      normals,
+      pos,
+      positions,
+      ref,
+      ref1,
+      ref2,
+      t_colors,
+      t_normals,
+      t_positions,
+      t_uvs,
+      uvs;
     _this = this;
     positions = [];
     normals = [];
@@ -123,7 +260,7 @@ TerrainManager = class TerrainManager {
     t_normals = [];
     t_uvs = [];
     t_colors = [];
-    aoColor = function(type) {
+    aoColor = function (type) {
       if (type === 0) {
         return [0.9, 0.9, 0.9];
       } else if (type === 1) {
@@ -134,8 +271,21 @@ TerrainManager = class TerrainManager {
         return [0.3, 0.3, 0.3];
       }
     };
-    addFace = function(type, pos) {
-      var block, col1, col2, col3, col4, faceVertex, ile, l, loaded, m, n, x, y, z;
+    addFace = function (type, pos) {
+      var block,
+        col1,
+        col2,
+        col3,
+        col4,
+        faceVertex,
+        ile,
+        l,
+        loaded,
+        m,
+        n,
+        x,
+        y,
+        z;
       block = _this.cellTerrain.getBlock(...pos);
       faceVertex = _this.genBlockFace(type, block, pos);
       // _this.cellTerrain.getBlock(pos[0],pos[1],pos[2])
@@ -143,7 +293,10 @@ TerrainManager = class TerrainManager {
       for (x = l = -1; l <= 1; x = ++l) {
         for (y = m = -1; m <= 1; y = ++m) {
           for (z = n = -1; n <= 1; z = ++n) {
-            if (_this.cellTerrain.getBlock(pos[0] + x, pos[1] + y, pos[2] + z).boundingBox === "block") {
+            if (
+              _this.cellTerrain.getBlock(pos[0] + x, pos[1] + y, pos[2] + z)
+                .boundingBox === "block"
+            ) {
               loaded[`${x}:${y}:${z}`] = 1;
             } else {
               loaded[`${x}:${y}:${z}`] = 0;
@@ -162,15 +315,27 @@ TerrainManager = class TerrainManager {
         col4 = aoColor(loaded["-1:1:1"] + loaded["0:1:1"] + loaded["-1:1:0"]);
       }
       if (type === "ny") {
-        col2 = aoColor(loaded["1:-1:-1"] + loaded["0:-1:-1"] + loaded["1:-1:0"]);
+        col2 = aoColor(
+          loaded["1:-1:-1"] + loaded["0:-1:-1"] + loaded["1:-1:0"]
+        );
         col1 = aoColor(loaded["1:-1:1"] + loaded["0:-1:1"] + loaded["1:-1:0"]);
-        col4 = aoColor(loaded["-1:-1:-1"] + loaded["0:-1:-1"] + loaded["-1:-1:0"]);
-        col3 = aoColor(loaded["-1:-1:1"] + loaded["0:-1:1"] + loaded["-1:-1:0"]);
+        col4 = aoColor(
+          loaded["-1:-1:-1"] + loaded["0:-1:-1"] + loaded["-1:-1:0"]
+        );
+        col3 = aoColor(
+          loaded["-1:-1:1"] + loaded["0:-1:1"] + loaded["-1:-1:0"]
+        );
       }
       if (type === "px") {
-        col1 = aoColor(loaded["-1:-1:0"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]);
-        col2 = aoColor(loaded["-1:1:0"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]);
-        col3 = aoColor(loaded["-1:-1:0"] + loaded["-1:-1:1"] + loaded["-1:0:1"]);
+        col1 = aoColor(
+          loaded["-1:-1:0"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
+        );
+        col2 = aoColor(
+          loaded["-1:1:0"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
+        );
+        col3 = aoColor(
+          loaded["-1:-1:0"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
+        );
         col4 = aoColor(loaded["-1:1:0"] + loaded["-1:1:1"] + loaded["-1:0:1"]);
       }
       if (type === "nx") {
@@ -186,9 +351,15 @@ TerrainManager = class TerrainManager {
         col4 = aoColor(loaded["0:1:1"] + loaded["1:1:1"] + loaded["1:0:1"]);
       }
       if (type === "nz") {
-        col3 = aoColor(loaded["0:-1:-1"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]);
-        col4 = aoColor(loaded["0:1:-1"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]);
-        col1 = aoColor(loaded["0:-1:-1"] + loaded["1:-1:-1"] + loaded["1:0:-1"]);
+        col3 = aoColor(
+          loaded["0:-1:-1"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
+        );
+        col4 = aoColor(
+          loaded["0:1:-1"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
+        );
+        col1 = aoColor(
+          loaded["0:-1:-1"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
+        );
         col2 = aoColor(loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]);
       }
       if (block.name === "water") {
@@ -234,67 +405,152 @@ TerrainManager = class TerrainManager {
         colors.push(...col1, ...col3, ...col2, ...col2, ...col3, ...col4);
       }
     };
-    for (i = l = 0, ref = this.cellSize - 1; (0 <= ref ? l <= ref : l >= ref); i = 0 <= ref ? ++l : --l) {
-      for (j = m = 0, ref1 = this.cellSize - 1; (0 <= ref1 ? m <= ref1 : m >= ref1); j = 0 <= ref1 ? ++m : --m) {
-        for (k = n = 0, ref2 = this.cellSize - 1; (0 <= ref2 ? n <= ref2 : n >= ref2); k = 0 <= ref2 ? ++n : --n) {
-          pos = [cellX * this.cellSize + i, cellY * this.cellSize + j, cellZ * this.cellSize + k];
+    for (
+      i = l = 0, ref = this.cellSize - 1;
+      0 <= ref ? l <= ref : l >= ref;
+      i = 0 <= ref ? ++l : --l
+    ) {
+      for (
+        j = m = 0, ref1 = this.cellSize - 1;
+        0 <= ref1 ? m <= ref1 : m >= ref1;
+        j = 0 <= ref1 ? ++m : --m
+      ) {
+        for (
+          k = n = 0, ref2 = this.cellSize - 1;
+          0 <= ref2 ? n <= ref2 : n >= ref2;
+          k = 0 <= ref2 ? ++n : --n
+        ) {
+          pos = [
+            cellX * this.cellSize + i,
+            cellY * this.cellSize + j,
+            cellZ * this.cellSize + k,
+          ];
           if (this.cellTerrain.getBlock(...pos).boundingBox === "block") {
             if (this.cellTerrain.getBlock(...pos).transparent) {
-              if (this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).boundingBox !== "block") {
+              if (
+                this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2])
+                  .boundingBox !== "block"
+              ) {
                 addFace("nx", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).boundingBox !== "block") {
+              if (
+                this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2])
+                  .boundingBox !== "block"
+              ) {
                 addFace("px", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).boundingBox !== "block") {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2])
+                  .boundingBox !== "block"
+              ) {
                 addFace("ny", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).boundingBox !== "block") {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2])
+                  .boundingBox !== "block"
+              ) {
                 addFace("py", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).boundingBox !== "block") {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1)
+                  .boundingBox !== "block"
+              ) {
                 addFace("pz", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).boundingBox !== "block") {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1)
+                  .boundingBox !== "block"
+              ) {
                 addFace("nz", pos);
               }
             } else {
-              if (this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).boundingBox !== "block" || this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).transparent) {
+              if (
+                this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2])
+                  .boundingBox !== "block" ||
+                this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2])
+                  .transparent
+              ) {
                 addFace("nx", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).boundingBox !== "block" || this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).transparent) {
+              if (
+                this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2])
+                  .boundingBox !== "block" ||
+                this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2])
+                  .transparent
+              ) {
                 addFace("px", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).boundingBox !== "block" || this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).transparent) {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2])
+                  .boundingBox !== "block" ||
+                this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2])
+                  .transparent
+              ) {
                 addFace("ny", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).boundingBox !== "block" || this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).transparent) {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2])
+                  .boundingBox !== "block" ||
+                this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2])
+                  .transparent
+              ) {
                 addFace("py", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).boundingBox !== "block" || this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).transparent) {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1)
+                  .boundingBox !== "block" ||
+                this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1)
+                  .transparent
+              ) {
                 addFace("pz", pos);
               }
-              if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).boundingBox !== "block" || this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).transparent) {
+              if (
+                this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1)
+                  .boundingBox !== "block" ||
+                this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1)
+                  .transparent
+              ) {
                 addFace("nz", pos);
               }
             }
-          } else if (this.cellTerrain.getBlock(...pos).name === "water" || this.cellTerrain.getBlock(...pos).name === "lava") {
-            if (this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).name === "air") {
+          } else if (
+            this.cellTerrain.getBlock(...pos).name === "water" ||
+            this.cellTerrain.getBlock(...pos).name === "lava"
+          ) {
+            if (
+              this.cellTerrain.getBlock(pos[0] + 1, pos[1], pos[2]).name ===
+              "air"
+            ) {
               addFace("nx", pos);
             }
-            if (this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).name === "air") {
+            if (
+              this.cellTerrain.getBlock(pos[0] - 1, pos[1], pos[2]).name ===
+              "air"
+            ) {
               addFace("px", pos);
             }
-            if (this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).name === "air") {
+            if (
+              this.cellTerrain.getBlock(pos[0], pos[1] - 1, pos[2]).name ===
+              "air"
+            ) {
               addFace("ny", pos);
             }
-            if (this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).name === "air") {
+            if (
+              this.cellTerrain.getBlock(pos[0], pos[1] + 1, pos[2]).name ===
+              "air"
+            ) {
               addFace("py", pos);
             }
-            if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).name === "air") {
+            if (
+              this.cellTerrain.getBlock(pos[0], pos[1], pos[2] + 1).name ===
+              "air"
+            ) {
               addFace("pz", pos);
             }
-            if (this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).name === "air") {
+            if (
+              this.cellTerrain.getBlock(pos[0], pos[1], pos[2] - 1).name ===
+              "air"
+            ) {
               addFace("nz", pos);
             }
           }
@@ -305,13 +561,12 @@ TerrainManager = class TerrainManager {
     normals.push(...t_normals);
     uvs.push(...t_uvs);
     colors.push(...t_colors);
-    return {positions, normals, uvs, colors};
+    return { positions, normals, uvs, colors };
   }
-
 };
 
 handlers = {
-  init: function(data) {
+  init: function (data) {
     terrain = new TerrainManager({
       models: data.models,
       blocks: data.blocks,
@@ -319,55 +574,108 @@ handlers = {
       toxelSize: data.toxelSize,
       cellSize: data.cellSize,
       blocksTex: data.blocksTex,
-      blocksDef: data.blocksDef
+      blocksDef: data.blocksDef,
     });
   },
-  setVoxel: function(data) {
+  setVoxel: function (data) {
     var cellId, l, len, nei, neiCellId, neighbours;
     terrain.cellTerrain.setVoxel(...data);
     //TODO: cellNeedsUpdate update
-    cellId = terrain.cellTerrain.vec3(...terrain.cellTerrain.computeCellForVoxel(data[0], data[1], data[2]));
+    cellId = terrain.cellTerrain.vec3(
+      ...terrain.cellTerrain.computeCellForVoxel(data[0], data[1], data[2])
+    );
     terrain.cellNeedsUpdate[cellId] = true;
-    neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
+    neighbours = [
+      [-1, 0, 0],
+      [1, 0, 0],
+      [0, -1, 0],
+      [0, 1, 0],
+      [0, 0, -1],
+      [0, 0, 1],
+    ];
     for (l = 0, len = neighbours.length; l < len; l++) {
       nei = neighbours[l];
-      neiCellId = terrain.cellTerrain.vec3(...terrain.cellTerrain.computeCellForVoxel(data[0] + nei[0], data[1] + nei[1], data[2] + nei[2]));
+      neiCellId = terrain.cellTerrain.vec3(
+        ...terrain.cellTerrain.computeCellForVoxel(
+          data[0] + nei[0],
+          data[1] + nei[1],
+          data[2] + nei[2]
+        )
+      );
       terrain.cellNeedsUpdate[neiCellId] = true;
     }
   },
-  genCellGeo: function(data) {
-    var geo, p1, p2;
-    if (((terrain.cellTerrain.vec3(...data)) in terrain.cellTerrain.cells) === true) {
-      p1 = performance.now();
+  genCellGeo: function (data) {
+    var geo;
+    if (
+      terrain.cellTerrain.vec3(...data) in terrain.cellTerrain.cells ===
+      true
+    ) {
       geo = terrain.genCellGeo(...data);
-      p2 = performance.now();
       postMessage({
         type: "cellGeo",
         data: {
           cell: geo,
           info: data,
-          p: performance.now()
-        }
+          p: performance.now(),
+        },
       });
     }
   },
-  setCell: function(data) {
+  setCell: function (data) {
     var l, len, nei, neiCellId, neighbours;
-    neighbours = [[-1, 0, 0], [1, 0, 0], [0, -1, 0], [0, 1, 0], [0, 0, -1], [0, 0, 1]];
-    terrain.cellNeedsUpdate[terrain.cellTerrain.vec3(data[0], data[1], data[2])] = true;
+    neighbours = [
+      [-1, 0, 0],
+      [1, 0, 0],
+      [0, -1, 0],
+      [0, 1, 0],
+      [0, 0, -1],
+      [0, 0, 1],
+    ];
+    terrain.cellNeedsUpdate[
+      terrain.cellTerrain.vec3(data[0], data[1], data[2])
+    ] = true;
     terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
     for (l = 0, len = neighbours.length; l < len; l++) {
       nei = neighbours[l];
-      neiCellId = terrain.cellTerrain.vec3(data[0] + nei[0], data[1] + nei[1], data[2] + nei[2]);
+      neiCellId = terrain.cellTerrain.vec3(
+        data[0] + nei[0],
+        data[1] + nei[1],
+        data[2] + nei[2]
+      );
       terrain.cellNeedsUpdate[neiCellId] = true;
     }
   },
-  resetWorld: function(data) {
+  resetWorld: function () {
     console.log("RESET WORLD!");
     terrain.cellTerrain.cells = {};
   },
-  updateCellsAroundPlayer: function(data) {
-    var cell, cellBlackList, cellId, gen, i, k, l, m, n, o, odw, pcell, radius, ref, ref1, ref2, ref3, ref4, ref5, ref6, ref7, v, x, y, z;
+  updateCellsAroundPlayer: function (data) {
+    var cell,
+      cellBlackList,
+      cellId,
+      gen,
+      i,
+      k,
+      l,
+      m,
+      n,
+      o,
+      odw,
+      pcell,
+      radius,
+      ref,
+      ref1,
+      ref2,
+      ref3,
+      ref4,
+      ref5,
+      ref6,
+      ref7,
+      v,
+      x,
+      y,
+      z;
     cell = data[0];
     radius = data[1];
     odw = {};
@@ -379,10 +687,26 @@ handlers = {
         cellBlackList[k] = true;
       }
     }
-    for (i = l = 0, ref1 = radius; (0 <= ref1 ? l <= ref1 : l >= ref1); i = 0 <= ref1 ? ++l : --l) {
-      for (x = m = ref2 = -i, ref3 = i; (ref2 <= ref3 ? m <= ref3 : m >= ref3); x = ref2 <= ref3 ? ++m : --m) {
-        for (y = n = ref4 = -i, ref5 = i; (ref4 <= ref5 ? n <= ref5 : n >= ref5); y = ref4 <= ref5 ? ++n : --n) {
-          for (z = o = ref6 = -i, ref7 = i; (ref6 <= ref7 ? o <= ref7 : o >= ref7); z = ref6 <= ref7 ? ++o : --o) {
+    for (
+      i = l = 0, ref1 = radius;
+      0 <= ref1 ? l <= ref1 : l >= ref1;
+      i = 0 <= ref1 ? ++l : --l
+    ) {
+      for (
+        x = m = ref2 = -i, ref3 = i;
+        ref2 <= ref3 ? m <= ref3 : m >= ref3;
+        x = ref2 <= ref3 ? ++m : --m
+      ) {
+        for (
+          y = n = ref4 = -i, ref5 = i;
+          ref4 <= ref5 ? n <= ref5 : n >= ref5;
+          y = ref4 <= ref5 ? ++n : --n
+        ) {
+          for (
+            z = o = ref6 = -i, ref7 = i;
+            ref6 <= ref7 ? o <= ref7 : o >= ref7;
+            z = ref6 <= ref7 ? ++o : --o
+          ) {
             if (!odw[`${x}:${y}:${z}`]) {
               odw[`${x}:${y}:${z}`] = true;
               pcell = [cell[0] + x, cell[1] + y, cell[2] + z];
@@ -411,14 +735,14 @@ handlers = {
         terrain.loadedMeshes[k] = "disposed";
         postMessage({
           type: "removeCell",
-          data: k
+          data: k,
         });
       }
     }
-  }
+  },
 };
 
-addEventListener("message", function(e) {
+addEventListener("message", function (e) {
   var fn;
   fn = handlers[e.data.type];
   if (!fn) {

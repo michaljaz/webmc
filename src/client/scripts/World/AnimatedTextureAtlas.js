@@ -1,7 +1,6 @@
-
 var AnimatedTextureAtlas, TextureAtlasCreator;
 
-import * as THREE from 'three';
+import * as THREE from "three";
 
 TextureAtlasCreator = class TextureAtlasCreator {
   constructor(options) {
@@ -25,7 +24,7 @@ TextureAtlasCreator = class TextureAtlasCreator {
         }
       }
     }
-    canvasx = document.createElement('canvas');
+    canvasx = document.createElement("canvas");
     ctx = canvasx.getContext("2d");
     canvasx.width = this.willSize * 16;
     canvasx.height = this.willSize * 16;
@@ -36,9 +35,23 @@ TextureAtlasCreator = class TextureAtlasCreator {
         xd = this.decodeName(i);
         if (multi[xd.pref].loaded === void 0) {
           multi[xd.pref].loaded = true;
-          lol = this.getToxelForTick(tick, multi[xd.pref].x + 1, multi[xd.pref].y + 1);
+          lol = this.getToxelForTick(
+            tick,
+            multi[xd.pref].x + 1,
+            multi[xd.pref].y + 1
+          );
           texmap = this.textureMapping[`${xd.pref}@${lol.col}@${lol.row}`];
-          ctx.drawImage(this.textureX, (texmap.x - 1) * 16, (texmap.y - 1) * 16, 16, 16, (toxelX - 1) * 16, (toxelY - 1) * 16, 16, 16);
+          ctx.drawImage(
+            this.textureX,
+            (texmap.x - 1) * 16,
+            (texmap.y - 1) * 16,
+            16,
+            16,
+            (toxelX - 1) * 16,
+            (toxelY - 1) * 16,
+            16,
+            16
+          );
           toxelX++;
           if (toxelX > this.willSize) {
             toxelX = 1;
@@ -46,7 +59,17 @@ TextureAtlasCreator = class TextureAtlasCreator {
           }
         }
       } else {
-        ctx.drawImage(this.textureX, (this.textureMapping[i].x - 1) * 16, (this.textureMapping[i].y - 1) * 16, 16, 16, (toxelX - 1) * 16, (toxelY - 1) * 16, 16, 16);
+        ctx.drawImage(
+          this.textureX,
+          (this.textureMapping[i].x - 1) * 16,
+          (this.textureMapping[i].y - 1) * 16,
+          16,
+          16,
+          (toxelX - 1) * 16,
+          (toxelY - 1) * 16,
+          16,
+          16
+        );
         toxelX++;
         if (toxelX > this.willSize) {
           toxelX = 1;
@@ -60,7 +83,11 @@ TextureAtlasCreator = class TextureAtlasCreator {
   decodeName(i) {
     var j, k, l, m, m2, pref, ref, ref1, sub, x, y;
     m = null;
-    for (j = k = 0, ref = i.length - 1; (0 <= ref ? k <= ref : k >= ref); j = 0 <= ref ? ++k : --k) {
+    for (
+      j = k = 0, ref = i.length - 1;
+      0 <= ref ? k <= ref : k >= ref;
+      j = 0 <= ref ? ++k : --k
+    ) {
       if (i[j] === "@") {
         m = j;
         break;
@@ -69,28 +96,31 @@ TextureAtlasCreator = class TextureAtlasCreator {
     pref = i.substr(0, m);
     sub = i.substr(m, i.length);
     m2 = null;
-    for (j = l = 0, ref1 = sub.length - 1; (0 <= ref1 ? l <= ref1 : l >= ref1); j = 0 <= ref1 ? ++l : --l) {
+    for (
+      j = l = 0, ref1 = sub.length - 1;
+      0 <= ref1 ? l <= ref1 : l >= ref1;
+      j = 0 <= ref1 ? ++l : --l
+    ) {
       if (sub[j] === "@") {
         m2 = j;
       }
     }
     x = parseInt(sub.substr(1, m2 - 1));
     y = parseInt(sub.substr(m2 + 1, sub.length));
-    return {pref, x, y};
+    return { pref, x, y };
   }
 
   getToxelForTick(tick, w, h) {
     var col, row;
-    tick = tick % (w * h) + 1;
+    tick = (tick % (w * h)) + 1;
     //option1
     col = (tick - 1) % w;
     row = Math.ceil(tick / w) - 1;
     //option2
     col = Math.ceil(tick / h) - 1;
     row = (tick - 1) % h;
-    return {row, col};
+    return { row, col };
   }
-
 };
 
 AnimatedTextureAtlas = class AnimatedTextureAtlas {
@@ -102,11 +132,11 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
       side: 0,
       map: null,
       vertexColors: true,
-      transparent: true
+      transparent: true,
     });
     this.atlasCreator = new TextureAtlasCreator({
       textureX: this.game.al.get("blocksAtlasFull"),
-      textureMapping: this.game.al.get("blocksMappingFull")
+      textureMapping: this.game.al.get("blocksMappingFull"),
     });
     savedTextures = [];
     for (i = k = 0; k <= 9; i = ++k) {
@@ -117,7 +147,7 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
       savedTextures.push(tekstura);
     }
     tickq = 0;
-    setInterval(function() {
+    setInterval(function () {
       var tekst;
       tickq++;
       tekst = savedTextures[tickq % 9];
@@ -125,10 +155,6 @@ AnimatedTextureAtlas = class AnimatedTextureAtlas {
       _this.material.map.needsUpdate = true;
     }, 100);
   }
-
 };
 
-export {
-  AnimatedTextureAtlas,
-  TextureAtlasCreator
-};
+export { AnimatedTextureAtlas, TextureAtlasCreator };
