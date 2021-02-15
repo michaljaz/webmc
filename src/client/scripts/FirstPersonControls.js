@@ -6,13 +6,13 @@ FirstPersonControls = class FirstPersonControls {
   constructor(game) {
     this.game = game;
     this.kc = {
-      87: "forward",
-      65: "right",
-      83: "back",
-      68: "left",
-      32: "jump",
-      16: "sneak",
-      82: "sprint",
+      "KeyW": "forward",
+      "KeyD": "right",
+      "KeyS": "back",
+      "KeyA": "left",
+      "Space": "jump",
+      "ShiftLeft": "sneak",
+      "KeyR": "sprint",
     };
     this.keys = {};
     this.setState("menu");
@@ -43,26 +43,26 @@ FirstPersonControls = class FirstPersonControls {
     $(document).keydown(function (z) {
       var to;
       //Kliknięcie
-      _this.keys[z.keyCode] = true;
+      _this.keys[z.code] = true;
       //Klawisz Escape
-      if (z.keyCode === 27 && _this.gameState === "inventory") {
+      if (z.code === "Escape" && _this.gameState === "inventory") {
         _this.setState("menu");
       }
       //Strzałki
-      if (z.keyCode === 38 && _this.gameState === "chat") {
+      if (z.code === "ArrowUp" && _this.gameState === "chat") {
         _this.game.chat.chatGoBack();
       }
-      if (z.keyCode === 40 && _this.gameState === "chat") {
+      if (z.code === "ArrowDown" && _this.gameState === "chat") {
         _this.game.chat.chatGoForward();
       }
       //Klawisz Enter
-      if (z.keyCode === 13 && _this.gameState === "chat") {
+      if (z.code === "Enter" && _this.gameState === "chat") {
         _this.game.chat.command($(".com_i").val());
         $(".com_i").val("");
       }
       //Klawisz E
       if (
-        z.keyCode === 69 &&
+        z.code === "KeyE" &&
         _this.gameState !== "chat" &&
         _this.gameState !== "menu"
       ) {
@@ -70,17 +70,17 @@ FirstPersonControls = class FirstPersonControls {
       }
       //Klawisz T lub /
       if (
-        (z.keyCode === 84 || z.keyCode === 191) &&
+        (z.code === "KeyT" || z.code === "Backslash") &&
         _this.gameState === "gameLock"
       ) {
-        if (z.keyCode === 191) {
+        if (z.code === "Backslash") {
           $(".com_i").val("/");
         }
         _this.setState("chat");
         z.preventDefault();
       }
       //Klawisz `
-      if (z.keyCode === 192) {
+      if (z.code === "Backquote") {
         z.preventDefault();
         if (
           _this.gameState === "menu" ||
@@ -92,19 +92,19 @@ FirstPersonControls = class FirstPersonControls {
           _this.setState("menu");
         }
       }
-      if (z.keyCode === 27 && _this.gameState === "chat") {
+      if (z.code === "Escape" && _this.gameState === "chat") {
         _this.setState("menu");
       }
 
       //Flying
-      if (z.keyCode === 70) {
+      if (z.code === "KeyF") {
         _this.game.flying = !_this.game.flying;
         _this.game.socket.emit("fly", _this.game.flying);
       }
       //Wysyłanie state'u do serwera
-      if (_this.kc[z.keyCode] !== void 0 && _this.gameState === "gameLock") {
-        _this.game.socket.emit("move", _this.kc[z.keyCode], true);
-        if (_this.kc[z.keyCode] === "sprint") {
+      if (_this.kc[z.code] !== void 0 && _this.gameState === "gameLock") {
+        _this.game.socket.emit("move", _this.kc[z.code], true);
+        if (_this.kc[z.code] === "sprint") {
           to = {
             fov: _this.game.fov + 10,
           };
@@ -121,11 +121,11 @@ FirstPersonControls = class FirstPersonControls {
     $(document).keyup(function (z) {
       var to;
       //Odkliknięcie
-      delete _this.keys[z.keyCode];
+      delete _this.keys[z.code];
       //Wysyłanie state'u do serwera
-      if (_this.kc[z.keyCode] !== void 0) {
-        _this.game.socket.emit("move", _this.kc[z.keyCode], false);
-        if (_this.kc[z.keyCode] === "sprint") {
+      if (_this.kc[z.code] !== void 0) {
+        _this.game.socket.emit("move", _this.kc[z.code], false);
+        if (_this.kc[z.code] === "sprint") {
           to = {
             fov: _this.game.fov,
           };
