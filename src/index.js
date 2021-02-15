@@ -179,10 +179,10 @@ io.sockets.on("connection", function (socket) {
       }
     },
     move: function (state, toggle) {
-      if(state==="right"){
-        state="left"
-      }else if(state==="left"){
-        state="right"
+      if (state === "right") {
+        state = "left";
+      } else if (state === "left") {
+        state = "right";
       }
       bot.setControlState(state, toggle);
     },

@@ -31,7 +31,19 @@ To run this game you need to start real minecraft server (by default it is 1.16.
 </details>
 
 
+<details>
+<summary>Linting</summary>
 
+```bash
+#Only show whats wrong
+npm run lint
+
+#Fix what is wrong
+npm run lint:fix
+
+```
+
+</details>
 
 <details>
 <summary>Development setup </summary>
@@ -59,6 +71,8 @@ npm start
 
 </details>
 
+
+
 <details>
 <summary>Browser support</summary>
 
@@ -70,6 +84,6 @@ It is preferred to run this game on [Google Chrome](https://www.google.pl/chrome
 
 
 ## Screenshots
-[<img src="https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png" alt="screen6" width="100%">](https://i.ibb.co/BLyct2H/Screenshot-from-2021-01-27-21-20-23.png)
+[<img src="https://i.ibb.co/bPh99MV/hypixel.png" alt="screen6" width="100%">](https://i.ibb.co/bPh99MV/hypixel.png)
 [<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="100%">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
 [<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="100%">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)

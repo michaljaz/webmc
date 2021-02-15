@@ -6,13 +6,13 @@ FirstPersonControls = class FirstPersonControls {
   constructor(game) {
     this.game = game;
     this.kc = {
-      "KeyW": "forward",
-      "KeyD": "right",
-      "KeyS": "back",
-      "KeyA": "left",
-      "Space": "jump",
-      "ShiftLeft": "sneak",
-      "KeyR": "sprint",
+      KeyW: "forward",
+      KeyD: "right",
+      KeyS: "back",
+      KeyA: "left",
+      Space: "jump",
+      ShiftLeft: "sneak",
+      KeyR: "sprint",
     };
     this.keys = {};
     this.setState("menu");

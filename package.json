@@ -8,7 +8,7 @@
     "prebuild": "node src/prebuild.js",
     "clean": "rimraf src/client/dist/*",
     "items": "node src/itemDump.js",
-    "lint": "eslint --fix src/",
+    "lint": "eslint src/",
     "lint:fix": "eslint --fix src/"
   },
   "dependencies": {
