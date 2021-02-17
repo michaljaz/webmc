@@ -1,43 +1,24 @@
-var Game;
-
 import * as THREE from "three";
-
 import Stats from "stats-js";
-
 import * as dat from "dat.gui";
-
 import io from "socket.io-client";
-
 import TWEEN from "@tweenjs/tween.js";
-
 import { World } from "./World/World.js";
-
 import { FirstPersonControls } from "./FirstPersonControls.js";
-
 import { gpuInfo } from "./gpuInfo.js";
-
 import { AssetLoader } from "./AssetLoader.js";
-
 import { InventoryBar } from "./InventoryBar.js";
-
 import { RandomNick } from "./RandomNick.js";
-
 import { Chat } from "./Chat.js";
-
 import { Entities } from "./Entities.js";
-
 import { PlayerInInventory } from "./PlayerInInventory.js";
-
 import { BlockBreak } from "./BlockBreak.js";
-
 import { BlockPlace } from "./BlockPlace.js";
-
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
 
-Game = class Game {
+var Game = class Game {
     constructor() {
-        var _this;
-        _this = this;
+        var _this = this;
         this.al = new AssetLoader(function () {
             _this.init();
         });
@@ -45,9 +26,7 @@ Game = class Game {
     }
 
     init() {
-        var _this, chunkDist, eventMap, gui, i, loader, texture;
-        _this = this;
-        this.TWEEN = TWEEN;
+        var _this = this;
         this.fov = 70;
         this.toxelSize = 27;
         this.cellSize = 16;
@@ -75,13 +54,6 @@ Game = class Game {
         this.camera.rotation.order = "YXZ";
         this.camera.position.set(26, 26, 26);
         this.scene.add(new THREE.AmbientLight(0xffffff));
-        loader = new THREE.TextureLoader();
-        texture = loader.load("assets/images/skybox.jpg", function () {
-            var rt;
-            rt = new THREE.WebGLCubeRenderTarget(texture.image.height);
-            rt.fromEquirectangularTexture(_this.renderer, texture);
-            _this.rt = rt;
-        });
         this.distanceBasedFog = new DistanceBasedFog();
         console.warn(gpuInfo());
         this.nick = document.location.hash.substring(
@@ -112,106 +84,88 @@ Game = class Game {
         this.inv_bar = new InventoryBar(this);
         this.FPC = new FirstPersonControls(this);
         this.distanceBasedFog.addShaderToMaterial(this.world.material);
-        // @distanceBasedFog.addShaderToMaterial @ent.mobMaterial
-        // console.log @ent.mobMaterial
-        eventMap = {
-            connect: function () {
-                console.log("Connected to server!");
-                $(".loadingText").text("Joining server...");
-                console.log(`User nick: ${_this.nick}`);
-                _this.socket.emit("initClient", {
-                    nick: _this.nick,
-                });
-            },
-            blockUpdate: function (block) {
-                _this.world.setBlock(
-                    block[0],
-                    block[1] + 16,
-                    block[2],
-                    block[3]
-                );
-            },
-            spawn: function (yaw, pitch) {
-                console.log("Player joined the game!");
-                $(".initLoading").css("display", "none");
-                _this.camera.rotation.y = yaw;
-                _this.camera.rotation.x = pitch;
-            },
-            dimension: function (dim) {
-                var bg;
-                _this.dimension = dim;
-                console.log(`Player dimension has been changed: ${dim}`);
-                _this.world.resetWorld();
-                bg = _this.dimBg[dim];
-                if (dim === "minecraft:overworld") {
-                    _this.scene.background = _this.rt;
-                } else {
-                    _this.scene.background = new THREE.Color(...bg);
-                }
-                _this.distanceBasedFog.color.x = bg[0];
-                _this.distanceBasedFog.color.y = bg[1];
-                _this.distanceBasedFog.color.z = bg[2];
-                _this.distanceBasedFog.color.w = 1;
-            },
-            mapChunk: function (sections, x, z, biomes, dim) {
-                _this.world._computeSections(sections, x, z, biomes, dim);
-            },
-            hp: function (points) {
-                _this.inv_bar.setHp(points);
-            },
-            inventory: function (inv) {
-                _this.inv_bar.updateInv(inv);
-            },
-            food: function (points) {
-                _this.inv_bar.setFood(points);
-            },
-            msg: function (msg) {
-                _this.chat.log(msg);
-            },
-            kicked: function () {
-                _this.chat.log("You have been kicked!");
-            },
-            xp: function (xp) {
-                _this.inv_bar.setXp(xp.level, xp.progress);
-            },
-            move: function (pos) {
-                var to;
-                to = {
-                    x: pos.x - 0.5,
-                    y: pos.y + 17,
-                    z: pos.z - 0.5,
-                };
-                new TWEEN.Tween(_this.camera.position)
-                    .to(to, 100)
-                    .easing(TWEEN.Easing.Quadratic.Out)
-                    .start();
-            },
-            entities: function (entities) {
-                _this.ent.update(entities);
-            },
-            diggingCompleted: function () {
-                _this.bb.done = true;
-                console.warn("SERVER-DONE");
-            },
-            diggingAborted: function () {
-                console.warn("SERVER-ABORT");
-            },
-            digTime: function (time) {
-                console.warn("SERVER-START");
-                _this.bb.startDigging(time);
-            },
-        };
-        for (i in eventMap) {
-            this.socket.on(i, eventMap[i]);
-        }
-        gui = new dat.GUI();
+        this.socket.on("connect", function () {
+            console.log("Connected to server!");
+            $(".loadingText").text("Joining server...");
+            console.log(`User nick: ${_this.nick}`);
+            _this.socket.emit("initClient", {
+                nick: _this.nick,
+            });
+        });
+        this.socket.on("blockUpdate", function (block) {
+            _this.world.setBlock(block[0], block[1] + 16, block[2], block[3]);
+        });
+        this.socket.on("spawn", function (yaw, pitch) {
+            console.log("Player joined the game!");
+            $(".initLoading").css("display", "none");
+            _this.camera.rotation.y = yaw;
+            _this.camera.rotation.x = pitch;
+        });
+        this.socket.on("dimension", function (dim) {
+            _this.dimension = dim;
+            console.log(`Player dimension has been changed: ${dim}`);
+            _this.world.resetWorld();
+            var bg = _this.dimBg[dim];
+            _this.scene.background = new THREE.Color(...bg);
+            _this.distanceBasedFog.color.x = bg[0];
+            _this.distanceBasedFog.color.y = bg[1];
+            _this.distanceBasedFog.color.z = bg[2];
+            _this.distanceBasedFog.color.w = 1;
+        });
+        this.socket.on("mapChunk", function (sections, x, z) {
+            _this.world.computeSections(sections, x, z);
+        });
+        this.socket.on("hp", function (points) {
+            _this.inv_bar.setHp(points);
+        });
+        this.socket.on("inventory", function (inv) {
+            _this.inv_bar.updateInv(inv);
+        });
+        this.socket.on("food", function (points) {
+            _this.inv_bar.setFood(points);
+        });
+        this.socket.on("msg", function (msg) {
+            _this.chat.log(msg);
+        });
+        this.socket.on("kicked", function () {
+            _this.chat.log("You have been kicked!");
+        });
+        this.socket.on("xp", function (xp) {
+            _this.inv_bar.setXp(xp.level, xp.progress);
+        });
+        this.socket.on("move", function (pos) {
+            var to = {
+                x: pos.x - 0.5,
+                y: pos.y + 17,
+                z: pos.z - 0.5,
+            };
+            new TWEEN.Tween(_this.camera.position)
+                .to(to, 100)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .start();
+        });
+        this.socket.on("entities", function (entities) {
+            _this.ent.update(entities);
+        });
+        this.socket.on("diggingCompleted", function () {
+            _this.bb.done = true;
+            console.warn("SERVER-DONE");
+        });
+        this.socket.on("diggingAborted", function () {
+            console.warn("SERVER-ABORT");
+        });
+        this.socket.on("digTime", function (time) {
+            console.warn("SERVER-START");
+            _this.bb.startDigging(time);
+        });
+        var gui = new dat.GUI();
         this.params = {
             chunkdist: 3,
         };
         this.distanceBasedFog.farnear.x = (this.params.chunkdist - 1) * 16;
         this.distanceBasedFog.farnear.y = this.params.chunkdist * 16;
         gui.add(this.world.material, "wireframe").name("Wireframe").listen();
-        chunkDist = gui
+        var chunkDist = gui
             .add(this.params, "chunkdist", 0, 10, 1)
             .name("Render distance")
             .listen();
@@ -221,7 +175,7 @@ Game = class Game {
             console.log(val);
         });
         this.mouse = false;
-        $(document).mousedown(function (e) {
+        $(document).on("mousedown",function (e) {
             if (e.which === 1) {
                 _this.mouse = true;
                 if (_this.FPC.gameState === "gameLock") {
@@ -231,7 +185,7 @@ Game = class Game {
                 _this.bp.placeBlock();
             }
         });
-        $(document).mouseup(function (e) {
+        $(document).on("mouseup",function (e) {
             if (e.which === 1) {
                 _this.mouse = false;
                 return _this.bb.stopDigging();
@@ -241,23 +195,21 @@ Game = class Game {
     }
 
     animate() {
-        var _this;
-        _this = this;
+        var _this = this;
         if (this.stats !== null) {
             this.stats.begin();
             this.render();
             this.stats.end();
         }
         requestAnimationFrame(function () {
-            return _this.animate();
+            _this.animate();
         });
     }
 
     render() {
-        var _this, height, width;
-        _this = this;
-        width = window.innerWidth;
-        height = window.innerHeight;
+        var _this = this;
+        var width = window.innerWidth;
+        var height = window.innerHeight;
         if (this.canvas.width !== width || this.canvas.height !== height) {
             this.canvas.width = width;
             this.canvas.height = height;
@@ -273,7 +225,7 @@ Game = class Game {
                 return _this.bb.digRequest();
             }
         });
-        this.world._updateCellsAroundPlayer(this.params.chunkdist);
+        this.world.updateCellsAroundPlayer(this.params.chunkdist);
         TWEEN.update();
         this.drawcalls.update(this.renderer.info.render.calls, 100);
         if (this.FPC.gameState === "inventory") {

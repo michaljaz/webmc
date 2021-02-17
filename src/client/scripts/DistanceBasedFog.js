@@ -1,8 +1,6 @@
-var DistanceBasedFog;
-
 import * as THREE from "three";
 
-DistanceBasedFog = class DistanceBasedFog {
+var DistanceBasedFog = class DistanceBasedFog {
     constructor() {
         this.view = new THREE.Vector3();
         this.farnear = new THREE.Vector2();
@@ -11,8 +9,7 @@ DistanceBasedFog = class DistanceBasedFog {
     }
 
     addShaderToMaterial(material) {
-        var _this;
-        _this = this;
+        var _this = this;
         material.onBeforeCompile = function (shader) {
             shader.uniforms.u_viewPos = {
                 value: _this.view,

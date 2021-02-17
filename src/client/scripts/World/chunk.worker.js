@@ -1,10 +1,8 @@
-var TerrainManager, handlers, terrain;
-
 import { CellTerrain } from "./CellTerrain.js";
 
-terrain = null;
+var terrain = null;
 
-TerrainManager = class TerrainManager {
+var TerrainManager = class TerrainManager {
     constructor(options) {
         this.cellSize = options.cellSize;
         this.cellTerrain = new CellTerrain({
@@ -21,7 +19,7 @@ TerrainManager = class TerrainManager {
     }
 
     genBlockFace(type, block, pos) {
-        var mapka, toxX, toxY, uv, x1, x2, xd, y1, y2;
+        var xd, toxX, toxY;
         if (
             this.blocksTex[block.name] !== void 0 ||
             this.blocksTex[String(block.stateId)] !== void 0
@@ -35,7 +33,7 @@ TerrainManager = class TerrainManager {
                 toxX = this.blocksMapping[xd.all]["x"];
                 toxY = this.blocksMapping[xd.all]["y"];
             } else if (xd["side"] !== void 0) {
-                mapka = {
+                var mapka = {
                     py: "top",
                     ny: "bottom",
                 };
@@ -65,11 +63,11 @@ TerrainManager = class TerrainManager {
         }
         toxX -= 1;
         toxY -= 1;
-        x1 = this.q * toxX;
-        y1 = 1 - this.q * toxY - this.q;
-        x2 = this.q * toxX + this.q;
-        y2 = 1 - this.q * toxY;
-        uv = [
+        var x1 = this.q * toxX;
+        var y1 = 1 - this.q * toxY - this.q;
+        var x2 = this.q * toxX + this.q;
+        var y2 = 1 - this.q * toxY;
+        var uv = [
             [x1, y1],
             [x1, y2],
             [x2, y1],
@@ -386,37 +384,16 @@ TerrainManager = class TerrainManager {
     }
 
     genCellGeo(cellX, cellY, cellZ) {
-        var _this,
-            addFace,
-            aoColor,
-            colors,
-            i,
-            j,
-            k,
-            l,
-            m,
-            n,
-            normals,
-            pos,
-            positions,
-            ref,
-            ref1,
-            ref2,
-            t_colors,
-            t_normals,
-            t_positions,
-            t_uvs,
-            uvs;
-        _this = this;
-        positions = [];
-        normals = [];
-        uvs = [];
-        colors = [];
-        t_positions = [];
-        t_normals = [];
-        t_uvs = [];
-        t_colors = [];
-        aoColor = function (type) {
+        var _this = this;
+        var positions = [];
+        var normals = [];
+        var uvs = [];
+        var colors = [];
+        var t_positions = [];
+        var t_normals = [];
+        var t_uvs = [];
+        var t_colors = [];
+        var aoColor = function (type) {
             if (type === 0) {
                 return [0.9, 0.9, 0.9];
             } else if (type === 1) {
@@ -427,28 +404,13 @@ TerrainManager = class TerrainManager {
                 return [0.3, 0.3, 0.3];
             }
         };
-        addFace = function (type, pos) {
-            var block,
-                col1,
-                col2,
-                col3,
-                col4,
-                faceVertex,
-                ile,
-                l,
-                loaded,
-                m,
-                n,
-                x,
-                y,
-                z;
-            block = _this.cellTerrain.getBlock(...pos);
-            faceVertex = _this.genBlockFace(type, block, pos);
-            // _this.cellTerrain.getBlock(pos[0],pos[1],pos[2])
-            loaded = {};
-            for (x = l = -1; l <= 1; x = ++l) {
-                for (y = m = -1; m <= 1; y = ++m) {
-                    for (z = n = -1; n <= 1; z = ++n) {
+        var addFace = function (type, pos) {
+            var block = _this.cellTerrain.getBlock(...pos);
+            var faceVertex = _this.genBlockFace(type, block, pos);
+            var loaded = {};
+            for (var x = -1; x <= 1; x++) {
+                for (var y = -1; y <= 1; y++) {
+                    for (var z = -1; z <= 1; z++) {
                         if (
                             _this.cellTerrain.getBlock(
                                 pos[0] + x,
@@ -463,10 +425,10 @@ TerrainManager = class TerrainManager {
                     }
                 }
             }
-            col1 = aoColor(0);
-            col2 = aoColor(0);
-            col3 = aoColor(0);
-            col4 = aoColor(0);
+            var col1 = aoColor(0);
+            var col2 = aoColor(0);
+            var col3 = aoColor(0);
+            var col4 = aoColor(0);
             if (type === "py") {
                 col1 = aoColor(
                     loaded["1:1:-1"] + loaded["0:1:-1"] + loaded["1:1:0"]
@@ -551,8 +513,8 @@ TerrainManager = class TerrainManager {
                     loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]
                 );
             }
+            var ile = 4;
             if (block.name === "water") {
-                ile = 4;
                 col1[0] /= ile;
                 col1[1] /= ile;
                 col2[0] /= ile;
@@ -562,7 +524,6 @@ TerrainManager = class TerrainManager {
                 col4[0] /= ile;
                 col4[1] /= ile;
             } else if (block.name === "grass_block" && type === "py") {
-                ile = 4;
                 col1[0] /= ile;
                 col1[2] /= ile;
                 col2[0] /= ile;
@@ -572,7 +533,6 @@ TerrainManager = class TerrainManager {
                 col4[0] /= ile;
                 col4[2] /= ile;
             } else if (block.name.includes("leaves")) {
-                ile = 4;
                 col1[0] /= ile;
                 col1[2] /= ile;
                 col2[0] /= ile;
@@ -608,22 +568,10 @@ TerrainManager = class TerrainManager {
                 );
             }
         };
-        for (
-            i = l = 0, ref = this.cellSize - 1;
-            0 <= ref ? l <= ref : l >= ref;
-            i = 0 <= ref ? ++l : --l
-        ) {
-            for (
-                j = m = 0, ref1 = this.cellSize - 1;
-                0 <= ref1 ? m <= ref1 : m >= ref1;
-                j = 0 <= ref1 ? ++m : --m
-            ) {
-                for (
-                    k = n = 0, ref2 = this.cellSize - 1;
-                    0 <= ref2 ? n <= ref2 : n >= ref2;
-                    k = 0 <= ref2 ? ++n : --n
-                ) {
-                    pos = [
+        for (var i = 0; i < this.cellSize; i++) {
+            for (var j = 0; j < this.cellSize; j++) {
+                for (var k = 0; k < this.cellSize; k++) {
+                    var pos = [
                         cellX * this.cellSize + i,
                         cellY * this.cellSize + j,
                         cellZ * this.cellSize + k,
@@ -839,11 +787,16 @@ TerrainManager = class TerrainManager {
         normals.push(...t_normals);
         uvs.push(...t_uvs);
         colors.push(...t_colors);
-        return { positions, normals, uvs, colors };
+        return {
+            positions,
+            normals,
+            uvs,
+            colors,
+        };
     }
 };
 
-handlers = {
+var handlers = {
     init: function (data) {
         terrain = new TerrainManager({
             models: data.models,
@@ -858,7 +811,6 @@ handlers = {
     setVoxel: function (data) {
         var cellId, l, len, nei, neiCellId, neighbours;
         terrain.cellTerrain.setVoxel(...data);
-        //TODO: cellNeedsUpdate update
         cellId = terrain.cellTerrain.vec3(
             ...terrain.cellTerrain.computeCellForVoxel(
                 data[0],
@@ -888,12 +840,11 @@ handlers = {
         }
     },
     genCellGeo: function (data) {
-        var geo;
         if (
             terrain.cellTerrain.vec3(...data) in terrain.cellTerrain.cells ===
             true
         ) {
-            geo = terrain.genCellGeo(...data);
+            var geo = terrain.genCellGeo(...data);
             postMessage({
                 type: "cellGeo",
                 data: {
@@ -905,8 +856,7 @@ handlers = {
         }
     },
     setCell: function (data) {
-        var l, len, nei, neiCellId, neighbours;
-        neighbours = [
+        var neighbours = [
             [-1, 0, 0],
             [1, 0, 0],
             [0, -1, 0],
@@ -918,9 +868,9 @@ handlers = {
             terrain.cellTerrain.vec3(data[0], data[1], data[2])
         ] = true;
         terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
-        for (l = 0, len = neighbours.length; l < len; l++) {
-            nei = neighbours[l];
-            neiCellId = terrain.cellTerrain.vec3(
+        for (var l = 0; l < neighbours.length; l++) {
+            var nei = neighbours[l];
+            var neiCellId = terrain.cellTerrain.vec3(
                 data[0] + nei[0],
                 data[1] + nei[1],
                 data[2] + nei[2]
@@ -933,68 +883,26 @@ handlers = {
         terrain.cellTerrain.cells = {};
     },
     updateCellsAroundPlayer: function (data) {
-        var cell,
-            cellBlackList,
-            cellId,
-            gen,
-            i,
-            k,
-            l,
-            m,
-            n,
-            o,
-            odw,
-            pcell,
-            radius,
-            ref,
-            ref1,
-            ref2,
-            ref3,
-            ref4,
-            ref5,
-            ref6,
-            ref7,
-            v,
-            x,
-            y,
-            z;
-        cell = data[0];
-        radius = data[1];
-        odw = {};
-        cellBlackList = {};
-        ref = terrain.loadedMeshes;
-        for (k in ref) {
-            v = ref[k];
+        var cell = data[0];
+        var radius = data[1];
+        var odw = {};
+        var cellBlackList = {};
+        for (var k in terrain.loadedMeshes) {
+            var v = terrain.loadedMeshes[k];
             if (v === true) {
                 cellBlackList[k] = true;
             }
         }
-        for (
-            i = l = 0, ref1 = radius;
-            0 <= ref1 ? l <= ref1 : l >= ref1;
-            i = 0 <= ref1 ? ++l : --l
-        ) {
-            for (
-                x = m = ref2 = -i, ref3 = i;
-                ref2 <= ref3 ? m <= ref3 : m >= ref3;
-                x = ref2 <= ref3 ? ++m : --m
-            ) {
-                for (
-                    y = n = ref4 = -i, ref5 = i;
-                    ref4 <= ref5 ? n <= ref5 : n >= ref5;
-                    y = ref4 <= ref5 ? ++n : --n
-                ) {
-                    for (
-                        z = o = ref6 = -i, ref7 = i;
-                        ref6 <= ref7 ? o <= ref7 : o >= ref7;
-                        z = ref6 <= ref7 ? ++o : --o
-                    ) {
+        for (var i = 0; i <= radius; i++) {
+            for (var x = -i; x <= i; x++) {
+                for (var y = -i; y <= i; y++) {
+                    for (var z = -i; z <= i; z++) {
                         if (!odw[`${x}:${y}:${z}`]) {
                             odw[`${x}:${y}:${z}`] = true;
-                            pcell = [cell[0] + x, cell[1] + y, cell[2] + z];
-                            cellId = terrain.cellTerrain.vec3(...pcell);
+                            var pcell = [cell[0] + x, cell[1] + y, cell[2] + z];
+                            var cellId = terrain.cellTerrain.vec3(...pcell);
                             cellBlackList[cellId] = false;
-                            gen = false;
+                            var gen = false;
                             if (terrain.cellNeedsUpdate[cellId]) {
                                 delete terrain.cellNeedsUpdate[cellId];
                                 handlers.genCellGeo(pcell);
@@ -1025,8 +933,7 @@ handlers = {
 };
 
 addEventListener("message", function (e) {
-    var fn;
-    fn = handlers[e.data.type];
+    var fn = handlers[e.data.type];
     if (!fn) {
         throw new Error(`no handler for type: ${e.data.type}`);
     }

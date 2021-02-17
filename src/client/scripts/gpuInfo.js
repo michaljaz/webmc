@@ -1,14 +1,11 @@
-var gpuInfo;
-
-gpuInfo = function () {
-    var debugInfo, gl;
-    gl = document.createElement("canvas").getContext("webgl");
+var gpuInfo = function () {
+    var gl = document.createElement("canvas").getContext("webgl");
     if (!gl) {
         return {
             error: "no webgl",
         };
     }
-    debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
+    var debugInfo = gl.getExtension("WEBGL_debug_renderer_info");
     if (debugInfo) {
         return {
             vendor: gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL),

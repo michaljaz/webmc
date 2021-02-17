@@ -1,21 +1,18 @@
-var World;
-
 import * as THREE from "three";
-
 import { CellTerrain } from "./CellTerrain.js";
-
 import { AnimatedTextureAtlas } from "./AnimatedTextureAtlas.js";
-
 import { SectionComputer } from "./SectionComputer.js";
-
 import vec3 from "vec3";
-
 import chunkWorker from "./chunk.worker.js";
 
-World = class World {
+/** Class to manage world (chunks,generating terrain,etc.) */
+var World = class World {
+    /**
+     * World init function
+     * @param game - Object of main game
+     */
     constructor(game) {
-        var _this;
-        _this = this;
+        var _this = this;
         this.game = game;
         this.cellBlackList = {};
         this.cellMesh = {};
@@ -61,37 +58,58 @@ World = class World {
                 blocksDef: this.blocksDef,
             },
         });
-        return;
     }
-
+    /**
+     * Updates render order of chunk meshes
+     * @param cell - player cell
+     */
     updateRenderOrder(cell) {
-        var c, i, n, x;
-        c = new vec3(...cell);
-        for (i in this.cellMesh) {
-            n = i.split(":");
-            x = new vec3(parseInt(n[0]), parseInt(n[1]), parseInt(n[2]));
+        var c = new vec3(...cell);
+        for (var i in this.cellMesh) {
+            var n = i.split(":");
+            var x = new vec3(parseInt(n[0]), parseInt(n[1]), parseInt(n[2]));
             this.cellMesh[i].renderOrder = -c.distanceTo(x);
         }
     }
-
+    /**
+     * Sets custom cell buffer
+     * @param cellX - cell X coord
+     * @param cellY - cell Y coord
+     * @param cellZ - cell Z coord
+     * @param buffer - cell Buffer
+     */
     setCell(cellX, cellY, cellZ, buffer) {
-        this._setCell(cellX, cellY, cellZ, buffer);
-        return this.cellTerrain.setCell(cellX, cellY, cellZ, buffer);
+        this.cellUpdateTime = performance.now();
+        this.chunkWorker.postMessage({
+            type: "setCell",
+            data: [cellX, cellY, cellZ, buffer],
+        });
+        this.cellTerrain.setCell(cellX, cellY, cellZ, buffer);
     }
-
+    /**
+     * Sets custom block to some value
+     * @param voxelX - block X coord
+     * @param voxelY - block Y coord
+     * @param voxelZ - block Z coord
+     * @param value - new value of block
+     */
     setBlock(voxelX, voxelY, voxelZ, value) {
         voxelX = parseInt(voxelX);
         voxelY = parseInt(voxelY);
         voxelZ = parseInt(voxelZ);
         if (this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ) !== value) {
-            this._setVoxel(voxelX, voxelY, voxelZ, value);
+            this.chunkWorker.postMessage({
+                type: "setVoxel",
+                data: [voxelX, voxelY, voxelZ, value],
+            });
             this.cellTerrain.setVoxel(voxelX, voxelY, voxelZ, value);
         }
     }
-
+    /**
+     * Resets all chunk meshes
+     */
     resetWorld() {
-        var i;
-        for (i in this.cellMesh) {
+        for (var i in this.cellMesh) {
             if (this.cellMesh[i].geometry !== void 0) {
                 this.cellMesh[i].geometry.dispose();
                 this.game.scene.remove(this.cellMesh[i]);
@@ -99,15 +117,21 @@ World = class World {
             delete this.cellMesh[i];
         }
         this.cellTerrain.cells = {};
-        this._resetWorld();
+        this.chunkWorker.postMessage({
+            type: "resetWorld",
+            data: null,
+        });
     }
-
+    /**
+     * Updates cell
+     * @param data - cell Data
+     */
     updateCell(data) {
-        var _this, cell, cellId, geometry, mesh;
-        cellId = this.cellTerrain.vec3(...data.info);
-        cell = data.cell;
-        mesh = this.cellMesh[cellId];
-        geometry = new THREE.BufferGeometry();
+        var _this = this;
+        var cellId = this.cellTerrain.vec3(...data.info);
+        var cell = data.cell;
+        var mesh = this.cellMesh[cellId];
+        var geometry = new THREE.BufferGeometry();
         geometry.setAttribute(
             "position",
             new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
@@ -129,75 +153,55 @@ World = class World {
             this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
             this.cellMesh[cellId].matrixAutoUpdate = false;
             this.cellMesh[cellId].frustumCulled = false;
-            _this = this;
             this.cellMesh[cellId].onAfterRender = function () {
                 _this.cellMesh[cellId].frustumCulled = true;
-                return (_this.cellMesh[cellId].onAfterRender = function () {});
+                _this.cellMesh[cellId].onAfterRender = function () {};
             };
             this.game.scene.add(this.cellMesh[cellId]);
         } else {
             this.cellMesh[cellId].geometry = geometry;
         }
     }
-
+    /**
+     * Intersect raycast vector
+     * @param start - vector start
+     * @param end - vector end
+     */
     intersectsRay(start, end) {
-        var block,
-            dx,
-            dy,
-            dz,
-            ix,
-            iy,
-            iz,
-            len,
-            lenSq,
-            stepX,
-            stepY,
-            stepZ,
-            steppedIndex,
-            t,
-            txDelta,
-            txMax,
-            tyDelta,
-            tyMax,
-            tzDelta,
-            tzMax,
-            voxel,
-            xDist,
-            yDist,
-            zDist;
         start.x += 0.5;
         start.y += 0.5;
         start.z += 0.5;
         end.x += 0.5;
         end.y += 0.5;
         end.z += 0.5;
-        dx = end.x - start.x;
-        dy = end.y - start.y;
-        dz = end.z - start.z;
-        lenSq = dx * dx + dy * dy + dz * dz;
-        len = Math.sqrt(lenSq);
+        var dx = end.x - start.x;
+        var dy = end.y - start.y;
+        var dz = end.z - start.z;
+        var lenSq = dx * dx + dy * dy + dz * dz;
+        var len = Math.sqrt(lenSq);
         dx /= len;
         dy /= len;
         dz /= len;
-        t = 0.0;
-        ix = Math.floor(start.x);
-        iy = Math.floor(start.y);
-        iz = Math.floor(start.z);
-        stepX = dx > 0 ? 1 : -1;
-        stepY = dy > 0 ? 1 : -1;
-        stepZ = dz > 0 ? 1 : -1;
-        txDelta = Math.abs(1 / dx);
-        tyDelta = Math.abs(1 / dy);
-        tzDelta = Math.abs(1 / dz);
-        xDist = stepX > 0 ? ix + 1 - start.x : start.x - ix;
-        yDist = stepY > 0 ? iy + 1 - start.y : start.y - iy;
-        zDist = stepZ > 0 ? iz + 1 - start.z : start.z - iz;
-        txMax = txDelta < 2e308 ? txDelta * xDist : 2e308;
-        tyMax = tyDelta < 2e308 ? tyDelta * yDist : 2e308;
-        tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
-        steppedIndex = -1;
+        var t = 0.0;
+        var ix = Math.floor(start.x);
+        var iy = Math.floor(start.y);
+        var iz = Math.floor(start.z);
+        var stepX = dx > 0 ? 1 : -1;
+        var stepY = dy > 0 ? 1 : -1;
+        var stepZ = dz > 0 ? 1 : -1;
+        var txDelta = Math.abs(1 / dx);
+        var tyDelta = Math.abs(1 / dy);
+        var tzDelta = Math.abs(1 / dz);
+        var xDist = stepX > 0 ? ix + 1 - start.x : start.x - ix;
+        var yDist = stepY > 0 ? iy + 1 - start.y : start.y - iy;
+        var zDist = stepZ > 0 ? iz + 1 - start.z : start.z - iz;
+        var txMax = txDelta < 2e308 ? txDelta * xDist : 2e308;
+        var tyMax = tyDelta < 2e308 ? tyDelta * yDist : 2e308;
+        var tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
+        var steppedIndex = -1;
         while (t <= len) {
-            block = this.cellTerrain.getBlock(ix, iy, iz);
+            var block = this.cellTerrain.getBlock(ix, iy, iz);
+            var voxel;
             if (
                 block.name === "air" ||
                 block.name === "cave_air" ||
@@ -251,19 +255,21 @@ World = class World {
         }
         return null;
     }
-
+    /**
+     * Get Block player is pointing at
+     * @returns Pointing block
+     */
     getRayBlock() {
-        var end, intersection, posBreak, posPlace, start;
-        start = new THREE.Vector3().setFromMatrixPosition(
+        var start = new THREE.Vector3().setFromMatrixPosition(
             this.game.camera.matrixWorld
         );
-        end = new THREE.Vector3().set(0, 0, 1).unproject(this.game.camera);
-        intersection = this.intersectsRay(start, end);
+        var end = new THREE.Vector3().set(0, 0, 1).unproject(this.game.camera);
+        var intersection = this.intersectsRay(start, end);
         if (intersection) {
-            posPlace = intersection.position.map(function (v, ndx) {
+            var posPlace = intersection.position.map(function (v, ndx) {
                 return Math.floor(v + intersection.normal[ndx] * 0.5);
             });
-            posBreak = intersection.position.map(function (v, ndx) {
+            var posBreak = intersection.position.map(function (v, ndx) {
                 return Math.floor(v + intersection.normal[ndx] * -0.5);
             });
             return { posPlace, posBreak };
@@ -271,43 +277,13 @@ World = class World {
             return false;
         }
     }
-
-    _setCell(cellX, cellY, cellZ, buffer, biome) {
-        this.cellUpdateTime = performance.now();
-        return this.chunkWorker.postMessage({
-            type: "setCell",
-            data: [cellX, cellY, cellZ, buffer, biome],
-        });
-    }
-
-    _resetWorld() {
-        this.chunkWorker.postMessage({
-            type: "resetWorld",
-            data: null,
-        });
-    }
-
-    _setVoxel(voxelX, voxelY, voxelZ, value) {
-        return this.chunkWorker.postMessage({
-            type: "setVoxel",
-            data: [voxelX, voxelY, voxelZ, value],
-        });
-    }
-
-    _genCellGeo(cellX, cellY, cellZ) {
-        cellX = parseInt(cellX);
-        cellY = parseInt(cellY);
-        cellZ = parseInt(cellZ);
-        return this.chunkWorker.postMessage({
-            type: "genCellGeo",
-            data: [cellX, cellY, cellZ],
-        });
-    }
-
-    _updateCellsAroundPlayer(radius) {
-        var cell, pos;
-        pos = this.game.camera.position;
-        cell = this.cellTerrain.computeCellForVoxel(
+    /**
+     * Update chunks around player in radius
+     * @param radius - radius from player
+     */
+    updateCellsAroundPlayer(radius) {
+        var pos = this.game.camera.position;
+        var cell = this.cellTerrain.computeCellForVoxel(
             Math.floor(pos.x + 0.5),
             Math.floor(pos.y + 0.5),
             Math.floor(pos.z + 0.5)
@@ -323,15 +299,20 @@ World = class World {
             });
         }
     }
-
-    _computeSections(sections, x, z, biomes) {
-        var i, j, len1, result, results;
-        result = SectionComputer({ sections, x, z, biomes });
-        results = [];
-        for (j = 0, len1 = result.length; j < len1; j++) {
-            i = result[j];
-            if (i !== null) {
-                results.push(this.setCell(i.x, i.y, i.z, i.cell));
+    /**
+     * Computes Buffer sent from server to readable section
+     * @param sections - section buffer
+     * @param x - section x
+     * @param z - section z
+     */
+    computeSections(sections, x, z) {
+        var result = SectionComputer({ sections, x, z });
+        // console.log(result);
+        var results = [];
+        for (var i in result) {
+            var j = result[i];
+            if (j !== null) {
+                results.push(this.setCell(j.x, j.y, j.z, j.cell));
             } else {
                 results.push(void 0);
             }

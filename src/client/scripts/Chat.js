@@ -1,17 +1,14 @@
-var Chat;
-
-Chat = class Chat {
+var Chat = class Chat {
     constructor(game) {
-        var _this;
+        var _this = this;
         this.game = game;
         this.chatDiv = document.querySelector(".chat");
         this.listen();
         this.history = [""];
         this.histState = 0;
-        _this = this;
         $(".com_i").on("input", function () {
             _this.history[_this.history.length - 1] = $(".com_i").val();
-            return console.log(_this.history);
+            console.log(_this.history);
         });
         return;
     }
@@ -31,8 +28,7 @@ Chat = class Chat {
     }
 
     listen() {
-        var _this;
-        _this = this;
+        var _this = this;
         window.addEventListener(
             "wheel",
             function (e) {

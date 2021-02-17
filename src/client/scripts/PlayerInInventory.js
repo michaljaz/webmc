@@ -1,8 +1,6 @@
-var PlayerInInventory;
-
 import * as THREE from "three";
 
-PlayerInInventory = class PlayerInInventory {
+var PlayerInInventory = class PlayerInInventory {
     constructor(game) {
         var light, player, playerTex;
         this.game = game;

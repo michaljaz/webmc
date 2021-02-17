@@ -1,14 +1,9 @@
-var BitArray,
-    ChunkDecoder,
-    SectionComputer,
-    cd,
-    modulo = function (a, b) {
-        return ((+a % (b = +b)) + b) % b;
-    };
+var modulo = function (a, b) {
+    return ((+a % (b = +b)) + b) % b;
+};
 
-BitArray = class BitArray {
+var BitArray = class BitArray {
     constructor(options) {
-        var length, valueMask, valuesPerLong;
         if (options === null) {
             return;
         }
@@ -18,12 +13,12 @@ BitArray = class BitArray {
         if (!(options.bitsPerValue <= 32)) {
             console.error("bits per value exceeds 32");
         }
-        valuesPerLong = Math.floor(64 / options.bitsPerValue);
-        length = Math.ceil(options.capacity / valuesPerLong);
+        let valuesPerLong = Math.floor(64 / options.bitsPerValue);
+        let length = Math.ceil(options.capacity / valuesPerLong);
         if (!options.data) {
             options.data = Array(length * 2).fill(0);
         }
-        valueMask = (1 << options.bitsPerValue) - 1;
+        let valueMask = (1 << options.bitsPerValue) - 1;
         this.data = options.data;
         this.capacity = options.capacity;
         this.bitsPerValue = options.bitsPerValue;
@@ -33,37 +28,30 @@ BitArray = class BitArray {
     }
 
     get(index) {
-        var endBitOffset,
-            endLong,
-            indexInLong,
-            indexInStartLong,
-            result,
-            startLong,
-            startLongIndex;
         if (!(index >= 0 && index < this.capacity)) {
             console.error("index is out of bounds");
         }
-        startLongIndex = Math.floor(index / this.valuesPerLong);
-        indexInLong =
+        var startLongIndex = Math.floor(index / this.valuesPerLong);
+        var indexInLong =
             (index - startLongIndex * this.valuesPerLong) * this.bitsPerValue;
         if (indexInLong >= 32) {
-            indexInStartLong = indexInLong - 32;
-            startLong = this.data[startLongIndex * 2 + 1];
+            let indexInStartLong = indexInLong - 32;
+            let startLong = this.data[startLongIndex * 2 + 1];
             return (startLong >>> indexInStartLong) & this.valueMask;
         }
-        startLong = this.data[startLongIndex * 2];
-        indexInStartLong = indexInLong;
-        result = startLong >>> indexInStartLong;
-        endBitOffset = indexInStartLong + this.bitsPerValue;
+        let startLong = this.data[startLongIndex * 2];
+        let indexInStartLong = indexInLong;
+        var result = startLong >>> indexInStartLong;
+        var endBitOffset = indexInStartLong + this.bitsPerValue;
         if (endBitOffset > 32) {
-            endLong = this.data[startLongIndex * 2 + 1];
+            var endLong = this.data[startLongIndex * 2 + 1];
             result |= endLong << (32 - indexInStartLong);
         }
         return result & this.valueMask;
     }
 };
 
-ChunkDecoder = class ChunkDecoder {
+var ChunkDecoder = class ChunkDecoder {
     getBlockIndex(pos) {
         return (pos.y << 8) | (pos.z << 4) | pos.x;
     }
@@ -77,34 +65,19 @@ ChunkDecoder = class ChunkDecoder {
     }
 
     computeSections(packet) {
-        var cell,
-            data,
-            i,
-            j,
-            k,
-            l,
-            len,
-            m,
-            num,
-            palette,
-            result,
-            sections,
-            x,
-            y,
-            z;
-        sections = packet.sections;
-        num = 0;
-        result = [];
-        for (j = 0, len = sections.length; j < len; j++) {
-            i = sections[j];
+        var sections = packet.sections;
+        var num = 0;
+        var result = [];
+        for (var j = 0; j < sections.length; j++) {
+            var i = sections[j];
             num += 1;
             if (i !== null) {
-                palette = i.palette;
-                data = new BitArray(i.data);
-                cell = new Uint32Array(16 * 16 * 16);
-                for (x = k = 0; k <= 15; x = ++k) {
-                    for (y = l = 0; l <= 15; y = ++l) {
-                        for (z = m = 0; m <= 15; z = ++m) {
+                var palette = i.palette;
+                var data = new BitArray(i.data);
+                var cell = new Uint32Array(16 * 16 * 16);
+                for (var x = 0; x < 16; x++) {
+                    for (var y = 0; y < 16; y++) {
+                        for (var z = 0; z < 16; z++) {
                             cell[this.cvo(x, y, z)] =
                                 palette[
                                     data.get(this.getBlockIndex({ x, y, z }))
@@ -126,9 +99,9 @@ ChunkDecoder = class ChunkDecoder {
     }
 };
 
-cd = new ChunkDecoder();
+var cd = new ChunkDecoder();
 
-SectionComputer = function (data) {
+var SectionComputer = function (data) {
     return cd.computeSections(data);
 };
 

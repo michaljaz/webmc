@@ -1,9 +1,8 @@
-var CellTerrain,
-    modulo = function (a, b) {
-        return ((+a % (b = +b)) + b) % b;
-    };
+var modulo = function (a, b) {
+    return ((+a % (b = +b)) + b) % b;
+};
 
-CellTerrain = class CellTerrain {
+var CellTerrain = class CellTerrain {
     constructor(options) {
         this.cellSize = options.cellSize;
         this.cells = {};
@@ -81,19 +80,13 @@ CellTerrain = class CellTerrain {
     }
 
     getBlock(blockX, blockY, blockZ) {
-        var boundingBox, def, stateId;
-        stateId = this.getVoxel(blockX, blockY, blockZ);
-        def = this.blocksDef[stateId];
+        var stateId = this.getVoxel(blockX, blockY, blockZ);
+        var def = this.blocksDef[stateId];
         if (def !== void 0) {
-            if (def[1] === 1) {
-                boundingBox = "block";
-            } else {
-                boundingBox = "empty";
-            }
             return {
                 name: def[0],
                 stateId,
-                boundingBox,
+                boundingBox: def[1] === 1 ? "block" : "empty",
                 transparent: def[2],
             };
         } else {

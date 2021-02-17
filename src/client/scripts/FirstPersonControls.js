@@ -1,8 +1,6 @@
-var FirstPersonControls;
-
 import * as THREE from "three";
-
-FirstPersonControls = class FirstPersonControls {
+import TWEEN from "@tweenjs/tween.js";
+var FirstPersonControls = class FirstPersonControls {
     constructor(game) {
         this.game = game;
         this.kc = {
@@ -112,9 +110,9 @@ FirstPersonControls = class FirstPersonControls {
                     to = {
                         fov: _this.game.fov + 10,
                     };
-                    new _this.game.TWEEN.Tween(_this.game.camera)
+                    new TWEEN.Tween(_this.game.camera)
                         .to(to, 200)
-                        .easing(_this.game.TWEEN.Easing.Quadratic.Out)
+                        .easing(TWEEN.Easing.Quadratic.Out)
                         .onUpdate(function () {
                             return _this.game.camera.updateProjectionMatrix();
                         })
@@ -133,9 +131,9 @@ FirstPersonControls = class FirstPersonControls {
                     to = {
                         fov: _this.game.fov,
                     };
-                    new _this.game.TWEEN.Tween(_this.game.camera)
+                    new TWEEN.Tween(_this.game.camera)
                         .to(to, 200)
-                        .easing(_this.game.TWEEN.Easing.Quadratic.Out)
+                        .easing(TWEEN.Easing.Quadratic.Out)
                         .onUpdate(function () {
                             return _this.game.camera.updateProjectionMatrix();
                         })

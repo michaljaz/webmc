@@ -1,16 +1,14 @@
-var JSSoup, axios, fs, removeBg;
+var axios = require("axios");
 
-axios = require("axios");
+var JSSoup = require("jssoup").default;
 
-JSSoup = require("jssoup").default;
-
-fs = require("fs");
+var fs = require("fs");
 
 if (!fs.existsSync(`${__dirname}/assets/items/`)) {
     fs.mkdirSync(`${__dirname}/assets/items/`);
 }
 
-removeBg = function () {
+var removeBg = function () {
     var dir_path, replaceColor;
     replaceColor = require("replace-color");
     fs = require("fs");

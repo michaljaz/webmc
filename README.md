@@ -6,7 +6,7 @@
 
 ## About
 
-**Web-minecraft is minecraft client written in CoffeeScript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
+**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
 
 ## Instructions
 
@@ -70,15 +70,6 @@ npm start
 ```
 
 </details>
-
-
-
-<details>
-<summary>Browser support</summary>
-
-It is preferred to run this game on [Google Chrome](https://www.google.pl/chrome/) (best performance), but it could work on other browsers.
-</details>
-
 
 
 

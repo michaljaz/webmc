@@ -1,12 +1,10 @@
-var AtlasCreator, Canvas, fs, path;
+var path = require("path");
 
-path = require("path");
+var fs = require("fs");
 
-fs = require("fs");
+var Canvas = require("canvas");
 
-Canvas = require("canvas");
-
-AtlasCreator = class AtlasCreator {
+var AtlasCreator = class AtlasCreator {
     constructor(options) {
         this.pref = options.pref;
         this.oneFrame = options.oneFrame;
@@ -36,11 +34,9 @@ AtlasCreator = class AtlasCreator {
     }
 
     firstLoad() {
-        var _this;
-        _this = this;
+        var _this = this;
         fs.readdir(this.loadPath, function (err, files) {
-            var totalImages;
-            totalImages = 0;
+            var totalImages = 0;
             files.forEach(function (file) {
                 if (path.extname(file) === ".png") {
                     totalImages += 1;
@@ -59,9 +55,8 @@ AtlasCreator = class AtlasCreator {
     }
 
     addImageToLoad(filePath, name) {
-        var _this, img;
-        _this = this;
-        img = new Canvas.Image();
+        var _this = this;
+        var img = new Canvas.Image();
         img.onload = function () {
             _this.images[name] = img;
             _this.loadedImages++;
@@ -73,8 +68,7 @@ AtlasCreator = class AtlasCreator {
     }
 
     forEachToxel() {
-        var _this;
-        _this = this;
+        var _this = this;
         Object.keys(this.images).forEach(function (name) {
             var img;
             img = _this.images[name];
@@ -84,9 +78,8 @@ AtlasCreator = class AtlasCreator {
     }
 
     addToxelToAtlas(img, name) {
-        var h, i, j, k, l, ref, ref1, w;
-        w = img.width / this.toxelSize;
-        h = img.height / this.toxelSize;
+        var w = img.width / this.toxelSize;
+        var h = img.height / this.toxelSize;
         if (this.oneFrame) {
             this.ctx.drawImage(
                 img,
@@ -106,20 +99,12 @@ AtlasCreator = class AtlasCreator {
             this.moveToxel();
         } else {
             if (w > 1 || h > 1) {
-                for (
-                    i = k = 0, ref = w - 1;
-                    0 <= ref ? k <= ref : k >= ref;
-                    i = 0 <= ref ? ++k : --k
-                ) {
-                    for (
-                        j = l = 0, ref1 = h - 1;
-                        0 <= ref1 ? l <= ref1 : l >= ref1;
-                        j = 0 <= ref1 ? ++l : --l
-                    ) {
+                for (let _i = 0; _i < w; _i++) {
+                    for (let _j = 0; _j < h; _j++) {
                         this.ctx.drawImage(
                             img,
-                            i * this.toxelSize,
-                            j * this.toxelSize,
+                            _i * this.toxelSize,
+                            _j * this.toxelSize,
                             this.toxelSize,
                             this.toxelSize,
                             (this.toxelX - 1) * this.toxelSize,
@@ -128,7 +113,7 @@ AtlasCreator = class AtlasCreator {
                             this.toxelSize
                         );
                         this.textureMapping[
-                            `${name.substr(0, name.length - 4)}@${i}@${j}`
+                            `${name.substr(0, name.length - 4)}@${_i}@${_j}`
                         ] = {
                             x: this.toxelX,
                             y: this.toxelY,

@@ -1,14 +1,10 @@
-var AssetLoader;
-
 import * as THREE from "three";
-
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
-AssetLoader = class AssetLoader {
+var AssetLoader = class AssetLoader {
     constructor(init) {
-        var _this;
+        var _this = this;
         this.assets = {};
-        _this = this;
         $.get("assets/assetLoader.json", function (assets) {
             _this.load(assets, function () {
                 console.log("AssetLoader: done loading!");
@@ -21,12 +17,11 @@ AssetLoader = class AssetLoader {
     }
 
     load(assets, callback) {
-        var _this, assetsLoaded, assetsNumber, fbxl, textureLoader;
-        _this = this;
-        textureLoader = new THREE.TextureLoader();
-        fbxl = new FBXLoader();
-        assetsNumber = 0;
-        assetsLoaded = 0;
+        var _this = this;
+        var textureLoader = new THREE.TextureLoader();
+        var fbxl = new FBXLoader();
+        var assetsNumber = 0;
+        var assetsLoaded = 0;
         Object.keys(assets).forEach(function () {
             return assetsNumber++;
         });

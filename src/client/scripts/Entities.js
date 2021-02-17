@@ -1,8 +1,6 @@
-var Entities;
-
 import * as THREE from "three";
 
-Entities = class Entities {
+var Entities = class Entities {
     constructor(game) {
         this.game = game;
         this.mobMaterial = new THREE.MeshStandardMaterial({
@@ -34,15 +32,11 @@ Entities = class Entities {
     }
 
     update(entities) {
-        var i, num_mobs, num_players, offset;
-        offset = [-0.5, 16, -0.5];
+        var offset = [-0.5, 16, -0.5];
+        var num_mobs = 0;
+        this.mobMesh.count = entities.mobs.length;
         num_mobs = 0;
-        for (i in entities.mobs) {
-            num_mobs++;
-        }
-        this.mobMesh.count = num_mobs;
-        num_mobs = 0;
-        for (i in entities.mobs) {
+        for (let i in entities.mobs) {
             this.dummy.position.set(
                 entities.mobs[i][0] + offset[0],
                 entities.mobs[i][1] + offset[1],
@@ -52,15 +46,15 @@ Entities = class Entities {
             this.mobMesh.setMatrixAt(num_mobs++, this.dummy.matrix);
         }
         this.mobMesh.instanceMatrix.needsUpdate = true;
-        num_players = 0;
-        for (i in entities.players) {
+        var num_players = 0;
+        for (let i in entities.players) {
             if (entities.players[i][0] !== this.game.nick) {
                 num_players++;
             }
         }
         this.playerMesh.count = num_players;
         num_players = 0;
-        for (i in entities.players) {
+        for (let i in entities.players) {
             if (entities.players[i][0] !== this.game.nick) {
                 this.dummy.position.set(
                     entities.players[i][1] + offset[0],

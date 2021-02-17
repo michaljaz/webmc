@@ -1,19 +1,17 @@
-var InventoryBar,
-    modulo = function (a, b) {
-        return ((+a % (b = +b)) + b) % b;
-    };
+var modulo = function (a, b) {
+    return ((+a % (b = +b)) + b) % b;
+};
 
-InventoryBar = class InventoryBar {
+var InventoryBar = class InventoryBar {
     constructor(game) {
-        var j, k, l;
         this.game = game;
-        for (j = 0; j <= 9; ++j) {
+        for (let i = 0; i < 10; i++) {
             $(".player_hp").append("<span class='hp'></span> ");
         }
-        for (k = 0; k <= 9; ++k) {
+        for (let i = 0; i < 10; i++) {
             $(".player_food").append("<span class='food'></span> ");
         }
-        for (l = 1; l <= 9; ++l) {
+        for (let i = 1; i < 10; i++) {
             $(".inv_bar").append(
                 "<span class='inv_box item' data-texture=''></span> "
             );
@@ -22,9 +20,8 @@ InventoryBar = class InventoryBar {
     }
 
     setHp(points) {
-        var i, j, k, l, lista, ref;
-        lista = {};
-        for (i = j = 1; j <= 10; i = ++j) {
+        var lista = {};
+        for (let i = 1; i <= 10; i++) {
             lista[i - 1] = "empty";
             $(".hp")
                 .eq(i - 1)
@@ -37,18 +34,14 @@ InventoryBar = class InventoryBar {
                 .removeClass("half");
         }
         if (points !== 0) {
-            for (
-                i = k = 1, ref = (points + (points % 2)) / 2;
-                1 <= ref ? k <= ref : k >= ref;
-                i = 1 <= ref ? ++k : --k
-            ) {
+            for (let i = 1; i <= (points + (points % 2)) / 2; i++) {
                 lista[i - 1] = "full";
             }
             if (points % 2 === 1) {
                 lista[(points + (points % 2)) / 2 - 1] = "half";
             }
         }
-        for (i = l = 1; l <= 10; i = ++l) {
+        for (let i = 1; i <= 10; i++) {
             $(".hp")
                 .eq(i - 1)
                 .addClass(lista[i - 1]);
@@ -56,9 +49,8 @@ InventoryBar = class InventoryBar {
     }
 
     setFood(points) {
-        var i, j, k, l, lista, ref;
-        lista = {};
-        for (i = j = 1; j <= 10; i = ++j) {
+        var lista = {};
+        for (var i = 1; i <= 10; i++) {
             lista[10 - i] = "empty";
             $(".food")
                 .eq(10 - i)
@@ -71,18 +63,14 @@ InventoryBar = class InventoryBar {
                 .removeClass("half");
         }
         if (points !== 0) {
-            for (
-                i = k = 1, ref = (points + (points % 2)) / 2;
-                1 <= ref ? k <= ref : k >= ref;
-                i = 1 <= ref ? ++k : --k
-            ) {
+            for (let i = 1; i <= (points + (points % 2)) / 2; i++) {
                 lista[10 - i] = "full";
             }
             if (points % 2 === 1) {
                 lista[10 - (points + (points % 2)) / 2] = "half";
             }
         }
-        for (i = l = 1; l <= 10; i = ++l) {
+        for (let i = 1; i <= 10; i++) {
             $(".food")
                 .eq(10 - i)
                 .addClass(lista[10 - i]);
@@ -105,8 +93,7 @@ InventoryBar = class InventoryBar {
     }
 
     updateInv(inv) {
-        var i, j;
-        for (i = j = 36; j <= 44; i = ++j) {
+        for (var i = 36; i <= 44; i++) {
             if (inv[i] !== null) {
                 $(".inv_box")
                     .eq(i - 36)
@@ -126,10 +113,9 @@ InventoryBar = class InventoryBar {
     }
 
     listen() {
-        var _this, focus;
-        focus = 0;
+        var _this = this;
+        var focus = 0;
         this.setFocus(focus);
-        _this = this;
         $(window).on("wheel", function (e) {
             if (_this.game.FPC.gameState === "gameLock") {
                 if (e.originalEvent.deltaY > 0) {
@@ -144,21 +130,17 @@ InventoryBar = class InventoryBar {
     }
 
     tick() {
-        var i, items, j, list, pos, ref, tex, url;
-        list = $(".item");
-        for (
-            i = j = 0, ref = list.length - 1;
-            0 <= ref ? j <= ref : j >= ref;
-            i = 0 <= ref ? ++j : --j
-        ) {
+        var list = $(".item");
+        for (var i = 0; i < list.length; i++) {
+            var url;
             if ($(list[i]).attr("data-texture") === "") {
                 url = "";
             } else {
                 url = "/assets/items/items-Atlas.png";
-                tex = 43;
-                items = this.game.al.get("itemsMapping");
+                let tex = 43;
+                let items = this.game.al.get("itemsMapping");
                 $(list[i]).css("background-repeat", "no-repeat");
-                pos = items[$(list[i]).attr("data-texture")];
+                let pos = items[$(list[i]).attr("data-texture")];
                 $(list[i]).css(
                     "background-position",
                     `-${(pos.x - 1) * tex}px -${(pos.y - 1) * tex}px`

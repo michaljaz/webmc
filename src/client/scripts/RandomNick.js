@@ -1,8 +1,5 @@
-var RandomNick;
-
-RandomNick = function () {
-    var finalName, nameList;
-    nameList = [
+var RandomNick = function () {
+    var nameList = [
         "Time",
         "Past",
         "Future",
@@ -176,7 +173,7 @@ RandomNick = function () {
         "Vortex",
         "Paradox",
     ];
-    finalName = "";
+    var finalName = "";
     finalName = nameList[Math.floor(Math.random() * nameList.length)];
     finalName += nameList[Math.floor(Math.random() * nameList.length)];
     return finalName;

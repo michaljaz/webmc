@@ -1,23 +1,7 @@
-var atlasCreator,
-    block,
-    buildPath,
-    config,
-    fs,
-    i,
-    j,
-    k,
-    maxStateId,
-    pBlock,
-    ref,
-    result;
-
-fs = require("fs");
-
-config = require("./server.json");
-
-pBlock = require("prismarine-block")(config.version);
-
-atlasCreator = require("./atlasCreator");
+var fs = require("fs");
+var config = require("./server.json");
+var pBlock = require("prismarine-block")(config.version);
+var atlasCreator = require("./atlasCreator");
 
 new atlasCreator({
     pref: "items",
@@ -46,10 +30,10 @@ new atlasCreator({
     oneFrame: true,
 });
 
-maxStateId = 0;
+var maxStateId = 0;
 
-for (i = j = 0; j <= 100000; i = ++j) {
-    block = pBlock.fromStateId(i);
+for (var i = 0; i < 100000; i++) {
+    var block = pBlock.fromStateId(i);
     if (block.type === void 0) {
         maxStateId = i - 1;
         break;
@@ -58,13 +42,9 @@ for (i = j = 0; j <= 100000; i = ++j) {
 
 console.log(`\x1b[33mBlock max stateId: ${maxStateId}\x1b[0m`);
 
-result = [];
+var result = [];
 
-for (
-    i = k = 0, ref = maxStateId;
-    0 <= ref ? k <= ref : k >= ref;
-    i = 0 <= ref ? ++k : --k
-) {
+for (let i = 0; i <= maxStateId; i++) {
     block = pBlock.fromStateId(i);
     result.push([
         block.name,
@@ -73,7 +53,7 @@ for (
     ]);
 }
 
-buildPath = `${__dirname}/client/assets/blocks/blocksDef.json`;
+var buildPath = `${__dirname}/client/assets/blocks/blocksDef.json`;
 
 fs.writeFileSync(buildPath, JSON.stringify(result));
 

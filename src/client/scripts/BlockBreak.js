@@ -1,10 +1,7 @@
-var BlockBreak;
-
 import * as THREE from "three";
 
-BlockBreak = class BlockBreak {
+var BlockBreak = class BlockBreak {
     constructor(game) {
-        console.log(game);
         this.game = game;
         this.texture = this.game.al.get("blocksAtlasSnap");
         this.texture.magFilter = THREE.NearestFilter;
