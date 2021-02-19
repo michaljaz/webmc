@@ -26,7 +26,7 @@ npm i
 
 <details>
 <summary>Minecraft server setup</summary>
-To run this game you need to start real minecraft server (by default it is 1.16.1 offline mode java edition on ip localhost:25565) you can also define it in */src/server.json* file.
+To run this game you need to start real minecraft server (by default it is 1.16.5 offline mode java edition on ip localhost:25565) you can also define it in */src/server.json* file.
 
 </details>
 

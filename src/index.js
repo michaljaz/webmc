@@ -11,6 +11,7 @@ var vec3 = require("vec3");
 var Convert = require("ansi-to-html");
 var convert = new Convert();
 var helmet = require("helmet");
+var compression = require("compression");
 var port = process.env.PORT || 8080;
 
 app.use(
@@ -18,6 +19,7 @@ app.use(
         contentSecurityPolicy: false,
     })
 );
+app.use(compression());
 var mode = process.argv[2];
 if (mode === "production") {
     app.use(express.static(`${__dirname}/client/dist`));

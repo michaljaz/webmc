@@ -17,6 +17,7 @@
     "axios": "^0.21.1",
     "bootstrap": "^4.6.0",
     "canvas": "^2.6.1",
+    "compression": "^1.7.4",
     "dat.gui": "^0.7.7",
     "express": "^4.17.1",
     "helmet": "^4.4.1",
