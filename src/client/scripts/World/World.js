@@ -58,6 +58,7 @@ var World = class World {
                 blocksDef: this.blocksDef,
             },
         });
+        this.lastPlayerChunk = "";
     }
     /**
      * Updates render order of chunk meshes
@@ -158,6 +159,7 @@ var World = class World {
                 _this.cellMesh[cellId].onAfterRender = function () {};
             };
             this.game.scene.add(this.cellMesh[cellId]);
+            this.updateRenderOrder(JSON.parse(this.lastPlayerChunk));
         } else {
             this.cellMesh[cellId].geometry = geometry;
         }
@@ -288,15 +290,18 @@ var World = class World {
             Math.floor(pos.y + 0.5),
             Math.floor(pos.z + 0.5)
         );
-        this.updateRenderOrder(cell);
-        if (
-            this.cellUpdateTime !== null &&
-            performance.now() - this.cellUpdateTime > this.renderTime
-        ) {
-            this.chunkWorker.postMessage({
-                type: "updateCellsAroundPlayer",
-                data: [cell, radius],
-            });
+        if (this.lastPlayerChunk != JSON.stringify(cell)) {
+            if (
+                this.cellUpdateTime !== null &&
+                performance.now() - this.cellUpdateTime > this.renderTime
+            ) {
+                this.updateRenderOrder(cell);
+                this.lastPlayerChunk = JSON.stringify(cell);
+                this.chunkWorker.postMessage({
+                    type: "updateCellsAroundPlayer",
+                    data: [cell, radius],
+                });
+            }
         }
     }
     /**
