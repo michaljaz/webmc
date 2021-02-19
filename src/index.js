@@ -47,85 +47,81 @@ io.sockets.on("connection", function (socket) {
         version: config.version,
     });
     botByNick[query.nick] = bot;
+    bot._client.on("map_chunk", function (packet) {
+        var cell = new Chunk();
+        cell.load(packet.chunkData, packet.bitMap, true, true);
+        socket.emit("mapChunk", cell.sections, packet.x, packet.z);
+    });
+    bot._client.on("respawn", function (packet) {
+        socket.emit("dimension", packet.dimension.value.effects.value);
+    });
+    bot.on("heldItemChanged", function (item) {
+        heldItem = item;
+    });
+    bot.on("login", function () {
+        socket.emit("dimension", bot.game.dimension);
+    });
+    bot.on("move", function () {
+        socket.emit("move", bot.entity.position);
+    });
+    bot.on("health", function () {
+        socket.emit("hp", bot.health);
+        socket.emit("food", bot.food);
+    });
+    bot.on("spawn", function () {
+        socket.emit("spawn", bot.entity.yaw, bot.entity.pitch);
+    });
+    bot.on("kicked", function (reason) {
+        socket.emit("kicked", reason);
+    });
+    bot.on("message", function (msg) {
+        socket.emit("msg", convert.toHtml(msg.toAnsi()));
+    });
+    bot.on("experience", function () {
+        socket.emit("xp", bot.experience);
+    });
+    bot.on("blockUpdate", function (oldb, newb) {
+        socket.emit("blockUpdate", [
+            newb.position.x,
+            newb.position.y,
+            newb.position.z,
+            newb.stateId,
+        ]);
+    });
+    bot.on("diggingCompleted", function (block) {
+        socket.emit("diggingCompleted", block);
+    });
+    bot.on("diggingAborted", function (block) {
+        socket.emit("diggingAborted", block);
+    });
+    var inv = "";
+    var interval = setInterval(function () {
+        var inv_new = JSON.stringify(bot.inventory.slots);
+        if (inv !== inv_new) {
+            inv = inv_new;
+            socket.emit("inventory", bot.inventory.slots);
+        }
+        var entities = {
+            mobs: [],
+            players: [],
+        };
+        for (var k in bot.entities) {
+            var v = bot.entities[k];
+            if (v.type === "mob") {
+                entities.mobs.push([v.position.x, v.position.y, v.position.z]);
+            }
+            if (v.type === "player") {
+                entities.players.push([
+                    v.username,
+                    v.position.x,
+                    v.position.y,
+                    v.position.z,
+                ]);
+            }
+        }
+        socket.emit("entities", entities);
+    }, 10);
     bot.once("spawn", function () {
-        bot._client.on("map_chunk", function (packet) {
-            var cell = new Chunk();
-            cell.load(packet.chunkData, packet.bitMap, true, true);
-            socket.emit("mapChunk", cell.sections, packet.x, packet.z);
-        });
-        bot._client.on("respawn", function (packet) {
-            socket.emit("dimension", packet.dimension.value.effects.value);
-        });
-        bot.on("heldItemChanged", function (item) {
-            heldItem = item;
-        });
-        bot.on("login", function () {
-            socket.emit("dimension", bot.game.dimension);
-        });
-        bot.on("move", function () {
-            socket.emit("move", bot.entity.position);
-        });
-        bot.on("health", function () {
-            socket.emit("hp", bot.health);
-            socket.emit("food", bot.food);
-        });
-        bot.on("spawn", function () {
-            socket.emit("spawn", bot.entity.yaw, bot.entity.pitch);
-        });
-        bot.on("kicked", function (reason) {
-            socket.emit("kicked", reason);
-        });
-        bot.on("message", function (msg) {
-            socket.emit("msg", convert.toHtml(msg.toAnsi()));
-        });
-        bot.on("experience", function () {
-            socket.emit("xp", bot.experience);
-        });
-        bot.on("blockUpdate", function (oldb, newb) {
-            socket.emit("blockUpdate", [
-                newb.position.x,
-                newb.position.y,
-                newb.position.z,
-                newb.stateId,
-            ]);
-        });
-        bot.on("diggingCompleted", function (block) {
-            socket.emit("diggingCompleted", block);
-        });
-        bot.on("diggingAborted", function (block) {
-            socket.emit("diggingAborted", block);
-        });
-        var inv = "";
-        var interval = setInterval(function () {
-            var inv_new = JSON.stringify(bot.inventory.slots);
-            if (inv !== inv_new) {
-                inv = inv_new;
-                socket.emit("inventory", bot.inventory.slots);
-            }
-            var entities = {
-                mobs: [],
-                players: [],
-            };
-            for (var k in bot.entities) {
-                var v = bot.entities[k];
-                if (v.type === "mob") {
-                    entities.mobs.push([
-                        v.position.x,
-                        v.position.y,
-                        v.position.z,
-                    ]);
-                }
-                if (v.type === "player") {
-                    entities.players.push([
-                        v.username,
-                        v.position.x,
-                        v.position.y,
-                        v.position.z,
-                    ]);
-                }
-            }
-            socket.emit("entities", entities);
-        }, 10);
         socket.on("fly", function (toggle) {
             if (toggle) {
                 bot.creative.startFlying();
