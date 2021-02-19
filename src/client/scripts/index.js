@@ -106,7 +106,14 @@ var Game = class Game {
             console.log(`Player dimension has been changed: ${dim}`);
             _this.world.resetWorld();
             var bg = _this.dimBg[dim];
-            _this.scene.background = new THREE.Color(...bg);
+            if (bg === undefined) {
+                _this.scene.background = new THREE.Color(
+                    ..._this.dimBg["minecraft:overworld"]
+                );
+            } else {
+                _this.scene.background = new THREE.Color(...bg);
+            }
+
             _this.distanceBasedFog.color.x = bg[0];
             _this.distanceBasedFog.color.y = bg[1];
             _this.distanceBasedFog.color.z = bg[2];
@@ -175,7 +182,7 @@ var Game = class Game {
             console.log(val);
         });
         this.mouse = false;
-        $(document).on("mousedown",function (e) {
+        $(document).on("mousedown", function (e) {
             if (e.which === 1) {
                 _this.mouse = true;
                 if (_this.FPC.gameState === "gameLock") {
@@ -185,7 +192,7 @@ var Game = class Game {
                 _this.bp.placeBlock();
             }
         });
-        $(document).on("mouseup",function (e) {
+        $(document).on("mouseup", function (e) {
             if (e.which === 1) {
                 _this.mouse = false;
                 return _this.bb.stopDigging();
