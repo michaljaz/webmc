@@ -16,7 +16,7 @@ import { BlockBreak } from "./BlockBreak.js";
 import { BlockPlace } from "./BlockPlace.js";
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
 
-var Game = class Game {
+class Game {
     constructor() {
         var _this = this;
         this.al = new AssetLoader(function () {
@@ -244,6 +244,6 @@ var Game = class Game {
             .applyMatrix4(this.camera.matrixWorldInverse);
         this.renderer.render(this.scene, this.camera);
     }
-};
+}
 
 new Game();
