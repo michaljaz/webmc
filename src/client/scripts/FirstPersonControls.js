@@ -144,6 +144,11 @@ var FirstPersonControls = class FirstPersonControls {
         $(".gameOn").click(function () {
             _this.setState("game");
         });
+        window.onblur = function () {
+            Object.keys(_this.kc).forEach(function (el) {
+                _this.game.socket.emit("move", _this.kc[el], false);
+            });
+        };
         lockChangeAlert = function () {
             if (
                 document.pointerLockElement === _this.game.canvas ||
