@@ -59,6 +59,7 @@ var World = class World {
             },
         });
         this.lastPlayerChunk = "";
+        this.blocksUpdate = false;
     }
     /**
      * Updates render order of chunk meshes
@@ -98,6 +99,7 @@ var World = class World {
         voxelX = parseInt(voxelX);
         voxelY = parseInt(voxelY);
         voxelZ = parseInt(voxelZ);
+        this.blocksUpdate = true;
         if (this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ) !== value) {
             this.chunkWorker.postMessage({
                 type: "setVoxel",
@@ -290,7 +292,13 @@ var World = class World {
             Math.floor(pos.y + 0.5),
             Math.floor(pos.z + 0.5)
         );
-        if (this.lastPlayerChunk != JSON.stringify(cell)) {
+        if (this.blocksUpdate) {
+            this.blocksUpdate = false;
+            this.chunkWorker.postMessage({
+                type: "updateCellsAroundPlayer",
+                data: [cell, radius],
+            });
+        } else if (this.lastPlayerChunk != JSON.stringify(cell)) {
             if (
                 this.cellUpdateTime !== null &&
                 performance.now() - this.cellUpdateTime > this.renderTime
