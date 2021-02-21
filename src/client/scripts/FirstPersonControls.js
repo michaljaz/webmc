@@ -72,10 +72,10 @@ var FirstPersonControls = class FirstPersonControls {
             }
             //Klawisz T lub /
             if (
-                (z.code === "KeyT" || z.code === "Backslash") &&
+                (z.code === "KeyT" || z.code === "Slash") &&
                 _this.gameState === "gameLock"
             ) {
-                if (z.code === "Backslash") {
+                if (z.code === "Slash") {
                     $(".com_i").val("/");
                 }
                 _this.setState("chat");
