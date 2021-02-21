@@ -1,3 +1,2 @@
 language = "nodejs"
-run = "npm start"
-onBoot = "npm install;npm run build"
+run = "rm -rf node_modules;npm i;npm run build;npm start"
