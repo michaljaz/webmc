@@ -15,7 +15,7 @@ new atlasCreator({
 new atlasCreator({
     pref: "blocks",
     toxelSize: 16,
-    loadPath: `${__dirname}/assets/blocks`,
+    loadPath: `${__dirname}/assets/pack/assets/minecraft/textures/block`,
     buildPath: `${__dirname}/client/assets/blocks`,
     atlasSize: 36,
     oneFrame: false,
@@ -24,7 +24,7 @@ new atlasCreator({
 new atlasCreator({
     pref: "blocksSnap",
     toxelSize: 16,
-    loadPath: `${__dirname}/assets/blocks`,
+    loadPath: `${__dirname}/assets/pack/assets/minecraft/textures/block`,
     buildPath: `${__dirname}/client/assets/blocks`,
     atlasSize: 27,
     oneFrame: true,
