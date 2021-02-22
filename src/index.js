@@ -39,7 +39,6 @@ server.listen(port, function () {
 var botByNick = {};
 io.sockets.on("connection", function (socket) {
     var query = socket.handshake.query;
-    console.log(query);
     console.log(`[\x1b[32m+\x1b[0m] ${query.nick}`);
     var heldItem = null;
     var bot = mineflayer.createBot({

@@ -159,7 +159,7 @@ body { margin: 0; background:black;}
   width:500px;
   height:60px;;
   transform: translateX(-50%);
-  background-image: url("../assets/gui/widgets.png");
+  background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
   background-repeat: no-repeat;
   border:0px;
   background-position: 0px 0px;
@@ -182,7 +182,7 @@ body { margin: 0; background:black;}
   width:var(--box);
   height:var(--box);
   margin-right:-4px;
-  background-image: url("../assets/gui/icons.png"),url("../assets/gui/icons.png");
+  background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png"),url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
   background-repeat: no-repeat,no-repeat;
   background-size: 640px auto,640px auto;
   display:inline-block;
@@ -213,7 +213,7 @@ body { margin: 0; background:black;}
   left:calc(50vw - 250px);
   width:500px;
   height:14px;
-  background-image: url("../assets/gui/icons.png");
+  background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
   background-repeat: no-repeat;
   border:0px;
   background-size: 703px auto;
@@ -235,7 +235,7 @@ body { margin: 0; background:black;}
 }
 .inv_window{
   z-index:10;
-  background-image: url("../assets/gui/inventory.png");
+  background-image: url("../../assets/pack/assets/minecraft/textures/gui/container/inventory.png");
   background-repeat: no-repeat;
   background-size: 750px auto;
   position:fixed;
@@ -269,7 +269,7 @@ body { margin: 0; background:black;}
   margin-right:-1px;
 }
 .inv_cursor{
-	background-image: url("../assets/gui/widgets.png");
+	background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
 	background-repeat: no-repeat;
 	border:0px;
 	background-position: 0px -61px;

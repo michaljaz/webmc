@@ -11,10 +11,6 @@
 		"path":"/assets/blocks/blocks-Mapping.json",
 		"type":"text"
 	},
-	"skybox":{
-		"path":"/assets/images/skybox.jpg",
-		"type":"texture"
-	},
 	"blocksTex":{
 		"path":"/assets/blocks.json",
 		"type":"text"
