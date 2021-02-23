@@ -1,9 +1,13 @@
-import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
-var FirstPersonControls = class FirstPersonControls {
+import * as THREE from "three";
+var modulo = function (a, b) {
+    return ((+a % (b = +b)) + b) % b;
+};
+class EventHandler {
     constructor(game) {
+        var _this = this;
         this.game = game;
-        this.kc = {
+        this.controls = {
             KeyW: "forward",
             KeyD: "right",
             KeyS: "back",
@@ -13,38 +17,26 @@ var FirstPersonControls = class FirstPersonControls {
             KeyR: "sprint",
         };
         this.keys = {};
+        this.gameState = null;
         this.setState("menu");
-        this.listen();
-    }
-
-    updatePosition(e) {
-        //Updatowanie kursora
-        if (this.gameState === "gameLock") {
-            this.game.camera.rotation.x -= THREE.MathUtils.degToRad(
-                e.movementY / 10
-            );
-            this.game.camera.rotation.y -= THREE.MathUtils.degToRad(
-                e.movementX / 10
-            );
-            if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) < -90) {
-                this.game.camera.rotation.x = THREE.MathUtils.degToRad(-90);
+        document.exitPointerLock =
+            document.exitPointerLock || document.mozExitPointerLock;
+        //Mouse wheel change inventory
+        var focus = 0;
+        this.game.inv_bar.setFocus(focus);
+        $(window).on("wheel", function (e) {
+            if (_this.gameState === "gameLock") {
+                if (e.originalEvent.deltaY > 0) {
+                    focus++;
+                } else {
+                    focus--;
+                }
+                focus = modulo(focus, 9);
+                _this.game.inv_bar.setFocus(focus);
             }
-            if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) > 90) {
-                this.game.camera.rotation.x = THREE.MathUtils.degToRad(90);
-            }
-            this.game.socket.emit("rotate", [
-                this.game.camera.rotation.y,
-                this.game.camera.rotation.x,
-            ]);
-        }
-    }
-
-    listen() {
-        var _this, lockChangeAlert;
-        _this = this;
-        $(document).keydown(function (z) {
-            var to;
-            //Kliknięcie
+        });
+        //Keydown
+        $(document).on("keydown", function (z) {
             _this.keys[z.code] = true;
             //Klawisz Escape
             if (z.code === "Escape" && _this.gameState === "inventory") {
@@ -104,10 +96,13 @@ var FirstPersonControls = class FirstPersonControls {
                 _this.game.socket.emit("fly", _this.game.flying);
             }
             //Wysyłanie state'u do serwera
-            if (_this.kc[z.code] !== void 0 && _this.gameState === "gameLock") {
-                _this.game.socket.emit("move", _this.kc[z.code], true);
-                if (_this.kc[z.code] === "sprint") {
-                    to = {
+            if (
+                _this.controls[z.code] !== undefined &&
+                _this.gameState === "gameLock"
+            ) {
+                _this.game.socket.emit("move", _this.controls[z.code], true);
+                if (_this.controls[z.code] === "sprint") {
+                    var to = {
                         fov: _this.game.fov + 10,
                     };
                     new TWEEN.Tween(_this.game.camera)
@@ -120,15 +115,13 @@ var FirstPersonControls = class FirstPersonControls {
                 }
             }
         });
-        $(document).keyup(function (z) {
-            var to;
-            //Odkliknięcie
+        //Keyup
+        $(document).on("keyup", function (z) {
             delete _this.keys[z.code];
-            //Wysyłanie state'u do serwera
-            if (_this.kc[z.code] !== void 0) {
-                _this.game.socket.emit("move", _this.kc[z.code], false);
-                if (_this.kc[z.code] === "sprint") {
-                    to = {
+            if (_this.controls[z.code] !== undefined) {
+                _this.game.socket.emit("move", _this.controls[z.code], false);
+                if (_this.controls[z.code] === "sprint") {
+                    var to = {
                         fov: _this.game.fov,
                     };
                     new TWEEN.Tween(_this.game.camera)
@@ -141,15 +134,18 @@ var FirstPersonControls = class FirstPersonControls {
                 }
             }
         });
-        $(".gameOn").click(function () {
+        //Play game button
+        $(".gameOn").on("click", function () {
             _this.setState("game");
         });
+        //Window onblur
         window.onblur = function () {
-            Object.keys(_this.kc).forEach(function (el) {
-                _this.game.socket.emit("move", _this.kc[el], false);
+            Object.keys(_this.controls).forEach(function (el) {
+                _this.game.socket.emit("move", _this.controls[el], false);
             });
         };
-        lockChangeAlert = function () {
+        //Pointerlock
+        var lockChangeAlert = function () {
             if (
                 document.pointerLockElement === _this.game.canvas ||
                 document.mozPointerLockElement === _this.game.canvas
@@ -181,19 +177,27 @@ var FirstPersonControls = class FirstPersonControls {
             },
             false
         );
-        return this;
     }
-
-    reqLock() {
-        return this.game.canvas.requestPointerLock();
+    updatePosition(e) {
+        if (this.gameState === "gameLock") {
+            this.game.camera.rotation.x -= THREE.MathUtils.degToRad(
+                e.movementY / 10
+            );
+            this.game.camera.rotation.y -= THREE.MathUtils.degToRad(
+                e.movementX / 10
+            );
+            if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) < -90) {
+                this.game.camera.rotation.x = THREE.MathUtils.degToRad(-90);
+            }
+            if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) > 90) {
+                this.game.camera.rotation.x = THREE.MathUtils.degToRad(90);
+            }
+            this.game.socket.emit("rotate", [
+                this.game.camera.rotation.y,
+                this.game.camera.rotation.x,
+            ]);
+        }
     }
-
-    unLock() {
-        document.exitPointerLock =
-            document.exitPointerLock || document.mozExitPointerLock;
-        return document.exitPointerLock();
-    }
-
     state(state) {
         this.gameState = state;
         if (state === "inventory") {
@@ -202,8 +206,6 @@ var FirstPersonControls = class FirstPersonControls {
             return this.game.pii.hide();
         }
     }
-
-    // console.log "Game state: "+state
     resetState() {
         $(".chat").removeClass("focus");
         $(".chat").addClass("blur");
@@ -211,27 +213,29 @@ var FirstPersonControls = class FirstPersonControls {
         $(".com").hide();
         return $(".inv_window").hide();
     }
-
     setState(state) {
         this.resetState();
         switch (state) {
             case "game":
                 this.state("game");
-                return this.reqLock();
+                this.game.canvas.requestPointerLock();
+                break;
             case "gameLock":
                 this.state("gameLock");
-                return $(".gameMenu").hide();
+                $(".gameMenu").hide();
+                break;
             case "menu":
                 this.state("menu");
                 $(".gameMenu").show();
-                return this.unLock();
+                document.exitPointerLock();
+                break;
             case "chat":
                 if (this.gameState === "gameLock") {
                     $(".chat").addClass("focus");
                     $(".chat").removeClass("blur");
                     $(".gameMenu").hide();
                     this.state("chat");
-                    this.unLock();
+                    document.exitPointerLock();
                     $(".com").show();
                     return $(".com_i").focus();
                 }
@@ -242,13 +246,13 @@ var FirstPersonControls = class FirstPersonControls {
                     if (this.gameState !== "inventory") {
                         this.state("inventory");
                         $(".inv_window").show();
-                        return this.unLock();
+                        document.exitPointerLock();
                     } else {
-                        return this.setState("game");
+                        this.setState("game");
                     }
                 }
+                break;
         }
     }
-};
-
-export { FirstPersonControls };
+}
+export { EventHandler };

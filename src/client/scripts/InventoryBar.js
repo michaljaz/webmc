@@ -1,7 +1,3 @@
-var modulo = function (a, b) {
-    return ((+a % (b = +b)) + b) % b;
-};
-
 var InventoryBar = class InventoryBar {
     constructor(game) {
         this.game = game;
@@ -16,7 +12,6 @@ var InventoryBar = class InventoryBar {
                 "<span class='inv_box item' data-texture=''></span> "
             );
         }
-        this.listen();
     }
 
     setHp(points) {
@@ -110,23 +105,6 @@ var InventoryBar = class InventoryBar {
                     .attr("data-amount", "0");
             }
         }
-    }
-
-    listen() {
-        var _this = this;
-        var focus = 0;
-        this.setFocus(focus);
-        $(window).on("wheel", function (e) {
-            if (_this.game.FPC.gameState === "gameLock") {
-                if (e.originalEvent.deltaY > 0) {
-                    focus++;
-                } else {
-                    focus--;
-                }
-                focus = modulo(focus, 9);
-                return _this.setFocus(focus);
-            }
-        });
     }
 
     tick() {

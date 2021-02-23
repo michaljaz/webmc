@@ -4,7 +4,6 @@ import * as dat from "dat.gui";
 import io from "socket.io-client";
 import TWEEN from "@tweenjs/tween.js";
 import { World } from "./World/World.js";
-import { FirstPersonControls } from "./FirstPersonControls.js";
 import { gpuInfo } from "./gpuInfo.js";
 import { AssetLoader } from "./AssetLoader.js";
 import { InventoryBar } from "./InventoryBar.js";
@@ -15,6 +14,7 @@ import { PlayerInInventory } from "./PlayerInInventory.js";
 import { BlockBreak } from "./BlockBreak.js";
 import { BlockPlace } from "./BlockPlace.js";
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
+import { EventHandler } from "./EventHandler.js";
 
 class Game {
     constructor() {
@@ -82,7 +82,7 @@ class Game {
         this.ent = new Entities(this);
         this.chat = new Chat(this);
         this.inv_bar = new InventoryBar(this);
-        this.FPC = new FirstPersonControls(this);
+        this.eh = new EventHandler(this);
         this.distanceBasedFog.addShaderToMaterial(this.world.material);
         this.socket.on("connect", function () {
             console.log("Connected to server!");
@@ -185,7 +185,7 @@ class Game {
         $(document).on("mousedown", function (e) {
             if (e.which === 1) {
                 _this.mouse = true;
-                if (_this.FPC.gameState === "gameLock") {
+                if (_this.eh.gameState === "gameLock") {
                     _this.bb.digRequest();
                 }
             } else if (e.which === 3) {
@@ -235,7 +235,7 @@ class Game {
         this.world.updateCellsAroundPlayer(this.params.chunkdist);
         TWEEN.update();
         this.drawcalls.update(this.renderer.info.render.calls, 100);
-        if (this.FPC.gameState === "inventory") {
+        if (this.eh.gameState === "inventory") {
             this.pii.render();
         }
         this.inv_bar.tick();

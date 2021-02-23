@@ -121,7 +121,7 @@ io.sockets.on("connection", function (socket) {
             }
         }
         socket.emit("entities", entities);
-    }, 10);
+    }, 100);
     bot.once("spawn", function () {
         socket.on("fly", function (toggle) {
             if (toggle) {

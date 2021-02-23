@@ -58,7 +58,7 @@ var World = class World {
                 blocksDef: this.blocksDef,
             },
         });
-        this.lastPlayerChunk = "";
+        this.lastPlayerChunk = null;
         this.blocksUpdate = false;
     }
     /**
@@ -161,7 +161,9 @@ var World = class World {
                 _this.cellMesh[cellId].onAfterRender = function () {};
             };
             this.game.scene.add(this.cellMesh[cellId]);
-            this.updateRenderOrder(JSON.parse(this.lastPlayerChunk));
+            if (this.lastPlayerChunk !== null) {
+                this.updateRenderOrder(JSON.parse(this.lastPlayerChunk));
+            }
         } else {
             this.cellMesh[cellId].geometry = geometry;
         }

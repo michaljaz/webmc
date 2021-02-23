@@ -32,7 +32,7 @@ var Chat = class Chat {
         window.addEventListener(
             "wheel",
             function (e) {
-                if (_this.game.FPC.gameState !== "chat") {
+                if (_this.game.eh.gameState !== "chat") {
                     e.preventDefault();
                 }
             },
