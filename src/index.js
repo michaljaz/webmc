@@ -1,6 +1,6 @@
 var opn = require("open");
 var fs = require("fs");
-var config = JSON.parse(fs.readFileSync(`${__dirname}/server.json`));
+var config = JSON.parse(fs.readFileSync(`${__dirname}/properties.json`));
 var express = require("express");
 var app = express();
 var server = require("http").createServer(app);

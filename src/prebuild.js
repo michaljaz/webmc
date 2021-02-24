@@ -1,5 +1,5 @@
 var fs = require("fs");
-var config = require("./server.json");
+var config = require("./properties.json");
 var pBlock = require("prismarine-block")(config.version);
 var atlasCreator = require("./atlasCreator");
 
