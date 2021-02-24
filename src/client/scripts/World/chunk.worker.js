@@ -16,6 +16,14 @@ var TerrainManager = class TerrainManager {
         this.cellNeedsUpdate = {};
         this.loadedMeshes = {};
         this.undefinedBlock = "black_shulker_box";
+        this.neighbours = {
+            px: [-1, 0, 0],
+            nx: [1, 0, 0],
+            ny: [0, -1, 0],
+            py: [0, 1, 0],
+            pz: [0, 0, 1],
+            nz: [0, 0, -1],
+        };
     }
 
     genBlockFace(type, block, pos) {
@@ -73,48 +81,25 @@ var TerrainManager = class TerrainManager {
             [x2, y1],
             [x2, y2],
         ];
+        // prettier-ignore
         switch (type) {
             case "pz":
                 return {
                     pos: [
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0],0.5 + pos[1], 0.5 + pos[2],
                     ],
                     norm: [
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
+                        0, 0, 1,
+                        0, 0, 1,
+                        0, 0, 1,
+                        0, 0, 1,
+                        0, 0, 1,
+                        0, 0, 1,
                     ],
                     uv: [
                         ...uv[0],
@@ -128,44 +113,20 @@ var TerrainManager = class TerrainManager {
             case "nx":
                 return {
                     pos: [
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1],0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
                     ],
                     norm: [
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
+                        1, 0, 0,
+                        1, 0, 0,
+                        1, 0, 0,
+                        1, 0, 0,
+                        1, 0, 0,
+                        1, 0, 0,
                     ],
                     uv: [
                         ...uv[0],
@@ -179,44 +140,20 @@ var TerrainManager = class TerrainManager {
             case "nz":
                 return {
                     pos: [
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
                     ],
                     norm: [
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
+                        0, 0, -1,
+                        0, 0, -1,
+                        0, 0, -1,
+                        0, 0, -1,
+                        0, 0, -1,
+                        0, 0, -1,
                     ],
                     uv: [
                         ...uv[0],
@@ -230,44 +167,20 @@ var TerrainManager = class TerrainManager {
             case "px":
                 return {
                     pos: [
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
                     ],
                     norm: [
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
+                        -1, 0, 0,
+                        -1, 0, 0,
+                        -1, 0, 0,
+                        -1, 0, 0,
+                        -1, 0, 0,
+                        -1, 0, 0,
                     ],
                     uv: [
                         ...uv[0],
@@ -281,44 +194,20 @@ var TerrainManager = class TerrainManager {
             case "py":
                 return {
                     pos: [
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        0.5 + pos[1],
-                        0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
                     ],
                     norm: [
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
-                        0,
-                        1,
-                        0,
+                        0, 1, 0,
+                        0, 1, 0,
+                        0, 1, 0,
+                        0, 1, 0,
+                        0, 1, 0,
+                        0, 1, 0,
                     ],
                     uv: [
                         ...uv[0],
@@ -332,44 +221,20 @@ var TerrainManager = class TerrainManager {
             case "ny":
                 return {
                     pos: [
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        0.5 + pos[2],
-                        -0.5 + pos[0],
-                        -0.5 + pos[1],
-                        -0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
+                        -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
                     ],
                     norm: [
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
-                        0,
-                        -1,
-                        0,
+                        0, -1, 0,
+                        0, -1, 0,
+                        0, -1, 0,
+                        0, -1, 0,
+                        0, -1, 0,
+                        0, -1, 0,
                     ],
                     uv: [
                         ...uv[0],
@@ -580,204 +445,50 @@ var TerrainManager = class TerrainManager {
                         this.cellTerrain.getBlock(...pos).boundingBox ===
                         "block"
                     ) {
-                        if (this.cellTerrain.getBlock(...pos).transparent) {
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0] + 1,
-                                    pos[1],
-                                    pos[2]
-                                ).boundingBox !== "block"
-                            ) {
-                                addFace("nx", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0] - 1,
-                                    pos[1],
-                                    pos[2]
-                                ).boundingBox !== "block"
-                            ) {
-                                addFace("px", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1] - 1,
-                                    pos[2]
-                                ).boundingBox !== "block"
-                            ) {
-                                addFace("ny", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1] + 1,
-                                    pos[2]
-                                ).boundingBox !== "block"
-                            ) {
-                                addFace("py", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1],
-                                    pos[2] + 1
-                                ).boundingBox !== "block"
-                            ) {
-                                addFace("pz", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1],
-                                    pos[2] - 1
-                                ).boundingBox !== "block"
-                            ) {
-                                addFace("nz", pos);
-                            }
-                        } else {
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0] + 1,
-                                    pos[1],
-                                    pos[2]
-                                ).boundingBox !== "block" ||
-                                this.cellTerrain.getBlock(
-                                    pos[0] + 1,
-                                    pos[1],
-                                    pos[2]
-                                ).transparent
-                            ) {
-                                addFace("nx", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0] - 1,
-                                    pos[1],
-                                    pos[2]
-                                ).boundingBox !== "block" ||
-                                this.cellTerrain.getBlock(
-                                    pos[0] - 1,
-                                    pos[1],
-                                    pos[2]
-                                ).transparent
-                            ) {
-                                addFace("px", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1] - 1,
-                                    pos[2]
-                                ).boundingBox !== "block" ||
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1] - 1,
-                                    pos[2]
-                                ).transparent
-                            ) {
-                                addFace("ny", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1] + 1,
-                                    pos[2]
-                                ).boundingBox !== "block" ||
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1] + 1,
-                                    pos[2]
-                                ).transparent
-                            ) {
-                                addFace("py", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1],
-                                    pos[2] + 1
-                                ).boundingBox !== "block" ||
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1],
-                                    pos[2] + 1
-                                ).transparent
-                            ) {
-                                addFace("pz", pos);
-                            }
-                            if (
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1],
-                                    pos[2] - 1
-                                ).boundingBox !== "block" ||
-                                this.cellTerrain.getBlock(
-                                    pos[0],
-                                    pos[1],
-                                    pos[2] - 1
-                                ).transparent
-                            ) {
-                                addFace("nz", pos);
+                        for (let l in this.neighbours) {
+                            let m = this.neighbours[l];
+                            if (this.cellTerrain.getBlock(...pos).transparent) {
+                                if (
+                                    this.cellTerrain.getBlock(
+                                        pos[0] + m[0],
+                                        pos[1] + m[1],
+                                        pos[2] + m[2]
+                                    ).boundingBox !== "block"
+                                ) {
+                                    addFace(l, pos);
+                                }
+                            } else {
+                                if (
+                                    this.cellTerrain.getBlock(
+                                        pos[0] + m[0],
+                                        pos[1] + m[1],
+                                        pos[2] + m[2]
+                                    ).boundingBox !== "block" ||
+                                    this.cellTerrain.getBlock(
+                                        pos[0] + m[0],
+                                        pos[1] + m[1],
+                                        pos[2] + m[2]
+                                    ).transparent
+                                ) {
+                                    addFace(l, pos);
+                                }
                             }
                         }
                     } else if (
                         this.cellTerrain.getBlock(...pos).name === "water" ||
                         this.cellTerrain.getBlock(...pos).name === "lava"
                     ) {
-                        if (
-                            this.cellTerrain.getBlock(
-                                pos[0] + 1,
-                                pos[1],
-                                pos[2]
-                            ).name === "air"
-                        ) {
-                            addFace("nx", pos);
-                        }
-                        if (
-                            this.cellTerrain.getBlock(
-                                pos[0] - 1,
-                                pos[1],
-                                pos[2]
-                            ).name === "air"
-                        ) {
-                            addFace("px", pos);
-                        }
-                        if (
-                            this.cellTerrain.getBlock(
-                                pos[0],
-                                pos[1] - 1,
-                                pos[2]
-                            ).name === "air"
-                        ) {
-                            addFace("ny", pos);
-                        }
-                        if (
-                            this.cellTerrain.getBlock(
-                                pos[0],
-                                pos[1] + 1,
-                                pos[2]
-                            ).name === "air"
-                        ) {
-                            addFace("py", pos);
-                        }
-                        if (
-                            this.cellTerrain.getBlock(
-                                pos[0],
-                                pos[1],
-                                pos[2] + 1
-                            ).name === "air"
-                        ) {
-                            addFace("pz", pos);
-                        }
-                        if (
-                            this.cellTerrain.getBlock(
-                                pos[0],
-                                pos[1],
-                                pos[2] - 1
-                            ).name === "air"
-                        ) {
-                            addFace("nz", pos);
+                        for (var l in this.neighbours) {
+                            let m = this.neighbours[l];
+                            if (
+                                this.cellTerrain.getBlock(
+                                    pos[0] + m[0],
+                                    pos[1] + m[1],
+                                    pos[2] + m[2]
+                                ).name === "air"
+                            ) {
+                                addFace(l, pos);
+                            }
                         }
                     }
                 }
