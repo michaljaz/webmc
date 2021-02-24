@@ -276,108 +276,67 @@ var TerrainManager = class TerrainManager {
             for (var x = -1; x <= 1; x++) {
                 for (var y = -1; y <= 1; y++) {
                     for (var z = -1; z <= 1; z++) {
-                        if (
+                        loaded[`${x}:${y}:${z}`] =
                             _this.cellTerrain.getBlock(
                                 pos[0] + x,
                                 pos[1] + y,
                                 pos[2] + z
                             ).boundingBox === "block"
-                        ) {
-                            loaded[`${x}:${y}:${z}`] = 1;
-                        } else {
-                            loaded[`${x}:${y}:${z}`] = 0;
-                        }
+                                ? 1
+                                : 0;
                     }
                 }
             }
-            var col1 = aoColor(0);
-            var col2 = aoColor(0);
-            var col3 = aoColor(0);
-            var col4 = aoColor(0);
-            if (type === "py") {
-                col1 = aoColor(
-                    loaded["1:1:-1"] + loaded["0:1:-1"] + loaded["1:1:0"]
+            var aoMap = {
+                py: [
+                    [1, 1, -1, 0, 1, -1, 1, 1, 0],
+                    [1, 1, 1, 0, 1, 1, 1, 1, 0],
+                    [-1, 1, -1, 0, 1, -1, -1, 1, 0],
+                    [-1, 1, 1, 0, 1, 1, -1, 1, 0],
+                ],
+                ny: [
+                    [1, -1, 1, 0, -1, 1, 1, -1, 0],
+                    [1, -1, -1, 0, -1, -1, 1, -1, 0],
+                    [-1, -1, 1, 0, -1, 1, -1, -1, 0],
+                    [-1, -1, -1, 0, -1, -1, -1, -1, 0],
+                ],
+                px: [
+                    [-1, -1, 0, -1, -1, -1, -1, 0, -1],
+                    [-1, 1, 0, -1, 1, -1, -1, 0, -1],
+                    [-1, -1, 0, -1, -1, 1, -1, 0, 1],
+                    [-1, 1, 0, -1, 1, 1, -1, 0, 1],
+                ],
+                nx: [
+                    [1, -1, 0, 1, -1, 1, 1, 0, 1],
+                    [1, 1, 0, 1, 1, 1, 1, 0, 1],
+                    [1, -1, 0, 1, -1, -1, 1, 0, -1],
+                    [1, 1, 0, 1, 1, -1, 1, 0, -1],
+                ],
+                pz: [
+                    [0, -1, 1, -1, -1, 1, -1, 0, 1],
+                    [0, 1, 1, -1, 1, 1, -1, 0, 1],
+                    [0, -1, 1, 1, -1, 1, 1, 0, 1],
+                    [0, 1, 1, 1, 1, 1, 1, 0, 1],
+                ],
+                nz: [
+                    [0, -1, -1, 1, -1, -1, 1, 0, -1],
+                    [0, 1, -1, 1, 1, -1, 1, 0, -1],
+                    [0, -1, -1, -1, -1, -1, -1, 0, -1],
+                    [0, 1, -1, -1, 1, -1, -1, 0, -1],
+                ],
+            };
+            var c1 = aoMap[type];
+            var getCol = function (num) {
+                return aoColor(
+                    loaded[`${c1[num][0]}:${c1[num][1]}:${c1[num][2]}`] +
+                        loaded[`${c1[num][3]}:${c1[num][4]}:${c1[num][5]}`] +
+                        loaded[`${c1[num][6]}:${c1[num][7]}:${c1[num][8]}`]
                 );
-                col2 = aoColor(
-                    loaded["1:1:1"] + loaded["0:1:1"] + loaded["1:1:0"]
-                );
-                col3 = aoColor(
-                    loaded["-1:1:-1"] + loaded["0:1:-1"] + loaded["-1:1:0"]
-                );
-                col4 = aoColor(
-                    loaded["-1:1:1"] + loaded["0:1:1"] + loaded["-1:1:0"]
-                );
-            }
-            if (type === "ny") {
-                col2 = aoColor(
-                    loaded["1:-1:-1"] + loaded["0:-1:-1"] + loaded["1:-1:0"]
-                );
-                col1 = aoColor(
-                    loaded["1:-1:1"] + loaded["0:-1:1"] + loaded["1:-1:0"]
-                );
-                col4 = aoColor(
-                    loaded["-1:-1:-1"] + loaded["0:-1:-1"] + loaded["-1:-1:0"]
-                );
-                col3 = aoColor(
-                    loaded["-1:-1:1"] + loaded["0:-1:1"] + loaded["-1:-1:0"]
-                );
-            }
-            if (type === "px") {
-                col1 = aoColor(
-                    loaded["-1:-1:0"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
-                );
-                col2 = aoColor(
-                    loaded["-1:1:0"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
-                );
-                col3 = aoColor(
-                    loaded["-1:-1:0"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
-                );
-                col4 = aoColor(
-                    loaded["-1:1:0"] + loaded["-1:1:1"] + loaded["-1:0:1"]
-                );
-            }
-            if (type === "nx") {
-                col3 = aoColor(
-                    loaded["1:-1:0"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
-                );
-                col4 = aoColor(
-                    loaded["1:1:0"] + loaded["1:1:-1"] + loaded["1:0:-1"]
-                );
-                col1 = aoColor(
-                    loaded["1:-1:0"] + loaded["1:-1:1"] + loaded["1:0:1"]
-                );
-                col2 = aoColor(
-                    loaded["1:1:0"] + loaded["1:1:1"] + loaded["1:0:1"]
-                );
-            }
-            if (type === "pz") {
-                col1 = aoColor(
-                    loaded["0:-1:1"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
-                );
-                col2 = aoColor(
-                    loaded["0:1:1"] + loaded["-1:1:1"] + loaded["-1:0:1"]
-                );
-                col3 = aoColor(
-                    loaded["0:-1:1"] + loaded["1:-1:1"] + loaded["1:0:1"]
-                );
-                col4 = aoColor(
-                    loaded["0:1:1"] + loaded["1:1:1"] + loaded["1:0:1"]
-                );
-            }
-            if (type === "nz") {
-                col3 = aoColor(
-                    loaded["0:-1:-1"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
-                );
-                col4 = aoColor(
-                    loaded["0:1:-1"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
-                );
-                col1 = aoColor(
-                    loaded["0:-1:-1"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
-                );
-                col2 = aoColor(
-                    loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]
-                );
-            }
+            };
+            var col1 = getCol(0);
+            var col2 = getCol(1);
+            var col3 = getCol(2);
+            var col4 = getCol(3);
             var ile = 4;
             if (block.name === "water") {
                 col1[0] /= ile;
@@ -441,54 +400,32 @@ var TerrainManager = class TerrainManager {
                         cellY * this.cellSize + j,
                         cellZ * this.cellSize + k,
                     ];
-                    if (
-                        this.cellTerrain.getBlock(...pos).boundingBox ===
-                        "block"
-                    ) {
-                        for (let l in this.neighbours) {
-                            let m = this.neighbours[l];
-                            if (this.cellTerrain.getBlock(...pos).transparent) {
-                                if (
-                                    this.cellTerrain.getBlock(
-                                        pos[0] + m[0],
-                                        pos[1] + m[1],
-                                        pos[2] + m[2]
-                                    ).boundingBox !== "block"
-                                ) {
-                                    addFace(l, pos);
-                                }
-                            } else {
-                                if (
-                                    this.cellTerrain.getBlock(
-                                        pos[0] + m[0],
-                                        pos[1] + m[1],
-                                        pos[2] + m[2]
-                                    ).boundingBox !== "block" ||
-                                    this.cellTerrain.getBlock(
-                                        pos[0] + m[0],
-                                        pos[1] + m[1],
-                                        pos[2] + m[2]
-                                    ).transparent
-                                ) {
-                                    addFace(l, pos);
-                                }
-                            }
-                        }
-                    } else if (
-                        this.cellTerrain.getBlock(...pos).name === "water" ||
-                        this.cellTerrain.getBlock(...pos).name === "lava"
-                    ) {
-                        for (var l in this.neighbours) {
-                            let m = this.neighbours[l];
+                    var mainBlock = this.cellTerrain.getBlock(...pos);
+                    for (let l in this.neighbours) {
+                        let m = this.neighbours[l];
+                        var neiBlock = this.cellTerrain.getBlock(
+                            pos[0] + m[0],
+                            pos[1] + m[1],
+                            pos[2] + m[2]
+                        );
+                        if (mainBlock.boundingBox === "block") {
                             if (
-                                this.cellTerrain.getBlock(
-                                    pos[0] + m[0],
-                                    pos[1] + m[1],
-                                    pos[2] + m[2]
-                                ).name === "air"
+                                mainBlock.transparent &&
+                                neiBlock.boundingBox !== "block"
+                            ) {
+                                addFace(l, pos);
+                            } else if (
+                                neiBlock.boundingBox !== "block" ||
+                                neiBlock.transparent
                             ) {
                                 addFace(l, pos);
                             }
+                        } else if (
+                            (mainBlock.name === "water" ||
+                                mainBlock.name === "lava") &&
+                            neiBlock.name === "air"
+                        ) {
+                            addFace(l, pos);
                         }
                     }
                 }
