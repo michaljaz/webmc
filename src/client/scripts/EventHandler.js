@@ -38,6 +38,13 @@ class EventHandler {
         //Keydown
         $(document).on("keydown", function (z) {
             _this.keys[z.code] = true;
+            //Digits
+            for (var i = 1; i < 10; i++) {
+                if (z.code === `Digit${i}` && _this.gameState === "gameLock") {
+                    _this.game.inv_bar.setFocus(i - 1);
+                    focus = i - 1;
+                }
+            }
             //Klawisz Escape
             if (z.code === "Escape" && _this.gameState === "inventory") {
                 _this.setState("menu");
