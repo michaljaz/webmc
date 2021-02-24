@@ -326,17 +326,30 @@ var TerrainManager = class TerrainManager {
                 ],
             };
             var c1 = aoMap[type];
-            var getCol = function (num) {
-                return aoColor(
-                    loaded[`${c1[num][0]}:${c1[num][1]}:${c1[num][2]}`] +
-                        loaded[`${c1[num][3]}:${c1[num][4]}:${c1[num][5]}`] +
-                        loaded[`${c1[num][6]}:${c1[num][7]}:${c1[num][8]}`]
-                );
-            };
-            var col1 = getCol(0);
-            var col2 = getCol(1);
-            var col3 = getCol(2);
-            var col4 = getCol(3);
+            var num = 0;
+            var col1 = aoColor(
+                loaded[`${c1[num][0]}:${c1[num][1]}:${c1[num][2]}`] +
+                    loaded[`${c1[num][3]}:${c1[num][4]}:${c1[num][5]}`] +
+                    loaded[`${c1[num][6]}:${c1[num][7]}:${c1[num][8]}`]
+            );
+            num = 1;
+            var col2 = aoColor(
+                loaded[`${c1[num][0]}:${c1[num][1]}:${c1[num][2]}`] +
+                    loaded[`${c1[num][3]}:${c1[num][4]}:${c1[num][5]}`] +
+                    loaded[`${c1[num][6]}:${c1[num][7]}:${c1[num][8]}`]
+            );
+            num = 2;
+            var col3 = aoColor(
+                loaded[`${c1[num][0]}:${c1[num][1]}:${c1[num][2]}`] +
+                    loaded[`${c1[num][3]}:${c1[num][4]}:${c1[num][5]}`] +
+                    loaded[`${c1[num][6]}:${c1[num][7]}:${c1[num][8]}`]
+            );
+            num = 3;
+            var col4 = aoColor(
+                loaded[`${c1[num][0]}:${c1[num][1]}:${c1[num][2]}`] +
+                    loaded[`${c1[num][3]}:${c1[num][4]}:${c1[num][5]}`] +
+                    loaded[`${c1[num][6]}:${c1[num][7]}:${c1[num][8]}`]
+            );
             var ile = 4;
             if (block.name === "water") {
                 col1[0] /= ile;
