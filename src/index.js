@@ -155,6 +155,9 @@ io.sockets.on("connection", function (socket) {
             }
             bot.setControlState(state, toggle);
         });
+        socket.on("kicked", function (reason) {
+            console.log('Kicked! Reason:' + reason);
+        });
         socket.on("command", function (com) {
             bot.chat(com);
         });
