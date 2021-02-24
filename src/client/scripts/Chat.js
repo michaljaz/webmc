@@ -55,6 +55,7 @@ var Chat = class Chat {
     }
 
     log(message) {
+        if(message.split(" ")[1].indexOf("<") == -1 && message.split(" ").indexOf(">") == -1)
         $(".chat").append(`<span>${message}<br></span>`);
         this.scrollToBottom(this.chatDiv);
     }
