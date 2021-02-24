@@ -134,8 +134,8 @@ class Game {
         this.socket.on("msg", function (msg) {
             _this.chat.log(msg);
         });
-        this.socket.on("kicked", function () {
-            _this.chat.log("You have been kicked!");
+        this.socket.on("kicked", function (reason) {
+            _this.chat.log("You have been kicked! Reason: " + JSON.parse(reason).text);
         });
         this.socket.on("xp", function (xp) {
             _this.inv_bar.setXp(xp.level, xp.progress);
