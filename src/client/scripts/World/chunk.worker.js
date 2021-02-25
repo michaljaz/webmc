@@ -1,5 +1,4 @@
 import { CellTerrain } from "./CellTerrain.js";
-
 var terrain = null;
 
 var TerrainManager = class TerrainManager {
@@ -24,6 +23,8 @@ var TerrainManager = class TerrainManager {
             pz: [0, 0, 1],
             nz: [0, 0, -1],
         };
+        this.chunkQueue = [];
+        this.playerChunk = null;
     }
 
     genBlockFace(type, block, pos) {
@@ -457,146 +458,152 @@ var TerrainManager = class TerrainManager {
     }
 };
 
-var handlers = {
-    init: function (data) {
-        terrain = new TerrainManager({
-            models: data.models,
-            blocks: data.blocks,
-            blocksMapping: data.blocksMapping,
-            toxelSize: data.toxelSize,
-            cellSize: data.cellSize,
-            blocksTex: data.blocksTex,
-            blocksDef: data.blocksDef,
-        });
-    },
-    setVoxel: function (data) {
-        var cellId, l, len, nei, neiCellId, neighbours;
-        terrain.cellTerrain.setVoxel(...data);
-        cellId = terrain.cellTerrain.vec3(
-            ...terrain.cellTerrain.computeCellForVoxel(
-                data[0],
-                data[1],
-                data[2]
-            )
-        );
-        terrain.cellNeedsUpdate[cellId] = true;
-        neighbours = [
-            [-1, 0, 0],
-            [1, 0, 0],
-            [0, -1, 0],
-            [0, 1, 0],
-            [0, 0, -1],
-            [0, 0, 1],
-        ];
-        for (l = 0, len = neighbours.length; l < len; l++) {
-            nei = neighbours[l];
-            neiCellId = terrain.cellTerrain.vec3(
+var handler = function (msg) {
+    var data = msg.data.data;
+    let neighbours = [
+        [-1, 0, 0],
+        [1, 0, 0],
+        [0, -1, 0],
+        [0, 1, 0],
+        [0, 0, -1],
+        [0, 0, 1],
+    ];
+    switch (msg.data.type) {
+        case "init":
+            terrain = new TerrainManager({
+                models: data.models,
+                blocks: data.blocks,
+                blocksMapping: data.blocksMapping,
+                toxelSize: data.toxelSize,
+                cellSize: data.cellSize,
+                blocksTex: data.blocksTex,
+                blocksDef: data.blocksDef,
+            });
+            break;
+        case "setVoxel":
+            terrain.cellTerrain.setVoxel(...data);
+            var cellId = terrain.cellTerrain.vec3(
                 ...terrain.cellTerrain.computeCellForVoxel(
+                    data[0],
+                    data[1],
+                    data[2]
+                )
+            );
+            terrain.cellNeedsUpdate[cellId] = true;
+
+            for (let l = 0, len = neighbours.length; l < len; l++) {
+                let nei = neighbours[l];
+                let neiCellId = terrain.cellTerrain.vec3(
+                    ...terrain.cellTerrain.computeCellForVoxel(
+                        data[0] + nei[0],
+                        data[1] + nei[1],
+                        data[2] + nei[2]
+                    )
+                );
+                terrain.cellNeedsUpdate[neiCellId] = true;
+            }
+            break;
+        case "genCellGeo":
+            if (
+                terrain.cellTerrain.vec3(...data) in
+                    terrain.cellTerrain.cells ===
+                true
+            ) {
+                var geo = terrain.genCellGeo(...data);
+                postMessage({
+                    type: "cellGeo",
+                    data: {
+                        cell: geo,
+                        info: data,
+                        p: performance.now(),
+                    },
+                });
+            }
+            break;
+        case "setCell":
+            terrain.cellNeedsUpdate[
+                terrain.cellTerrain.vec3(data[0], data[1], data[2])
+            ] = true;
+            terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
+            for (let l = 0; l < neighbours.length; l++) {
+                let nei = neighbours[l];
+                let neiCellId = terrain.cellTerrain.vec3(
                     data[0] + nei[0],
                     data[1] + nei[1],
                     data[2] + nei[2]
-                )
-            );
-            terrain.cellNeedsUpdate[neiCellId] = true;
-        }
-    },
-    genCellGeo: function (data) {
-        if (
-            terrain.cellTerrain.vec3(...data) in terrain.cellTerrain.cells ===
-            true
-        ) {
-            var geo = terrain.genCellGeo(...data);
-            postMessage({
-                type: "cellGeo",
-                data: {
-                    cell: geo,
-                    info: data,
-                    p: performance.now(),
-                },
-            });
-        }
-    },
-    setCell: function (data) {
-        var neighbours = [
-            [-1, 0, 0],
-            [1, 0, 0],
-            [0, -1, 0],
-            [0, 1, 0],
-            [0, 0, -1],
-            [0, 0, 1],
-        ];
-        terrain.cellNeedsUpdate[
-            terrain.cellTerrain.vec3(data[0], data[1], data[2])
-        ] = true;
-        terrain.cellTerrain.setCell(data[0], data[1], data[2], data[3]);
-        for (var l = 0; l < neighbours.length; l++) {
-            var nei = neighbours[l];
-            var neiCellId = terrain.cellTerrain.vec3(
-                data[0] + nei[0],
-                data[1] + nei[1],
-                data[2] + nei[2]
-            );
-            terrain.cellNeedsUpdate[neiCellId] = true;
-        }
-    },
-    resetWorld: function () {
-        console.log("RESET WORLD!");
-        terrain.cellTerrain.cells = {};
-    },
-    updateCellsAroundPlayer: function (data) {
-        var cell = data[0];
-        var radius = data[1];
-        var odw = {};
-        var cellBlackList = {};
-        for (var k in terrain.loadedMeshes) {
-            var v = terrain.loadedMeshes[k];
-            if (v === true) {
-                cellBlackList[k] = true;
+                );
+                terrain.cellNeedsUpdate[neiCellId] = true;
             }
-        }
-        for (var i = 0; i <= radius; i++) {
-            for (var x = -i; x <= i; x++) {
-                for (var y = -i; y <= i; y++) {
-                    for (var z = -i; z <= i; z++) {
-                        if (!odw[`${x}:${y}:${z}`]) {
-                            odw[`${x}:${y}:${z}`] = true;
-                            var pcell = [cell[0] + x, cell[1] + y, cell[2] + z];
-                            var cellId = terrain.cellTerrain.vec3(...pcell);
-                            cellBlackList[cellId] = false;
-                            var gen = false;
-                            if (terrain.cellNeedsUpdate[cellId]) {
-                                delete terrain.cellNeedsUpdate[cellId];
-                                handlers.genCellGeo(pcell);
-                                gen = true;
-                            }
-                            if (terrain.loadedMeshes[cellId] === "disposed") {
-                                if (!gen) {
-                                    handlers.genCellGeo(pcell);
+            break;
+        case "resetWorld":
+            console.log("RESET WORLD!");
+            terrain.cellTerrain.cells = {};
+            break;
+        case "updateCellsAroundPlayer":
+            var cell = data[0];
+            var radius = data[1];
+            var odw = {};
+            var cellBlackList = {};
+            for (var k in terrain.loadedMeshes) {
+                var v = terrain.loadedMeshes[k];
+                if (v === true) {
+                    cellBlackList[k] = true;
+                }
+            }
+            for (var i = 0; i <= radius; i++) {
+                for (var x = -i; x <= i; x++) {
+                    for (var y = -i; y <= i; y++) {
+                        for (var z = -i; z <= i; z++) {
+                            if (!odw[`${x}:${y}:${z}`]) {
+                                odw[`${x}:${y}:${z}`] = true;
+                                var pcell = [
+                                    cell[0] + x,
+                                    cell[1] + y,
+                                    cell[2] + z,
+                                ];
+                                cellId = terrain.cellTerrain.vec3(...pcell);
+                                cellBlackList[cellId] = false;
+                                var gen = false;
+                                if (terrain.cellNeedsUpdate[cellId]) {
+                                    delete terrain.cellNeedsUpdate[cellId];
+                                    handler({
+                                        data: {
+                                            type: "genCellGeo",
+                                            data: pcell,
+                                        },
+                                    });
+                                    gen = true;
                                 }
+                                if (
+                                    terrain.loadedMeshes[cellId] === "disposed"
+                                ) {
+                                    if (!gen) {
+                                        handler({
+                                            data: {
+                                                type: "genCellGeo",
+                                                data: pcell,
+                                            },
+                                        });
+                                    }
+                                }
+                                terrain.loadedMeshes[cellId] = true;
                             }
-                            terrain.loadedMeshes[cellId] = true;
                         }
                     }
                 }
             }
-        }
-        for (k in cellBlackList) {
-            v = cellBlackList[k];
-            if (v === true) {
-                terrain.loadedMeshes[k] = "disposed";
-                postMessage({
-                    type: "removeCell",
-                    data: k,
-                });
+            for (k in cellBlackList) {
+                v = cellBlackList[k];
+                if (v === true) {
+                    terrain.loadedMeshes[k] = "disposed";
+                    postMessage({
+                        type: "removeCell",
+                        data: k,
+                    });
+                }
             }
-        }
-    },
+            break;
+    }
 };
 
-addEventListener("message", function (e) {
-    var fn = handlers[e.data.type];
-    if (!fn) {
-        throw new Error(`no handler for type: ${e.data.type}`);
-    }
-    fn(e.data.data);
-});
+addEventListener("message", handler);
