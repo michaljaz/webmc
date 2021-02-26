@@ -84,6 +84,7 @@ class Game {
         );
         this.stats.showPanel(0);
         document.body.appendChild(this.stats.dom);
+        this.headHeight = 17;
         this.pii = new PlayerInInventory(this);
         this.bb = new BlockBreak(this);
         this.bp = new BlockPlace(this);
@@ -170,7 +171,7 @@ class Game {
         this.socket.on("move", function (pos) {
             var to = {
                 x: pos.x - 0.5,
-                y: pos.y + 17,
+                y: pos.y + _this.headHeight,
                 z: pos.z - 0.5,
             };
             new TWEEN.Tween(_this.camera.position)
