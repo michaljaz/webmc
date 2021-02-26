@@ -14,6 +14,15 @@ var InventoryBar = class InventoryBar {
         }
     }
 
+    setGamemode(gamemode) {
+        // mineflayer doesn't currently include support for spectator mode
+        if (gamemode === "creative") {
+            $((gamemode === "spectator" ? ".inv_bar, .inv_cursor" : "") + ".player_hp, .player_food, .xp_bar_empty, xp_bar").css("display", "none");
+        } else {
+            $(".player_hp, .player_food, .xp_bar_empty, xp_bar").css("display", "initial");
+        }
+    }
+
     setHp(points) {
         var lista = {};
         for (let i = 1; i <= 10; i++) {

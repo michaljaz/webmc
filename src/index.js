@@ -95,6 +95,9 @@ io.sockets.on("connection", function (socket) {
     bot.on("diggingAborted", function (block) {
         socket.emit("diggingAborted", block);
     });
+    bot.on("game", function () {
+        socket.emit("game", bot.game);
+    });
     var inv = "";
     var interval = setInterval(function () {
         var inv_new = JSON.stringify(bot.inventory.slots);

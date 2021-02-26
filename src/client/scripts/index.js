@@ -122,6 +122,9 @@ class Game {
         this.socket.on("mapChunk", function (sections, x, z) {
             _this.world.computeSections(sections, x, z);
         });
+        this.socket.on("game", function (gameData) {
+            _this.inv_bar.setGamemode(gameData.gameMode);
+        });
         this.socket.on("hp", function (points) {
             _this.inv_bar.setHp(points);
         });
