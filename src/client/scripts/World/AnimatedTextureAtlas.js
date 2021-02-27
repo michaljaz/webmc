@@ -114,7 +114,6 @@ class TextureAtlasCreator {
 
 class AnimatedTextureAtlas {
     constructor(game) {
-        var _this = this;
         this.game = game;
         this.material = new THREE.MeshStandardMaterial({
             side: 0,
@@ -135,12 +134,11 @@ class AnimatedTextureAtlas {
             savedTextures.push(tekstura);
         }
         var tickq = 0;
-        setInterval(function () {
-            var tekst;
+        setInterval(() => {
             tickq++;
-            tekst = savedTextures[tickq % 9];
-            _this.material.map = tekst;
-            _this.material.map.needsUpdate = true;
+            var tekst = savedTextures[tickq % 9];
+            this.material.map = tekst;
+            this.material.map.needsUpdate = true;
         }, 100);
     }
 }

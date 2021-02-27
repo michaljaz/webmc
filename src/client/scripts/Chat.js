@@ -1,14 +1,13 @@
 class Chat {
     constructor(game) {
-        var _this = this;
         this.game = game;
         this.chatDiv = document.querySelector(".chat");
         this.listen();
         this.history = [""];
         this.histState = 0;
-        $(".com_i").on("input", function () {
-            _this.history[_this.history.length - 1] = $(".com_i").val();
-            console.log(_this.history);
+        $(".com_i").on("input", () => {
+            this.history[this.history.length - 1] = $(".com_i").val();
+            console.log(this.history);
         });
         return;
     }
@@ -28,11 +27,10 @@ class Chat {
     }
 
     listen() {
-        var _this = this;
         window.addEventListener(
             "wheel",
-            function (e) {
-                if (_this.game.eh.gameState !== "chat") {
+            (e) => {
+                if (this.game.eh.gameState !== "chat") {
                     e.preventDefault();
                 }
             },

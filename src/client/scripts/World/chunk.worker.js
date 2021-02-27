@@ -248,7 +248,6 @@ class TerrainManager {
     }
 
     genCellGeo(cellX, cellY, cellZ) {
-        var _this = this;
         var positions = [];
         var normals = [];
         var uvs = [];
@@ -268,15 +267,15 @@ class TerrainManager {
                 return [0.3, 0.3, 0.3];
             }
         };
-        var addFace = function (type, pos) {
-            var block = _this.cellTerrain.getBlock(...pos);
-            var faceVertex = _this.genBlockFace(type, block, pos);
+        var addFace = (type, pos) => {
+            var block = this.cellTerrain.getBlock(...pos);
+            var faceVertex = this.genBlockFace(type, block, pos);
             var loaded = {};
             for (var x = -1; x <= 1; x++) {
                 for (var y = -1; y <= 1; y++) {
                     for (var z = -1; z <= 1; z++) {
                         if (
-                            _this.cellTerrain.getBlock(
+                            this.cellTerrain.getBlock(
                                 pos[0] + x,
                                 pos[1] + y,
                                 pos[2] + z
@@ -406,7 +405,7 @@ class TerrainManager {
                 col4[0] /= ile;
                 col4[2] /= ile;
             }
-            if (_this.cellTerrain.getBlock(...pos).transparent) {
+            if (this.cellTerrain.getBlock(...pos).transparent) {
                 t_positions.push(...faceVertex.pos);
                 t_normals.push(...faceVertex.norm);
                 t_uvs.push(...faceVertex.uv);

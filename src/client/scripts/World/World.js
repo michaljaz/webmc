@@ -12,7 +12,6 @@ var World = class World {
      * @param game - Object of main game
      */
     constructor(game) {
-        var _this = this;
         this.game = game;
         this.cellBlackList = {};
         this.cellMesh = {};
@@ -35,15 +34,15 @@ var World = class World {
             [0, 0, 1],
         ];
         this.chunkWorker = new chunkWorker();
-        this.chunkWorker.onmessage = function (message) {
+        this.chunkWorker.onmessage = (message) => {
             if (message.data.type === "cellGeo") {
-                return _this.updateCell(message.data.data);
+                return this.updateCell(message.data.data);
             } else if (message.data.type === "removeCell") {
-                if (_this.cellMesh[message.data.data] !== void 0) {
-                    _this.cellMesh[message.data.data].geometry.dispose();
-                    _this.game.scene.remove(_this.cellMesh[message.data.data]);
-                    delete _this.cellMesh[message.data.data];
-                    return _this.game.renderer.renderLists.dispose();
+                if (this.cellMesh[message.data.data] !== void 0) {
+                    this.cellMesh[message.data.data].geometry.dispose();
+                    this.game.scene.remove(this.cellMesh[message.data.data]);
+                    delete this.cellMesh[message.data.data];
+                    return this.game.renderer.renderLists.dispose();
                 }
             }
         };
@@ -128,7 +127,6 @@ var World = class World {
      * @param data - cell Data
      */
     updateCell(data) {
-        var _this = this;
         var cellId = this.cellTerrain.vec3(...data.info);
         var cell = data.cell;
         var mesh = this.cellMesh[cellId];
@@ -154,9 +152,9 @@ var World = class World {
             this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
             this.cellMesh[cellId].matrixAutoUpdate = false;
             this.cellMesh[cellId].frustumCulled = false;
-            this.cellMesh[cellId].onAfterRender = function () {
-                _this.cellMesh[cellId].frustumCulled = true;
-                _this.cellMesh[cellId].onAfterRender = function () {};
+            this.cellMesh[cellId].onAfterRender = () => {
+                this.cellMesh[cellId].frustumCulled = true;
+                this.cellMesh[cellId].onAfterRender = function () {};
             };
             this.game.scene.add(this.cellMesh[cellId]);
             if (this.lastPlayerChunk !== null) {

@@ -34,45 +34,40 @@ var AtlasCreator = class AtlasCreator {
     }
 
     firstLoad() {
-        var _this = this;
-        fs.readdir(this.loadPath, function (err, files) {
+        fs.readdir(this.loadPath, (err, files) => {
             var totalImages = 0;
-            files.forEach(function (file) {
+            files.forEach((file) => {
                 if (path.extname(file) === ".png") {
                     totalImages += 1;
                 }
             });
-            _this.totalImages = totalImages;
-            files.forEach(function (file) {
-                var filePath;
-                filePath = `${_this.loadPath}/${file}`;
+            this.totalImages = totalImages;
+            files.forEach((file) => {
+                var filePath = `${this.loadPath}/${file}`;
                 if (path.extname(file) === ".png") {
                     // console.log filePath
-                    _this.addImageToLoad(filePath, file);
+                    this.addImageToLoad(filePath, file);
                 }
             });
         });
     }
 
     addImageToLoad(filePath, name) {
-        var _this = this;
         var img = new Canvas.Image();
-        img.onload = function () {
-            _this.images[name] = img;
-            _this.loadedImages++;
-            if (_this.loadedImages === _this.totalImages) {
-                return _this.forEachToxel();
+        img.onload = () => {
+            this.images[name] = img;
+            this.loadedImages++;
+            if (this.loadedImages === this.totalImages) {
+                return this.forEachToxel();
             }
         };
         img.src = filePath;
     }
 
     forEachToxel() {
-        var _this = this;
-        Object.keys(this.images).forEach(function (name) {
-            var img;
-            img = _this.images[name];
-            _this.addToxelToAtlas(img, name);
+        Object.keys(this.images).forEach((name) => {
+            var img = this.images[name];
+            this.addToxelToAtlas(img, name);
         });
         return this.updateAtlas();
     }

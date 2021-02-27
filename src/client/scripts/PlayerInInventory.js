@@ -2,7 +2,6 @@ import * as THREE from "three";
 
 class PlayerInInventory {
     constructor(game) {
-        var light, player, playerTex;
         this.game = game;
         this.renderer = new THREE.WebGLRenderer({
             canvas: this.game.pcanvas,
@@ -10,10 +9,10 @@ class PlayerInInventory {
         });
         this.scene = new THREE.Scene();
         this.scene.background = new THREE.Color("black");
-        light = new THREE.AmbientLight(0xffffff);
+        var light = new THREE.AmbientLight(0xffffff);
         this.scene.add(light);
-        player = this.game.al.get("player");
-        playerTex = this.game.al.get("playerTex");
+        var player = this.game.al.get("player");
+        var playerTex = this.game.al.get("playerTex");
         playerTex.magFilter = THREE.NearestFilter;
         player.children[0].material.map = playerTex;
         this.scene.add(player);

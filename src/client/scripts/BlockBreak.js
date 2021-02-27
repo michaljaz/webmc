@@ -103,17 +103,16 @@ class BlockBreak {
     }
 
     startDigging(time) {
-        var _this = this;
         var ile = 0;
         if (this.isDigging === false) {
             this.isDigging = true;
-            this.int = setInterval(function () {
+            this.int = setInterval(() => {
                 if (ile === 11) {
-                    _this.setState(0);
-                    clearInterval(_this.int);
-                    _this.isDigging = false;
+                    this.setState(0);
+                    clearInterval(this.int);
+                    this.isDigging = false;
                 } else {
-                    _this.setState(ile);
+                    this.setState(ile);
                 }
                 ile++;
             }, time / 10);

@@ -5,7 +5,6 @@ var modulo = function (a, b) {
 };
 class EventHandler {
     constructor(game) {
-        var _this = this;
         this.game = game;
         this.controls = {
             KeyW: "forward",
@@ -23,146 +22,146 @@ class EventHandler {
             document.exitPointerLock || document.mozExitPointerLock;
         var focus = 0;
         this.game.inv_bar.setFocus(focus);
-        $(window).on("wheel", function (e) {
-            if (_this.gameState === "gameLock") {
+        $(window).on("wheel", (e) => {
+            if (this.gameState === "gameLock") {
                 if (e.originalEvent.deltaY > 0) {
                     focus++;
                 } else {
                     focus--;
                 }
                 focus = modulo(focus, 9);
-                _this.game.inv_bar.setFocus(focus);
+                this.game.inv_bar.setFocus(focus);
             }
         });
-        $(document).on("keydown", function (z) {
-            _this.keys[z.code] = true;
+        $(document).on("keydown", (z) => {
+            this.keys[z.code] = true;
             for (var i = 1; i < 10; i++) {
-                if (z.code === `Digit${i}` && _this.gameState === "gameLock") {
-                    _this.game.inv_bar.setFocus(i - 1);
+                if (z.code === `Digit${i}` && this.gameState === "gameLock") {
+                    this.game.inv_bar.setFocus(i - 1);
                     focus = i - 1;
                 }
             }
-            if (z.code === "Escape" && _this.gameState === "inventory") {
-                _this.setState("menu");
+            if (z.code === "Escape" && this.gameState === "inventory") {
+                this.setState("menu");
             }
-            if (z.code === "ArrowUp" && _this.gameState === "chat") {
-                _this.game.chat.chatGoBack();
+            if (z.code === "ArrowUp" && this.gameState === "chat") {
+                this.game.chat.chatGoBack();
             }
-            if (z.code === "ArrowDown" && _this.gameState === "chat") {
-                _this.game.chat.chatGoForward();
+            if (z.code === "ArrowDown" && this.gameState === "chat") {
+                this.game.chat.chatGoForward();
             }
-            if (z.code === "Enter" && _this.gameState === "chat") {
-                _this.game.chat.command($(".com_i").val());
+            if (z.code === "Enter" && this.gameState === "chat") {
+                this.game.chat.command($(".com_i").val());
                 $(".com_i").val("");
             }
             if (
                 z.code === "KeyE" &&
-                _this.gameState !== "chat" &&
-                _this.gameState !== "menu"
+                this.gameState !== "chat" &&
+                this.gameState !== "menu"
             ) {
-                _this.setState("inventory");
+                this.setState("inventory");
             }
             if (
                 (z.code === "KeyT" || z.code === "Slash") &&
-                _this.gameState === "gameLock"
+                this.gameState === "gameLock"
             ) {
                 if (z.code === "Slash") {
                     $(".com_i").val("/");
                 }
-                _this.setState("chat");
+                this.setState("chat");
                 z.preventDefault();
             }
             if (z.code === "Backquote") {
                 z.preventDefault();
                 if (
-                    _this.gameState === "menu" ||
-                    _this.gameState === "chat" ||
-                    _this.gameState === "inventory"
+                    this.gameState === "menu" ||
+                    this.gameState === "chat" ||
+                    this.gameState === "inventory"
                 ) {
-                    _this.setState("game");
+                    this.setState("game");
                 } else {
-                    _this.setState("menu");
+                    this.setState("menu");
                 }
             }
-            if (z.code === "Escape" && _this.gameState === "chat") {
-                _this.setState("menu");
+            if (z.code === "Escape" && this.gameState === "chat") {
+                this.setState("menu");
             }
             if (z.code === "KeyF") {
-                _this.game.flying = !_this.game.flying;
-                _this.game.socket.emit("fly", _this.game.flying);
+                this.game.flying = !this.game.flying;
+                this.game.socket.emit("fly", this.game.flying);
             }
             if (
-                _this.controls[z.code] !== undefined &&
-                _this.gameState === "gameLock"
+                this.controls[z.code] !== undefined &&
+                this.gameState === "gameLock"
             ) {
-                _this.game.socket.emit("move", _this.controls[z.code], true);
-                switch (_this.controls[z.code]) {
+                this.game.socket.emit("move", this.controls[z.code], true);
+                switch (this.controls[z.code]) {
                     case "sprint":
                         var to = {
-                            fov: _this.game.fov.sprint,
+                            fov: this.game.fov.sprint,
                         };
-                        new TWEEN.Tween(_this.game.camera)
+                        new TWEEN.Tween(this.game.camera)
                             .to(to, 200)
                             .easing(TWEEN.Easing.Quadratic.Out)
-                            .onUpdate(function () {
-                                return _this.game.camera.updateProjectionMatrix();
+                            .onUpdate(() => {
+                                return this.game.camera.updateProjectionMatrix();
                             })
                             .start();
                         break;
 
                     case "sneak":
-                        _this.game.headHeight = 16.7;
-                        _this.game.impulse();
+                        this.game.headHeight = 16.7;
+                        this.game.playerImpulse();
                         break;
                 }
             }
         });
-        $(document).on("keyup", function (z) {
-            delete _this.keys[z.code];
-            if (_this.controls[z.code] !== undefined) {
-                _this.game.socket.emit("move", _this.controls[z.code], false);
-                switch (_this.controls[z.code]) {
+        $(document).on("keyup", (z) => {
+            delete this.keys[z.code];
+            if (this.controls[z.code] !== undefined) {
+                this.game.socket.emit("move", this.controls[z.code], false);
+                switch (this.controls[z.code]) {
                     case "sprint":
                         var to = {
-                            fov: _this.game.fov.normal,
+                            fov: this.game.fov.normal,
                         };
-                        new TWEEN.Tween(_this.game.camera)
+                        new TWEEN.Tween(this.game.camera)
                             .to(to, 200)
                             .easing(TWEEN.Easing.Quadratic.Out)
-                            .onUpdate(function () {
-                                return _this.game.camera.updateProjectionMatrix();
+                            .onUpdate(() => {
+                                return this.game.camera.updateProjectionMatrix();
                             })
                             .start();
                         break;
 
                     case "sneak":
-                        _this.game.headHeight = 17;
-                        _this.game.impulse();
+                        this.game.headHeight = 17;
+                        this.game.playerImpulse();
                         break;
                 }
             }
         });
-        $(".gameOn").on("click", function () {
-            _this.setState("game");
+        $(".gameOn").on("click", () => {
+            this.setState("game");
         });
-        window.onblur = function () {
-            Object.keys(_this.controls).forEach(function (el) {
-                _this.game.socket.emit("move", _this.controls[el], false);
+        window.onblur = () => {
+            Object.keys(this.controls).forEach((el) => {
+                this.game.socket.emit("move", this.controls[el], false);
             });
         };
-        var lockChangeAlert = function () {
+        var lockChangeAlert = () => {
             if (
-                document.pointerLockElement === _this.game.canvas ||
-                document.mozPointerLockElement === _this.game.canvas
+                document.pointerLockElement === this.game.canvas ||
+                document.mozPointerLockElement === this.game.canvas
             ) {
-                if (_this.gameState === "game") {
-                    _this.setState("gameLock");
+                if (this.gameState === "game") {
+                    this.setState("gameLock");
                 }
             } else if (
-                _this.gameState === "gameLock" &&
-                _this.gameState !== "inventory"
+                this.gameState === "gameLock" &&
+                this.gameState !== "inventory"
             ) {
-                _this.setState("menu");
+                this.setState("menu");
             }
         };
         document.addEventListener("pointerlockchange", lockChangeAlert, false);
@@ -173,8 +172,8 @@ class EventHandler {
         );
         document.addEventListener(
             "mousemove",
-            function (e) {
-                return _this.updatePosition(e);
+            (e) => {
+                return this.updatePosition(e);
             },
             false
         );

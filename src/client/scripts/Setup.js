@@ -1,11 +1,21 @@
 import * as THREE from "three";
+import TWEEN from "@tweenjs/tween.js";
 import Stats from "stats-js";
 import * as dat from "dat.gui";
+import io from "socket.io-client";
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
 import { RandomNick } from "./RandomNick.js";
 import { gpuInfo } from "./gpuInfo.js";
+import { World } from "./World/World.js";
+import { InventoryBar } from "./InventoryBar.js";
+import { Chat } from "./Chat.js";
+import { Entities } from "./Entities.js";
+import { PlayerInInventory } from "./PlayerInInventory.js";
+import { BlockBreak } from "./BlockBreak.js";
+import { BlockPlace } from "./BlockPlace.js";
+import { EventHandler } from "./EventHandler.js";
 
-function preSetup(game) {
+function Setup(game) {
     game.canvas = document.querySelector("#c");
     game.pcanvas = document.querySelector("#c_player");
     game.renderer = new THREE.WebGLRenderer({
@@ -27,13 +37,24 @@ function preSetup(game) {
     game.distanceBasedFog = new DistanceBasedFog(game);
     RandomNick(game);
     console.warn(gpuInfo());
-}
-function postSetup(game) {
+    game.socket = io({
+        query: {
+            nick: game.nick,
+        },
+    });
+    game.pii = new PlayerInInventory(game);
+    game.bb = new BlockBreak(game);
+    game.bp = new BlockPlace(game);
+    game.world = new World(game);
+    game.ent = new Entities(game);
+    game.chat = new Chat(game);
+    game.inv_bar = new InventoryBar(game);
+    game.eh = new EventHandler(game);
+    game.distanceBasedFog.addShaderToMaterial(game.world.material);
     var gui = new dat.GUI();
     game.params = {
         chunkdist: 3,
     };
-
     game.distanceBasedFog.farnear.x = (game.params.chunkdist - 1) * 16;
     game.distanceBasedFog.farnear.y = game.params.chunkdist * 16;
     gui.add(game.world.material, "wireframe").name("Wireframe").listen();
@@ -46,5 +67,16 @@ function postSetup(game) {
         game.distanceBasedFog.farnear.y = val * 16;
         console.log(val);
     });
+    game.playerImpulse = function () {
+        var to = {
+            x: game.playerPos[0],
+            y: game.playerPos[1] + game.headHeight,
+            z: game.playerPos[2],
+        };
+        new TWEEN.Tween(game.camera.position)
+            .to(to, 100)
+            .easing(TWEEN.Easing.Quadratic.Out)
+            .start();
+    };
 }
-export { preSetup, postSetup };
+export { Setup };

@@ -16,16 +16,15 @@ class DistanceBasedFog {
     }
 
     addShaderToMaterial(material) {
-        var _this = this;
-        material.onBeforeCompile = function (shader) {
+        material.onBeforeCompile = (shader) => {
             shader.uniforms.u_viewPos = {
-                value: _this.view,
+                value: this.view,
             };
             shader.uniforms.u_fogColor = {
-                value: _this.color,
+                value: this.color,
             };
             shader.uniforms.u_farnear = {
-                value: _this.farnear,
+                value: this.farnear,
             };
             shader.fragmentShader = [
                 "uniform vec3 u_viewPos;",
