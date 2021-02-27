@@ -164,7 +164,6 @@ io.sockets.on("connection", function (socket) {
             } else if (state === "left") {
                 state = "right";
             }
-
             bot.setControlState(state, toggle);
         });
         socket.on("command", function (com) {

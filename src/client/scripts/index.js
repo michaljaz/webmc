@@ -51,6 +51,7 @@ class Game {
         });
         this.renderer.sortObjects = true;
         this.scene = new THREE.Scene();
+        this.playerPos = [0, 0, 0];
         this.dimBg = {
             "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
             "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
@@ -169,6 +170,7 @@ class Game {
             _this.inv_bar.setXp(xp.level, xp.progress);
         });
         this.socket.on("move", function (pos) {
+            _this.playerPos = [pos.x - 0.5, pos.y, pos.z - 0.5];
             var to = {
                 x: pos.x - 0.5,
                 y: pos.y + _this.headHeight,
@@ -179,6 +181,17 @@ class Game {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .start();
         });
+        this.impulse = function () {
+            var to = {
+                x: _this.playerPos[0],
+                y: _this.playerPos[1] + _this.headHeight,
+                z: _this.playerPos[2],
+            };
+            new TWEEN.Tween(_this.camera.position)
+                .to(to, 100)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .start();
+        };
         this.socket.on("entities", function (entities) {
             _this.ent.update(entities);
         });

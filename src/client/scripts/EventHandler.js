@@ -124,6 +124,7 @@ class EventHandler {
 
                     case "sneak":
                         _this.game.headHeight = 16.7;
+                        _this.game.impulse();
                         break;
                 }
             }
@@ -149,6 +150,7 @@ class EventHandler {
 
                     case "sneak":
                         _this.game.headHeight = 17;
+                        _this.game.impulse();
                         break;
                 }
             }
