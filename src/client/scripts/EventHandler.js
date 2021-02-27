@@ -108,17 +108,23 @@ class EventHandler {
                 _this.gameState === "gameLock"
             ) {
                 _this.game.socket.emit("move", _this.controls[z.code], true);
-                if (_this.controls[z.code] === "sprint") {
-                    var to = {
-                        fov: _this.game.fov + 10,
-                    };
-                    new TWEEN.Tween(_this.game.camera)
-                        .to(to, 200)
-                        .easing(TWEEN.Easing.Quadratic.Out)
-                        .onUpdate(function () {
-                            return _this.game.camera.updateProjectionMatrix();
-                        })
-                        .start();
+                switch (_this.controls[z.code]) {
+                    case "sprint":
+                        var to = {
+                            fov: _this.game.fov,
+                        };
+                        new TWEEN.Tween(_this.game.camera)
+                            .to(to, 200)
+                            .easing(TWEEN.Easing.Quadratic.Out)
+                            .onUpdate(function () {
+                                return _this.game.camera.updateProjectionMatrix();
+                            })
+                            .start();
+                        break;
+
+                    case "sneak":
+                        _this.game.headHeight = 16.7;
+                        break;
                 }
             }
         });
@@ -127,17 +133,23 @@ class EventHandler {
             delete _this.keys[z.code];
             if (_this.controls[z.code] !== undefined) {
                 _this.game.socket.emit("move", _this.controls[z.code], false);
-                if (_this.controls[z.code] === "sprint") {
-                    var to = {
-                        fov: _this.game.fov,
-                    };
-                    new TWEEN.Tween(_this.game.camera)
-                        .to(to, 200)
-                        .easing(TWEEN.Easing.Quadratic.Out)
-                        .onUpdate(function () {
-                            return _this.game.camera.updateProjectionMatrix();
-                        })
-                        .start();
+                switch (_this.controls[z.code]) {
+                    case "sprint":
+                        var to = {
+                            fov: _this.game.fov,
+                        };
+                        new TWEEN.Tween(_this.game.camera)
+                            .to(to, 200)
+                            .easing(TWEEN.Easing.Quadratic.Out)
+                            .onUpdate(function () {
+                                return _this.game.camera.updateProjectionMatrix();
+                            })
+                            .start();
+                        break;
+
+                    case "sneak":
+                        _this.game.headHeight = 17;
+                        break;
                 }
             }
         });

@@ -16,6 +16,12 @@ import { BlockPlace } from "./BlockPlace.js";
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
 import { EventHandler } from "./EventHandler.js";
 
+const dimNamesInt = {
+    "-1": "minecraft:nether",
+    0: "minecraft:overworld",
+    1: "minecraft:end",
+};
+
 class Game {
     constructor() {
         var _this = this;
@@ -49,6 +55,9 @@ class Game {
             "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
             "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
             "minecraft:the_nether": [133 / 255, 40 / 255, 15 / 255],
+
+            "minecraft:end": [1 / 255, 20 / 255, 51 / 255],
+            "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
         };
         this.camera = new THREE.PerspectiveCamera(this.fov, 2, 0.1, 1000);
         this.camera.rotation.order = "YXZ";
@@ -75,6 +84,7 @@ class Game {
         );
         this.stats.showPanel(0);
         document.body.appendChild(this.stats.dom);
+        this.headHeight = 17;
         this.pii = new PlayerInInventory(this);
         this.bb = new BlockBreak(this);
         this.bp = new BlockPlace(this);
@@ -101,12 +111,25 @@ class Game {
             _this.camera.rotation.y = yaw;
             _this.camera.rotation.x = pitch;
         });
-        this.socket.on("dimension", function (dim) {
+        this.socket.on("dimension", function (dim, format) {
+            switch (format) {
+                case "int":
+                    dim = dimNamesInt[dim];
+                    break;
+
+                case "world":
+                    // idk what this is yet
+                    break;
+            }
+
             _this.dimension = dim;
             console.log(`Player dimension has been changed: ${dim}`);
             _this.world.resetWorld();
+
             var bg = _this.dimBg[dim];
             if (bg === undefined) {
+                bg = _this.dimBg["minecraft:overworld"];
+
                 _this.scene.background = new THREE.Color(
                     ..._this.dimBg["minecraft:overworld"]
                 );
@@ -122,6 +145,9 @@ class Game {
         this.socket.on("mapChunk", function (sections, x, z) {
             _this.world.computeSections(sections, x, z);
         });
+        this.socket.on("game", function (gameData) {
+            _this.inv_bar.setGamemode(gameData.gameMode);
+        });
         this.socket.on("hp", function (points) {
             _this.inv_bar.setHp(points);
         });
@@ -135,7 +161,9 @@ class Game {
             _this.chat.log(msg);
         });
         this.socket.on("kicked", function (reason) {
-            _this.chat.log("You have been kicked! Reason: " + JSON.parse(reason).text);
+            _this.chat.log(
+                "You have been kicked! Reason: " + JSON.parse(reason).text
+            );
         });
         this.socket.on("xp", function (xp) {
             _this.inv_bar.setXp(xp.level, xp.progress);
@@ -143,7 +171,7 @@ class Game {
         this.socket.on("move", function (pos) {
             var to = {
                 x: pos.x - 0.5,
-                y: pos.y + 17,
+                y: pos.y + _this.headHeight,
                 z: pos.z - 0.5,
             };
             new TWEEN.Tween(_this.camera.position)
