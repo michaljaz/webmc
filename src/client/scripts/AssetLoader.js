@@ -1,7 +1,7 @@
 import * as THREE from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
-var AssetLoader = class AssetLoader {
+class AssetLoader {
     constructor(init) {
         var _this = this;
         this.assets = {};

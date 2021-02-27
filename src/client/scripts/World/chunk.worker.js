@@ -1,12 +1,11 @@
-import { CellTerrain } from "./CellTerrain.js";
+import { CellTerrain } from "./ChunkTerrain.js";
 
 var terrain = null;
 
-var TerrainManager = class TerrainManager {
+class TerrainManager {
     constructor(options) {
-        this.cellSize = options.cellSize;
+        this.cellSize = 16;
         this.cellTerrain = new CellTerrain({
-            cellSize: this.cellSize,
             blocksDef: options.blocksDef,
         });
         this.toxelSize = options.toxelSize;
@@ -505,7 +504,7 @@ var TerrainManager = class TerrainManager {
             colors,
         };
     }
-};
+}
 
 var handlers = {
     init: function (data) {

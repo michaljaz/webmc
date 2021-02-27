@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { CellTerrain } from "./CellTerrain.js";
+import { CellTerrain } from "./ChunkTerrain.js";
 import { AnimatedTextureAtlas } from "./AnimatedTextureAtlas.js";
 import { SectionComputer } from "./SectionComputer.js";
 import vec3 from "vec3";
@@ -20,7 +20,6 @@ var World = class World {
         this.blocksDef = this.game.al.get("blocksDef");
         this.models = {};
         this.cellTerrain = new CellTerrain({
-            cellSize: this.game.cellSize,
             blocksDef: this.blocksDef,
         });
         this.ATA = new AnimatedTextureAtlas(this.game);
@@ -53,7 +52,6 @@ var World = class World {
             data: {
                 blocksMapping: this.game.al.get("blocksMapping"),
                 toxelSize: this.game.toxelSize,
-                cellSize: this.game.cellSize,
                 blocksTex: this.game.al.get("blocksTex"),
                 blocksDef: this.blocksDef,
             },

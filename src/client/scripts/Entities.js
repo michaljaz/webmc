@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-var Entities = class Entities {
+class Entities {
     constructor(game) {
         this.game = game;
         this.mobMaterial = new THREE.MeshStandardMaterial({
@@ -67,6 +67,6 @@ var Entities = class Entities {
         }
         this.playerMesh.instanceMatrix.needsUpdate = true;
     }
-};
+}
 
 export { Entities };

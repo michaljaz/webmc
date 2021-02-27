@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-var BlockBreak = class BlockBreak {
+class BlockBreak {
     constructor(game) {
         this.game = game;
         this.texture = this.game.al.get("blocksAtlasSnap");
@@ -27,20 +27,17 @@ var BlockBreak = class BlockBreak {
     }
 
     setState(state) {
-        var i, j, q, ref, toxX, toxY;
-        //od 0 do 9
         if (state === 0) {
             return (this.cursor.material.visible = false);
         } else {
             this.cursor.material.visible = true;
-            toxX = 6 + state;
-            toxY = 8;
-            q = 1 / 27;
+            var toxX = 6 + state;
+            var toxY = 8;
+            var q = 1 / 27;
             for (
-                i = j = 0,
-                    ref = this.cursor.geometry.attributes.uv.array.length;
-                0 <= ref ? j <= ref : j >= ref;
-                i = 0 <= ref ? ++j : --j
+                var i = 0;
+                i <= this.cursor.geometry.attributes.uv.array.length;
+                i++
             ) {
                 if (this.uv[i] === void 0) {
                     if (i % 2 === 0) {
@@ -79,14 +76,13 @@ var BlockBreak = class BlockBreak {
     }
 
     updatePos(cb) {
-        var pos, rayBlock;
-        rayBlock = this.game.world.getRayBlock();
+        var rayBlock = this.game.world.getRayBlock();
         if (JSON.stringify(this.lastPos) !== JSON.stringify(rayBlock)) {
             this.lastPos = rayBlock;
             cb();
         }
         if (rayBlock) {
-            pos = rayBlock.posBreak;
+            var pos = rayBlock.posBreak;
             this.cursor.position.set(...pos);
             this.cursor.visible = true;
             this.cursorOut.position.set(...pos);
@@ -98,9 +94,8 @@ var BlockBreak = class BlockBreak {
     }
 
     digRequest() {
-        var pos;
         console.log("REQUESTING DIGGING...");
-        pos = this.game.world.getRayBlock().posBreak;
+        var pos = this.game.world.getRayBlock().posBreak;
         if (pos !== void 0) {
             this.game.socket.emit("dig", pos);
             this.done = false;
@@ -108,9 +103,8 @@ var BlockBreak = class BlockBreak {
     }
 
     startDigging(time) {
-        var _this, ile;
-        _this = this;
-        ile = 0;
+        var _this = this;
+        var ile = 0;
         if (this.isDigging === false) {
             this.isDigging = true;
             this.int = setInterval(function () {
@@ -136,6 +130,6 @@ var BlockBreak = class BlockBreak {
         this.setState(0);
         clearInterval(this.int);
     }
-};
+}
 
 export { BlockBreak };

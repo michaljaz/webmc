@@ -54,15 +54,7 @@ io.sockets.on("connection", function (socket) {
         socket.emit("mapChunk", cell.sections, packet.x, packet.z);
     });
     bot._client.on("respawn", function (packet) {
-        socket.emit(
-            "dimension",
-            packet.dimension,
-            bot.supportFeature("dimensionIsAWorld")
-                ? "world"
-                : bot.supportFeature("dimensionIsAString")
-                ? "string"
-                : "int"
-        );
+        socket.emit("dimension", packet.dimension.value.effects.value);
     });
     bot.on("heldItemChanged", function (item) {
         heldItem = item;

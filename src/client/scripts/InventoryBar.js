@@ -1,4 +1,4 @@
-var InventoryBar = class InventoryBar {
+class InventoryBar {
     constructor(game) {
         this.game = game;
         for (let i = 0; i < 10; i++) {
@@ -17,9 +17,15 @@ var InventoryBar = class InventoryBar {
     setGamemode(gamemode) {
         // mineflayer doesn't currently include support for spectator mode
         if (gamemode === "creative") {
-            $((gamemode === "spectator" ? ".inv_bar, .inv_cursor" : "") + ".player_hp, .player_food, .xp_bar_empty, xp_bar").css("display", "none");
+            $(
+                (gamemode === "spectator" ? ".inv_bar, .inv_cursor" : "") +
+                    ".player_hp, .player_food, .xp_bar_empty, xp_bar"
+            ).css("display", "none");
         } else {
-            $(".player_hp, .player_food, .xp_bar_empty, xp_bar").css("display", "initial");
+            $(".player_hp, .player_food, .xp_bar_empty, xp_bar").css(
+                "display",
+                "initial"
+            );
         }
     }
 
@@ -116,7 +122,7 @@ var InventoryBar = class InventoryBar {
         }
     }
 
-    tick() {
+    update() {
         var list = $(".item");
         for (var i = 0; i < list.length; i++) {
             var url;
@@ -150,6 +156,6 @@ var InventoryBar = class InventoryBar {
             }
         }
     }
-};
+}
 
 export { InventoryBar };

@@ -2,9 +2,9 @@ var modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
 
-var CellTerrain = class CellTerrain {
+class CellTerrain {
     constructor(options) {
-        this.cellSize = options.cellSize;
+        this.cellSize = 16;
         this.cells = {};
         this.blocksDef = options.blocksDef;
     }
@@ -93,6 +93,6 @@ var CellTerrain = class CellTerrain {
             return false;
         }
     }
-};
+}
 
 export { CellTerrain };

@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-var TextureAtlasCreator = class TextureAtlasCreator {
+class TextureAtlasCreator {
     constructor(options) {
         this.textureX = options.textureX;
         this.textureMapping = options.textureMapping;
@@ -110,9 +110,9 @@ var TextureAtlasCreator = class TextureAtlasCreator {
         row = (tick - 1) % h;
         return { row, col };
     }
-};
+}
 
-var AnimatedTextureAtlas = class AnimatedTextureAtlas {
+class AnimatedTextureAtlas {
     constructor(game) {
         var _this = this;
         this.game = game;
@@ -143,6 +143,6 @@ var AnimatedTextureAtlas = class AnimatedTextureAtlas {
             _this.material.map.needsUpdate = true;
         }, 100);
     }
-};
+}
 
 export { AnimatedTextureAtlas, TextureAtlasCreator };

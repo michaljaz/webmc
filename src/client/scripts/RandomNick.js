@@ -1,4 +1,4 @@
-var RandomNick = function () {
+var RandomNick = function (game) {
     var nameList = [
         "Time",
         "Past",
@@ -176,7 +176,14 @@ var RandomNick = function () {
     var finalName = "";
     finalName = nameList[Math.floor(Math.random() * nameList.length)];
     finalName += nameList[Math.floor(Math.random() * nameList.length)];
-    return finalName;
+    game.nick = document.location.hash.substring(
+        1,
+        document.location.hash.length
+    );
+    if (game.nick === "") {
+        game.nick = finalName;
+        document.location.href = `#${game.nick}`;
+    }
 };
 
 export { RandomNick };

@@ -1,26 +1,17 @@
 import * as THREE from "three";
-import Stats from "stats-js";
-import * as dat from "dat.gui";
 import io from "socket.io-client";
 import TWEEN from "@tweenjs/tween.js";
+import swal from "sweetalert";
 import { World } from "./World/World.js";
-import { gpuInfo } from "./gpuInfo.js";
 import { AssetLoader } from "./AssetLoader.js";
 import { InventoryBar } from "./InventoryBar.js";
-import { RandomNick } from "./RandomNick.js";
 import { Chat } from "./Chat.js";
 import { Entities } from "./Entities.js";
 import { PlayerInInventory } from "./PlayerInInventory.js";
 import { BlockBreak } from "./BlockBreak.js";
 import { BlockPlace } from "./BlockPlace.js";
-import { DistanceBasedFog } from "./DistanceBasedFog.js";
 import { EventHandler } from "./EventHandler.js";
-
-const dimNamesInt = {
-    "-1": "minecraft:nether",
-    0: "minecraft:overworld",
-    1: "minecraft:end",
-};
+import { preSetup, postSetup } from "./Setup.js";
 
 class Game {
     constructor() {
@@ -33,59 +24,35 @@ class Game {
 
     init() {
         var _this = this;
-        this.fov = 70;
-        this.toxelSize = 27;
-        this.cellSize = 16;
-        this.canvas = document.querySelector("#c");
-        this.pcanvas = document.querySelector("#c_player");
-        this.dimension = null;
-        this.flying = false;
         if (PRODUCTION) {
             console.log("Running in production mode");
         } else {
             console.log("Running in development mode");
         }
-        this.renderer = new THREE.WebGLRenderer({
-            canvas: this.canvas,
-            PixelRatio: window.devicePixelRatio,
-        });
-        this.renderer.sortObjects = true;
-        this.scene = new THREE.Scene();
+        this.fov = {
+            normal: 70,
+            sprint: 85,
+        };
+        this.toxelSize = 27;
+        this.dimension = null;
+        this.flying = false;
         this.playerPos = [0, 0, 0];
         this.dimBg = {
             "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
             "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
             "minecraft:the_nether": [133 / 255, 40 / 255, 15 / 255],
-
             "minecraft:end": [1 / 255, 20 / 255, 51 / 255],
             "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
         };
-        this.camera = new THREE.PerspectiveCamera(this.fov, 2, 0.1, 1000);
-        this.camera.rotation.order = "YXZ";
-        this.camera.position.set(26, 26, 26);
-        this.scene.add(new THREE.AmbientLight(0xffffff));
-        this.distanceBasedFog = new DistanceBasedFog();
-        console.warn(gpuInfo());
-        this.nick = document.location.hash.substring(
-            1,
-            document.location.hash.length
-        );
-        if (this.nick === "") {
-            this.nick = RandomNick();
-            document.location.href = `#${this.nick}`;
-        }
+        this.headHeight = 17;
+
+        preSetup(this);
+
         this.socket = io({
             query: {
                 nick: this.nick,
             },
         });
-        this.stats = new Stats();
-        this.drawcalls = this.stats.addPanel(
-            new Stats.Panel("calls", "#ff8", "#221")
-        );
-        this.stats.showPanel(0);
-        document.body.appendChild(this.stats.dom);
-        this.headHeight = 17;
         this.pii = new PlayerInInventory(this);
         this.bb = new BlockBreak(this);
         this.bp = new BlockPlace(this);
@@ -95,6 +62,9 @@ class Game {
         this.inv_bar = new InventoryBar(this);
         this.eh = new EventHandler(this);
         this.distanceBasedFog.addShaderToMaterial(this.world.material);
+
+        postSetup(this);
+
         this.socket.on("connect", function () {
             console.log("Connected to server!");
             $(".loadingText").text("Joining server...");
@@ -112,32 +82,15 @@ class Game {
             _this.camera.rotation.y = yaw;
             _this.camera.rotation.x = pitch;
         });
-        this.socket.on("dimension", function (dim, format) {
-            switch (format) {
-                case "int":
-                    dim = dimNamesInt[dim];
-                    break;
-
-                case "world":
-                    // idk what this is yet
-                    break;
-            }
-
+        this.socket.on("dimension", function (dim) {
             _this.dimension = dim;
             console.log(`Player dimension has been changed: ${dim}`);
             _this.world.resetWorld();
-
-            var bg = _this.dimBg[dim];
-            if (bg === undefined) {
-                bg = _this.dimBg["minecraft:overworld"];
-
-                _this.scene.background = new THREE.Color(
-                    ..._this.dimBg["minecraft:overworld"]
-                );
-            } else {
-                _this.scene.background = new THREE.Color(...bg);
+            if (_this.dimBg[dim] == undefined) {
+                dim = "minecraft:overworld";
             }
-
+            var bg = _this.dimBg[dim];
+            _this.scene.background = new THREE.Color(...bg);
             _this.distanceBasedFog.color.x = bg[0];
             _this.distanceBasedFog.color.y = bg[1];
             _this.distanceBasedFog.color.z = bg[2];
@@ -162,9 +115,15 @@ class Game {
             _this.chat.log(msg);
         });
         this.socket.on("kicked", function (reason) {
-            _this.chat.log(
-                "You have been kicked! Reason: " + JSON.parse(reason).text
-            );
+            console.log(reason);
+            swal({
+                title: "You've been kicked!",
+                text: JSON.parse(reason).extra[0].text,
+                icon: "error",
+                button: "Rejoin",
+            }).then(function () {
+                document.location.reload();
+            });
         });
         this.socket.on("xp", function (xp) {
             _this.inv_bar.setXp(xp.level, xp.progress);
@@ -206,22 +165,7 @@ class Game {
             console.warn("SERVER-START");
             _this.bb.startDigging(time);
         });
-        var gui = new dat.GUI();
-        this.params = {
-            chunkdist: 3,
-        };
-        this.distanceBasedFog.farnear.x = (this.params.chunkdist - 1) * 16;
-        this.distanceBasedFog.farnear.y = this.params.chunkdist * 16;
-        gui.add(this.world.material, "wireframe").name("Wireframe").listen();
-        var chunkDist = gui
-            .add(this.params, "chunkdist", 0, 10, 1)
-            .name("Render distance")
-            .listen();
-        chunkDist.onChange(function (val) {
-            _this.distanceBasedFog.farnear.x = (val - 1) * 16;
-            _this.distanceBasedFog.farnear.y = val * 16;
-            console.log(val);
-        });
+
         this.mouse = false;
         $(document).on("mousedown", function (e) {
             if (e.which === 1) {
@@ -279,10 +223,8 @@ class Game {
         if (this.eh.gameState === "inventory") {
             this.pii.render();
         }
-        this.inv_bar.tick();
-        this.distanceBasedFog.view
-            .copy(this.camera.position)
-            .applyMatrix4(this.camera.matrixWorldInverse);
+        this.inv_bar.update();
+        this.distanceBasedFog.update();
         this.renderer.render(this.scene, this.camera);
     }
 }

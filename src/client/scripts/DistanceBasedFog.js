@@ -1,11 +1,18 @@
 import * as THREE from "three";
 
-var DistanceBasedFog = class DistanceBasedFog {
-    constructor() {
+class DistanceBasedFog {
+    constructor(game) {
+        this.game = game;
         this.view = new THREE.Vector3();
         this.farnear = new THREE.Vector2();
         this.color = new THREE.Vector4();
         return;
+    }
+
+    update() {
+        this.view
+            .copy(this.game.camera.position)
+            .applyMatrix4(this.game.camera.matrixWorldInverse);
     }
 
     addShaderToMaterial(material) {
@@ -50,6 +57,6 @@ var DistanceBasedFog = class DistanceBasedFog {
             );
         };
     }
-};
+}
 
 export { DistanceBasedFog };

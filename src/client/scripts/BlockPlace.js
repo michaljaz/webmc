@@ -1,4 +1,4 @@
-var BlockPlace = class BlockPlace {
+class BlockPlace {
     constructor(game) {
         this.game = game;
     }
@@ -13,6 +13,6 @@ var BlockPlace = class BlockPlace {
         pos.posBreak[1] -= 16;
         return this.game.socket.emit("blockPlace", pos.posBreak, vector);
     }
-};
+}
 
 export { BlockPlace };

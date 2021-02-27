@@ -21,7 +21,6 @@ class EventHandler {
         this.setState("menu");
         document.exitPointerLock =
             document.exitPointerLock || document.mozExitPointerLock;
-        //Mouse wheel change inventory
         var focus = 0;
         this.game.inv_bar.setFocus(focus);
         $(window).on("wheel", function (e) {
@@ -35,33 +34,27 @@ class EventHandler {
                 _this.game.inv_bar.setFocus(focus);
             }
         });
-        //Keydown
         $(document).on("keydown", function (z) {
             _this.keys[z.code] = true;
-            //Digits
             for (var i = 1; i < 10; i++) {
                 if (z.code === `Digit${i}` && _this.gameState === "gameLock") {
                     _this.game.inv_bar.setFocus(i - 1);
                     focus = i - 1;
                 }
             }
-            //Klawisz Escape
             if (z.code === "Escape" && _this.gameState === "inventory") {
                 _this.setState("menu");
             }
-            //Strzałki
             if (z.code === "ArrowUp" && _this.gameState === "chat") {
                 _this.game.chat.chatGoBack();
             }
             if (z.code === "ArrowDown" && _this.gameState === "chat") {
                 _this.game.chat.chatGoForward();
             }
-            //Klawisz Enter
             if (z.code === "Enter" && _this.gameState === "chat") {
                 _this.game.chat.command($(".com_i").val());
                 $(".com_i").val("");
             }
-            //Klawisz E
             if (
                 z.code === "KeyE" &&
                 _this.gameState !== "chat" &&
@@ -69,7 +62,6 @@ class EventHandler {
             ) {
                 _this.setState("inventory");
             }
-            //Klawisz T lub /
             if (
                 (z.code === "KeyT" || z.code === "Slash") &&
                 _this.gameState === "gameLock"
@@ -80,7 +72,6 @@ class EventHandler {
                 _this.setState("chat");
                 z.preventDefault();
             }
-            //Klawisz `
             if (z.code === "Backquote") {
                 z.preventDefault();
                 if (
@@ -96,13 +87,10 @@ class EventHandler {
             if (z.code === "Escape" && _this.gameState === "chat") {
                 _this.setState("menu");
             }
-
-            //Flying
             if (z.code === "KeyF") {
                 _this.game.flying = !_this.game.flying;
                 _this.game.socket.emit("fly", _this.game.flying);
             }
-            //Wysyłanie state'u do serwera
             if (
                 _this.controls[z.code] !== undefined &&
                 _this.gameState === "gameLock"
@@ -111,7 +99,7 @@ class EventHandler {
                 switch (_this.controls[z.code]) {
                     case "sprint":
                         var to = {
-                            fov: _this.game.fov,
+                            fov: _this.game.fov.sprint,
                         };
                         new TWEEN.Tween(_this.game.camera)
                             .to(to, 200)
@@ -129,7 +117,6 @@ class EventHandler {
                 }
             }
         });
-        //Keyup
         $(document).on("keyup", function (z) {
             delete _this.keys[z.code];
             if (_this.controls[z.code] !== undefined) {
@@ -137,7 +124,7 @@ class EventHandler {
                 switch (_this.controls[z.code]) {
                     case "sprint":
                         var to = {
-                            fov: _this.game.fov,
+                            fov: _this.game.fov.normal,
                         };
                         new TWEEN.Tween(_this.game.camera)
                             .to(to, 200)
@@ -155,34 +142,27 @@ class EventHandler {
                 }
             }
         });
-        //Play game button
         $(".gameOn").on("click", function () {
             _this.setState("game");
         });
-        //Window onblur
         window.onblur = function () {
             Object.keys(_this.controls).forEach(function (el) {
                 _this.game.socket.emit("move", _this.controls[el], false);
             });
         };
-        //Pointerlock
         var lockChangeAlert = function () {
             if (
                 document.pointerLockElement === _this.game.canvas ||
                 document.mozPointerLockElement === _this.game.canvas
             ) {
-                //Lock
                 if (_this.gameState === "game") {
                     _this.setState("gameLock");
                 }
-            } else {
-                //Unlock
-                if (
-                    _this.gameState === "gameLock" &&
-                    _this.gameState !== "inventory"
-                ) {
-                    _this.setState("menu");
-                }
+            } else if (
+                _this.gameState === "gameLock" &&
+                _this.gameState !== "inventory"
+            ) {
+                _this.setState("menu");
             }
         };
         document.addEventListener("pointerlockchange", lockChangeAlert, false);

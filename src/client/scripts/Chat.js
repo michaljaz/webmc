@@ -1,4 +1,4 @@
-var Chat = class Chat {
+class Chat {
     constructor(game) {
         var _this = this;
         this.game = game;
@@ -55,8 +55,11 @@ var Chat = class Chat {
     }
 
     log(message) {
-        if(message.split(" ")[1].indexOf("<") == -1 && message.split(" ").indexOf(">") == -1)
-        $(".chat").append(`<span>${message}<br></span>`);
+        if (
+            message.split(" ")[1].indexOf("<") == -1 &&
+            message.split(" ").indexOf(">") == -1
+        )
+            $(".chat").append(`<span>${message}<br></span>`);
         this.scrollToBottom(this.chatDiv);
     }
 
@@ -69,6 +72,6 @@ var Chat = class Chat {
             return this.game.socket.emit("command", com);
         }
     }
-};
+}
 
 export { Chat };

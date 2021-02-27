@@ -2,7 +2,7 @@ var modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
 
-var BitArray = class BitArray {
+class BitArray {
     constructor(options) {
         if (options === null) {
             return;
@@ -49,7 +49,7 @@ var BitArray = class BitArray {
         }
         return result & this.valueMask;
     }
-};
+}
 
 var ChunkDecoder = class ChunkDecoder {
     getBlockIndex(pos) {

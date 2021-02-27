@@ -1,6 +1,6 @@
 import * as THREE from "three";
 
-var PlayerInInventory = class PlayerInInventory {
+class PlayerInInventory {
     constructor(game) {
         var light, player, playerTex;
         this.game = game;
@@ -57,6 +57,6 @@ var PlayerInInventory = class PlayerInInventory {
     hide() {
         return (this.game.pcanvas.style.display = "none");
     }
-};
+}
 
 export { PlayerInInventory };
