@@ -1,12 +1,11 @@
+var version = "1.16.5";
 var opn = require("open");
-var fs = require("fs");
-var config = JSON.parse(fs.readFileSync(`${__dirname}/properties.json`));
 var express = require("express");
 var app = express();
 var server = require("http").createServer(app);
 var io = require("socket.io")(server);
 var mineflayer = require("mineflayer");
-var Chunk = require("prismarine-chunk")(config.version);
+var Chunk = require("prismarine-chunk")(version);
 var vec3 = require("vec3");
 var Convert = require("ansi-to-html");
 var convert = new Convert();
@@ -42,10 +41,10 @@ io.sockets.on("connection", function (socket) {
     console.log(`[\x1b[32m+\x1b[0m] ${query.nick}`);
     var heldItem = null;
     var bot = mineflayer.createBot({
-        host: config.ip,
-        port: config.port,
+        host: query.server,
+        port: query.port,
         username: query.nick,
-        version: config.version,
+        version: version,
     });
     botByNick[query.nick] = bot;
     bot._client.on("map_chunk", function (packet) {

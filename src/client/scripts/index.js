@@ -40,6 +40,7 @@ class Game {
             console.log("Connected to server!");
             $(".loadingText").text("Joining server...");
             console.log(`User nick: ${this.nick}`);
+            console.log(`Server ip: ${this.server}:${this.serverPort}`);
             this.socket.emit("initClient", {
                 nick: this.nick,
             });

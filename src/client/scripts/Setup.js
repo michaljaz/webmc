@@ -4,7 +4,7 @@ import Stats from "stats-js";
 import * as dat from "dat.gui";
 import io from "socket.io-client";
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
-import { RandomNick } from "./RandomNick.js";
+import { UrlParams } from "./UrlParams.js";
 import { gpuInfo } from "./gpuInfo.js";
 import { World } from "./World/World.js";
 import { InventoryBar } from "./InventoryBar.js";
@@ -35,11 +35,13 @@ function Setup(game) {
     game.stats.showPanel(0);
     document.body.appendChild(game.stats.dom);
     game.distanceBasedFog = new DistanceBasedFog(game);
-    RandomNick(game);
+    UrlParams(game);
     console.warn(gpuInfo());
     game.socket = io({
         query: {
             nick: game.nick,
+            server: game.server,
+            port: game.serverPort,
         },
     });
     game.pii = new PlayerInInventory(game);

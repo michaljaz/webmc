@@ -1,6 +1,6 @@
+var version = "1.16.5";
 var fs = require("fs");
-var config = require("./properties.json");
-var pBlock = require("prismarine-block")(config.version);
+var pBlock = require("prismarine-block")(version);
 var atlasCreator = require("./atlasCreator");
 
 new atlasCreator({
