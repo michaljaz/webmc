@@ -1,65 +1,77 @@
 @import "~bootstrap/scss/bootstrap";
 
-body { margin: 0; background:black;}
+@font-face {
+  font-family: MinecraftRegular;
+  src: url(../assets/fonts/MinecraftRegular-Bmg3.otf)
+}
+
+body {
+  margin: 0;
+  background: black;
+  font-family: MinecraftRegular, sans-serif;
+}
+
 #c {
   display: block;
-  width:100%;
-  height:100%;
-  position:fixed;
-  top:0px;
-  left:0px
-}
-#c_player{
-	display:block;
-	position:fixed;
-	width:140px;
-	height:204px;
-	top:calc(50% - 220px);
-	left:calc(50% - 180px);
-	z-index:9999;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0px;
+  left: 0px
 }
 
-.cross{
-  z-index:9;
-  position:fixed;
-  top:50%;
-  left:50%;
-  margin-top:-15px;
-  margin-left:-15px;
+#c_player {
+  display: block;
+  position: fixed;
+  width: 140px;
+  height: 204px;
+  top: calc(50% - 220px);
+  left: calc(50% - 180px);
+  z-index: 9999;
 }
 
-.gameMenu{
+.cross {
+  z-index: 9;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-top: -15px;
+  margin-left: -15px;
+}
+
+.gameMenu {
   margin: 0px;
   position: fixed;
   top: 0px;
   left: 0px;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0, 0.7);
-  z-index:10;
-  color:white;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10;
+  color: white;
 }
-.gameMenuX{
-  position:fixed;
-  top:50%;
+
+.gameMenuX {
+  position: fixed;
+  top: 50%;
   -ms-transform: translateY(-50%);
   transform: translateY(-50%);
 }
 
-.initLoading{
-  z-index:99;
-  position:fixed;
-  top:0px;
-  left:0px;
-  width:100%;
-  height:100%;
+.initLoading {
+  z-index: 99;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  height: 100%;
   background-image: url("../assets/images/back.png");
   background-position: center; /* Center the image */
   background-repeat: no-repeat; /* Do not repeat the image */
   background-size: cover; /* Resize the background image to cover the entire container */
 }
 
-.loadingBar{
+.loadingBar {
   margin: 0;
   position: absolute;
   top: 30%;
@@ -68,215 +80,237 @@ body { margin: 0; background:black;}
   transform: translate(-50%, -50%);
 }
 
-.loadingText{
-  margin-top:200px;
+.loadingText {
+  margin-top: 200px;
 }
 
 
-.progress{
-  margin:5px;
-  margin-right:20px;
-  margin-left:-3px;
-  background:#122a08;
-  border:1px solid black;
+.progress {
+  margin: 5px;
+  margin-right: 20px;
+  margin-left: -3px;
+  background: #122a08;
+  border: 1px solid black;
 }
-.progress-bar{
-  background:#487329;
+
+.progress-bar {
+  background: #487329;
 }
-.player_xp{
-  position:fixed;
+
+.player_xp {
+  position: fixed;
   transform: translateX(-50%);
-  left:50%;
-  bottom:62px;
-  z-index:10;
+  left: 50%;
+  bottom: 62px;
+  z-index: 10;
   -webkit-text-stroke: 1px black;
-   color: #259c45;
-   text-shadow:
-       3px 3px 0 #000,
-     -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-       1px 1px 0 #000;
-  font-size:20px;
-  font-weight:bold;
+  color: #259c45;
+  text-shadow: 3px 3px 0 #000,
+  -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+  font-size: 20px;
+  font-weight: bold;
 }
-.chat{
-  position:fixed;
-  bottom:100px;
-  left:0px;
-  width:60%;
-  overflow-x:hidden;
-  overflow:scroll;
+
+.chat {
+  position: fixed;
+  bottom: 100px;
+  left: 0px;
+  width: 60%;
+  overflow-x: hidden;
+  overflow: scroll;
   /* display:flex; */
   /* flex-direction:column-reverse; */
   -webkit-text-stroke: 1px black;
-   color: white;
-   text-shadow:
-       1px 1px 0 #000,
-     -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-       1px 1px 0 #000;
-  height:45%;
-  font-weight:bold;
-  font-size:20px;
+  color: white;
+  text-shadow: 1px 1px 0 #000,
+  -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+  height: 45%;
+  font-weight: bold;
+  font-size: 20px;
 }
-.chat.focus{
-  background:rgba(0,0,0,0.5);
+
+.chat.focus {
+  background: rgba(0, 0, 0, 0.5);
 }
-.chat.blur{
-  background:rgba(0,0,0,0);
+
+.chat.blur {
+  background: rgba(0, 0, 0, 0);
 }
-.com{
-  position:fixed;
-  bottom:-0px;
-  padding:5px;
-  left:0px;
-  width:100%;
-  background:rgba(0,0,0,0.5);
-  z-index:11;
+
+.com {
+  position: fixed;
+  bottom: -0px;
+  padding: 5px;
+  left: 0px;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 11;
 }
-.com_i{
-  background-color:transparent;
-  border:0px;
-  outline:none;
+
+.com_i {
+  background-color: transparent;
+  border: 0px;
+  outline: none;
 }
-.com_i:focus{
-  background-color:transparent;
-  outline:0px !important;
-    -webkit-appearance:none;
-    box-shadow: none !important;
+
+.com_i:focus {
+  background-color: transparent;
+  outline: 0px !important;
+  -webkit-appearance: none;
+  box-shadow: none !important;
 }
 
 .chat::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
-.inv_bar{
+
+.inv_bar {
   image-rendering: pixelated;
-  position:fixed;
-  bottom:0px;
-  left:50%;
-  width:500px;
-  height:60px;;
+  position: fixed;
+  bottom: 0px;
+  left: 50%;
+  width: 500px;
+  height: 60px;;
   transform: translateX(-50%);
   background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
   background-repeat: no-repeat;
-  border:0px;
+  border: 0px;
   background-position: 0px 0px;
   background-size: 703px auto;
   border: none;
   /* background-attachment: fixed; */
 }
-.player_hp{
-  position:fixed;
-  bottom:70px;
-  left:calc(50vw - 250px);
-  display:block;
+
+.player_hp {
+  position: fixed;
+  bottom: 70px;
+  left: calc(50vw - 250px);
+  display: block;
 }
-:root{
-  --mn:0.910384068;
-  --box:calc(24.72px * var(--mn));
-  --st:calc(44px * var(--mn));
+
+:root {
+  --mn: 0.910384068;
+  --box: calc(24.72px * var(--mn));
+  --st: calc(44px * var(--mn));
 }
-.hp,.food{
-  width:var(--box);
-  height:var(--box);
-  margin-right:-4px;
-  background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png"),url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
-  background-repeat: no-repeat,no-repeat;
-  background-size: 640px auto,640px auto;
-  display:inline-block;
+
+.hp, .food {
+  width: var(--box);
+  height: var(--box);
+  margin-right: -4px;
+  background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png"), url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
+  background-repeat: no-repeat, no-repeat;
+  background-size: 640px auto, 640px auto;
+  display: inline-block;
   image-rendering: crisp-edges;
 }
 
-.hp.full{
-  background-position: calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+.hp.full {
+  background-position: calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 0)), calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
 }
-.hp.half{
-  background-position: calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+
+.hp.half {
+  background-position: calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 0)), calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
 }
-.hp.empty{
-  background-position: calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+
+.hp.empty {
+  background-position: calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0)), calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
 }
-.food.full{
-  background-position:calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+
+.food.full {
+  background-position: calc((0px - var(--st)) - (var(--box) * 4)) calc(0px - (var(--box) * 3)), calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
 }
-.food.half{
-  background-position:calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+
+.food.half {
+  background-position: calc((0px - var(--st)) - (var(--box) * 5)) calc(0px - (var(--box) * 3)), calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
 }
-.food.empty{
-  background-position:calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3)),calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
+
+.food.empty {
+  background-position: calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3)), calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3))
 }
-.xp_bar_empty,.xp_bar{
-  position:fixed;
-  bottom:61px;
-  left:calc(50vw - 250px);
-  width:500px;
-  height:14px;
+
+.xp_bar_empty, .xp_bar {
+  position: fixed;
+  bottom: 61px;
+  left: calc(50vw - 250px);
+  width: 500px;
+  height: 14px;
   background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
   background-repeat: no-repeat;
-  border:0px;
+  border: 0px;
   background-size: 703px auto;
   border: none;
 }
-.xp_bar_empty{
+
+.xp_bar_empty {
   image-rendering: pixelated;
   background-position: 0px -176px;
 }
-.xp_bar{
+
+.xp_bar {
   image-rendering: pixelated;
   background-position: 0px -189px;
 }
-.player_food{
-  position:fixed;
-  bottom:70px;
-  right:calc(50vw - 245px);
-  display:block;
+
+.player_food {
+  position: fixed;
+  bottom: 70px;
+  right: calc(50vw - 245px);
+  display: block;
 }
-.inv_window{
-  z-index:10;
+
+.inv_window {
+  z-index: 10;
   background-image: url("../../assets/pack/assets/minecraft/textures/gui/container/inventory.png");
   background-repeat: no-repeat;
   background-size: 750px auto;
-  position:fixed;
-	image-rendering:pixelated;
-  top:50%;
-  left:50%;
-  width:515px;
-  height:485px;
-  transform: translate(-50%,-50%);
+  position: fixed;
+  image-rendering: pixelated;
+  top: 50%;
+  left: 50%;
+  width: 515px;
+  height: 485px;
+  transform: translate(-50%, -50%);
 }
-.item{
-	background-repeat: no-repeat;
+
+.item {
+  background-repeat: no-repeat;
   background-size: 43px 43px;
-  width:43px;
-  height:43px;
-	-webkit-text-stroke: 1px black;
-   color: white;
-   text-shadow:
-       1px 1px 0 #000,
-     -1px -1px 0 #000,
-      1px -1px 0 #000,
-      -1px 1px 0 #000,
-       1px 1px 0 #000;
-  font-weight:bold;
-  font-size:17px;
+  width: 43px;
+  height: 43px;
+  -webkit-text-stroke: 1px black;
+  color: white;
+  text-shadow: 1px 1px 0 #000,
+  -1px -1px 0 #000,
+  1px -1px 0 #000,
+  -1px 1px 0 #000,
+  1px 1px 0 #000;
+  font-weight: bold;
+  font-size: 17px;
 }
-.inv_box{
-  display:inline-block;
-  margin-left:9px;
-  margin-top:9px;
-  margin-right:-1px;
+
+.inv_box {
+  display: inline-block;
+  margin-left: 9px;
+  margin-top: 9px;
+  margin-right: -1px;
 }
-.inv_cursor{
-	background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
-	background-repeat: no-repeat;
-	border:0px;
-	background-position: 0px -61px;
-	background-size: 700px auto;
-	position:fixed;
-	image-rendering:pixelated;
-	bottom:-4px;
-	width:66px;
-	height:66px;
+
+.inv_cursor {
+  background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
+  background-repeat: no-repeat;
+  border: 0px;
+  background-position: 0px -61px;
+  background-size: 700px auto;
+  position: fixed;
+  image-rendering: pixelated;
+  bottom: -4px;
+  width: 66px;
+  height: 66px;
 }
