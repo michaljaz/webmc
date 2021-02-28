@@ -95,6 +95,13 @@ io.sockets.on("connection", function (socket) {
       emit(["kicked", reason]);
     },
     message: function (msg) {
+      let message = msg.extra[0].text
+
+      const replacements = [[/&/g, "&amp;"], [/</g, "&lt;"], [/>/g, "&gt;"], [/"/g, "&quot;"]];
+      for (const replacement of replacements)
+        message = message.replace(replacement[0], replacement[1]);
+      msg.extra[0].text = message;
+
       emit(["msg", convert.toHtml(msg.toAnsi())]);
     },
     experience: function () {
