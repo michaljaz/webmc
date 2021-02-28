@@ -75,6 +75,18 @@ io.sockets.on("connection", function (socket) {
         socket.emit("kicked", reason);
     });
     bot.on("message", function (msg) {
+        let message = msg.extra[0].text;
+
+        const replacements = [
+            [/&/g, "&amp;"],
+            [/</g, "&lt;"],
+            [/>/g, "&gt;"],
+            [/"/g, "&quot;"],
+        ];
+        for (const replacement of replacements)
+            message = message.replace(replacement[0], replacement[1]);
+        msg.extra[0].text = message;
+
         socket.emit("msg", convert.toHtml(msg.toAnsi()));
     });
     bot.on("experience", function () {
