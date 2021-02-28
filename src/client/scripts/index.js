@@ -7,35 +7,35 @@ import { Setup } from "./Setup.js";
 class Game {
     constructor() {
         this.al = new AssetLoader(() => {
-            this.init();
+            if (PRODUCTION) {
+                console.log("Running in production mode");
+            } else {
+                console.log("Running in development mode");
+            }
+            this.fov = {
+                normal: 70,
+                sprint: 85,
+            };
+            this.toxelSize = 27;
+            this.dimension = null;
+            this.flying = false;
+            this.playerPos = [0, 0, 0];
+            this.dimBg = {
+                "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
+                "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
+                "minecraft:the_nether": [133 / 255, 40 / 255, 15 / 255],
+                "minecraft:end": [1 / 255, 20 / 255, 51 / 255],
+                "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
+            };
+            this.headHeight = 17;
+
+            Setup(this, () => {
+                this.init();
+            });
         });
         return;
     }
     init() {
-        if (PRODUCTION) {
-            console.log("Running in production mode");
-        } else {
-            console.log("Running in development mode");
-        }
-        this.fov = {
-            normal: 70,
-            sprint: 85,
-        };
-        this.toxelSize = 27;
-        this.dimension = null;
-        this.flying = false;
-        this.playerPos = [0, 0, 0];
-        this.dimBg = {
-            "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
-            "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
-            "minecraft:the_nether": [133 / 255, 40 / 255, 15 / 255],
-            "minecraft:end": [1 / 255, 20 / 255, 51 / 255],
-            "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
-        };
-        this.headHeight = 17;
-
-        Setup(this);
-
         this.socket.on("connect", () => {
             console.log("Connected to server!");
             $(".loadingText").text("Joining server...");

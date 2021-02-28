@@ -45,6 +45,7 @@ io.sockets.on("connection", function (socket) {
         port: query.port,
         username: query.nick,
         version: version,
+        password: query.premium === "true" ? query.password : undefined,
     });
     botByNick[query.nick] = bot;
     bot._client.on("map_chunk", function (packet) {
@@ -75,17 +76,20 @@ io.sockets.on("connection", function (socket) {
         socket.emit("kicked", reason);
     });
     bot.on("message", function (msg) {
-        let message = msg.extra[0].text;
+        console.log(JSON.stringify(msg));
+        if (msg.extra != undefined) {
+            let message = msg.extra[0].text;
 
-        const replacements = [
-            [/&/g, "&amp;"],
-            [/</g, "&lt;"],
-            [/>/g, "&gt;"],
-            [/"/g, "&quot;"],
-        ];
-        for (const replacement of replacements)
-            message = message.replace(replacement[0], replacement[1]);
-        msg.extra[0].text = message;
+            const replacements = [
+                [/&/g, "&amp;"],
+                [/</g, "&lt;"],
+                [/>/g, "&gt;"],
+                [/"/g, "&quot;"],
+            ];
+            for (const replacement of replacements)
+                message = message.replace(replacement[0], replacement[1]);
+            msg.extra[0].text = message;
+        }
 
         socket.emit("msg", convert.toHtml(msg.toAnsi()));
     });

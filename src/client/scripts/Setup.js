@@ -15,7 +15,7 @@ import { BlockBreak } from "./BlockBreak.js";
 import { BlockPlace } from "./BlockPlace.js";
 import { EventHandler } from "./EventHandler.js";
 
-function Setup(game) {
+function Setup(game, cb) {
     game.canvas = document.querySelector("#c");
     game.pcanvas = document.querySelector("#c_player");
     game.renderer = new THREE.WebGLRenderer({
@@ -35,50 +35,54 @@ function Setup(game) {
     game.stats.showPanel(0);
     document.body.appendChild(game.stats.dom);
     game.distanceBasedFog = new DistanceBasedFog(game);
-    UrlParams(game);
-    console.warn(gpuInfo());
-    game.socket = io({
-        query: {
-            nick: game.nick,
-            server: game.server,
-            port: game.serverPort,
-        },
-    });
-    game.pii = new PlayerInInventory(game);
-    game.bb = new BlockBreak(game);
-    game.bp = new BlockPlace(game);
-    game.world = new World(game);
-    game.ent = new Entities(game);
-    game.chat = new Chat(game);
-    game.inv_bar = new InventoryBar(game);
-    game.eh = new EventHandler(game);
-    game.distanceBasedFog.addShaderToMaterial(game.world.material);
-    var gui = new dat.GUI();
-    game.params = {
-        chunkdist: 3,
-    };
-    game.distanceBasedFog.farnear.x = (game.params.chunkdist - 1) * 16;
-    game.distanceBasedFog.farnear.y = game.params.chunkdist * 16;
-    gui.add(game.world.material, "wireframe").name("Wireframe").listen();
-    var chunkDist = gui
-        .add(game.params, "chunkdist", 0, 10, 1)
-        .name("Render distance")
-        .listen();
-    chunkDist.onChange(function (val) {
-        game.distanceBasedFog.farnear.x = (val - 1) * 16;
-        game.distanceBasedFog.farnear.y = val * 16;
-        console.log(val);
-    });
-    game.playerImpulse = function () {
-        var to = {
-            x: game.playerPos[0],
-            y: game.playerPos[1] + game.headHeight,
-            z: game.playerPos[2],
+    UrlParams(game, (password) => {
+        console.warn(gpuInfo());
+        game.socket = io({
+            query: {
+                nick: game.nick,
+                server: game.server,
+                port: game.serverPort,
+                password,
+                premium: game.premium,
+            },
+        });
+        game.pii = new PlayerInInventory(game);
+        game.bb = new BlockBreak(game);
+        game.bp = new BlockPlace(game);
+        game.world = new World(game);
+        game.ent = new Entities(game);
+        game.chat = new Chat(game);
+        game.inv_bar = new InventoryBar(game);
+        game.eh = new EventHandler(game);
+        game.distanceBasedFog.addShaderToMaterial(game.world.material);
+        var gui = new dat.GUI();
+        game.params = {
+            chunkdist: 3,
         };
-        new TWEEN.Tween(game.camera.position)
-            .to(to, 100)
-            .easing(TWEEN.Easing.Quadratic.Out)
-            .start();
-    };
+        game.distanceBasedFog.farnear.x = (game.params.chunkdist - 1) * 16;
+        game.distanceBasedFog.farnear.y = game.params.chunkdist * 16;
+        gui.add(game.world.material, "wireframe").name("Wireframe").listen();
+        var chunkDist = gui
+            .add(game.params, "chunkdist", 0, 10, 1)
+            .name("Render distance")
+            .listen();
+        chunkDist.onChange(function (val) {
+            game.distanceBasedFog.farnear.x = (val - 1) * 16;
+            game.distanceBasedFog.farnear.y = val * 16;
+            console.log(val);
+        });
+        game.playerImpulse = function () {
+            var to = {
+                x: game.playerPos[0],
+                y: game.playerPos[1] + game.headHeight,
+                z: game.playerPos[2],
+            };
+            new TWEEN.Tween(game.camera.position)
+                .to(to, 100)
+                .easing(TWEEN.Easing.Quadratic.Out)
+                .start();
+        };
+        cb();
+    });
 }
 export { Setup };

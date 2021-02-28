@@ -1,4 +1,6 @@
-var UrlParams = function (game) {
+import swal from "sweetalert";
+
+var UrlParams = function (game, cb) {
     var nameList = [
         "Time",
         "Past",
@@ -180,6 +182,7 @@ var UrlParams = function (game) {
     game.nick = new URL(document.location).searchParams.get("nick");
     game.server = new URL(document.location).searchParams.get("server");
     game.serverPort = new URL(document.location).searchParams.get("port");
+    game.premium = new URL(document.location).searchParams.get("premium");
     var reload = false;
     if (game.nick === "" || game.nick === null) {
         reload = true;
@@ -193,8 +196,26 @@ var UrlParams = function (game) {
         reload = true;
         game.serverPort = "25565";
     }
+    if (game.premium === "" || game.premium === null) {
+        reload = true;
+        game.premium = "false";
+    }
     if (reload) {
-        document.location.href = `?server=${game.server}&port=${game.serverPort}&nick=${game.nick}`;
+        document.location.href = `?server=${game.server}&port=${game.serverPort}&nick=${game.nick}&premium=${game.premium}`;
+    } else {
+        if (game.premium === "true") {
+            swal({
+                text: "Enter password for premium account",
+                content: "input",
+                button: {
+                    text: "Login",
+                },
+            }).then((password) => {
+                cb(password);
+            });
+        } else {
+            cb(null);
+        }
     }
 };
 
