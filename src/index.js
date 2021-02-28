@@ -19,6 +19,7 @@ app.use(
         contentSecurityPolicy: false,
     })
 );
+
 app.use(compression());
 var mode = process.argv[2];
 if (mode === "production") {
@@ -39,14 +40,17 @@ server.listen(port, function () {
 var botByNick = {};
 io.sockets.on("connection", function (socket) {
     var query = socket.handshake.query;
-    console.log(`[\x1b[32m+\x1b[0m] ${query.nick}`);
+    var settings = query.nick.split('%C2%A7')
+    console.log(`[\x1b[32m+\x1b[0m] ${settings[0]}`);
     var heldItem = null;
-    var bot = mineflayer.createBot({
-        host: config.ip,
-        port: config.port,
-        username: query.nick,
-        version: config.version,
-    });
+    var opts = {
+        host: settings[1] || config.ip,
+        port: settings[2] || config.port,
+        username: settings[0].split("%C2%A7")[0],
+        version: '1.16.1',
+    }
+    console.log(opts)
+    var bot = mineflayer.createBot(opts);
     botByNick[query.nick] = bot;
     bot._client.on("map_chunk", function (packet) {
         var cell = new Chunk();
@@ -54,7 +58,15 @@ io.sockets.on("connection", function (socket) {
         socket.emit("mapChunk", cell.sections, packet.x, packet.z);
     });
     bot._client.on("respawn", function (packet) {
-        socket.emit("dimension", packet.dimension.value.effects.value);
+        socket.emit(
+            "dimension",
+            packet.dimension,
+            bot.supportFeature("dimensionIsAWorld")
+                ? "world"
+                : bot.supportFeature("dimensionIsAString")
+                ? "string"
+                : "int"
+        );
     });
     bot.on("heldItemChanged", function (item) {
         heldItem = item;
