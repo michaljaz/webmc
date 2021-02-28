@@ -59,7 +59,11 @@ Chat = class Chat {
   }
 
   log(message) {
-    $(".chat").append(`<span>${message}<br></span>`);
+    const replacements = [[/&/g, "&amp;"], [/</g, "&lt;"], [/>/g, "&gt;"], [/"/g, "&quot;"]];
+    for (const replacement of replacements)
+      message = message.replace(replacement[0], replacement[1]);
+
+    this.chatDiv.append(`<span>${message}<br></span>`);
     this.scrollToBottom(this.chatDiv);
   }
 
