@@ -5,11 +5,6 @@ class Chat {
         this.listen();
         this.history = [""];
         this.histState = 0;
-        $(".com_i").on("input", () => {
-            this.history[this.history.length - 1] = $(".com_i").val();
-            console.log(this.history);
-        });
-        return;
     }
 
     chatGoBack() {
