@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { CellTerrain } from "./ChunkTerrain.js";
+import { ChunkTerrain } from "./ChunkTerrain.js";
 import { AnimatedTextureAtlas } from "./AnimatedTextureAtlas.js";
 import { SectionComputer } from "./SectionComputer.js";
 import vec3 from "vec3";
@@ -13,12 +13,10 @@ var World = class World {
      */
     constructor(game) {
         this.game = game;
-        this.cellBlackList = {};
         this.cellMesh = {};
-        this.cellNeedsUpdate = {};
         this.blocksDef = this.game.al.get("blocksDef");
         this.models = {};
-        this.cellTerrain = new CellTerrain({
+        this.chunkTerrain = new ChunkTerrain({
             blocksDef: this.blocksDef,
         });
         this.ATA = new AnimatedTextureAtlas(this.game);
@@ -83,7 +81,7 @@ var World = class World {
             type: "setCell",
             data: [cellX, cellY, cellZ, buffer],
         });
-        this.cellTerrain.setCell(cellX, cellY, cellZ, buffer);
+        this.chunkTerrain.setCell(cellX, cellY, cellZ, buffer);
     }
     /**
      * Sets custom block to some value
@@ -97,12 +95,12 @@ var World = class World {
         voxelY = parseInt(voxelY);
         voxelZ = parseInt(voxelZ);
         this.blocksUpdate = true;
-        if (this.cellTerrain.getVoxel(voxelX, voxelY, voxelZ) !== value) {
+        if (this.chunkTerrain.getVoxel(voxelX, voxelY, voxelZ) !== value) {
             this.chunkWorker.postMessage({
                 type: "setVoxel",
                 data: [voxelX, voxelY, voxelZ, value],
             });
-            this.cellTerrain.setVoxel(voxelX, voxelY, voxelZ, value);
+            this.chunkTerrain.setVoxel(voxelX, voxelY, voxelZ, value);
         }
     }
     /**
@@ -116,7 +114,7 @@ var World = class World {
             }
             delete this.cellMesh[i];
         }
-        this.cellTerrain.cells = {};
+        this.chunkTerrain.cells = {};
         this.chunkWorker.postMessage({
             type: "resetWorld",
             data: null,
@@ -127,7 +125,7 @@ var World = class World {
      * @param data - cell Data
      */
     updateCell(data) {
-        var cellId = this.cellTerrain.vec3(...data.info);
+        var cellId = this.chunkTerrain.vec3(...data.info);
         var cell = data.cell;
         var mesh = this.cellMesh[cellId];
         var geometry = new THREE.BufferGeometry();
@@ -202,7 +200,7 @@ var World = class World {
         var tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
         var steppedIndex = -1;
         while (t <= len) {
-            var block = this.cellTerrain.getBlock(ix, iy, iz);
+            var block = this.chunkTerrain.getBlock(ix, iy, iz);
             var voxel;
             if (
                 block.name === "air" ||
@@ -285,7 +283,7 @@ var World = class World {
      */
     updateCellsAroundPlayer(radius) {
         var pos = this.game.camera.position;
-        var cell = this.cellTerrain.computeCellForVoxel(
+        var cell = this.chunkTerrain.computeCellForVoxel(
             Math.floor(pos.x + 0.5),
             Math.floor(pos.y + 0.5),
             Math.floor(pos.z + 0.5)

@@ -2,7 +2,7 @@ var modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
 
-class CellTerrain {
+class ChunkTerrain {
     constructor(options) {
         this.cellSize = 16;
         this.cells = {};
@@ -95,4 +95,4 @@ class CellTerrain {
     }
 }
 
-export { CellTerrain };
+export { ChunkTerrain };
