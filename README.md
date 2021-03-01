@@ -28,6 +28,12 @@ To run this game you need to start real minecraft server (by default it is 1.16.
 </details>
 
 <details>
+<summary>Minecraft premium support</summary>
+You can add premium=true parameter to url for premium, it will open a prompt, write password and tada.
+
+</details>
+
+<details>
 <summary>Linting</summary>
 
 ```bash
