@@ -1,42 +1,42 @@
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
 import swal from "sweetalert";
-import { AssetLoader } from "./AssetLoader.js";
-import { Setup } from "./Setup.js";
+import {AssetLoader} from "./AssetLoader.js";
+import {Setup} from "./Setup.js";
 
 class Game {
     constructor() {
-        this.al = new AssetLoader(() => {
-            if (PRODUCTION) {
-                console.log("Running in production mode");
-            } else {
-                console.log("Running in development mode");
-            }
-            this.fov = {
-                normal: 70,
-                sprint: 80,
-            };
-            this.toxelSize = 27;
-            this.dimension = null;
-            this.flying = false;
-            this.playerPos = [0, 0, 0];
-            this.dimBg = {
-                "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
-                "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
-                "minecraft:the_nether": [133 / 255, 40 / 255, 15 / 255],
-                "minecraft:end": [1 / 255, 20 / 255, 51 / 255],
-                "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
-            };
-            this.headHeight = 17;
-            this.gamemode = null;
 
-            Setup(this, () => {
-                this.init();
-            });
-        });
-        return;
+        if (PRODUCTION) {
+            console.log("Running in production mode");
+        } else {
+            console.log("Running in development mode");
+        }
+        this.fov = {
+            normal: 70,
+            sprint: 80,
+        };
+        this.al = new AssetLoader();
+        this.toxelSize = 27;
+        this.dimension = null;
+        this.flying = false;
+        this.playerPos = [0, 0, 0];
+        this.dimBg = {
+            "minecraft:overworld": [165 / 255, 192 / 255, 254 / 255],
+            "minecraft:the_end": [1 / 255, 20 / 255, 51 / 255],
+            "minecraft:the_nether": [133 / 255, 40 / 255, 15 / 255],
+            "minecraft:end": [1 / 255, 20 / 255, 51 / 255],
+            "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
+        };
+        this.headHeight = 17;
+        this.gamemode = null;
+
+
     }
-    init() {
+
+    async init() {
+        await this.al.init();
+        await Setup(this);
         this.socket.on("connect", () => {
             console.log("Connected to server!");
             $(".loadingText").text(`Connecting to ${this.server}`);
@@ -189,4 +189,7 @@ class Game {
     }
 }
 
-new Game();
+window.onload = () => {
+    let game = new Game();
+    game.init();
+}

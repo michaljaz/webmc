@@ -1,21 +1,24 @@
 import * as THREE from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
 
 class AssetLoader {
-    constructor(init) {
+    constructor() {
         this.assets = {};
-        $.get("assets/assetLoader.json", (assets) => {
-            this.load(assets, function () {
-                console.log("AssetLoader: done loading!");
-                if (init !== null) {
-                    init(this);
-                }
-            });
-        });
-        return;
     }
 
-    load(assets, callback) {
+    async init() {
+        return new Promise(async (resolve) => {
+            let assets = await $.get("assets/assetLoader.json");
+            await this.load(assets, () => {
+                console.log(this.assets)
+                console.log("AssetLoader: done loading!");
+                resolve()
+            });
+        })
+    }
+
+    async load(assets, callback) {
+
         var textureLoader = new THREE.TextureLoader();
         var fbxl = new FBXLoader();
         var assetsNumber = 0;
@@ -74,4 +77,4 @@ class AssetLoader {
     }
 }
 
-export { AssetLoader };
+export {AssetLoader};
