@@ -23,49 +23,51 @@ class AssetLoader {
         var assetsNumber = Object.keys(assets).length;
         var assetsLoaded = 0;
 
-        Object.keys(assets).forEach((p) => {
-            var img, path, type;
-            type = assets[p].type;
-            path = assets[p].path;
-            if (type === "texture") {
-                textureLoader.load(path, (texture) => {
-                    this.assets[p] = texture;
-                    assetsLoaded++;
-                    if (assetsLoaded === assetsNumber) {
-                        return callback();
-                    }
-                });
+        for (const assetName in assets) {
+            let asset = assets[assetName];
+            var img;
+
+            switch (asset.type) {
+                case "texture":
+                    textureLoader.load(asset.path, (texture) => {
+                        this.assets[assetName] = texture;
+                        assetsLoaded++;
+                        if (assetsLoaded === assetsNumber) {
+                            return callback();
+                        }
+                    });
+                    break;
+                case "text":
+                    $.get(asset.path, (data) => {
+                        this.assets[assetName] = data;
+                        assetsLoaded++;
+                        if (assetsLoaded === assetsNumber) {
+                            return callback();
+                        }
+                    });
+                    break;
+                case "image":
+                    img = new Image();
+                    img.onload = () => {
+                        this.assets[assetName] = img;
+                        assetsLoaded++;
+                        if (assetsLoaded === assetsNumber) {
+                            return callback();
+                        }
+                    };
+                    img.src = asset.path;
+                    break;
+                case "fbx":
+                    fbxl.load(asset.path, (fbx) => {
+                        this.assets[assetName] = fbx;
+                        assetsLoaded++;
+                        if (assetsLoaded === assetsNumber) {
+                            return callback();
+                        }
+                    });
+                    break;
             }
-            if (type === "text") {
-                $.get(path, (data) => {
-                    this.assets[p] = data;
-                    assetsLoaded++;
-                    if (assetsLoaded === assetsNumber) {
-                        return callback();
-                    }
-                });
-            }
-            if (type === "image") {
-                img = new Image();
-                img.onload = () => {
-                    this.assets[p] = img;
-                    assetsLoaded++;
-                    if (assetsLoaded === assetsNumber) {
-                        return callback();
-                    }
-                };
-                img.src = path;
-            }
-            if (type === "fbx") {
-                return fbxl.load(path, (fbx) => {
-                    this.assets[p] = fbx;
-                    assetsLoaded++;
-                    if (assetsLoaded === assetsNumber) {
-                        return callback();
-                    }
-                });
-            }
-        });
+        }
         return this;
     }
 
