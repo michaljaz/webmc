@@ -10,7 +10,6 @@ class AssetLoader {
         return new Promise(async (resolve) => {
             let assets = await $.get("assets/assetLoader.json");
             await this.load(assets, () => {
-                console.log(this.assets)
                 console.log("AssetLoader: done loading!");
                 resolve()
             });
@@ -21,11 +20,9 @@ class AssetLoader {
 
         var textureLoader = new THREE.TextureLoader();
         var fbxl = new FBXLoader();
-        var assetsNumber = 0;
+        var assetsNumber = Object.keys(assets).length;
         var assetsLoaded = 0;
-        Object.keys(assets).forEach(function () {
-            return assetsNumber++;
-        });
+
         Object.keys(assets).forEach((p) => {
             var img, path, type;
             type = assets[p].type;
