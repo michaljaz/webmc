@@ -14,18 +14,17 @@ class InventoryBar {
         }
     }
 
-    setGamemode(gamemode) {
+    updateGamemode(gamemode) {
         // mineflayer doesn't currently include support for spectator mode
         if (gamemode === "creative") {
             $(
                 (gamemode === "spectator" ? ".inv_bar, .inv_cursor" : "") +
-                    ".player_hp, .player_food, .xp_bar_empty, xp_bar"
+                    ".player_hp, .player_food, .xp_bar_empty, .xp_bar, .player_xp"
             ).css("display", "none");
         } else {
-            $(".player_hp, .player_food, .xp_bar_empty, xp_bar").css(
-                "display",
-                "initial"
-            );
+            $(
+                ".player_hp, .player_food, .xp_bar_empty, .xp_bar, .player_xp"
+            ).css("display", "block");
         }
     }
 
@@ -89,11 +88,11 @@ class InventoryBar {
 
     setXp(level, progress) {
         if (level === 0) {
-            $(".player_xp").hide();
+            $(".player_xp").text("");
         } else {
-            $(".player_xp").show();
             $(".player_xp").text(level);
         }
+
         return $(".xp_bar").css("width", `${500 * progress}px`);
     }
 
@@ -122,7 +121,7 @@ class InventoryBar {
         }
     }
 
-    update() {
+    updateItems() {
         var list = $(".item");
         for (var i = 0; i < list.length; i++) {
             var url;

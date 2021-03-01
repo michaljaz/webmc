@@ -76,7 +76,6 @@ io.sockets.on("connection", function (socket) {
         socket.emit("kicked", reason);
     });
     bot.on("message", function (msg) {
-        console.log(JSON.stringify(msg));
         if (msg.extra != undefined) {
             let message = msg.extra[0].text;
 

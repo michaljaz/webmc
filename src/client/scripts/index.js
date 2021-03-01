@@ -14,7 +14,7 @@ class Game {
             }
             this.fov = {
                 normal: 70,
-                sprint: 85,
+                sprint: 80,
             };
             this.toxelSize = 27;
             this.dimension = null;
@@ -28,6 +28,7 @@ class Game {
                 "minecraft:nether": [133 / 255, 40 / 255, 15 / 255],
             };
             this.headHeight = 17;
+            this.gamemode = null;
 
             Setup(this, () => {
                 this.init();
@@ -38,7 +39,7 @@ class Game {
     init() {
         this.socket.on("connect", () => {
             console.log("Connected to server!");
-            $(".loadingText").text("Joining server...");
+            $(".loadingText").text(`Connecting to ${this.server}`);
             console.log(`User nick: ${this.nick}`);
             console.log(`Server ip: ${this.server}:${this.serverPort}`);
             this.socket.emit("initClient", {
@@ -72,7 +73,7 @@ class Game {
             this.world.computeSections(sections, x, z);
         });
         this.socket.on("game", (gameData) => {
-            this.inv_bar.setGamemode(gameData.gameMode);
+            this.inv_bar.updateGamemode(gameData.gameMode);
         });
         this.socket.on("hp", (points) => {
             this.inv_bar.setHp(points);
@@ -182,7 +183,7 @@ class Game {
         if (this.eh.gameState === "inventory") {
             this.pii.render();
         }
-        this.inv_bar.update();
+        this.inv_bar.updateItems();
         this.distanceBasedFog.update();
         this.renderer.render(this.scene, this.camera);
     }
