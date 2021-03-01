@@ -204,7 +204,7 @@ io.sockets.on("connection", function (socket) {
                 });
             }
         });
-        socket.emit("stopDigging", function () {
+        socket.on("stopDigging", function () {
             bot.stopDigging();
         });
     });
