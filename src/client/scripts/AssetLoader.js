@@ -24,6 +24,9 @@ class AssetLoader {
         var assetsLoaded = 0;
 
         for (const assetName in assets) {
+            if(!assets.hasOwnProperty(assetName))
+                continue;
+
             let asset = assets[assetName];
             var img;
 
