@@ -4,25 +4,17 @@ import { ChunkMesher } from "./ChunkMesher.js";
 var terrain = null;
 
 class TerrainManager {
-    constructor(options) {
+    constructor(data) {
         this.cellSize = 16;
         this.chunkTerrain = new ChunkTerrain({
-            blocksDef: options.blocksDef,
+            blocksDef: data.blocksDef,
         });
         this.cellNeedsUpdate = {};
         this.loadedMeshes = {};
-        this.neighbours = {
-            px: [-1, 0, 0],
-            nx: [1, 0, 0],
-            ny: [0, -1, 0],
-            py: [0, 1, 0],
-            pz: [0, 0, 1],
-            nz: [0, 0, -1],
-        };
         this.chunkMesher = new ChunkMesher({
-            blocksTex: options.blocksTex,
-            blocksMapping: options.blocksMapping,
-            toxelSize: options.toxelSize,
+            blocksTex: data.blocksTex,
+            blocksMapping: data.blocksMapping,
+            toxelSize: data.toxelSize,
             chunkTerrain: this.chunkTerrain,
         });
     }
@@ -30,20 +22,11 @@ class TerrainManager {
 
 var handlers = {
     init: function (data) {
-        terrain = new TerrainManager({
-            models: data.models,
-            blocks: data.blocks,
-            blocksMapping: data.blocksMapping,
-            toxelSize: data.toxelSize,
-            cellSize: data.cellSize,
-            blocksTex: data.blocksTex,
-            blocksDef: data.blocksDef,
-        });
+        terrain = new TerrainManager(data);
     },
     setVoxel: function (data) {
-        var cellId, l, len, nei, neiCellId, neighbours;
         terrain.chunkTerrain.setVoxel(...data);
-        cellId = terrain.chunkTerrain.vec3(
+        var cellId = terrain.chunkTerrain.vec3(
             ...terrain.chunkTerrain.computeCellForVoxel(
                 data[0],
                 data[1],
@@ -51,7 +34,7 @@ var handlers = {
             )
         );
         terrain.cellNeedsUpdate[cellId] = true;
-        neighbours = [
+        var neighbours = [
             [-1, 0, 0],
             [1, 0, 0],
             [0, -1, 0],
@@ -59,9 +42,9 @@ var handlers = {
             [0, 0, -1],
             [0, 0, 1],
         ];
-        for (l = 0, len = neighbours.length; l < len; l++) {
-            nei = neighbours[l];
-            neiCellId = terrain.chunkTerrain.vec3(
+        for (var l = 0; l < neighbours.length; l++) {
+            var nei = neighbours[l];
+            var neiCellId = terrain.chunkTerrain.vec3(
                 ...terrain.chunkTerrain.computeCellForVoxel(
                     data[0] + nei[0],
                     data[1] + nei[1],
@@ -72,20 +55,23 @@ var handlers = {
         }
     },
     genChunkGeo: function (data) {
-        if (
-            terrain.chunkTerrain.vec3(...data) in terrain.chunkTerrain.cells ===
-            true
-        ) {
-            var geo = terrain.chunkMesher.genChunkGeo(...data);
-            postMessage({
-                type: "cellGeo",
-                data: {
-                    cell: geo,
-                    info: data,
-                    p: performance.now(),
-                },
-            });
-        }
+        queueMicrotask(() => {
+            if (
+                terrain.chunkTerrain.vec3(...data) in
+                    terrain.chunkTerrain.cells ===
+                true
+            ) {
+                var geo = terrain.chunkMesher.genChunkGeo(...data);
+                postMessage({
+                    type: "cellGeo",
+                    data: {
+                        cell: geo,
+                        info: data,
+                        p: performance.now(),
+                    },
+                });
+            }
+        });
     },
     setCell: function (data) {
         var neighbours = [

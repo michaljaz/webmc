@@ -27,7 +27,7 @@ function Setup(game, cb) {
     game.camera = new THREE.PerspectiveCamera(game.fov.normal, 2, 0.1, 1000);
     game.camera.rotation.order = "YXZ";
     game.camera.position.set(26, 26, 26);
-    game.scene.add(new THREE.AmbientLight(0xffffff));
+    game.scene.add(new THREE.AmbientLight(0xdddddd));
     game.stats = new Stats();
     game.drawcalls = game.stats.addPanel(
         new Stats.Panel("calls", "#ff8", "#221")
