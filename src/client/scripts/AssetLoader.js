@@ -3,7 +3,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
 
 class AssetLoader {
     constructor() {
-        this.assets = {};
+        this.assets = new Map();
     }
 
     async init() {
