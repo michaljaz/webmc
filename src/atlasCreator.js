@@ -24,7 +24,6 @@ var AtlasCreator = class AtlasCreator {
         this.textureMapping = {};
         this.emptyDir();
         this.firstLoad();
-        return;
     }
 
     emptyDir() {

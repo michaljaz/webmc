@@ -24,7 +24,6 @@ class BitArray {
         this.bitsPerValue = options.bitsPerValue;
         this.valuesPerLong = valuesPerLong;
         this.valueMask = valueMask;
-        return;
     }
 
     get(index) {

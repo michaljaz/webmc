@@ -28,7 +28,6 @@ class Entities {
         this.playerMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
         this.game.scene.add(this.playerMesh);
         this.dummy = new THREE.Object3D();
-        return;
     }
 
     update(entities) {
