@@ -76,21 +76,18 @@ io.sockets.on("connection", function (socket) {
         socket.emit("kicked", reason);
     });
     bot.on("message", function (msg) {
-        if (msg.extra != undefined) {
-            let message = msg.extra[0].text;
+        let message = msg.toAnsi()
 
-            const replacements = [
-                [/&/g, "&amp;"],
-                [/</g, "&lt;"],
-                [/>/g, "&gt;"],
-                [/"/g, "&quot;"],
-            ];
-            for (const replacement of replacements)
-                message = message.replace(replacement[0], replacement[1]);
-            msg.extra[0].text = message;
-        }
+        const replacements = [
+            [/&/g, "&amp;"],
+            [/</g, "&lt;"],
+            [/>/g, "&gt;"],
+            [/"/g, "&quot;"],
+        ];
+        for (const replacement of replacements)
+            message = message.replace(replacement[0], replacement[1]);
 
-        socket.emit("msg", convert.toHtml(msg.toAnsi()));
+        socket.emit("msg", convert.toHtml(message));
     });
     bot.on("experience", function () {
         socket.emit("xp", bot.experience);
@@ -183,7 +180,8 @@ io.sockets.on("connection", function (socket) {
                 clearInterval(interval);
                 console.log(`[\x1b[31m-\x1b[0m] ${query.nick}`);
                 bot.end();
-            } catch (error) {}
+            } catch (error) {
+            }
         });
         socket.on("dig", function (pos) {
             var block = bot.blockAt(vec3(pos[0], pos[1] - 16, pos[2]));
