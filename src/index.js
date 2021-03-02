@@ -76,7 +76,7 @@ io.sockets.on("connection", function (socket) {
         socket.emit("kicked", reason);
     });
     bot.on("message", function (msg) {
-        let message = msg.toAnsi()
+        let message = msg.toAnsi();
 
         const replacements = [
             [/&/g, "&amp;"],
@@ -180,8 +180,7 @@ io.sockets.on("connection", function (socket) {
                 clearInterval(interval);
                 console.log(`[\x1b[31m-\x1b[0m] ${query.nick}`);
                 bot.end();
-            } catch (error) {
-            }
+            } catch (error) {}
         });
         socket.on("dig", function (pos) {
             var block = bot.blockAt(vec3(pos[0], pos[1] - 16, pos[2]));

@@ -53,7 +53,7 @@ class EventHandler {
             if (z.code === "Enter" && this.gameState === "chat") {
                 this.game.chat.command($(".com_i").val());
                 $(".com_i").val("");
-                this.setState("game")
+                this.setState("game");
             }
             if (
                 z.code === "KeyE" &&

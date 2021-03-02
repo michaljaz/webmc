@@ -3,19 +3,19 @@ import TWEEN from "@tweenjs/tween.js";
 import Stats from "stats-js";
 import * as dat from "dat.gui";
 import io from "socket.io-client";
-import {DistanceBasedFog} from "./DistanceBasedFog.js";
-import {UrlParams} from "./UrlParams.js";
-import {gpuInfo} from "./gpuInfo.js";
-import {World} from "./World/World.js";
-import {InventoryBar} from "./InventoryBar.js";
-import {Chat} from "./Chat.js";
-import {Entities} from "./Entities.js";
-import {PlayerInInventory} from "./PlayerInInventory.js";
-import {BlockBreak} from "./BlockBreak.js";
-import {BlockPlace} from "./BlockPlace.js";
-import {EventHandler} from "./EventHandler.js";
+import { DistanceBasedFog } from "./DistanceBasedFog.js";
+import { UrlParams } from "./UrlParams.js";
+import { gpuInfo } from "./gpuInfo.js";
+import { World } from "./World/World.js";
+import { InventoryBar } from "./InventoryBar.js";
+import { Chat } from "./Chat.js";
+import { Entities } from "./Entities.js";
+import { PlayerInInventory } from "./PlayerInInventory.js";
+import { BlockBreak } from "./BlockBreak.js";
+import { BlockPlace } from "./BlockPlace.js";
+import { EventHandler } from "./EventHandler.js";
 
-async function Setup(game, cb) {
+async function Setup(game) {
     return new Promise((resolve) => {
         game.canvas = document.querySelector("#c");
         game.pcanvas = document.querySelector("#c_player");
@@ -25,7 +25,12 @@ async function Setup(game, cb) {
         });
         game.renderer.sortObjects = true;
         game.scene = new THREE.Scene();
-        game.camera = new THREE.PerspectiveCamera(game.fov.normal, 2, 0.1, 1000);
+        game.camera = new THREE.PerspectiveCamera(
+            game.fov.normal,
+            2,
+            0.1,
+            1000
+        );
         game.camera.rotation.order = "YXZ";
         game.camera.position.set(26, 26, 26);
         game.scene.add(new THREE.AmbientLight(0xdddddd));
@@ -62,7 +67,9 @@ async function Setup(game, cb) {
             };
             game.distanceBasedFog.farnear.x = (game.params.chunkdist - 1) * 16;
             game.distanceBasedFog.farnear.y = game.params.chunkdist * 16;
-            gui.add(game.world.material, "wireframe").name("Wireframe").listen();
+            gui.add(game.world.material, "wireframe")
+                .name("Wireframe")
+                .listen();
             var chunkDist = gui
                 .add(game.params, "chunkdist", 0, 10, 1)
                 .name("Render distance")
@@ -85,7 +92,7 @@ async function Setup(game, cb) {
             };
             resolve();
         });
-    })
+    });
 }
 
-export {Setup};
+export { Setup };

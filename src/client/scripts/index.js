@@ -1,17 +1,21 @@
 import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
 import swal from "sweetalert";
-import {AssetLoader} from "./AssetLoader.js";
-import {Setup} from "./Setup.js";
+import { AssetLoader } from "./AssetLoader.js";
+import { Setup } from "./Setup.js";
 
 class Game {
     constructor() {
-
-        if (PRODUCTION) {
+        this.production = PRODUCTION;
+        if (this.production) {
             console.log("Running in production mode");
         } else {
             console.log("Running in development mode");
         }
+        this.servers = {
+            production: ["185.228.139.97", "25564"],
+            development: ["localhost", "25565"],
+        };
         this.fov = {
             normal: 70,
             sprint: 80,
@@ -30,8 +34,6 @@ class Game {
         };
         this.headHeight = 17;
         this.gamemode = null;
-
-
     }
 
     async init() {
@@ -192,4 +194,4 @@ class Game {
 window.onload = () => {
     let game = new Game();
     game.init();
-}
+};

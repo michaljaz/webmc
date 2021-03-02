@@ -190,11 +190,15 @@ var UrlParams = function (game, cb) {
     }
     if (game.server === "" || game.server === null) {
         reload = true;
-        game.server = "185.228.139.97";
+        game.server = game.production
+            ? game.servers.production[0]
+            : game.servers.development[0];
     }
     if (game.serverPort === "" || game.serverPort === null) {
         reload = true;
-        game.serverPort = "25564";
+        game.serverPort = game.production
+            ? game.servers.production[1]
+            : game.servers.development[1];
     }
     if (game.premium === "" || game.premium === null) {
         reload = true;

@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader.js";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
 class AssetLoader {
     constructor() {
@@ -20,11 +20,9 @@ class AssetLoader {
             var assetsLoaded = 0;
 
             for (const assetName in assets) {
-                if (!assets.hasOwnProperty(assetName))
-                    continue;
+                if (!assets.hasOwnProperty(assetName)) continue;
 
                 let asset = assets[assetName];
-
 
                 switch (asset.type) {
                     case "texture":
@@ -46,7 +44,7 @@ class AssetLoader {
                         });
                         break;
                     case "image":
-                        let img = new Image();
+                        var img = new Image();
                         img.onload = () => {
                             this.assets.set(assetName, img);
                             assetsLoaded++;
@@ -67,8 +65,7 @@ class AssetLoader {
                         break;
                 }
             }
-        })
-
+        });
     }
 
     get(assetName) {
@@ -76,4 +73,4 @@ class AssetLoader {
     }
 }
 
-export {AssetLoader};
+export { AssetLoader };
