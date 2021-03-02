@@ -190,11 +190,11 @@ var UrlParams = function (game, cb) {
     }
     if (game.server === "" || game.server === null) {
         reload = true;
-        game.server = "localhost";
+        game.server = "185.228.139.97";
     }
     if (game.serverPort === "" || game.serverPort === null) {
         reload = true;
-        game.serverPort = "25565";
+        game.serverPort = "25564";
     }
     if (game.premium === "" || game.premium === null) {
         reload = true;
