@@ -1,9 +1,7 @@
 import * as THREE from "three";
 
-export class Entities {
+class Entities {
     constructor(game) {
-        this.players = [];
-
         this.game = game;
         this.mobMaterial = new THREE.MeshStandardMaterial({
             color: new THREE.Color("red"),
@@ -16,12 +14,19 @@ export class Entities {
             this.mobMaxCount
         );
         this.mobMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
-
         this.game.scene.add(this.mobMesh);
-        this.playerGeometry = this.game.al.get("player");
-        this.playerGeometry.children[0].material.map = this.game.al.get("playerTex");
-
-
+        this.playerMaterial = new THREE.MeshStandardMaterial({
+            color: new THREE.Color("blue"),
+        });
+        this.playerGeometry = new THREE.BoxGeometry(1, 1, 1);
+        this.playerMaxCount = 200;
+        this.playerMesh = new THREE.InstancedMesh(
+            this.playerGeometry,
+            this.playerMaterial,
+            this.playerMaxCount
+        );
+        this.playerMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        this.game.scene.add(this.playerMesh);
         this.dummy = new THREE.Object3D();
     }
 
@@ -40,26 +45,27 @@ export class Entities {
             this.mobMesh.setMatrixAt(num_mobs++, this.dummy.matrix);
         }
         this.mobMesh.instanceMatrix.needsUpdate = true;
-
-
-        for (let i = 0; i < entities.players.length; i++) {
-            const playerData = entities.players[i];
-            if (playerData[0] === this.game.nick)
-                continue;
-
-            let player = this.players[i];
-            if (playerData[0] !== this.game.nick) {
-                if (!player) {
-                    player = this.game.al.get("player");
-                    player.children[0].material.map = this.game.al.get("playerTex");
-                    this.game.scene.add(player);
-                }
+        var num_players = 0;
+        for (let i in entities.players) {
+            if (entities.players[i][0] !== this.game.nick) {
+                num_players++;
             }
-            player.position.set(
-                playerData[1] + offset[0],
-                playerData[2] + offset[1],
-                playerData[3] + offset[2]
-            );
         }
+        this.playerMesh.count = num_players;
+        num_players = 0;
+        for (let i in entities.players) {
+            if (entities.players[i][0] !== this.game.nick) {
+                this.dummy.position.set(
+                    entities.players[i][1] + offset[0],
+                    entities.players[i][2] + offset[1],
+                    entities.players[i][3] + offset[2]
+                );
+                this.dummy.updateMatrix();
+                this.playerMesh.setMatrixAt(num_players++, this.dummy.matrix);
+            }
+        }
+        this.playerMesh.instanceMatrix.needsUpdate = true;
     }
-};
+}
+
+export { Entities };
