@@ -23,18 +23,13 @@ var World = class World {
         this.material = this.ATA.material;
         this.cellUpdateTime = null;
         this.renderTime = 100;
-        this.neighbours = [
-            [-1, 0, 0],
-            [1, 0, 0],
-            [0, -1, 0],
-            [0, 1, 0],
-            [0, 0, -1],
-            [0, 0, 1],
-        ];
+        this.lastPlayerChunk = null;
+        this.blocksUpdate = false;
+
         this.chunkWorker = new chunkWorker();
         this.chunkWorker.onmessage = (message) => {
             if (message.data.type === "cellGeo") {
-                return this.updateCell(message.data.data);
+                return this.updateChunk(message.data.data);
             } else if (message.data.type === "removeCell") {
                 if (this.cellMesh[message.data.data] !== void 0) {
                     this.cellMesh[message.data.data].geometry.dispose();
@@ -53,35 +48,25 @@ var World = class World {
                 blocksDef: this.blocksDef,
             },
         });
-        this.lastPlayerChunk = null;
-        this.blocksUpdate = false;
     }
     /**
      * Updates render order of chunk meshes
      * @param cell - player cell
      */
     updateRenderOrder(cell) {
-        var c = new vec3(...cell);
         for (var i in this.cellMesh) {
             var n = i.split(":");
             var x = new vec3(parseInt(n[0]), parseInt(n[1]), parseInt(n[2]));
-            this.cellMesh[i].renderOrder = -c.distanceTo(x);
+            this.cellMesh[i].renderOrder = -vec3(...cell).distanceTo(x);
         }
     }
-    /**
-     * Sets custom cell buffer
-     * @param cellX - cell X coord
-     * @param cellY - cell Y coord
-     * @param cellZ - cell Z coord
-     * @param buffer - cell Buffer
-     */
-    setCell(cellX, cellY, cellZ, buffer) {
+    setChunk(chunkX, chunkY, chunkZ, buffer) {
         this.cellUpdateTime = performance.now();
         this.chunkWorker.postMessage({
-            type: "setCell",
-            data: [cellX, cellY, cellZ, buffer],
+            type: "setChunk",
+            data: [chunkX, chunkY, chunkZ, buffer],
         });
-        this.chunkTerrain.setCell(cellX, cellY, cellZ, buffer);
+        this.chunkTerrain.setChunk(chunkX, chunkY, chunkZ, buffer);
     }
     /**
      * Sets custom block to some value
@@ -114,7 +99,7 @@ var World = class World {
             }
             delete this.cellMesh[i];
         }
-        this.chunkTerrain.cells = {};
+        this.chunkTerrain.reset();
         this.chunkWorker.postMessage({
             type: "resetWorld",
             data: null,
@@ -124,7 +109,7 @@ var World = class World {
      * Updates cell
      * @param data - cell Data
      */
-    updateCell(data) {
+    updateChunk(data) {
         var cellId = this.chunkTerrain.vec3(...data.info);
         var cell = data.cell;
         var mesh = this.cellMesh[cellId];
@@ -281,9 +266,9 @@ var World = class World {
      * Update chunks around player in radius
      * @param radius - radius from player
      */
-    updateCellsAroundPlayer(radius) {
+    updateChunksAroundPlayer(radius) {
         var pos = this.game.camera.position;
-        var cell = this.chunkTerrain.computeCellForVoxel(
+        var cell = this.chunkTerrain.computeChunkForVoxel(
             Math.floor(pos.x + 0.5),
             Math.floor(pos.y + 0.5),
             Math.floor(pos.z + 0.5)
@@ -291,7 +276,7 @@ var World = class World {
         if (this.blocksUpdate) {
             this.blocksUpdate = false;
             this.chunkWorker.postMessage({
-                type: "updateCellsAroundPlayer",
+                type: "updateChunksAroundPlayer",
                 data: [cell, radius],
             });
         } else if (this.lastPlayerChunk != JSON.stringify(cell)) {
@@ -302,7 +287,7 @@ var World = class World {
                 this.updateRenderOrder(cell);
                 this.lastPlayerChunk = JSON.stringify(cell);
                 this.chunkWorker.postMessage({
-                    type: "updateCellsAroundPlayer",
+                    type: "updateChunksAroundPlayer",
                     data: [cell, radius],
                 });
             }
@@ -321,7 +306,7 @@ var World = class World {
         for (var i in result) {
             var j = result[i];
             if (j !== null) {
-                results.push(this.setCell(j.x, j.y, j.z, j.cell));
+                results.push(this.setChunk(j.x, j.y, j.z, j.cell));
             } else {
                 results.push(void 0);
             }
