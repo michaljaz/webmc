@@ -187,58 +187,53 @@ body {
 }
 
 :root {
-    --mn: 0.910384068;
-    --box: calc(24.72px * var(--mn));
-    --st: calc(44px * var(--mn));
+    --mn: 1;
+    --box: calc(9*3)px;
+    --st: calc(9*3)px;
 }
 
 .hp,
 .food {
-    width: var(--box);
-    height: var(--box);
-    margin-right: -7px;
-    background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png"),
-        url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
+    width: calc(9*3px);
+    height: calc(9*3px);
+    margin-right: -10px;
+    background-image:
+            url("../../assets/pack/assets/minecraft/textures/gui/icons.png"),
+            url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
     background-repeat: no-repeat, no-repeat;
-    background-size: 640px auto, 640px auto;
+    background-size: 256*3px auto, 256*3px auto;
     display: inline-block;
     image-rendering: pixelated;
 }
 
 .hp.full {
-    background-position: calc((0px - var(--st)) - (var(--box) * 4))
-            calc(0px - (var(--box) * 0)),
-        calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+  background-position:  -3*52px 0px,
+                        -3*16px 0px;
 }
 
 .hp.half {
-    background-position: calc((0px - var(--st)) - (var(--box) * 5))
-            calc(0px - (var(--box) * 0)),
-        calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+  background-position:  -3*61px 0px,
+                        -3*16px 0px;
 }
 
 .hp.empty {
-    background-position: calc((0px - var(--st)) - (var(--box) * 0))
-            calc(0px - (var(--box) * 0)),
-        calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 0));
+  background-position:  -3*16px 0px,
+                        -3*16px 0px;
 }
 
 .food.full {
-    background-position: calc((0px - var(--st)) - (var(--box) * 4))
-            calc(0px - (var(--box) * 3)),
-        calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3));
+  background-position:  -3*52px -3*27px,
+                        -3*16px -3*27px;
 }
 
 .food.half {
-    background-position: calc((0px - var(--st)) - (var(--box) * 5))
-            calc(0px - (var(--box) * 3)),
-        calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3));
+  background-position:  -3*61px -3*27px,
+                        -3*16px -3*27px;
 }
 
 .food.empty {
-    background-position: calc((0px - var(--st)) - (var(--box) * 0))
-            calc(0px - (var(--box) * 3)),
-        calc((0px - var(--st)) - (var(--box) * 0)) calc(0px - (var(--box) * 3));
+  background-position:  -3*16px -3*27px,
+                        -3*16px -3*27px;
 }
 
 .xp_bar_empty,
