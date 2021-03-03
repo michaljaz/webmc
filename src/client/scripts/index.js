@@ -179,7 +179,7 @@ class Game {
                 return this.bb.digRequest();
             }
         });
-        this.world.updateCellsAroundPlayer(this.params.chunkdist);
+        this.world.updateChunksAroundPlayer(this.params.chunkdist);
         TWEEN.update();
         this.drawcalls.update(this.renderer.info.render.calls, 100);
         if (this.eh.gameState === "inventory") {
