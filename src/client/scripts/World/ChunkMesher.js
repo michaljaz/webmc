@@ -1,3 +1,22 @@
+const CustomRender = {
+    water: function(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, pos) {
+        for (var l in this.neighbours) {
+            const offset = this.neighbours[l];
+            if (
+                this.chunkTerrain.getBlock(
+                    pos[0] + offset[0],
+                    pos[1] + offset[1],
+                    pos[2] + offset[2]
+                ).name !== "water"
+            ) {
+                this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
+            }
+        }
+    }
+
+}
+
+
 class ChunkMesher {
     constructor(options) {
         this.cellSize = 16;
@@ -15,6 +34,10 @@ class ChunkMesher {
             pz: [0, 0, 1],
             nz: [0, 0, -1],
         };
+        this.customRender = {};
+        for (const funcName in CustomRender) {
+            this.customRender[funcName] = CustomRender[funcName].bind(this)
+        }
     }
 
     getUvForFace(block, type) {
@@ -471,8 +494,7 @@ class ChunkMesher {
                             }
                         }
                     } else if (
-                        this.chunkTerrain.getBlock(...pos).name === "water" ||
-                        this.chunkTerrain.getBlock(...pos).name === "lava"
+                         this.chunkTerrain.getBlock(...pos).name === "lava"
                     ) {
                         for (var l in this.neighbours) {
                             const offset = this.neighbours[l];
@@ -481,11 +503,13 @@ class ChunkMesher {
                                     pos[0] + offset[0],
                                     pos[1] + offset[1],
                                     pos[2] + offset[2]
-                                ).name !== "water"
+                                ).name !== "lava"
                             ) {
                                 this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
                             }
                         }
+                    } else if(this.customRender[this.chunkTerrain.getBlock(...pos).name]){
+                        this.customRender[this.chunkTerrain.getBlock(...pos).name](t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, pos);
                     }
                 }
             }
