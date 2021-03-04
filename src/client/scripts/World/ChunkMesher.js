@@ -403,33 +403,37 @@ class ChunkMesher {
             col4[0] /= ile;
             col4[2] /= ile;
         }
-        if (this.chunkTerrain.getBlock(...pos).transparent) {
+
+        faceVertex.color = [
+            ...col1,
+            ...col3,
+            ...col2,
+            ...col2,
+            ...col3,
+            ...col4];
+
+        this.push(t_positions, t_normals, t_uvs, t_colors,
+            positions, normals, uvs, colors,
+            faceVertex, this.chunkTerrain.getBlock(...pos).transparent);
+
+
+    };
+
+    push(t_positions, t_normals, t_uvs, t_colors,
+         positions, normals, uvs, colors,
+         faceVertex, transparent) {
+        if (transparent) {
             t_positions.push(...faceVertex.pos);
             t_normals.push(...faceVertex.norm);
             t_uvs.push(...faceVertex.uv);
-            t_colors.push(
-                ...col1,
-                ...col3,
-                ...col2,
-                ...col2,
-                ...col3,
-                ...col4
-            );
+            t_colors.push(...faceVertex.color);
         } else {
             positions.push(...faceVertex.pos);
             normals.push(...faceVertex.norm);
             uvs.push(...faceVertex.uv);
-            colors.push(
-                ...col1,
-                ...col3,
-                ...col2,
-                ...col2,
-                ...col3,
-                ...col4
-            );
+            colors.push(...faceVertex.color);
         }
-    };
-
+    }
     aoColor(type) {
         if (type === 0) {
             return [0.9, 0.9, 0.9];
@@ -494,7 +498,7 @@ class ChunkMesher {
                             }
                         }
                     } else if (
-                         this.chunkTerrain.getBlock(...pos).name === "lava"
+                        this.chunkTerrain.getBlock(...pos).name === "lava"
                     ) {
                         for (var l in this.neighbours) {
                             const offset = this.neighbours[l];
@@ -508,7 +512,7 @@ class ChunkMesher {
                                 this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
                             }
                         }
-                    } else if(this.customRender[this.chunkTerrain.getBlock(...pos).name]){
+                    } else if (this.customRender[this.chunkTerrain.getBlock(...pos).name]) {
                         this.customRender[this.chunkTerrain.getBlock(...pos).name](t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, pos);
                     }
                 }
