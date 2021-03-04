@@ -271,6 +271,17 @@ class ChunkMesher {
             type, pos) {
         var block = this.chunkTerrain.getBlock(...pos);
         var faceVertex = this.genBlockFace(type, block, pos);
+        this.ambientOcclusion(t_positions, t_normals, t_uvs, t_colors,
+            positions, normals, uvs, colors, block, pos, faceVertex, type)
+        this.push(t_positions, t_normals, t_uvs, t_colors,
+            positions, normals, uvs, colors,
+            faceVertex, this.chunkTerrain.getBlock(...pos).transparent);
+
+
+    };
+
+    ambientOcclusion(t_positions, t_normals, t_uvs, t_colors,
+                     positions, normals, uvs, colors, block, pos, faceVertex, type) {
         var loaded = {};
         for (var x = -1; x <= 1; x++) {
             for (var y = -1; y <= 1; y++) {
@@ -412,12 +423,7 @@ class ChunkMesher {
             ...col3,
             ...col4];
 
-        this.push(t_positions, t_normals, t_uvs, t_colors,
-            positions, normals, uvs, colors,
-            faceVertex, this.chunkTerrain.getBlock(...pos).transparent);
-
-
-    };
+    }
 
     push(t_positions, t_normals, t_uvs, t_colors,
          positions, normals, uvs, colors,
@@ -434,6 +440,7 @@ class ChunkMesher {
             colors.push(...faceVertex.color);
         }
     }
+
     aoColor(type) {
         if (type === 0) {
             return [0.9, 0.9, 0.9];
