@@ -481,7 +481,7 @@ class ChunkMesher {
                                     pos[0] + offset[0],
                                     pos[1] + offset[1],
                                     pos[2] + offset[2]
-                                ).name === "air"
+                                ).name !== "water"
                             ) {
                                 this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
                             }
