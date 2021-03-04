@@ -1,15 +1,53 @@
 const CustomRender = {
-    water: function(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, pos) {
-        for (var l in this.neighbours) {
-            const offset = this.neighbours[l];
-            if (
-                this.chunkTerrain.getBlock(
+    water: function (t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, pos) {
+        const block = this.chunkTerrain.getBlock(pos[0], pos[1], pos[2]);
+        const state = block.stateId;
+
+        const falling = !!(state & 8);
+        const level = state - 32;
+        if (level == 10) {
+
+            for (const l in this.neighbours) {
+                const offset = this.neighbours[l];
+                if (this.chunkTerrain.getBlock(
                     pos[0] + offset[0],
                     pos[1] + offset[1],
                     pos[2] + offset[2]
-                ).name !== "water"
-            ) {
-                this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
+                ).name !== "water")
+                    this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
+
+            }
+        } else {
+            for (const side in this.neighbours) {
+                const offset = this.neighbours[side];
+                if (this.chunkTerrain.getBlock(
+                    pos[0] + offset[0],
+                    pos[1] + offset[1],
+                    pos[2] + offset[2]
+                ).name === "water")
+                    continue;
+                const faceVertex = this.genBlockFace(side, block, pos);
+                switch (side) {
+                    case "py":
+                        for (let i = 0; i < 6; i++) {
+                            faceVertex.pos[3 * i + 1] -= (level - 1) / 9;
+                        }
+                        break;
+                    case "nx":
+                    case "px":
+                    case "nz":
+                    case "pz":
+                        faceVertex.pos[3 * 2 + 1] -= (level - 1) / 9;
+                        faceVertex.pos[3 * 3 + 1] -= (level - 1) / 9;
+                        faceVertex.pos[3 * 5 + 1] -= (level - 1) / 9;
+
+                        break;
+                }
+                this.ambientOcclusion(t_positions, t_normals, t_uvs, t_colors,
+                    positions, normals, uvs, colors, block, pos, faceVertex, side)
+                this.push(t_positions, t_normals, t_uvs, t_colors,
+                    positions, normals, uvs, colors,
+                    faceVertex, this.chunkTerrain.getBlock(...pos).transparent);
             }
         }
     }
