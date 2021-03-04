@@ -181,8 +181,15 @@ body {
 
 .player_hp {
     position: fixed;
-    bottom: 70px;
+    bottom: 75px;
     left: calc(50vw - 250px);
+    display: block;
+}
+
+.player_food {
+    position: fixed;
+    bottom: 75px;
+    right: calc(50vw - 245px);
     display: block;
 }
 
@@ -239,33 +246,27 @@ body {
 .xp_bar_empty,
 .xp_bar {
     position: fixed;
-    bottom: 61px;
-    left: calc(50vw - 250px);
-    width: 500px;
-    height: 14px;
+    bottom: 65px;
+    left: calc(50vw - 275px);
+    width: 256*3px;
+    height: 3*5px;
     background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
     background-repeat: no-repeat;
     border: 0px;
-    background-size: 703px auto;
+    background-size: 256*3px auto;
     border: none;
 }
 
 .xp_bar_empty {
     image-rendering: pixelated;
-    background-position: 0px -176px;
+    background-position: 0px -3*64px;
 }
 
 .xp_bar {
     image-rendering: pixelated;
-    background-position: 0px -189px;
+    background-position: 0px -3*68px;
 }
 
-.player_food {
-    position: fixed;
-    bottom: 70px;
-    right: calc(50vw - 245px);
-    display: block;
-}
 
 .inv_window {
     z-index: 10;
