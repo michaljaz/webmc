@@ -442,13 +442,13 @@ class ChunkMesher {
                         this.chunkTerrain.getBlock(...pos).boundingBox === "block"
                     ) {
                         for (let l in this.neighbours) {
-                            let m = this.neighbours[l];
+                            let offset = this.neighbours[l];
                             if (this.chunkTerrain.getBlock(...pos).transparent) {
                                 if (
                                     this.chunkTerrain.getBlock(
-                                        pos[0] + m[0],
-                                        pos[1] + m[1],
-                                        pos[2] + m[2]
+                                        pos[0] + offset[0],
+                                        pos[1] + offset[1],
+                                        pos[2] + offset[2]
                                     ).boundingBox !== "block"
                                 ) {
                                     this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
@@ -456,14 +456,14 @@ class ChunkMesher {
                             } else {
                                 if (
                                     this.chunkTerrain.getBlock(
-                                        pos[0] + m[0],
-                                        pos[1] + m[1],
-                                        pos[2] + m[2]
+                                        pos[0] + offset[0],
+                                        pos[1] + offset[1],
+                                        pos[2] + offset[2]
                                     ).boundingBox !== "block" ||
                                     this.chunkTerrain.getBlock(
-                                        pos[0] + m[0],
-                                        pos[1] + m[1],
-                                        pos[2] + m[2]
+                                        pos[0] + offset[0],
+                                        pos[1] + offset[1],
+                                        pos[2] + offset[2]
                                     ).transparent
                                 ) {
                                     this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
@@ -475,12 +475,12 @@ class ChunkMesher {
                         this.chunkTerrain.getBlock(...pos).name === "lava"
                     ) {
                         for (var l in this.neighbours) {
-                            let m = this.neighbours[l];
+                            const offset = this.neighbours[l];
                             if (
                                 this.chunkTerrain.getBlock(
-                                    pos[0] + m[0],
-                                    pos[1] + m[1],
-                                    pos[2] + m[2]
+                                    pos[0] + offset[0],
+                                    pos[1] + offset[1],
+                                    pos[2] + offset[2]
                                 ).name === "air"
                             ) {
                                 this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
