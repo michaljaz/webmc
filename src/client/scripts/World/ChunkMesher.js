@@ -86,7 +86,7 @@ class ChunkMesher {
                         -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
                         -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
                         0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-                        0.5 + pos[0],0.5 + pos[1], 0.5 + pos[2],
+                        0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
                     ],
                     norm: [
                         0, 0, 1,
@@ -108,7 +108,7 @@ class ChunkMesher {
             case "nx":
                 return {
                     pos: [
-                        0.5 + pos[0], -0.5 + pos[1],0.5 + pos[2],
+                        0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
                         0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
                         0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
                         0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
@@ -243,6 +243,182 @@ class ChunkMesher {
         }
     }
 
+    addFace(t_positions, t_normals, t_uvs, t_colors,
+            positions, normals, uvs, colors,
+            type, pos) {
+        var block = this.chunkTerrain.getBlock(...pos);
+        var faceVertex = this.genBlockFace(type, block, pos);
+        var loaded = {};
+        for (var x = -1; x <= 1; x++) {
+            for (var y = -1; y <= 1; y++) {
+                for (var z = -1; z <= 1; z++) {
+                    loaded[`${x}:${y}:${z}`] =
+                        this.chunkTerrain.getBlock(
+                            pos[0] + x,
+                            pos[1] + y,
+                            pos[2] + z
+                        ).boundingBox === "block"
+                            ? 1
+                            : 0;
+                }
+            }
+        }
+        var col1 = this.aoColor(0);
+        var col2 = this.aoColor(0);
+        var col3 = this.aoColor(0);
+        var col4 = this.aoColor(0);
+        if (type === "py") {
+            col1 = this.aoColor(
+                loaded["1:1:-1"] + loaded["0:1:-1"] + loaded["1:1:0"]
+            );
+            col2 = this.aoColor(
+                loaded["1:1:1"] + loaded["0:1:1"] + loaded["1:1:0"]
+            );
+            col3 = this.aoColor(
+                loaded["-1:1:-1"] + loaded["0:1:-1"] + loaded["-1:1:0"]
+            );
+            col4 = this.aoColor(
+                loaded["-1:1:1"] + loaded["0:1:1"] + loaded["-1:1:0"]
+            );
+        }
+        if (type === "ny") {
+            col2 = this.aoColor(
+                loaded["1:-1:-1"] + loaded["0:-1:-1"] + loaded["1:-1:0"]
+            );
+            col1 = this.aoColor(
+                loaded["1:-1:1"] + loaded["0:-1:1"] + loaded["1:-1:0"]
+            );
+            col4 = this.aoColor(
+                loaded["-1:-1:-1"] + loaded["0:-1:-1"] + loaded["-1:-1:0"]
+            );
+            col3 = this.aoColor(
+                loaded["-1:-1:1"] + loaded["0:-1:1"] + loaded["-1:-1:0"]
+            );
+        }
+        if (type === "px") {
+            col1 = this.aoColor(
+                loaded["-1:-1:0"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
+            );
+            col2 = this.aoColor(
+                loaded["-1:1:0"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
+            );
+            col3 = this.aoColor(
+                loaded["-1:-1:0"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
+            );
+            col4 = this.aoColor(
+                loaded["-1:1:0"] + loaded["-1:1:1"] + loaded["-1:0:1"]
+            );
+        }
+        if (type === "nx") {
+            col3 = this.aoColor(
+                loaded["1:-1:0"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
+            );
+            col4 = this.aoColor(
+                loaded["1:1:0"] + loaded["1:1:-1"] + loaded["1:0:-1"]
+            );
+            col1 = this.aoColor(
+                loaded["1:-1:0"] + loaded["1:-1:1"] + loaded["1:0:1"]
+            );
+            col2 = this.aoColor(
+                loaded["1:1:0"] + loaded["1:1:1"] + loaded["1:0:1"]
+            );
+        }
+        if (type === "pz") {
+            col1 = this.aoColor(
+                loaded["0:-1:1"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
+            );
+            col2 = this.aoColor(
+                loaded["0:1:1"] + loaded["-1:1:1"] + loaded["-1:0:1"]
+            );
+            col3 = this.aoColor(
+                loaded["0:-1:1"] + loaded["1:-1:1"] + loaded["1:0:1"]
+            );
+            col4 = this.aoColor(
+                loaded["0:1:1"] + loaded["1:1:1"] + loaded["1:0:1"]
+            );
+        }
+        if (type === "nz") {
+            col3 = this.aoColor(
+                loaded["0:-1:-1"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
+            );
+            col4 = this.aoColor(
+                loaded["0:1:-1"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
+            );
+            col1 = this.aoColor(
+                loaded["0:-1:-1"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
+            );
+            col2 = this.aoColor(
+                loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]
+            );
+        }
+        var ile = 4;
+        if (block.name === "water") {
+            col1[0] /= ile;
+            col1[1] /= ile;
+            col2[0] /= ile;
+            col2[1] /= ile;
+            col3[0] /= ile;
+            col3[1] /= ile;
+            col4[0] /= ile;
+            col4[1] /= ile;
+        } else if (block.name === "grass_block" && type === "py") {
+            col1[0] /= ile;
+            col1[2] /= ile;
+            col2[0] /= ile;
+            col2[2] /= ile;
+            col3[0] /= ile;
+            col3[2] /= ile;
+            col4[0] /= ile;
+            col4[2] /= ile;
+        } else if (block.name.includes("leaves")) {
+            col1[0] /= ile;
+            col1[2] /= ile;
+            col2[0] /= ile;
+            col2[2] /= ile;
+            col3[0] /= ile;
+            col3[2] /= ile;
+            col4[0] /= ile;
+            col4[2] /= ile;
+        }
+        if (this.chunkTerrain.getBlock(...pos).transparent) {
+            t_positions.push(...faceVertex.pos);
+            t_normals.push(...faceVertex.norm);
+            t_uvs.push(...faceVertex.uv);
+            t_colors.push(
+                ...col1,
+                ...col3,
+                ...col2,
+                ...col2,
+                ...col3,
+                ...col4
+            );
+        } else {
+            positions.push(...faceVertex.pos);
+            normals.push(...faceVertex.norm);
+            uvs.push(...faceVertex.uv);
+            colors.push(
+                ...col1,
+                ...col3,
+                ...col2,
+                ...col2,
+                ...col3,
+                ...col4
+            );
+        }
+    };
+
+    aoColor(type) {
+        if (type === 0) {
+            return [0.9, 0.9, 0.9];
+        } else if (type === 1) {
+            return [0.7, 0.7, 0.7];
+        } else if (type === 2) {
+            return [0.5, 0.5, 0.5];
+        } else {
+            return [0.3, 0.3, 0.3];
+        }
+    };
+
     genChunkGeo(cellX, cellY, cellZ) {
         var positions = [];
         var normals = [];
@@ -252,178 +428,8 @@ class ChunkMesher {
         var t_normals = [];
         var t_uvs = [];
         var t_colors = [];
-        var aoColor = function (type) {
-            if (type === 0) {
-                return [0.9, 0.9, 0.9];
-            } else if (type === 1) {
-                return [0.7, 0.7, 0.7];
-            } else if (type === 2) {
-                return [0.5, 0.5, 0.5];
-            } else {
-                return [0.3, 0.3, 0.3];
-            }
-        };
-        var addFace = (type, pos) => {
-            var block = this.chunkTerrain.getBlock(...pos);
-            var faceVertex = this.genBlockFace(type, block, pos);
-            var loaded = {};
-            for (var x = -1; x <= 1; x++) {
-                for (var y = -1; y <= 1; y++) {
-                    for (var z = -1; z <= 1; z++) {
-                        loaded[`${x}:${y}:${z}`] =
-                            this.chunkTerrain.getBlock(
-                                pos[0] + x,
-                                pos[1] + y,
-                                pos[2] + z
-                            ).boundingBox === "block"
-                                ? 1
-                                : 0;
-                    }
-                }
-            }
-            var col1 = aoColor(0);
-            var col2 = aoColor(0);
-            var col3 = aoColor(0);
-            var col4 = aoColor(0);
-            if (type === "py") {
-                col1 = aoColor(
-                    loaded["1:1:-1"] + loaded["0:1:-1"] + loaded["1:1:0"]
-                );
-                col2 = aoColor(
-                    loaded["1:1:1"] + loaded["0:1:1"] + loaded["1:1:0"]
-                );
-                col3 = aoColor(
-                    loaded["-1:1:-1"] + loaded["0:1:-1"] + loaded["-1:1:0"]
-                );
-                col4 = aoColor(
-                    loaded["-1:1:1"] + loaded["0:1:1"] + loaded["-1:1:0"]
-                );
-            }
-            if (type === "ny") {
-                col2 = aoColor(
-                    loaded["1:-1:-1"] + loaded["0:-1:-1"] + loaded["1:-1:0"]
-                );
-                col1 = aoColor(
-                    loaded["1:-1:1"] + loaded["0:-1:1"] + loaded["1:-1:0"]
-                );
-                col4 = aoColor(
-                    loaded["-1:-1:-1"] + loaded["0:-1:-1"] + loaded["-1:-1:0"]
-                );
-                col3 = aoColor(
-                    loaded["-1:-1:1"] + loaded["0:-1:1"] + loaded["-1:-1:0"]
-                );
-            }
-            if (type === "px") {
-                col1 = aoColor(
-                    loaded["-1:-1:0"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
-                );
-                col2 = aoColor(
-                    loaded["-1:1:0"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
-                );
-                col3 = aoColor(
-                    loaded["-1:-1:0"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
-                );
-                col4 = aoColor(
-                    loaded["-1:1:0"] + loaded["-1:1:1"] + loaded["-1:0:1"]
-                );
-            }
-            if (type === "nx") {
-                col3 = aoColor(
-                    loaded["1:-1:0"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
-                );
-                col4 = aoColor(
-                    loaded["1:1:0"] + loaded["1:1:-1"] + loaded["1:0:-1"]
-                );
-                col1 = aoColor(
-                    loaded["1:-1:0"] + loaded["1:-1:1"] + loaded["1:0:1"]
-                );
-                col2 = aoColor(
-                    loaded["1:1:0"] + loaded["1:1:1"] + loaded["1:0:1"]
-                );
-            }
-            if (type === "pz") {
-                col1 = aoColor(
-                    loaded["0:-1:1"] + loaded["-1:-1:1"] + loaded["-1:0:1"]
-                );
-                col2 = aoColor(
-                    loaded["0:1:1"] + loaded["-1:1:1"] + loaded["-1:0:1"]
-                );
-                col3 = aoColor(
-                    loaded["0:-1:1"] + loaded["1:-1:1"] + loaded["1:0:1"]
-                );
-                col4 = aoColor(
-                    loaded["0:1:1"] + loaded["1:1:1"] + loaded["1:0:1"]
-                );
-            }
-            if (type === "nz") {
-                col3 = aoColor(
-                    loaded["0:-1:-1"] + loaded["-1:-1:-1"] + loaded["-1:0:-1"]
-                );
-                col4 = aoColor(
-                    loaded["0:1:-1"] + loaded["-1:1:-1"] + loaded["-1:0:-1"]
-                );
-                col1 = aoColor(
-                    loaded["0:-1:-1"] + loaded["1:-1:-1"] + loaded["1:0:-1"]
-                );
-                col2 = aoColor(
-                    loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]
-                );
-            }
-            var ile = 4;
-            if (block.name === "water") {
-                col1[0] /= ile;
-                col1[1] /= ile;
-                col2[0] /= ile;
-                col2[1] /= ile;
-                col3[0] /= ile;
-                col3[1] /= ile;
-                col4[0] /= ile;
-                col4[1] /= ile;
-            } else if (block.name === "grass_block" && type === "py") {
-                col1[0] /= ile;
-                col1[2] /= ile;
-                col2[0] /= ile;
-                col2[2] /= ile;
-                col3[0] /= ile;
-                col3[2] /= ile;
-                col4[0] /= ile;
-                col4[2] /= ile;
-            } else if (block.name.includes("leaves")) {
-                col1[0] /= ile;
-                col1[2] /= ile;
-                col2[0] /= ile;
-                col2[2] /= ile;
-                col3[0] /= ile;
-                col3[2] /= ile;
-                col4[0] /= ile;
-                col4[2] /= ile;
-            }
-            if (this.chunkTerrain.getBlock(...pos).transparent) {
-                t_positions.push(...faceVertex.pos);
-                t_normals.push(...faceVertex.norm);
-                t_uvs.push(...faceVertex.uv);
-                t_colors.push(
-                    ...col1,
-                    ...col3,
-                    ...col2,
-                    ...col2,
-                    ...col3,
-                    ...col4
-                );
-            } else {
-                positions.push(...faceVertex.pos);
-                normals.push(...faceVertex.norm);
-                uvs.push(...faceVertex.uv);
-                colors.push(
-                    ...col1,
-                    ...col3,
-                    ...col2,
-                    ...col2,
-                    ...col3,
-                    ...col4
-                );
-            }
-        };
+
+
         for (var i = 0; i < this.cellSize; i++) {
             for (var j = 0; j < this.cellSize; j++) {
                 for (var k = 0; k < this.cellSize; k++) {
@@ -433,14 +439,11 @@ class ChunkMesher {
                         cellZ * this.cellSize + k,
                     ];
                     if (
-                        this.chunkTerrain.getBlock(...pos).boundingBox ===
-                        "block"
+                        this.chunkTerrain.getBlock(...pos).boundingBox === "block"
                     ) {
                         for (let l in this.neighbours) {
                             let m = this.neighbours[l];
-                            if (
-                                this.chunkTerrain.getBlock(...pos).transparent
-                            ) {
+                            if (this.chunkTerrain.getBlock(...pos).transparent) {
                                 if (
                                     this.chunkTerrain.getBlock(
                                         pos[0] + m[0],
@@ -448,7 +451,7 @@ class ChunkMesher {
                                         pos[2] + m[2]
                                     ).boundingBox !== "block"
                                 ) {
-                                    addFace(l, pos);
+                                    this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
                                 }
                             } else {
                                 if (
@@ -463,7 +466,7 @@ class ChunkMesher {
                                         pos[2] + m[2]
                                     ).transparent
                                 ) {
-                                    addFace(l, pos);
+                                    this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
                                 }
                             }
                         }
@@ -480,7 +483,7 @@ class ChunkMesher {
                                     pos[2] + m[2]
                                 ).name === "air"
                             ) {
-                                addFace(l, pos);
+                                this.addFace(t_positions, t_normals, t_uvs, t_colors, positions, normals, uvs, colors, l, pos);
                             }
                         }
                     }
@@ -500,4 +503,4 @@ class ChunkMesher {
     }
 }
 
-export { ChunkMesher };
+export {ChunkMesher};
