@@ -4,7 +4,7 @@ class Chat {
         this.chatDiv = document.querySelector(".chat");
         this.listen();
         this.history = [""];
-        this.histState = 0   ;
+        this.histState = 0;
     }
 
     chatGoBack() {
