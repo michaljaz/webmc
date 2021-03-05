@@ -120,6 +120,7 @@ class AnimatedTextureAtlas {
             map: null,
             vertexColors: true,
             transparent: true,
+            alphaTest: 0.1,
         });
         this.atlasCreator = new TextureAtlasCreator({
             textureX: this.game.al.get("blocksAtlasFull"),

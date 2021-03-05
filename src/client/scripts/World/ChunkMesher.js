@@ -152,6 +152,153 @@ const CustomRender = {
             }
         }
     },
+    grass: function (
+        t_positions,
+        t_normals,
+        t_uvs,
+        t_colors,
+        positions,
+        normals,
+        uvs,
+        colors,
+        pos
+    ) {
+        const uv = this.getUV("grass");
+        console.log(uv);
+        // prettier-ignore
+        const faceVertex = {
+            pos: [
+                -0.4 + pos[0], -0.5 + pos[1], 0.4 + pos[2],
+                0.4 + pos[0], -0.5 + pos[1], -0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], 0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], 0.4 + pos[2],
+                0.4 + pos[0], -0.5 + pos[1], -0.4 + pos[2],
+                0.4 + pos[0], 0.4 + pos[1], -0.4 + pos[2],
+
+                -0.4 + pos[0], -0.5 + pos[1], -0.4 + pos[2],
+                0.4 + pos[0], -0.5 + pos[1], 0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], -0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], -0.4 + pos[2],
+                0.4 + pos[0], -0.5 + pos[1], 0.4 + pos[2],
+                0.4 + pos[0], 0.4 + pos[1], 0.4 + pos[2],
+
+                0.4 + pos[0], -0.5 + pos[1], -0.4 + pos[2],
+                -0.4 + pos[0], -0.5 + pos[1], 0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], 0.4 + pos[2],
+
+                0.4 + pos[0], -0.5 + pos[1], -0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], 0.4 + pos[2],
+                0.4 + pos[0], 0.4 + pos[1], -0.4 + pos[2],
+
+                0.4 + pos[0], -0.5 + pos[1], 0.4 + pos[2],
+                -0.4 + pos[0], -0.5 + pos[1], -0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], -0.4 + pos[2],
+
+                0.4 + pos[0], -0.5 + pos[1], 0.4 + pos[2],
+                -0.4 + pos[0], 0.4 + pos[1], -0.4 + pos[2],
+                0.4 + pos[0], 0.4 + pos[1], 0.4 + pos[2],
+            ],
+            norm: [
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+                0, 0, 1,
+            ],
+            uv: [
+                ...uv[0],
+                ...uv[2],
+                ...uv[1],
+
+                ...uv[1],
+                ...uv[2],
+                ...uv[3],
+
+                ...uv[0],
+                ...uv[2],
+                ...uv[1],
+
+                ...uv[1],
+                ...uv[2],
+                ...uv[3],
+
+                ...uv[2],
+                ...uv[0],
+                ...uv[1],
+
+                ...uv[2],
+                ...uv[1],
+                ...uv[3],
+
+                ...uv[2],
+                ...uv[0],
+                ...uv[1],
+
+                ...uv[2],
+                ...uv[1],
+                ...uv[3],
+            ],
+            color: [
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+                0.1, 1, 0.1,
+            ]
+        }
+
+        this.push(
+            t_positions,
+            t_normals,
+            t_uvs,
+            t_colors,
+            positions,
+            normals,
+            uvs,
+            colors,
+            faceVertex,
+            true
+        );
+    },
 };
 
 class ChunkMesher {
@@ -175,6 +322,23 @@ class ChunkMesher {
         for (const funcName in CustomRender) {
             this.customRender[funcName] = CustomRender[funcName].bind(this);
         }
+    }
+
+    getUV(name) {
+        let { x: toxX, y: toxY } = this.blocksMapping[name];
+        console.log(toxX);
+        toxX -= 1;
+        toxY -= 1;
+        const x1 = this.q * toxX;
+        const y1 = 1 - this.q * toxY - this.q;
+        const x2 = this.q * toxX + this.q;
+        const y2 = 1 - this.q * toxY;
+        return [
+            [x1, y1],
+            [x1, y2],
+            [x2, y1],
+            [x2, y2],
+        ];
     }
 
     getUvForFace(block, type) {
