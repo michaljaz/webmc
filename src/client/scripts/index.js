@@ -100,10 +100,15 @@ class Game {
             this.chat.log(msg);
         });
         this.socket.on("kicked", (reason) => {
+            document.exitPointerLock();
             console.log(reason);
+            reason = JSON.parse(reason);
             swal({
                 title: "You've been kicked!",
-                text: JSON.parse(reason).extra[0].text,
+                text:
+                    reason.extra !== undefined
+                        ? reason.extra[0].text
+                        : reason.text,
                 icon: "error",
                 button: "Rejoin",
             }).then(function () {
