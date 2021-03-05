@@ -5,6 +5,10 @@
     src: url(../assets/fonts/MinecraftRegular-Bmg3.otf);
 }
 
+.dg.ac {
+    z-index: 98;
+}
+
 body {
     margin: 0;
     background: black;
@@ -195,52 +199,45 @@ body {
 
 :root {
     --mn: 1;
-    --box: calc(9*3)px;
-    --st: calc(9*3)px;
+    --box: calc(9 * 3) px;
+    --st: calc(9 * 3) px;
 }
 
 .hp,
 .food {
-    width: calc(9*3px);
-    height: calc(9*3px);
+    width: calc(9 * 3px);
+    height: calc(9 * 3px);
     margin-right: -10px;
-    background-image:
-            url("../../assets/pack/assets/minecraft/textures/gui/icons.png"),
-            url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
+    background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png"),
+        url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
     background-repeat: no-repeat, no-repeat;
-    background-size: 256*3px auto, 256*3px auto;
+    background-size: 256 * 3px auto, 256 * 3px auto;
     display: inline-block;
     image-rendering: pixelated;
 }
 
 .hp.full {
-  background-position:  -3*52px 0px,
-                        -3*16px 0px;
+    background-position: -3 * 52px 0px, -3 * 16px 0px;
 }
 
 .hp.half {
-  background-position:  -3*61px 0px,
-                        -3*16px 0px;
+    background-position: -3 * 61px 0px, -3 * 16px 0px;
 }
 
 .hp.empty {
-  background-position:  -3*16px 0px,
-                        -3*16px 0px;
+    background-position: -3 * 16px 0px, -3 * 16px 0px;
 }
 
 .food.full {
-  background-position:  -3*52px -3*27px,
-                        -3*16px -3*27px;
+    background-position: -3 * 52px -3 * 27px, -3 * 16px -3 * 27px;
 }
 
 .food.half {
-  background-position:  -3*61px -3*27px,
-                        -3*16px -3*27px;
+    background-position: -3 * 61px -3 * 27px, -3 * 16px -3 * 27px;
 }
 
 .food.empty {
-  background-position:  -3*16px -3*27px,
-                        -3*16px -3*27px;
+    background-position: -3 * 16px -3 * 27px, -3 * 16px -3 * 27px;
 }
 
 .xp_bar_empty,
@@ -248,25 +245,24 @@ body {
     position: fixed;
     bottom: 65px;
     left: calc(50vw - 275px);
-    width: 256*3px;
-    height: 3*5px;
+    width: 256 * 3px;
+    height: 3 * 5px;
     background-image: url("../../assets/pack/assets/minecraft/textures/gui/icons.png");
     background-repeat: no-repeat;
     border: 0px;
-    background-size: 256*3px auto;
+    background-size: 256 * 3px auto;
     border: none;
 }
 
 .xp_bar_empty {
     image-rendering: pixelated;
-    background-position: 0px -3*64px;
+    background-position: 0px -3 * 64px;
 }
 
 .xp_bar {
     image-rendering: pixelated;
-    background-position: 0px -3*68px;
+    background-position: 0px -3 * 68px;
 }
-
 
 .inv_window {
     z-index: 10;
