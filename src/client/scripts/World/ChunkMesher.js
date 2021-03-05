@@ -50,19 +50,76 @@ const CustomRender = {
                 )
                     continue;
                 const faceVertex = this.genBlockFace(side, block, pos);
+                let waterLevels = [];
+                for (let x = -1; x <= 1; x++)
+                    for (let z = -1; z <= 1; z++) {
+                        let block = this.chunkTerrain.getBlock(
+                            pos[0] + x,
+                            pos[1],
+                            pos[2] + z
+                        );
+                        if (block.name === "water")
+                            if (block.stateId - 32 === 10) waterLevels.push(0);
+                            else waterLevels.push((block.stateId - 33) / 10);
+                        else if (block.boundingBox === "block")
+                            waterLevels.push(10);
+                        else waterLevels.push(1);
+                    }
+                let waterLevelAverages = [
+                    Math.min(
+                        waterLevels[0],
+                        waterLevels[1],
+                        waterLevels[3],
+                        waterLevels[4]
+                    ),
+                    Math.min(
+                        waterLevels[1],
+                        waterLevels[2],
+                        waterLevels[4],
+                        waterLevels[5]
+                    ),
+                    Math.min(
+                        waterLevels[4],
+                        waterLevels[5],
+                        waterLevels[7],
+                        waterLevels[8]
+                    ),
+                    Math.min(
+                        waterLevels[3],
+                        waterLevels[4],
+                        waterLevels[6],
+                        waterLevels[7]
+                    ),
+                ];
+
                 switch (side) {
                     case "py":
-                        for (let i = 0; i < 6; i++) {
-                            faceVertex.pos[3 * i + 1] -= (level - 1) / 9;
-                        }
+                        faceVertex.pos[3 * 0 + 1] -= waterLevelAverages[3];
+                        faceVertex.pos[3 * 1 + 1] -= waterLevelAverages[0];
+                        faceVertex.pos[3 * 2 + 1] -= waterLevelAverages[2];
+                        faceVertex.pos[3 * 3 + 1] -= waterLevelAverages[2];
+                        faceVertex.pos[3 * 4 + 1] -= waterLevelAverages[0];
+                        faceVertex.pos[3 * 5 + 1] -= waterLevelAverages[1];
                         break;
                     case "nx":
+                        faceVertex.pos[3 * 2 + 1] -= waterLevelAverages[2];
+                        faceVertex.pos[3 * 3 + 1] -= waterLevelAverages[2];
+                        faceVertex.pos[3 * 5 + 1] -= waterLevelAverages[3];
+                        break;
                     case "px":
+                        faceVertex.pos[3 * 2 + 1] -= waterLevelAverages[0];
+                        faceVertex.pos[3 * 3 + 1] -= waterLevelAverages[0];
+                        faceVertex.pos[3 * 5 + 1] -= waterLevelAverages[1];
+                        break;
                     case "nz":
+                        faceVertex.pos[3 * 2 + 1] -= waterLevelAverages[3];
+                        faceVertex.pos[3 * 3 + 1] -= waterLevelAverages[3];
+                        faceVertex.pos[3 * 5 + 1] -= waterLevelAverages[0];
+                        break;
                     case "pz":
-                        faceVertex.pos[3 * 2 + 1] -= (level - 1) / 9;
-                        faceVertex.pos[3 * 3 + 1] -= (level - 1) / 9;
-                        faceVertex.pos[3 * 5 + 1] -= (level - 1) / 9;
+                        faceVertex.pos[3 * 2 + 1] -= waterLevelAverages[1];
+                        faceVertex.pos[3 * 3 + 1] -= waterLevelAverages[1];
+                        faceVertex.pos[3 * 5 + 1] -= waterLevelAverages[2];
 
                         break;
                 }
