@@ -6,7 +6,6 @@ class DistanceBasedFog {
         this.view = new THREE.Vector3();
         this.farnear = new THREE.Vector2();
         this.color = new THREE.Vector4();
-
     }
 
     update() {

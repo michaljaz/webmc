@@ -20,6 +20,7 @@ class AssetLoader {
             var assetsLoaded = 0;
 
             for (const assetName in assets) {
+                // eslint-disable-next-line no-prototype-builtins
                 if (!assets.hasOwnProperty(assetName)) continue;
 
                 let asset = assets[assetName];
