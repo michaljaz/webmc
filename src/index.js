@@ -11,7 +11,6 @@ var convert = new Convert();
 var helmet = require("helmet");
 var compression = require("compression");
 const WebSocket = require("ws");
-const qs = require("qs");
 const { encode, decode } = require("@msgpack/msgpack");
 var port = process.env.PORT || 8080;
 
@@ -47,25 +46,26 @@ server.listen(port, function () {
 var botByNick = new Map();
 
 wss.on("connection", (socket, req) => {
+    var query = new URLSearchParams(req.url.substr(2, req.url.length));
     const emit = (type, ...data) => {
         socket.send(encode([type, ...data]));
     };
-    const query = qs.parse(req.url.substr(1), { ignoreQueryPrefix: true });
 
-    if (botByNick.get(query.nick) !== undefined) {
+    if (botByNick.get(query.get("nick")) !== undefined) {
         emit("alreadyPlaying");
         return;
     }
-    console.log(`[\x1b[32m+\x1b[0m] ${query.nick}`);
+    console.log(`[\x1b[32m+\x1b[0m] ${query.get("nick")}`);
     var heldItem = null;
     var bot = mineflayer.createBot({
-        host: query.server,
-        port: query.port,
-        username: query.nick,
+        host: query.get("server"),
+        port: query.get("port"),
+        username: query.get("nick"),
         version: version,
-        password: query.premium === "true" ? query.password : undefined,
+        password:
+            query.get("premium") === "true" ? query.get("password") : undefined,
     });
-    botByNick.set(query.nick, bot);
+    botByNick.set(query.get("nick"), bot);
     bot._client.on("map_chunk", function (packet) {
         var cell = new Chunk();
         cell.load(packet.chunkData, packet.bitMap, true, true);
@@ -222,8 +222,8 @@ wss.on("connection", (socket, req) => {
         socket.on("close", () => {
             try {
                 clearInterval(interval);
-                console.log(`[\x1b[31m-\x1b[0m] ${query.nick}`);
-                botByNick.delete(query.nick);
+                console.log(`[\x1b[31m-\x1b[0m] ${query.get("nick")}`);
+                botByNick.delete(query.get("nick"));
                 bot.end();
             } catch (error) {}
         });
