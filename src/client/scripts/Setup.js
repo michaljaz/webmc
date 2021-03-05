@@ -75,6 +75,7 @@ async function Setup(game) {
                 .add(game.params, "chunkdist", 0, 10, 1)
                 .name("Render distance")
                 .listen();
+            gui.add(game, "speed", 1.3, 5).name("sprint speed").listen();
             chunkDist.onChange(function (val) {
                 game.distanceBasedFog.farnear.x = (val - 1) * 16;
                 game.distanceBasedFog.farnear.y = val * 16;

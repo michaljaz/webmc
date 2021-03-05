@@ -158,6 +158,9 @@ wss.on("connection", (socket, req) => {
     const handlers = new Map();
 
     bot.once("spawn", function () {
+        handlers.set("sprintSpeed", (speed) => {
+            bot.physics.sprintSpeed = speed;
+        });
         handlers.set("fly", function (toggle) {
             if (toggle) {
                 bot.creative.startFlying();

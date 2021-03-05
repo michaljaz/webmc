@@ -95,6 +95,7 @@ class EventHandler {
                 this.controls[z.code] !== undefined &&
                 this.gameState === "gameLock"
             ) {
+                this.game.socket.emit("sprintSpeed", this.game.speed);
                 this.game.socket.emit("move", this.controls[z.code], true);
                 switch (this.controls[z.code]) {
                     case "sprint":

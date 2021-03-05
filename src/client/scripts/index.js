@@ -20,6 +20,7 @@ class Game {
             normal: 70,
             sprint: 80,
         };
+        this.speed = 1.3;
         this.al = new AssetLoader();
         this.toxelSize = 27;
         this.dimension = null;
