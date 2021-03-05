@@ -216,13 +216,13 @@ wss.on("connection", (socket, req) => {
             bot.stopDigging();
         });
 
-        socket.onclose = () => {
+        socket.on("close", () => {
             try {
                 clearInterval(interval);
                 console.log(`[\x1b[31m-\x1b[0m] ${query.nick}`);
                 bot.end();
             } catch (error) {}
-        };
+        });
 
         socket.on("message", (message) => {
             try {

@@ -1,4 +1,5 @@
 import { encode, decode, decodeAsync } from "@msgpack/msgpack";
+import swal from "sweetalert";
 
 class Socket {
     constructor(game, url) {
@@ -14,6 +15,20 @@ class Socket {
             } catch (err) {
                 console.log(err);
             }
+        };
+        this.ws.onclose = () => {
+            console.log("Lost connection!");
+            swal({
+                title: "You have lost connection!",
+                text: "Websocket connection have been closed!",
+                icon: "error",
+                button: "Rejoin",
+            }).then(function () {
+                document.location.reload();
+            });
+        };
+        this.ws.onerror = (err) => {
+            console.log(err);
         };
     }
     emit(type, ...data) {
