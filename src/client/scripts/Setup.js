@@ -43,10 +43,15 @@ async function Setup(game) {
         game.distanceBasedFog = new DistanceBasedFog(game);
         UrlParams(game, (password) => {
             console.warn(gpuInfo());
-
+            var prefix;
+            if (document.location.protocol === "https:") {
+                prefix = "wss";
+            } else {
+                prefix = "ws";
+            }
             game.socket = new Socket(
                 game,
-                `ws://${document.location.host}?nick=${game.nick}&server=${game.server}&port=${game.serverPort}&password=${password}&premium=${game.premium}`
+                `${prefix}://${document.location.host}?nick=${game.nick}&server=${game.server}&port=${game.serverPort}&password=${password}&premium=${game.premium}`
             );
 
             game.pii = new PlayerInInventory(game);

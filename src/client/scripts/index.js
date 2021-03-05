@@ -39,6 +39,16 @@ class Game {
     async init() {
         await this.al.init();
         await Setup(this);
+        this.socket.on("alreadyPlaying", () => {
+            swal({
+                title: "Player already is in server",
+                text: "Try later...",
+                icon: "error",
+                button: "Rejoin",
+            }).then(function () {
+                document.location.reload();
+            });
+        });
         this.socket.on("connect", () => {
             console.log("Connected to server!");
             $(".loadingText").text(`Connecting to ${this.server}`);
