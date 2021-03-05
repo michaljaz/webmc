@@ -193,13 +193,6 @@ wss.on("connection", (socket, req) => {
         handlers.set("rotate", function (data) {
             bot.look(...data);
         });
-        handlers.set("disconnect", function () {
-            try {
-                clearInterval(interval);
-                console.log(`[\x1b[31m-\x1b[0m] ${query.nick}`);
-                bot.end();
-            } catch (error) {}
-        });
         handlers.set("dig", function (pos) {
             var block = bot.blockAt(vec3(pos[0], pos[1] - 16, pos[2]));
             if (block !== null) {
@@ -222,6 +215,14 @@ wss.on("connection", (socket, req) => {
         handlers.set("stopDigging", function () {
             bot.stopDigging();
         });
+
+        socket.onclose = () => {
+            try {
+                clearInterval(interval);
+                console.log(`[\x1b[31m-\x1b[0m] ${query.nick}`);
+                bot.end();
+            } catch (error) {}
+        };
 
         socket.on("message", (message) => {
             try {

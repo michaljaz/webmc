@@ -2,7 +2,6 @@ import * as THREE from "three";
 import TWEEN from "@tweenjs/tween.js";
 import Stats from "stats-js";
 import * as dat from "dat.gui";
-import { encode, decode, decodeAsync } from "@msgpack/msgpack";
 import { DistanceBasedFog } from "./DistanceBasedFog.js";
 import { UrlParams } from "./UrlParams.js";
 import { gpuInfo } from "./gpuInfo.js";
@@ -14,14 +13,7 @@ import { PlayerInInventory } from "./PlayerInInventory.js";
 import { BlockBreak } from "./BlockBreak.js";
 import { BlockPlace } from "./BlockPlace.js";
 import { EventHandler } from "./EventHandler.js";
-
-async function decodeFromBlob(blob) {
-    if (blob.stream) {
-        return await decodeAsync(blob.stream());
-    }
-
-    return decode(await blob.arrayBuffer());
-}
+import { Socket } from "./Socket.js";
 
 async function Setup(game) {
     return new Promise((resolve) => {
@@ -51,38 +43,11 @@ async function Setup(game) {
         game.distanceBasedFog = new DistanceBasedFog(game);
         UrlParams(game, (password) => {
             console.warn(gpuInfo());
-            const ws = new WebSocket(
-                `ws://localhost:8080?nick=${game.nick}&server=${game.server}&port=${game.serverPort}&password=${password}&premium=${game.premium}`
+
+            game.socket = new Socket(
+                game,
+                `ws://${document.location.host}?nick=${game.nick}&server=${game.server}&port=${game.serverPort}&password=${password}&premium=${game.premium}`
             );
-
-            const handlers = new Map();
-
-            ws.emit = (type, ...data) => {
-                ws.send(
-                    encode([
-                        type,
-                        ...data.filter((d) => typeof d !== "function"), // Temp solution
-                    ])
-                );
-            };
-
-            ws.on = (type, handler) => {
-                handlers.set(type, handler);
-            };
-
-            ws.onmessage = async (message) => {
-                try {
-                    const [type, ...data] = await decodeFromBlob(message.data);
-
-                    const handler = handlers.get(type);
-
-                    handler && handler(...data);
-                } catch (err) {
-                    console.log(err);
-                }
-            };
-
-            game.socket = ws;
 
             game.pii = new PlayerInInventory(game);
             game.bb = new BlockBreak(game);
@@ -122,7 +87,7 @@ async function Setup(game) {
                     .start();
             };
 
-            ws.onopen = () => {
+            game.socket.ws.onopen = () => {
                 game.eh = new EventHandler(game);
                 resolve();
             };
