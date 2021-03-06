@@ -59,7 +59,8 @@ wss.on("connection", (socket, req) => {
     var heldItem = null;
     var bot = mineflayer.createBot({
         host: query.get("server"),
-        port: query.get("port"),
+        port:
+            query.get("port") !== "null" ? query.get("port") : null,
         username: query.get("nick"),
         version: version,
         password:
