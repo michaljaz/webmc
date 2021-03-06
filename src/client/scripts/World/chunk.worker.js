@@ -23,11 +23,7 @@ class TerrainManager {
             [0, 0, -1],
             [0, 0, 1],
         ];
-        this.states = {
-            needsUpdate: 0,
-            disposed: 1,
-        };
-        this.chunkState = {};
+        this.chunkNeedsUpdate = {};
         this.generatedChunks = {};
         this.renderRadius = 10;
         this.playerChunk = [0, 0, 0];
@@ -50,7 +46,7 @@ class TerrainManager {
                 data[2]
             )
         );
-        this.chunkState[chunkId] = this.states.needsUpdate;
+        this.chunkNeedsUpdate[chunkId] = true;
         for (var l = 0; l < this.neighbours.length; l++) {
             var nei = this.neighbours[l];
             var neiChunkId = this.chunkTerrain.vecToStr(
@@ -60,14 +56,14 @@ class TerrainManager {
                     data[2] + nei[2]
                 )
             );
-            this.chunkState[neiChunkId] = this.states.needsUpdate;
+            this.chunkNeedsUpdate[neiChunkId] = true;
         }
     }
 
     setChunk(data) {
         this.chunkTerrain.setChunk(data[0], data[1], data[2], data[3]);
         var chunkId = terrain.chunkTerrain.vecToStr(data[0], data[1], data[2]);
-        this.chunkState[chunkId] = this.states.needsUpdate;
+        this.chunkNeedsUpdate[chunkId] = true;
         for (var l = 0; l < this.neighbours.length; l++) {
             var nei = this.neighbours[l];
             var neiChunkId = this.chunkTerrain.vecToStr(
@@ -75,32 +71,15 @@ class TerrainManager {
                 data[1] + nei[1],
                 data[2] + nei[2]
             );
-            this.chunkState[neiChunkId] = this.states.needsUpdate;
+            this.chunkNeedsUpdate[neiChunkId] = true;
         }
-    }
-
-    sortQueue() {
-        this.chunkQueue.sort((a, b) => {
-            var chunkA = vec3(...this.chunkTerrain.strToVec(a));
-            var chunkB = vec3(...this.chunkTerrain.strToVec(b));
-            var chunkP = vec3(...this.playerChunk);
-            var roz1 = chunkP.distanceTo(chunkA);
-            var roz2 = chunkP.distanceTo(chunkB);
-            if (roz1 < roz2) {
-                return -1;
-            } else if (roz1 > roz2) {
-                return 1;
-            } else {
-                return 0;
-            }
-        });
     }
 
     genNearestChunk() {
         var nearestChunkId = "";
         var nearestDistance = -1;
         var isNearest = false;
-        for (var chunkId in this.chunkState) {
+        for (var chunkId in this.chunkNeedsUpdate) {
             var dist = this.distance(chunkId);
             if (
                 (nearestDistance === -1 || nearestDistance > dist) &&
@@ -122,7 +101,7 @@ class TerrainManager {
                     p: performance.now(),
                 },
             });
-            delete this.chunkState[nearestChunkId];
+            delete this.chunkNeedsUpdate[nearestChunkId];
         }
     }
 
@@ -131,7 +110,7 @@ class TerrainManager {
             var dist = this.distance(chunkId);
             if (dist > this.renderRadius) {
                 delete this.generatedChunks[chunkId];
-                this.chunkState[chunkId] = this.states.disposed;
+                this.chunkNeedsUpdate[chunkId] = true;
                 postMessage({
                     type: "removeCell",
                     data: chunkId,
