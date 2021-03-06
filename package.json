@@ -2,8 +2,8 @@
     "name": "web-minecraft",
     "version": "1.0.0",
     "scripts": {
-        "start": "node src/index.js production",
-        "dev": "npm run prebuild && node src/index.js development",
+        "start": "node index.js production",
+        "dev": "npm run prebuild && node index.js development",
         "build": "cd src/client && webpack --config webpack.prod.js",
         "prebuild": "node src/prebuild.js",
         "clean": "rimraf src/client/dist/*",
@@ -13,8 +13,7 @@
     },
     "husky": {
         "hooks": {
-            "pre-commit": "npm run lint:fix",
-            "pre-push": "npm run lint:fix"
+            "pre-commit": "npm run lint:fix"
         }
     },
     "dependencies": {
