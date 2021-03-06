@@ -9,11 +9,13 @@ class ChunkTerrain {
         this.blocksDef = options.blocksDef;
     }
 
-    vec3(x, y, z) {
-        x = parseInt(x);
-        y = parseInt(y);
-        z = parseInt(z);
-        return `${x}:${y}:${z}`;
+    vecToStr(x, y, z) {
+        return `${parseInt(x)}:${parseInt(y)}:${parseInt(z)}`;
+    }
+
+    strToVec(str) {
+        str = str.split(":");
+        return [parseInt(str[0]), parseInt(str[1]), parseInt(str[2])];
     }
 
     computeVoxelOffset(voxelX, voxelY, voxelZ) {
@@ -32,7 +34,7 @@ class ChunkTerrain {
     }
 
     addChunkForVoxel(voxelX, voxelY, voxelZ) {
-        var cellId = this.vec3(
+        var cellId = this.vecToStr(
             ...this.computeChunkForVoxel(voxelX, voxelY, voxelZ)
         );
         var cell = this.chunks[cellId];
@@ -46,7 +48,7 @@ class ChunkTerrain {
     }
 
     getChunkForVoxel(voxelX, voxelY, voxelZ) {
-        var cellId = this.vec3(
+        var cellId = this.vecToStr(
             ...this.computeChunkForVoxel(voxelX, voxelY, voxelZ)
         );
         return this.chunks[cellId];
@@ -71,7 +73,7 @@ class ChunkTerrain {
     }
 
     setChunk(chunkX, chunkY, chunkZ, buffer) {
-        this.chunks[this.vec3(chunkX, chunkY, chunkZ)] = buffer;
+        this.chunks[this.vecToStr(chunkX, chunkY, chunkZ)] = buffer;
     }
 
     getBlock(blockX, blockY, blockZ) {

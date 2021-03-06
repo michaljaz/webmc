@@ -164,7 +164,7 @@ const CustomRender = {
         pos
     ) {
         const uv = this.getUV("grass");
-        console.log(uv);
+        // console.log(uv);
         // prettier-ignore
         const faceVertex = {
             pos: [
@@ -326,7 +326,7 @@ class ChunkMesher {
 
     getUV(name) {
         let { x: toxX, y: toxY } = this.blocksMapping[name];
-        console.log(toxX);
+        // console.log(toxX);
         toxX -= 1;
         toxY -= 1;
         const x1 = this.q * toxX;

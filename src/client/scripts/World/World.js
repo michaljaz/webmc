@@ -55,8 +55,7 @@ var World = class World {
      */
     updateRenderOrder(cell) {
         for (var i in this.cellMesh) {
-            var n = i.split(":");
-            var x = new vec3(parseInt(n[0]), parseInt(n[1]), parseInt(n[2]));
+            var x = new vec3(this.chunkTerrain.strToVec(i));
             this.cellMesh[i].renderOrder = -vec3(...cell).distanceTo(x);
         }
     }
@@ -110,7 +109,7 @@ var World = class World {
      * @param data - cell Data
      */
     updateChunk(data) {
-        var cellId = this.chunkTerrain.vec3(...data.info);
+        var cellId = this.chunkTerrain.vecToStr(...data.info);
         var cell = data.cell;
         var mesh = this.cellMesh[cellId];
         var geometry = new THREE.BufferGeometry();
