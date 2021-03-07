@@ -38,21 +38,9 @@ module.exports = {
                         loader: "css-loader",
                     },
                     {
-                        loader: "postcss-loader",
-                        options: {
-                            plugins: function () {
-                                return [require("autoprefixer")];
-                            },
-                        },
-                    },
-                    {
                         loader: "sass-loader",
                     },
                 ],
-            },
-            {
-                test: /\.css$/i,
-                use: ["style-loader", "css-loader"],
             },
             {
                 test: /\.(png|jpe?g|gif)$/i,

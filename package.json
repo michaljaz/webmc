@@ -7,8 +7,8 @@
         "build": "cd src/client && webpack --config webpack.prod.js",
         "prebuild": "node src/prebuild.js",
         "clean": "rimraf src/client/dist/*",
-        "lint": "eslint src/",
-        "lint:fix": "eslint --fix src/",
+        "lint": "eslint .",
+        "lint:fix": "eslint --fix .",
         "postinstall": "node src/postinstall.js"
     },
     "husky": {
@@ -30,7 +30,6 @@
         "html-webpack-plugin": "^4.5.1",
         "http": "0.0.1-security",
         "jquery": "^3.5.1",
-        "jssoup": "0.0.12",
         "lodash-webpack-plugin": "^0.11.6",
         "mineflayer": "^3.0.0",
         "node": "^14.15.2",
@@ -38,7 +37,6 @@
         "popper.js": "^1.16.1",
         "prismarine-block": "^1.7.3",
         "prismarine-chunk": "^1.22.0",
-        "replace-color": "^2.3.0",
         "rimraf": "^3.0.2",
         "stats-js": "^1.0.1",
         "sweetalert": "^2.1.2",
@@ -50,7 +48,6 @@
         "ws": "^7.4.3"
     },
     "devDependencies": {
-        "autoprefixer": "^9.0.0",
         "copy-webpack-plugin": "^6.3.1",
         "css-loader": "^5.0.1",
         "eslint": "^7.20.0",
@@ -59,7 +56,6 @@
         "file-loader": "^6.2.0",
         "husky": "^1.0.0-rc.13",
         "node-sass": "^5.0.0",
-        "postcss-loader": "^3.0.0",
         "prettier": "^2.2.1",
         "sass-loader": "^10.1.1",
         "style-loader": "^2.0.0",
