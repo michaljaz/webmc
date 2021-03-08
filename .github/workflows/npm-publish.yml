@@ -4,8 +4,9 @@
 name: web-minecraft
 
 on:
-  release:
-    types: [created]
+  push:
+    branches:
+      - threejs-javascript
 
 jobs:
   build:
