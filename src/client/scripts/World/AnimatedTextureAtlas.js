@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { MeshStandardMaterial, TextureLoader, NearestFilter } from "three";
 
 class TextureAtlasCreator {
     constructor(options) {
@@ -115,7 +115,7 @@ class TextureAtlasCreator {
 class AnimatedTextureAtlas {
     constructor(game) {
         this.game = game;
-        this.material = new THREE.MeshStandardMaterial({
+        this.material = new MeshStandardMaterial({
             side: 0,
             map: null,
             vertexColors: true,
@@ -129,9 +129,9 @@ class AnimatedTextureAtlas {
         var savedTextures = [];
         for (var i = 0; i < 10; i++) {
             var t = this.atlasCreator.gen(i).toDataURL();
-            var tekstura = new THREE.TextureLoader().load(t);
-            tekstura.magFilter = THREE.NearestFilter;
-            tekstura.minFilter = THREE.NearestFilter;
+            var tekstura = new TextureLoader().load(t);
+            tekstura.magFilter = NearestFilter;
+            tekstura.minFilter = NearestFilter;
             savedTextures.push(tekstura);
         }
         var tickq = 0;

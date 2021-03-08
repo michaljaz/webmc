@@ -1,33 +1,40 @@
-import * as THREE from "three";
+import {
+    MeshStandardMaterial,
+    Color,
+    BoxGeometry,
+    InstancedMesh,
+    DynamicDrawUsage,
+    Object3D,
+} from "three";
 
 class Entities {
     constructor(game) {
         this.game = game;
-        this.mobMaterial = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("red"),
+        this.mobMaterial = new MeshStandardMaterial({
+            color: new Color("red"),
         });
-        this.mobGeometry = new THREE.BoxGeometry(1, 1, 1);
+        this.mobGeometry = new BoxGeometry(1, 1, 1);
         this.mobMaxCount = 200;
-        this.mobMesh = new THREE.InstancedMesh(
+        this.mobMesh = new InstancedMesh(
             this.mobGeometry,
             this.mobMaterial,
             this.mobMaxCount
         );
-        this.mobMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        this.mobMesh.instanceMatrix.setUsage(DynamicDrawUsage);
         this.game.scene.add(this.mobMesh);
-        this.playerMaterial = new THREE.MeshStandardMaterial({
-            color: new THREE.Color("blue"),
+        this.playerMaterial = new MeshStandardMaterial({
+            color: new Color("blue"),
         });
-        this.playerGeometry = new THREE.BoxGeometry(1, 1, 1);
+        this.playerGeometry = new BoxGeometry(1, 1, 1);
         this.playerMaxCount = 200;
-        this.playerMesh = new THREE.InstancedMesh(
+        this.playerMesh = new InstancedMesh(
             this.playerGeometry,
             this.playerMaterial,
             this.playerMaxCount
         );
-        this.playerMesh.instanceMatrix.setUsage(THREE.DynamicDrawUsage);
+        this.playerMesh.instanceMatrix.setUsage(DynamicDrawUsage);
         this.game.scene.add(this.playerMesh);
-        this.dummy = new THREE.Object3D();
+        this.dummy = new Object3D();
     }
 
     update(entities) {

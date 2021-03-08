@@ -1,21 +1,29 @@
-import * as THREE from "three";
+import {
+    NearestFilter,
+    Mesh,
+    BoxBufferGeometry,
+    MeshBasicMaterial,
+    LineSegments,
+    EdgesGeometry,
+    LineBasicMaterial,
+} from "three";
 
 class BlockBreak {
     constructor(game) {
         this.game = game;
         this.texture = this.game.al.get("blocksAtlasSnap");
-        this.texture.magFilter = THREE.NearestFilter;
-        this.cursor = new THREE.Mesh(
-            new THREE.BoxBufferGeometry(1.001, 1.001, 1.001),
-            new THREE.MeshBasicMaterial({
+        this.texture.magFilter = NearestFilter;
+        this.cursor = new Mesh(
+            new BoxBufferGeometry(1.001, 1.001, 1.001),
+            new MeshBasicMaterial({
                 map: this.texture,
                 transparent: true,
             })
         );
         this.lastPos = [];
-        this.cursorOut = new THREE.LineSegments(
-            new THREE.EdgesGeometry(this.cursor.geometry),
-            new THREE.LineBasicMaterial({
+        this.cursorOut = new LineSegments(
+            new EdgesGeometry(this.cursor.geometry),
+            new LineBasicMaterial({
                 color: 0x000000,
             })
         );

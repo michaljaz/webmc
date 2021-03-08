@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { BufferGeometry, BufferAttribute, Mesh, Vector3 } from "three";
 import { ChunkTerrain } from "./ChunkTerrain.js";
 import { AnimatedTextureAtlas } from "./AnimatedTextureAtlas.js";
 import { SectionComputer } from "./SectionComputer.js";
@@ -112,26 +112,26 @@ var World = class World {
         var cellId = this.chunkTerrain.vecToStr(...data.info);
         var cell = data.cell;
         var mesh = this.cellMesh[cellId];
-        var geometry = new THREE.BufferGeometry();
+        var geometry = new BufferGeometry();
         geometry.setAttribute(
             "position",
-            new THREE.BufferAttribute(new Float32Array(cell.positions), 3)
+            new BufferAttribute(new Float32Array(cell.positions), 3)
         );
         geometry.setAttribute(
             "normal",
-            new THREE.BufferAttribute(new Float32Array(cell.normals), 3)
+            new BufferAttribute(new Float32Array(cell.normals), 3)
         );
         geometry.setAttribute(
             "uv",
-            new THREE.BufferAttribute(new Float32Array(cell.uvs), 2)
+            new BufferAttribute(new Float32Array(cell.uvs), 2)
         );
         geometry.setAttribute(
             "color",
-            new THREE.BufferAttribute(new Float32Array(cell.colors), 3)
+            new BufferAttribute(new Float32Array(cell.colors), 3)
         );
         geometry.matrixAutoUpdate = false;
         if (mesh === void 0) {
-            this.cellMesh[cellId] = new THREE.Mesh(geometry, this.material);
+            this.cellMesh[cellId] = new Mesh(geometry, this.material);
             this.cellMesh[cellId].matrixAutoUpdate = false;
             this.cellMesh[cellId].frustumCulled = false;
             this.cellMesh[cellId].onAfterRender = () => {
@@ -244,10 +244,10 @@ var World = class World {
      * @returns Pointing block
      */
     getRayBlock() {
-        var start = new THREE.Vector3().setFromMatrixPosition(
+        var start = new Vector3().setFromMatrixPosition(
             this.game.camera.matrixWorld
         );
-        var end = new THREE.Vector3().set(0, 0, 1).unproject(this.game.camera);
+        var end = new Vector3().set(0, 0, 1).unproject(this.game.camera);
         var intersection = this.intersectsRay(start, end);
         if (intersection) {
             var posPlace = intersection.position.map(function (v, ndx) {

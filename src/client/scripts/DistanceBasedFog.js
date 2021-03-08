@@ -1,11 +1,11 @@
-import * as THREE from "three";
+import { Vector3, Vector2, Vector4 } from "three";
 
 class DistanceBasedFog {
     constructor(game) {
         this.game = game;
-        this.view = new THREE.Vector3();
-        this.farnear = new THREE.Vector2();
-        this.color = new THREE.Vector4();
+        this.view = new Vector3();
+        this.farnear = new Vector2();
+        this.color = new Vector4();
     }
 
     update() {

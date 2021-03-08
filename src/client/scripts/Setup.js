@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight } from "three";
 import TWEEN from "@tweenjs/tween.js";
 import Stats from "stats-js";
 import * as dat from "dat.gui";
@@ -19,21 +19,16 @@ async function Setup(game) {
     return new Promise((resolve) => {
         game.canvas = document.querySelector("#c");
         game.pcanvas = document.querySelector("#c_player");
-        game.renderer = new THREE.WebGLRenderer({
+        game.renderer = new WebGLRenderer({
             canvas: game.canvas,
             PixelRatio: window.devicePixelRatio,
         });
         game.renderer.sortObjects = true;
-        game.scene = new THREE.Scene();
-        game.camera = new THREE.PerspectiveCamera(
-            game.fov.normal,
-            2,
-            0.1,
-            1000
-        );
+        game.scene = new Scene();
+        game.camera = new PerspectiveCamera(game.fov.normal, 2, 0.1, 1000);
         game.camera.rotation.order = "YXZ";
         game.camera.position.set(26, 26, 26);
-        game.scene.add(new THREE.AmbientLight(0xdddddd));
+        game.scene.add(new AmbientLight(0xdddddd));
         game.stats = new Stats();
         game.drawcalls = game.stats.addPanel(
             new Stats.Panel("calls", "#ff8", "#221")

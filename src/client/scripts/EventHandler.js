@@ -1,5 +1,5 @@
 import TWEEN from "@tweenjs/tween.js";
-import * as THREE from "three";
+import { MathUtils } from "three";
 var modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
@@ -181,17 +181,13 @@ class EventHandler {
     }
     updatePosition(e) {
         if (this.gameState === "gameLock") {
-            this.game.camera.rotation.x -= THREE.MathUtils.degToRad(
-                e.movementY / 10
-            );
-            this.game.camera.rotation.y -= THREE.MathUtils.degToRad(
-                e.movementX / 10
-            );
-            if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) < -90) {
-                this.game.camera.rotation.x = THREE.MathUtils.degToRad(-90);
+            this.game.camera.rotation.x -= MathUtils.degToRad(e.movementY / 10);
+            this.game.camera.rotation.y -= MathUtils.degToRad(e.movementX / 10);
+            if (MathUtils.radToDeg(this.game.camera.rotation.x) < -90) {
+                this.game.camera.rotation.x = MathUtils.degToRad(-90);
             }
-            if (THREE.MathUtils.radToDeg(this.game.camera.rotation.x) > 90) {
-                this.game.camera.rotation.x = THREE.MathUtils.degToRad(90);
+            if (MathUtils.radToDeg(this.game.camera.rotation.x) > 90) {
+                this.game.camera.rotation.x = MathUtils.degToRad(90);
             }
             this.game.socket.emit("rotate", [
                 this.game.camera.rotation.y,

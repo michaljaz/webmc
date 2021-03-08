@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { TextureLoader } from "three";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader.js";
 
 class AssetLoader {
@@ -14,7 +14,7 @@ class AssetLoader {
 
     async load(assets) {
         return new Promise((resolve) => {
-            var textureLoader = new THREE.TextureLoader();
+            var textureLoader = new TextureLoader();
             var fbxl = new FBXLoader();
             var assetsNumber = Object.keys(assets).length;
             var assetsLoaded = 0;

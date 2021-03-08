@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import { Color } from "three";
 import TWEEN from "@tweenjs/tween.js";
 import swal from "sweetalert";
 import { AssetLoader } from "./AssetLoader.js";
@@ -75,7 +75,7 @@ class Game {
                 dim = "minecraft:overworld";
             }
             var bg = this.dimBg[dim];
-            this.scene.background = new THREE.Color(...bg);
+            this.scene.background = new Color(...bg);
             this.distanceBasedFog.color.x = bg[0];
             this.distanceBasedFog.color.y = bg[1];
             this.distanceBasedFog.color.z = bg[2];

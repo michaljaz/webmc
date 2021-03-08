@@ -1,22 +1,29 @@
-import * as THREE from "three";
+import {
+    WebGLRenderer,
+    Scene,
+    Color,
+    AmbientLight,
+    NearestFilter,
+    PerspectiveCamera,
+} from "three";
 
 class PlayerInInventory {
     constructor(game) {
         this.game = game;
-        this.renderer = new THREE.WebGLRenderer({
+        this.renderer = new WebGLRenderer({
             canvas: this.game.pcanvas,
             PixelRatio: window.devicePixelRatio,
         });
-        this.scene = new THREE.Scene();
-        this.scene.background = new THREE.Color("black");
-        var light = new THREE.AmbientLight(0xffffff);
+        this.scene = new Scene();
+        this.scene.background = new Color("black");
+        var light = new AmbientLight(0xffffff);
         this.scene.add(light);
         var player = this.game.al.get("player");
         var playerTex = this.game.al.get("playerTex");
-        playerTex.magFilter = THREE.NearestFilter;
+        playerTex.magFilter = NearestFilter;
         player.children[0].material.map = playerTex;
         this.scene.add(player);
-        this.camera = new THREE.PerspectiveCamera(70, 140 / 204, 0.1, 1000);
+        this.camera = new PerspectiveCamera(70, 140 / 204, 0.1, 1000);
         this.camera.rotation.order = "YXZ";
         this.camera.position.z = 210;
         this.camera.position.y = 120;
