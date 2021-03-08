@@ -358,8 +358,12 @@ const CustomRender = {
                             pos[2] + z
                         );
                         if (block.name === "lava")
-                            if ((block.stateId & 0b001110) - 1 === 10) waterLevels.push(0);
-                            else waterLevels.push(((block.stateId & 0b001110) - 1) / 10);
+                            if ((block.stateId & 0b001110) - 1 === 10)
+                                waterLevels.push(0);
+                            else
+                                waterLevels.push(
+                                    ((block.stateId & 0b001110) - 1) / 10
+                                );
                         else if (block.boundingBox === "block")
                             waterLevels.push(10);
                         else waterLevels.push(1);
@@ -1032,11 +1036,11 @@ class ChunkMesher {
                     } else if (
                         this.customRender[
                             this.chunkTerrain.getBlock(...pos).name
-                            ]
+                        ]
                     ) {
                         this.customRender[
                             this.chunkTerrain.getBlock(...pos).name
-                            ](
+                        ](
                             t_positions,
                             t_normals,
                             t_uvs,

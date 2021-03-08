@@ -1,6 +1,7 @@
 {
     "name": "web-minecraft",
     "version": "1.0.0",
+    "description": "Minecraft client written in Javascript",
     "scripts": {
         "start": "node index.js production",
         "dev": "npm run prebuild && node index.js development",
@@ -16,6 +17,21 @@
             "pre-commit": "npm run lint:fix"
         }
     },
+    "license": "MIT",
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/michaljaz/web-minecraft.git"
+    },
+    "funding": [
+        {
+            "type": "individual",
+            "url": "https://pomagam.pl/web-minecraft"
+        },
+        {
+            "type": "individual",
+            "url": "https://ko-fi.com/webmc"
+        }
+    ],
     "dependencies": {
         "@msgpack/msgpack": "^2.4.1",
         "@tweenjs/tween.js": "^18.6.4",
