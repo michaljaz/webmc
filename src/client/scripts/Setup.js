@@ -66,8 +66,8 @@ async function Setup(game) {
             game.params = {
                 chunkdist: 3,
             };
-            game.distanceBasedFog.farnear.x = (game.params.chunkdist - 1) * 16;
-            game.distanceBasedFog.farnear.y = game.params.chunkdist * 16;
+            game.distanceBasedFog.farnear.x = (game.params.chunkdist - 2) * 16;
+            game.distanceBasedFog.farnear.y = (game.params.chunkdist - 1) * 16;
             gui.add(game.world.material, "wireframe")
                 .name("Wireframe")
                 .listen();
@@ -75,10 +75,9 @@ async function Setup(game) {
                 .add(game.params, "chunkdist", 0, 10, 1)
                 .name("Render distance")
                 .listen();
-            gui.add(game, "speed", 1.3, 10).name("sprint speed").listen();
             chunkDist.onChange(function (val) {
-                game.distanceBasedFog.farnear.x = (val - 1) * 16;
-                game.distanceBasedFog.farnear.y = val * 16;
+                game.distanceBasedFog.farnear.x = (val - 2) * 16;
+                game.distanceBasedFog.farnear.y = (val - 1) * 16;
                 console.log(val);
             });
             game.playerImpulse = function () {
