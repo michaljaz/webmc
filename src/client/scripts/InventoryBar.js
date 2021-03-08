@@ -97,7 +97,7 @@ class InventoryBar {
     }
 
     setFocus(num) {
-        $(".inv_cursor").css("left", `calc(50vw - 253px + 55*${num}px)`);
+        $(".inv_cursor").css("left", `calc(50vw - 278px + 60*${num}px)`);
         this.game.socket.emit("invc", num);
     }
 

@@ -104,7 +104,7 @@ body {
     position: fixed;
     transform: translateX(-50%);
     left: 50%;
-    bottom: 62px;
+    bottom: 75px;
     z-index: 10;
     -webkit-text-stroke: 1px black;
     color: #259c45;
@@ -171,29 +171,29 @@ body {
     position: fixed;
     bottom: 0px;
     left: 50%;
-    width: 500px;
-    height: 60px;
+    width: 550px;
+    height: 66px;
     transform: translateX(-50%);
     background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
     background-repeat: no-repeat;
-    border: 0px;
+    border: 4px;
     background-position: 0px 0px;
-    background-size: 703px auto;
+    background-size: 768px auto;
     border: none;
     /* background-attachment: fixed; */
 }
 
 .player_hp {
     position: fixed;
-    bottom: 75px;
-    left: calc(50vw - 250px);
+    bottom: 80px;
+    left: calc(50vw - 275px);
     display: block;
 }
 
 .player_food {
     position: fixed;
-    bottom: 75px;
-    right: calc(50vw - 245px);
+    bottom: 80px;
+    right: calc(50vw - 260px);
     display: block;
 }
 
@@ -243,7 +243,7 @@ body {
 .xp_bar_empty,
 .xp_bar {
     position: fixed;
-    bottom: 65px;
+    bottom: 70px;
     left: calc(50vw - 275px);
     width: 256 * 3px;
     height: 3 * 5px;
@@ -261,7 +261,7 @@ body {
 
 .xp_bar {
     image-rendering: pixelated;
-    background-position: 0px -3 * 68px;
+    background-position: 0px -3 * 69px;
 }
 
 .inv_window {
@@ -293,20 +293,20 @@ body {
 
 .inv_box {
     display: inline-block;
-    margin-left: 9px;
-    margin-top: 9px;
-    margin-right: -3.4px;
+    margin-left: 12px;
+    margin-top: 11px;
+    margin-right: -1.3px;
 }
 
 .inv_cursor {
     background-image: url("../../assets/pack/assets/minecraft/textures/gui/widgets.png");
     background-repeat: no-repeat;
     border: 0px;
-    background-position: 0px -61px;
-    background-size: 700px auto;
+    background-position: 0px -66px;
+    background-size: 256 * 3px auto;
     position: fixed;
     image-rendering: pixelated;
-    bottom: -4px;
-    width: 66px;
-    height: 66px;
+    bottom: -3px;
+    width: 72px;
+    height: 72px;
 }
