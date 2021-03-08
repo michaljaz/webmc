@@ -22,15 +22,12 @@
         "type": "git",
         "url": "git://github.com/michaljaz/web-minecraft.git"
     },
-    "funding": [
-        {
-            "type": "individual",
-            "url": "https://pomagam.pl/web-minecraft"
-        },
-        {
-            "type": "individual",
-            "url": "https://ko-fi.com/webmc"
-        }
+    "keywords": [
+        "minecraft",
+        "game",
+        "browser",
+        "mineflayer",
+        "threejs"
     ],
     "dependencies": {
         "@msgpack/msgpack": "^2.4.1",
