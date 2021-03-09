@@ -5,12 +5,12 @@
     "scripts": {
         "start": "node index.js production",
         "dev": "npm run prebuild && node index.js development",
-        "build": "cd src/client && webpack --config webpack.prod.js",
-        "prebuild": "node src/prebuild.js",
-        "clean": "rimraf src/client/dist/*",
-        "lint": "eslint .",
-        "lint:fix": "eslint --fix .",
-        "postinstall": "node src/postinstall.js"
+        "build": "cd src && webpack --config webpack.prod.js",
+        "prebuild": "node lib/prebuild.js",
+        "clean": "rimraf src/dist/*",
+        "lint": "eslint index.js lib/ src/webpack* src/scripts/",
+        "lint:fix": "eslint --fix index.js lib/ src/webpack* src/scripts/",
+        "postinstall": "node lib/postinstall.js"
     },
     "husky": {
         "hooks": {

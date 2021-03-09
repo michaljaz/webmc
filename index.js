@@ -28,11 +28,11 @@ const wss = new WebSocket.Server({
 
 var mode = process.argv[2];
 if (mode === "production") {
-    app.use(express.static(`${__dirname}/src/client/dist`));
+    app.use(express.static(`${__dirname}/src/dist`));
 } else if (mode === "development") {
     var webpack = require("webpack");
     var middleware = require("webpack-dev-middleware");
-    var devconfig = require(`${__dirname}/src/client/webpack.dev.js`);
+    var devconfig = require(`${__dirname}/src/webpack.dev.js`);
     var compiler = webpack(devconfig);
     app.use(middleware(compiler));
 } else {
