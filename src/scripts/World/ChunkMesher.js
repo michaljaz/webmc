@@ -1,15 +1,5 @@
 const CustomRender = {
-    water: function (
-        t_positions,
-        t_normals,
-        t_uvs,
-        t_colors,
-        positions,
-        normals,
-        uvs,
-        colors,
-        pos
-    ) {
+    water: function (t_vbuffer, vbuffer, pos) {
         const block = this.chunkTerrain.getBlock(pos[0], pos[1], pos[2]);
         const state = block.stateId;
 
@@ -25,18 +15,7 @@ const CustomRender = {
                         pos[2] + offset[2]
                     ).name !== "water"
                 )
-                    this.addFace(
-                        t_positions,
-                        t_normals,
-                        t_uvs,
-                        t_colors,
-                        positions,
-                        normals,
-                        uvs,
-                        colors,
-                        l,
-                        pos
-                    );
+                    this.addFace(t_vbuffer, vbuffer, l, pos);
             }
         } else {
             for (const side in this.neighbours) {
@@ -124,45 +103,23 @@ const CustomRender = {
                         break;
                 }
                 this.ambientOcclusion(
-                    t_positions,
-                    t_normals,
-                    t_uvs,
-                    t_colors,
-                    positions,
-                    normals,
-                    uvs,
-                    colors,
+                    t_vbuffer,
+                    vbuffer,
                     block,
                     pos,
                     faceVertex,
                     side
                 );
                 this.push(
-                    t_positions,
-                    t_normals,
-                    t_uvs,
-                    t_colors,
-                    positions,
-                    normals,
-                    uvs,
-                    colors,
+                    t_vbuffer,
+                    vbuffer,
                     faceVertex,
                     this.chunkTerrain.getBlock(...pos).transparent
                 );
             }
         }
     },
-    grass: function (
-        t_positions,
-        t_normals,
-        t_uvs,
-        t_colors,
-        positions,
-        normals,
-        uvs,
-        colors,
-        pos
-    ) {
+    grass: function (t_vbuffer, vbuffer, pos) {
         const uv = this.getUV("grass");
         // prettier-ignore
         const faceVertex = {
@@ -285,30 +242,9 @@ const CustomRender = {
             ]
         }
 
-        this.push(
-            t_positions,
-            t_normals,
-            t_uvs,
-            t_colors,
-            positions,
-            normals,
-            uvs,
-            colors,
-            faceVertex,
-            true
-        );
+        this.push(t_vbuffer, vbuffer, faceVertex, true);
     },
-    lava: function (
-        t_positions,
-        t_normals,
-        t_uvs,
-        t_colors,
-        positions,
-        normals,
-        uvs,
-        colors,
-        pos
-    ) {
+    lava: function (t_vbuffer, vbuffer, pos) {
         const block = this.chunkTerrain.getBlock(pos[0], pos[1], pos[2]);
         const state = block.stateId;
 
@@ -324,18 +260,7 @@ const CustomRender = {
                         pos[2] + offset[2]
                     ).name !== "lava"
                 )
-                    this.addFace(
-                        t_positions,
-                        t_normals,
-                        t_uvs,
-                        t_colors,
-                        positions,
-                        normals,
-                        uvs,
-                        colors,
-                        l,
-                        pos
-                    );
+                    this.addFace(t_vbuffer, vbuffer, l, pos);
             }
         } else {
             for (const side in this.neighbours) {
@@ -427,28 +352,16 @@ const CustomRender = {
                         break;
                 }
                 this.ambientOcclusion(
-                    t_positions,
-                    t_normals,
-                    t_uvs,
-                    t_colors,
-                    positions,
-                    normals,
-                    uvs,
-                    colors,
+                    t_vbuffer,
+                    vbuffer,
                     block,
                     pos,
                     faceVertex,
                     side
                 );
                 this.push(
-                    t_positions,
-                    t_normals,
-                    t_uvs,
-                    t_colors,
-                    positions,
-                    normals,
-                    uvs,
-                    colors,
+                    t_vbuffer,
+                    vbuffer,
                     faceVertex,
                     this.chunkTerrain.getBlock(...pos).transparent
                 );
@@ -722,62 +635,19 @@ class ChunkMesher {
         }
     }
 
-    addFace(
-        t_positions,
-        t_normals,
-        t_uvs,
-        t_colors,
-        positions,
-        normals,
-        uvs,
-        colors,
-        type,
-        pos
-    ) {
+    addFace(t_vbuffer, vbuffer, type, pos) {
         var block = this.chunkTerrain.getBlock(...pos);
         var faceVertex = this.genBlockFace(type, block, pos);
-        this.ambientOcclusion(
-            t_positions,
-            t_normals,
-            t_uvs,
-            t_colors,
-            positions,
-            normals,
-            uvs,
-            colors,
-            block,
-            pos,
-            faceVertex,
-            type
-        );
+        this.ambientOcclusion(t_vbuffer, vbuffer, block, pos, faceVertex, type);
         this.push(
-            t_positions,
-            t_normals,
-            t_uvs,
-            t_colors,
-            positions,
-            normals,
-            uvs,
-            colors,
+            t_vbuffer,
+            vbuffer,
             faceVertex,
             this.chunkTerrain.getBlock(...pos).transparent
         );
     }
 
-    ambientOcclusion(
-        t_positions,
-        t_normals,
-        t_uvs,
-        t_colors,
-        positions,
-        normals,
-        uvs,
-        colors,
-        block,
-        pos,
-        faceVertex,
-        type
-    ) {
+    ambientOcclusion(t_vbuffer, vbuffer, block, pos, faceVertex, type) {
         var loaded = {};
         for (var x = -1; x <= 1; x++) {
             for (var y = -1; y <= 1; y++) {
@@ -921,28 +791,17 @@ class ChunkMesher {
         ];
     }
 
-    push(
-        t_positions,
-        t_normals,
-        t_uvs,
-        t_colors,
-        positions,
-        normals,
-        uvs,
-        colors,
-        faceVertex,
-        transparent
-    ) {
+    push(t_vbuffer, vbuffer, faceVertex, transparent) {
         if (transparent) {
-            t_positions.push(...faceVertex.pos);
-            t_normals.push(...faceVertex.norm);
-            t_uvs.push(...faceVertex.uv);
-            t_colors.push(...faceVertex.color);
+            t_vbuffer.positions.push(...faceVertex.pos);
+            t_vbuffer.normals.push(...faceVertex.norm);
+            t_vbuffer.uvs.push(...faceVertex.uv);
+            t_vbuffer.colors.push(...faceVertex.color);
         } else {
-            positions.push(...faceVertex.pos);
-            normals.push(...faceVertex.norm);
-            uvs.push(...faceVertex.uv);
-            colors.push(...faceVertex.color);
+            vbuffer.positions.push(...faceVertex.pos);
+            vbuffer.normals.push(...faceVertex.norm);
+            vbuffer.uvs.push(...faceVertex.uv);
+            vbuffer.colors.push(...faceVertex.color);
         }
     }
 
@@ -959,14 +818,18 @@ class ChunkMesher {
     }
 
     genChunkGeo(cellX, cellY, cellZ) {
-        var positions = [];
-        var normals = [];
-        var uvs = [];
-        var colors = [];
-        var t_positions = [];
-        var t_normals = [];
-        var t_uvs = [];
-        var t_colors = [];
+        var vbuffer = {
+            positions: [],
+            normals: [],
+            uvs: [],
+            colors: [],
+        };
+        var t_vbuffer = {
+            positions: [],
+            normals: [],
+            uvs: [],
+            colors: [],
+        };
 
         for (var i = 0; i < this.cellSize; i++) {
             for (var j = 0; j < this.cellSize; j++) {
@@ -976,95 +839,42 @@ class ChunkMesher {
                         cellY * this.cellSize + j,
                         cellZ * this.cellSize + k,
                     ];
-                    if (
-                        this.chunkTerrain.getBlock(...pos).boundingBox ===
-                        "block"
-                    ) {
-                        for (let l in this.neighbours) {
-                            let offset = this.neighbours[l];
-                            if (
-                                this.chunkTerrain.getBlock(...pos).transparent
-                            ) {
-                                if (
-                                    this.chunkTerrain.getBlock(
-                                        pos[0] + offset[0],
-                                        pos[1] + offset[1],
-                                        pos[2] + offset[2]
-                                    ).boundingBox !== "block"
-                                ) {
-                                    this.addFace(
-                                        t_positions,
-                                        t_normals,
-                                        t_uvs,
-                                        t_colors,
-                                        positions,
-                                        normals,
-                                        uvs,
-                                        colors,
-                                        l,
-                                        pos
-                                    );
+                    const [
+                        mainBlock,
+                        neighbours,
+                    ] = this.chunkTerrain.getBlockNeighbours(...pos);
+                    if (mainBlock.boundingBox === "block") {
+                        for (let side in neighbours) {
+                            let nBlock = neighbours[side];
+                            if (mainBlock.transparent) {
+                                if (nBlock.boundingBox !== "block") {
+                                    this.addFace(t_vbuffer, vbuffer, side, pos);
                                 }
                             } else {
                                 if (
-                                    this.chunkTerrain.getBlock(
-                                        pos[0] + offset[0],
-                                        pos[1] + offset[1],
-                                        pos[2] + offset[2]
-                                    ).boundingBox !== "block" ||
-                                    this.chunkTerrain.getBlock(
-                                        pos[0] + offset[0],
-                                        pos[1] + offset[1],
-                                        pos[2] + offset[2]
-                                    ).transparent
+                                    nBlock.boundingBox !== "block" ||
+                                    nBlock.transparent
                                 ) {
-                                    this.addFace(
-                                        t_positions,
-                                        t_normals,
-                                        t_uvs,
-                                        t_colors,
-                                        positions,
-                                        normals,
-                                        uvs,
-                                        colors,
-                                        l,
-                                        pos
-                                    );
+                                    this.addFace(t_vbuffer, vbuffer, side, pos);
                                 }
                             }
                         }
-                    } else if (
-                        this.customRender[
-                            this.chunkTerrain.getBlock(...pos).name
-                        ]
-                    ) {
-                        this.customRender[
-                            this.chunkTerrain.getBlock(...pos).name
-                        ](
-                            t_positions,
-                            t_normals,
-                            t_uvs,
-                            t_colors,
-                            positions,
-                            normals,
-                            uvs,
-                            colors,
+                    } else if (this.customRender[mainBlock.name]) {
+                        this.customRender[mainBlock.name](
+                            t_vbuffer,
+                            vbuffer,
                             pos
                         );
                     }
                 }
             }
         }
-        positions.push(...t_positions);
-        normals.push(...t_normals);
-        uvs.push(...t_uvs);
-        colors.push(...t_colors);
-        return {
-            positions,
-            normals,
-            uvs,
-            colors,
-        };
+
+        vbuffer.positions.push(...t_vbuffer.positions);
+        vbuffer.normals.push(...t_vbuffer.normals);
+        vbuffer.uvs.push(...t_vbuffer.uvs);
+        vbuffer.colors.push(...t_vbuffer.colors);
+        return vbuffer;
     }
 }
 

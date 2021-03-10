@@ -7,6 +7,14 @@ class ChunkTerrain {
         this.chunkSize = 16;
         this.chunks = {};
         this.blocksDef = options.blocksDef;
+        this.neighbours = {
+            px: [-1, 0, 0],
+            nx: [1, 0, 0],
+            ny: [0, -1, 0],
+            py: [0, 1, 0],
+            pz: [0, 0, 1],
+            nz: [0, 0, -1],
+        };
     }
 
     vecToStr(x, y, z) {
@@ -89,6 +97,20 @@ class ChunkTerrain {
         } else {
             return false;
         }
+    }
+
+    getBlockNeighbours(blockX, blockY, blockZ) {
+        let neighbours = {};
+        let main = this.getBlock(blockX, blockY, blockZ);
+        for (let side in this.neighbours) {
+            let offset = this.neighbours[side];
+            neighbours[side] = this.getBlock(
+                blockX + offset[0],
+                blockY + offset[1],
+                blockZ + offset[2]
+            );
+        }
+        return [main, neighbours];
     }
 
     reset() {
