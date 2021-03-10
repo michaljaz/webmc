@@ -102,14 +102,7 @@ const CustomRender = {
 
                         break;
                 }
-                this.ambientOcclusion(
-                    t_vbuffer,
-                    vbuffer,
-                    block,
-                    pos,
-                    faceVertex,
-                    side
-                );
+                this.ambientOcclusion(block, pos, faceVertex, side);
                 this.push(
                     t_vbuffer,
                     vbuffer,
@@ -351,14 +344,7 @@ const CustomRender = {
 
                         break;
                 }
-                this.ambientOcclusion(
-                    t_vbuffer,
-                    vbuffer,
-                    block,
-                    pos,
-                    faceVertex,
-                    side
-                );
+                this.ambientOcclusion(block, pos, faceVertex, side);
                 this.push(
                     t_vbuffer,
                     vbuffer,
@@ -410,7 +396,7 @@ class ChunkMesher {
     }
 
     getUvForFace(block, type) {
-        var xd, toxX, toxY;
+        let xd, toxX, toxY;
         if (
             this.blocksTex[block.name] !== void 0 ||
             this.blocksTex[String(block.stateId)] !== void 0
@@ -424,7 +410,7 @@ class ChunkMesher {
                 toxX = this.blocksMapping[xd.all]["x"];
                 toxY = this.blocksMapping[xd.all]["y"];
             } else if (xd["side"] !== void 0) {
-                var mapka = {
+                const mapka = {
                     py: "top",
                     ny: "bottom",
                 };
@@ -454,10 +440,10 @@ class ChunkMesher {
         }
         toxX -= 1;
         toxY -= 1;
-        var x1 = this.q * toxX;
-        var y1 = 1 - this.q * toxY - this.q;
-        var x2 = this.q * toxX + this.q;
-        var y2 = 1 - this.q * toxY;
+        const x1 = this.q * toxX;
+        const y1 = 1 - this.q * toxY - this.q;
+        const x2 = this.q * toxX + this.q;
+        const y2 = 1 - this.q * toxY;
         return [
             [x1, y1],
             [x1, y2],
@@ -467,7 +453,7 @@ class ChunkMesher {
     }
 
     genBlockFace(type, block, pos) {
-        var uv = this.getUvForFace(block, type);
+        const uv = this.getUvForFace(block, type);
         // prettier-ignore
         switch (type) {
             case "pz":
@@ -636,9 +622,9 @@ class ChunkMesher {
     }
 
     addFace(t_vbuffer, vbuffer, type, pos) {
-        var block = this.chunkTerrain.getBlock(...pos);
-        var faceVertex = this.genBlockFace(type, block, pos);
-        this.ambientOcclusion(t_vbuffer, vbuffer, block, pos, faceVertex, type);
+        const block = this.chunkTerrain.getBlock(...pos);
+        let faceVertex = this.genBlockFace(type, block, pos);
+        this.ambientOcclusion(block, pos, faceVertex, type);
         this.push(
             t_vbuffer,
             vbuffer,
@@ -647,11 +633,11 @@ class ChunkMesher {
         );
     }
 
-    ambientOcclusion(t_vbuffer, vbuffer, block, pos, faceVertex, type) {
-        var loaded = {};
-        for (var x = -1; x <= 1; x++) {
-            for (var y = -1; y <= 1; y++) {
-                for (var z = -1; z <= 1; z++) {
+    ambientOcclusion(block, pos, faceVertex, type) {
+        const loaded = {};
+        for (let x = -1; x <= 1; x++) {
+            for (let y = -1; y <= 1; y++) {
+                for (let z = -1; z <= 1; z++) {
                     loaded[`${x}:${y}:${z}`] =
                         this.chunkTerrain.getBlock(
                             pos[0] + x,
@@ -663,10 +649,10 @@ class ChunkMesher {
                 }
             }
         }
-        var col1 = this.aoColor(0);
-        var col2 = this.aoColor(0);
-        var col3 = this.aoColor(0);
-        var col4 = this.aoColor(0);
+        let col1 = this.aoColor(0);
+        let col2 = this.aoColor(0);
+        let col3 = this.aoColor(0);
+        let col4 = this.aoColor(0);
         if (type === "py") {
             col1 = this.aoColor(
                 loaded["1:1:-1"] + loaded["0:1:-1"] + loaded["1:1:0"]
@@ -751,7 +737,7 @@ class ChunkMesher {
                 loaded["0:1:-1"] + loaded["1:1:-1"] + loaded["1:0:-1"]
             );
         }
-        var ile = 4;
+        const ile = 4;
         if (block.name === "water") {
             col1[0] /= ile;
             col1[1] /= ile;
@@ -818,23 +804,23 @@ class ChunkMesher {
     }
 
     genChunkGeo(cellX, cellY, cellZ) {
-        var vbuffer = {
+        let vbuffer = {
             positions: [],
             normals: [],
             uvs: [],
             colors: [],
         };
-        var t_vbuffer = {
+        let t_vbuffer = {
             positions: [],
             normals: [],
             uvs: [],
             colors: [],
         };
 
-        for (var i = 0; i < this.cellSize; i++) {
-            for (var j = 0; j < this.cellSize; j++) {
-                for (var k = 0; k < this.cellSize; k++) {
-                    var pos = [
+        for (let i = 0; i < this.cellSize; i++) {
+            for (let j = 0; j < this.cellSize; j++) {
+                for (let k = 0; k < this.cellSize; k++) {
+                    const pos = [
                         cellX * this.cellSize + i,
                         cellY * this.cellSize + j,
                         cellZ * this.cellSize + k,

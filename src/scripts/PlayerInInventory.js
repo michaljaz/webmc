@@ -16,10 +16,10 @@ class PlayerInInventory {
         });
         this.scene = new Scene();
         this.scene.background = new Color("black");
-        var light = new AmbientLight(0xffffff);
+        const light = new AmbientLight(0xffffff);
         this.scene.add(light);
-        var player = this.game.al.get("player");
-        var playerTex = this.game.al.get("playerTex");
+        const player = this.game.al.get("player");
+        const playerTex = this.game.al.get("playerTex");
         playerTex.magFilter = NearestFilter;
         player.children[0].material.map = playerTex;
         this.scene.add(player);
@@ -28,15 +28,14 @@ class PlayerInInventory {
         this.camera.position.z = 210;
         this.camera.position.y = 120;
         $(window).mousemove(function (z) {
-            var bottom, left, right, top, wych_x, wych_y, xoff, yoff;
-            xoff = z.pageX - window.innerWidth / 2 + 112;
-            yoff = z.pageY - window.innerHeight / 2 + 170;
-            left = xoff / (window.innerWidth / 2 - 112);
-            right = xoff / (window.innerWidth / 2 + 112);
-            top = yoff / (window.innerHeight / 2 - 170);
-            bottom = yoff / (window.innerHeight / 2 + 170);
-            wych_x = Math.PI / 3;
-            wych_y = Math.PI / 4;
+            const xoff = z.pageX - window.innerWidth / 2 + 112;
+            const yoff = z.pageY - window.innerHeight / 2 + 170;
+            const left = xoff / (window.innerWidth / 2 - 112);
+            const right = xoff / (window.innerWidth / 2 + 112);
+            const top = yoff / (window.innerHeight / 2 - 170);
+            const bottom = yoff / (window.innerHeight / 2 + 170);
+            const wych_x = Math.PI / 3;
+            const wych_y = Math.PI / 4;
             if (xoff > 0) {
                 player.rotation.y = wych_x * right;
             } else {

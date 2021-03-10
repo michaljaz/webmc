@@ -1,8 +1,8 @@
-var WebpackBar = require("webpackbar");
-var HtmlWebpackPlugin = require("html-webpack-plugin");
-var CopyPlugin = require("copy-webpack-plugin");
-var webpack = require("webpack");
-var LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
+const WebpackBar = require("webpackbar");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const webpack = require("webpack");
+const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 
 module.exports = {
     entry: [

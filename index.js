@@ -1,18 +1,18 @@
-var version = "1.16.5";
-var opn = require("open");
-var express = require("express");
-var app = express();
-var server = require("http").createServer(app);
-var mineflayer = require("mineflayer");
-var Chunk = require("prismarine-chunk")(version);
-var vec3 = require("vec3");
-var Convert = require("ansi-to-html");
-var convert = new Convert();
-var helmet = require("helmet");
-var compression = require("compression");
+const version = "1.16.5";
+const opn = require("open");
+const express = require("express");
+const app = express();
+const server = require("http").createServer(app);
+const mineflayer = require("mineflayer");
+const Chunk = require("prismarine-chunk")(version);
+const vec3 = require("vec3");
+const Convert = require("ansi-to-html");
+const convert = new Convert();
+const helmet = require("helmet");
+const compression = require("compression");
 const WebSocket = require("ws");
 const { encode, decode } = require("@msgpack/msgpack");
-var port = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
 app.use(
     helmet({
@@ -26,14 +26,14 @@ const wss = new WebSocket.Server({
     clientTracking: false,
 });
 
-var mode = process.argv[2];
+const mode = process.argv[2];
 if (mode === "production") {
     app.use(express.static(`${__dirname}/src/dist`));
 } else if (mode === "development") {
-    var webpack = require("webpack");
-    var middleware = require("webpack-dev-middleware");
-    var devconfig = require(`${__dirname}/src/webpack.dev.js`);
-    var compiler = webpack(devconfig);
+    const webpack = require("webpack");
+    const middleware = require("webpack-dev-middleware");
+    const devconfig = require(`${__dirname}/src/webpack.dev.js`);
+    const compiler = webpack(devconfig);
     app.use(middleware(compiler));
 } else {
     console.log("Incorrect mode!");
@@ -43,10 +43,10 @@ server.listen(port, function () {
     return console.log(`Server is running on \x1b[34m*:${port}\x1b[0m`);
 });
 
-var botByNick = new Map();
+const botByNick = new Map();
 
 wss.on("connection", (socket, req) => {
-    var query = new URLSearchParams(req.url.substr(2, req.url.length));
+    const query = new URLSearchParams(req.url.substr(2, req.url.length));
     const emit = (type, ...data) => {
         socket.send(encode([type, ...data]));
     };
@@ -56,8 +56,8 @@ wss.on("connection", (socket, req) => {
         return;
     }
     console.log(`[\x1b[32m+\x1b[0m] ${query.get("nick")}`);
-    var heldItem = null;
-    var bot = mineflayer.createBot({
+    let heldItem = null;
+    const bot = mineflayer.createBot({
         host: query.get("server"),
         port: query.get("port") !== "null" ? query.get("port") : null,
         username: query.get("nick"),
@@ -67,7 +67,7 @@ wss.on("connection", (socket, req) => {
     });
     botByNick.set(query.get("nick"), bot);
     bot._client.on("map_chunk", function (packet) {
-        var cell = new Chunk();
+        const cell = new Chunk();
         cell.load(packet.chunkData, packet.bitMap, true, true);
         emit("mapChunk", cell.sections, packet.x, packet.z);
     });
@@ -127,19 +127,19 @@ wss.on("connection", (socket, req) => {
     bot.on("game", function () {
         emit("game", bot.game);
     });
-    var inv = "";
-    var interval = setInterval(function () {
-        var inv_new = JSON.stringify(bot.inventory.slots);
+    let inv = "";
+    const interval = setInterval(function () {
+        const inv_new = JSON.stringify(bot.inventory.slots);
         if (inv !== inv_new) {
             inv = inv_new;
             emit("inventory", bot.inventory.slots);
         }
-        var entities = {
+        let entities = {
             mobs: [],
             players: [],
         };
-        for (var k in bot.entities) {
-            var v = bot.entities[k];
+        for (let k in bot.entities) {
+            const v = bot.entities[k];
             if (v.type === "mob") {
                 entities.mobs.push([v.position.x, v.position.y, v.position.z]);
             }
@@ -166,7 +166,7 @@ wss.on("connection", (socket, req) => {
             }
         });
         handlers.set("blockPlace", function (pos, vec) {
-            var block = bot.blockAt(new vec3(...pos));
+            const block = bot.blockAt(new vec3(...pos));
             if (heldItem !== void 0 && heldItem !== null) {
                 console.log(heldItem);
                 bot.placeBlock(block, new vec3(...vec), function (r) {
@@ -175,7 +175,7 @@ wss.on("connection", (socket, req) => {
             }
         });
         handlers.set("invc", function (num) {
-            var item = bot.inventory.slots[num + 36];
+            const item = bot.inventory.slots[num + 36];
             if (item !== null && item !== void 0) {
                 bot.equip(item, "hand");
             } else if (heldItem !== void 0) {
@@ -197,9 +197,9 @@ wss.on("connection", (socket, req) => {
             bot.look(...data);
         });
         handlers.set("dig", function (pos) {
-            var block = bot.blockAt(vec3(pos[0], pos[1] - 16, pos[2]));
+            const block = bot.blockAt(vec3(pos[0], pos[1] - 16, pos[2]));
             if (block !== null) {
-                var digTime = bot.digTime(block);
+                const digTime = bot.digTime(block);
                 if (bot.targetDigBlock !== null) {
                     console.log("Already digging...");
                     bot.stopDigging();

@@ -39,11 +39,11 @@ class BlockBreak {
             return (this.cursor.material.visible = false);
         } else {
             this.cursor.material.visible = true;
-            var toxX = 6 + state;
-            var toxY = 8;
-            var q = 1 / 27;
+            const toxX = 6 + state;
+            const toxY = 8;
+            const q = 1 / 27;
             for (
-                var i = 0;
+                let i = 0;
                 i <= this.cursor.geometry.attributes.uv.array.length;
                 i++
             ) {
@@ -84,13 +84,13 @@ class BlockBreak {
     }
 
     updatePos(cb) {
-        var rayBlock = this.game.world.getRayBlock();
+        const rayBlock = this.game.world.getRayBlock();
         if (JSON.stringify(this.lastPos) !== JSON.stringify(rayBlock)) {
             this.lastPos = rayBlock;
             cb();
         }
         if (rayBlock) {
-            var pos = rayBlock.posBreak;
+            const pos = rayBlock.posBreak;
             this.cursor.position.set(...pos);
             this.cursor.visible = true;
             this.cursorOut.position.set(...pos);
@@ -103,7 +103,7 @@ class BlockBreak {
 
     digRequest() {
         console.log("REQUESTING DIGGING...");
-        var pos = this.game.world.getRayBlock().posBreak;
+        const pos = this.game.world.getRayBlock().posBreak;
         if (pos !== void 0) {
             this.game.socket.emit("dig", pos);
             this.done = false;
@@ -111,7 +111,7 @@ class BlockBreak {
     }
 
     startDigging(time) {
-        var ile = 0;
+        let ile = 0;
         if (this.isDigging === false) {
             this.isDigging = true;
             this.int = setInterval(() => {

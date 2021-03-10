@@ -4,8 +4,8 @@ class BlockPlace {
     }
 
     placeBlock() {
-        var pos = this.game.world.getRayBlock();
-        var vector = [
+        const pos = this.game.world.getRayBlock();
+        const vector = [
             pos.posPlace[0] - pos.posBreak[0],
             pos.posPlace[1] - pos.posBreak[1],
             pos.posPlace[2] - pos.posBreak[2],

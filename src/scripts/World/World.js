@@ -6,7 +6,7 @@ import vec3 from "vec3";
 import chunkWorker from "./chunk.worker.js";
 
 /** Class to manage world (chunks,generating terrain,etc.) */
-var World = class World {
+const World = class World {
     /**
      * World init function
      * @param game - Object of main game
@@ -54,8 +54,8 @@ var World = class World {
      * @param cell - player cell
      */
     updateRenderOrder(cell) {
-        for (var i in this.cellMesh) {
-            var x = new vec3(this.chunkTerrain.strToVec(i));
+        for (let i in this.cellMesh) {
+            const x = new vec3(this.chunkTerrain.strToVec(i));
             this.cellMesh[i].renderOrder = -vec3(...cell).distanceTo(x);
         }
     }
@@ -91,7 +91,7 @@ var World = class World {
      * Resets all chunk meshes
      */
     resetWorld() {
-        for (var i in this.cellMesh) {
+        for (let i in this.cellMesh) {
             if (this.cellMesh[i].geometry !== void 0) {
                 this.cellMesh[i].geometry.dispose();
                 this.game.scene.remove(this.cellMesh[i]);
@@ -109,10 +109,10 @@ var World = class World {
      * @param data - cell Data
      */
     updateChunk(data) {
-        var cellId = this.chunkTerrain.vecToStr(...data.info);
-        var cell = data.cell;
-        var mesh = this.cellMesh[cellId];
-        var geometry = new BufferGeometry();
+        const cellId = this.chunkTerrain.vecToStr(...data.info);
+        const cell = data.cell;
+        const mesh = this.cellMesh[cellId];
+        const geometry = new BufferGeometry();
         geometry.setAttribute(
             "position",
             new BufferAttribute(new Float32Array(cell.positions), 3)
@@ -158,34 +158,34 @@ var World = class World {
         end.x += 0.5;
         end.y += 0.5;
         end.z += 0.5;
-        var dx = end.x - start.x;
-        var dy = end.y - start.y;
-        var dz = end.z - start.z;
-        var lenSq = dx * dx + dy * dy + dz * dz;
-        var len = Math.sqrt(lenSq);
+        let dx = end.x - start.x;
+        let dy = end.y - start.y;
+        let dz = end.z - start.z;
+        const lenSq = dx * dx + dy * dy + dz * dz;
+        const len = Math.sqrt(lenSq);
         dx /= len;
         dy /= len;
         dz /= len;
-        var t = 0.0;
-        var ix = Math.floor(start.x);
-        var iy = Math.floor(start.y);
-        var iz = Math.floor(start.z);
-        var stepX = dx > 0 ? 1 : -1;
-        var stepY = dy > 0 ? 1 : -1;
-        var stepZ = dz > 0 ? 1 : -1;
-        var txDelta = Math.abs(1 / dx);
-        var tyDelta = Math.abs(1 / dy);
-        var tzDelta = Math.abs(1 / dz);
-        var xDist = stepX > 0 ? ix + 1 - start.x : start.x - ix;
-        var yDist = stepY > 0 ? iy + 1 - start.y : start.y - iy;
-        var zDist = stepZ > 0 ? iz + 1 - start.z : start.z - iz;
-        var txMax = txDelta < 2e308 ? txDelta * xDist : 2e308;
-        var tyMax = tyDelta < 2e308 ? tyDelta * yDist : 2e308;
-        var tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
-        var steppedIndex = -1;
+        let t = 0.0;
+        let ix = Math.floor(start.x);
+        let iy = Math.floor(start.y);
+        let iz = Math.floor(start.z);
+        const stepX = dx > 0 ? 1 : -1;
+        const stepY = dy > 0 ? 1 : -1;
+        const stepZ = dz > 0 ? 1 : -1;
+        const txDelta = Math.abs(1 / dx);
+        const tyDelta = Math.abs(1 / dy);
+        const tzDelta = Math.abs(1 / dz);
+        const xDist = stepX > 0 ? ix + 1 - start.x : start.x - ix;
+        const yDist = stepY > 0 ? iy + 1 - start.y : start.y - iy;
+        const zDist = stepZ > 0 ? iz + 1 - start.z : start.z - iz;
+        let txMax = txDelta < 2e308 ? txDelta * xDist : 2e308;
+        let tyMax = tyDelta < 2e308 ? tyDelta * yDist : 2e308;
+        let tzMax = tzDelta < 2e308 ? tzDelta * zDist : 2e308;
+        let steppedIndex = -1;
         while (t <= len) {
-            var block = this.chunkTerrain.getBlock(ix, iy, iz);
-            var voxel;
+            const block = this.chunkTerrain.getBlock(ix, iy, iz);
+            let voxel;
             if (
                 block.name === "air" ||
                 block.name === "cave_air" ||
@@ -244,16 +244,16 @@ var World = class World {
      * @returns Pointing block
      */
     getRayBlock() {
-        var start = new Vector3().setFromMatrixPosition(
+        const start = new Vector3().setFromMatrixPosition(
             this.game.camera.matrixWorld
         );
-        var end = new Vector3().set(0, 0, 1).unproject(this.game.camera);
-        var intersection = this.intersectsRay(start, end);
+        const end = new Vector3().set(0, 0, 1).unproject(this.game.camera);
+        const intersection = this.intersectsRay(start, end);
         if (intersection) {
-            var posPlace = intersection.position.map(function (v, ndx) {
+            const posPlace = intersection.position.map(function (v, ndx) {
                 return Math.floor(v + intersection.normal[ndx] * 0.5);
             });
-            var posBreak = intersection.position.map(function (v, ndx) {
+            const posBreak = intersection.position.map(function (v, ndx) {
                 return Math.floor(v + intersection.normal[ndx] * -0.5);
             });
             return { posPlace, posBreak };
@@ -266,8 +266,8 @@ var World = class World {
      * @param radius - radius from player
      */
     updateChunksAroundPlayer(radius) {
-        var pos = this.game.camera.position;
-        var cell = this.chunkTerrain.computeChunkForVoxel(
+        const pos = this.game.camera.position;
+        const cell = this.chunkTerrain.computeChunkForVoxel(
             Math.floor(pos.x + 0.5),
             Math.floor(pos.y + 0.5),
             Math.floor(pos.z + 0.5)
@@ -299,11 +299,11 @@ var World = class World {
      * @param z - section z
      */
     computeSections(sections, x, z) {
-        var result = SectionComputer({ sections, x, z });
+        const result = SectionComputer({ sections, x, z });
         // console.log(result);
-        var results = [];
-        for (var i in result) {
-            var j = result[i];
+        const results = [];
+        for (let i in result) {
+            const j = result[i];
             if (j !== null) {
                 results.push(this.setChunk(j.x, j.y, j.z, j.cell));
             } else {

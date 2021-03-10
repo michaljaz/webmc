@@ -1,4 +1,4 @@
-var modulo = function (a, b) {
+const modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
 
@@ -30,8 +30,8 @@ class BitArray {
         if (!(index >= 0 && index < this.capacity)) {
             console.error("index is out of bounds");
         }
-        var startLongIndex = Math.floor(index / this.valuesPerLong);
-        var indexInLong =
+        const startLongIndex = Math.floor(index / this.valuesPerLong);
+        const indexInLong =
             (index - startLongIndex * this.valuesPerLong) * this.bitsPerValue;
         if (indexInLong >= 32) {
             let indexInStartLong = indexInLong - 32;
@@ -40,43 +40,42 @@ class BitArray {
         }
         let startLong = this.data[startLongIndex * 2];
         let indexInStartLong = indexInLong;
-        var result = startLong >>> indexInStartLong;
-        var endBitOffset = indexInStartLong + this.bitsPerValue;
+        let result = startLong >>> indexInStartLong;
+        const endBitOffset = indexInStartLong + this.bitsPerValue;
         if (endBitOffset > 32) {
-            var endLong = this.data[startLongIndex * 2 + 1];
+            const endLong = this.data[startLongIndex * 2 + 1];
             result |= endLong << (32 - indexInStartLong);
         }
         return result & this.valueMask;
     }
 }
 
-var ChunkDecoder = class ChunkDecoder {
+const ChunkDecoder = class ChunkDecoder {
     getBlockIndex(pos) {
         return (pos.y << 8) | (pos.z << 4) | pos.x;
     }
 
     cvo(voxelX, voxelY, voxelZ) {
-        var x, y, z;
-        x = modulo(voxelX, 16) | 0;
-        y = modulo(voxelY, 16) | 0;
-        z = modulo(voxelZ, 16) | 0;
+        const x = modulo(voxelX, 16) | 0;
+        const y = modulo(voxelY, 16) | 0;
+        const z = modulo(voxelZ, 16) | 0;
         return y * 16 * 16 + z * 16 + x;
     }
 
     computeSections(packet) {
-        var sections = packet.sections;
-        var num = 0;
-        var result = [];
-        for (var j = 0; j < sections.length; j++) {
-            var i = sections[j];
+        const sections = packet.sections;
+        let num = 0;
+        const result = [];
+        for (let j = 0; j < sections.length; j++) {
+            const i = sections[j];
             num += 1;
             if (i !== null) {
-                var palette = i.palette;
-                var data = new BitArray(i.data);
-                var cell = new Uint32Array(16 * 16 * 16);
-                for (var x = 0; x < 16; x++) {
-                    for (var y = 0; y < 16; y++) {
-                        for (var z = 0; z < 16; z++) {
+                const palette = i.palette;
+                const data = new BitArray(i.data);
+                const cell = new Uint32Array(16 * 16 * 16);
+                for (let x = 0; x < 16; x++) {
+                    for (let y = 0; y < 16; y++) {
+                        for (let z = 0; z < 16; z++) {
                             cell[this.cvo(x, y, z)] =
                                 palette[
                                     data.get(this.getBlockIndex({ x, y, z }))
@@ -98,9 +97,9 @@ var ChunkDecoder = class ChunkDecoder {
     }
 };
 
-var cd = new ChunkDecoder();
+const cd = new ChunkDecoder();
 
-var SectionComputer = function (data) {
+const SectionComputer = function (data) {
     return cd.computeSections(data);
 };
 

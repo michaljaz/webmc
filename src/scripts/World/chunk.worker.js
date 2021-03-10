@@ -2,7 +2,7 @@ import { ChunkTerrain } from "./ChunkTerrain.js";
 import { ChunkMesher } from "./ChunkMesher.js";
 import vec3 from "vec3";
 
-var terrain = null;
+let terrain = null;
 
 class TerrainManager {
     constructor(data) {
@@ -31,15 +31,15 @@ class TerrainManager {
     }
 
     distance(chunkId) {
-        var data = this.chunkTerrain.strToVec(chunkId);
-        var chunk = vec3(...data);
-        var chunkP = vec3(...this.playerChunk);
+        const data = this.chunkTerrain.strToVec(chunkId);
+        const chunk = vec3(...data);
+        const chunkP = vec3(...this.playerChunk);
         return chunkP.distanceTo(chunk);
     }
 
     setVoxel(data) {
         this.chunkTerrain.setVoxel(...data);
-        var chunkId = this.chunkTerrain.vecToStr(
+        const chunkId = this.chunkTerrain.vecToStr(
             ...terrain.chunkTerrain.computeChunkForVoxel(
                 data[0],
                 data[1],
@@ -47,9 +47,9 @@ class TerrainManager {
             )
         );
         this.chunkNeedsUpdate[chunkId] = true;
-        for (var l = 0; l < this.neighbours.length; l++) {
-            var nei = this.neighbours[l];
-            var neiChunkId = this.chunkTerrain.vecToStr(
+        for (let l = 0; l < this.neighbours.length; l++) {
+            const nei = this.neighbours[l];
+            const neiChunkId = this.chunkTerrain.vecToStr(
                 ...this.chunkTerrain.computeChunkForVoxel(
                     data[0] + nei[0],
                     data[1] + nei[1],
@@ -62,11 +62,15 @@ class TerrainManager {
 
     setChunk(data) {
         this.chunkTerrain.setChunk(data[0], data[1], data[2], data[3]);
-        var chunkId = terrain.chunkTerrain.vecToStr(data[0], data[1], data[2]);
+        const chunkId = terrain.chunkTerrain.vecToStr(
+            data[0],
+            data[1],
+            data[2]
+        );
         this.chunkNeedsUpdate[chunkId] = true;
-        for (var l = 0; l < this.neighbours.length; l++) {
-            var nei = this.neighbours[l];
-            var neiChunkId = this.chunkTerrain.vecToStr(
+        for (let l = 0; l < this.neighbours.length; l++) {
+            const nei = this.neighbours[l];
+            const neiChunkId = this.chunkTerrain.vecToStr(
                 data[0] + nei[0],
                 data[1] + nei[1],
                 data[2] + nei[2]
@@ -76,11 +80,11 @@ class TerrainManager {
     }
 
     genNearestChunk() {
-        var nearestChunkId = "";
-        var nearestDistance = -1;
-        var isNearest = false;
-        for (var chunkId in this.chunkNeedsUpdate) {
-            var dist = this.distance(chunkId);
+        let nearestChunkId = "";
+        let nearestDistance = -1;
+        let isNearest = false;
+        for (let chunkId in this.chunkNeedsUpdate) {
+            const dist = this.distance(chunkId);
             if (
                 (nearestDistance === -1 || nearestDistance > dist) &&
                 dist <= this.renderRadius
@@ -91,7 +95,7 @@ class TerrainManager {
             }
         }
         if (isNearest) {
-            var data = this.chunkTerrain.strToVec(nearestChunkId);
+            const data = this.chunkTerrain.strToVec(nearestChunkId);
             this.generatedChunks[nearestChunkId] = true;
             postMessage({
                 type: "cellGeo",
@@ -106,8 +110,8 @@ class TerrainManager {
     }
 
     removeChunks() {
-        for (var chunkId in this.generatedChunks) {
-            var dist = this.distance(chunkId);
+        for (let chunkId in this.generatedChunks) {
+            const dist = this.distance(chunkId);
             if (dist > this.renderRadius) {
                 delete this.generatedChunks[chunkId];
                 this.chunkNeedsUpdate[chunkId] = true;
@@ -134,8 +138,8 @@ class TerrainManager {
 }
 
 addEventListener("message", function (e) {
-    var type = e.data.type;
-    var data = e.data.data;
+    const type = e.data.type;
+    const data = e.data.data;
     switch (type) {
         case "init":
             terrain = new TerrainManager(data);

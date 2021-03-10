@@ -9,10 +9,10 @@ class TextureAtlasCreator {
     }
 
     gen(tick) {
-        var multi = {};
+        const multi = {};
         for (let i in this.textureMapping) {
             if (i.includes("@")) {
-                var xd = this.decodeName(i);
+                const xd = this.decodeName(i);
                 if (multi[xd.pref] === void 0) {
                     multi[xd.pref] = xd;
                 } else {
@@ -21,23 +21,23 @@ class TextureAtlasCreator {
                 }
             }
         }
-        var canvasx = document.createElement("canvas");
-        var ctx = canvasx.getContext("2d");
+        const canvasx = document.createElement("canvas");
+        const ctx = canvasx.getContext("2d");
         canvasx.width = this.willSize * 16;
         canvasx.height = this.willSize * 16;
-        var toxelX = 1;
-        var toxelY = 1;
+        let toxelX = 1;
+        let toxelY = 1;
         for (let i in this.textureMapping) {
             if (i.includes("@")) {
-                xd = this.decodeName(i);
+                const xd = this.decodeName(i);
                 if (multi[xd.pref].loaded === void 0) {
                     multi[xd.pref].loaded = true;
-                    var lol = this.getToxelForTick(
+                    const lol = this.getToxelForTick(
                         tick,
                         multi[xd.pref].x + 1,
                         multi[xd.pref].y + 1
                     );
-                    var texmap = this.textureMapping[
+                    const texmap = this.textureMapping[
                         `${xd.pref}@${lol.col}@${lol.row}`
                     ];
                     ctx.drawImage(
@@ -80,31 +80,31 @@ class TextureAtlasCreator {
     }
 
     decodeName(i) {
-        var m = null;
+        let m = null;
         for (let j = 0; j < i.length; j++) {
             if (i[j] === "@") {
                 m = j;
                 break;
             }
         }
-        var pref = i.substr(0, m);
-        var sub = i.substr(m, i.length);
-        var m2 = null;
+        const pref = i.substr(0, m);
+        const sub = i.substr(m, i.length);
+        let m2 = null;
         for (let j = 0; j < sub.length; j++) {
             if (sub[j] === "@") {
                 m2 = j;
             }
         }
-        var x = parseInt(sub.substr(1, m2 - 1));
-        var y = parseInt(sub.substr(m2 + 1, sub.length));
+        const x = parseInt(sub.substr(1, m2 - 1));
+        const y = parseInt(sub.substr(m2 + 1, sub.length));
         return { pref, x, y };
     }
 
     getToxelForTick(tick, w, h) {
         tick = (tick % (w * h)) + 1;
         //option1
-        var col = (tick - 1) % w;
-        var row = Math.ceil(tick / w) - 1;
+        let col = (tick - 1) % w;
+        let row = Math.ceil(tick / w) - 1;
         //option2
         col = Math.ceil(tick / h) - 1;
         row = (tick - 1) % h;
@@ -126,18 +126,18 @@ class AnimatedTextureAtlas {
             textureX: this.game.al.get("blocksAtlasFull"),
             textureMapping: this.game.al.get("blocksMappingFull"),
         });
-        var savedTextures = [];
-        for (var i = 0; i < 10; i++) {
-            var t = this.atlasCreator.gen(i).toDataURL();
-            var tekstura = new TextureLoader().load(t);
+        const savedTextures = [];
+        for (let i = 0; i < 10; i++) {
+            const t = this.atlasCreator.gen(i).toDataURL();
+            const tekstura = new TextureLoader().load(t);
             tekstura.magFilter = NearestFilter;
             tekstura.minFilter = NearestFilter;
             savedTextures.push(tekstura);
         }
-        var tickq = 0;
+        let tickq = 0;
         setInterval(() => {
             tickq++;
-            var tekst = savedTextures[tickq % 9];
+            const tekst = savedTextures[tickq % 9];
             this.material.map = tekst;
             this.material.map.needsUpdate = true;
         }, 100);

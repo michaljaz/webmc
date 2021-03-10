@@ -1,4 +1,4 @@
-var modulo = function (a, b) {
+const modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
 
@@ -27,9 +27,9 @@ class ChunkTerrain {
     }
 
     computeVoxelOffset(voxelX, voxelY, voxelZ) {
-        var x = modulo(voxelX, this.chunkSize) | 0;
-        var y = modulo(voxelY, this.chunkSize) | 0;
-        var z = modulo(voxelZ, this.chunkSize) | 0;
+        const x = modulo(voxelX, this.chunkSize) | 0;
+        const y = modulo(voxelY, this.chunkSize) | 0;
+        const z = modulo(voxelZ, this.chunkSize) | 0;
         return y * this.chunkSize * this.chunkSize + z * this.chunkSize + x;
     }
 
@@ -42,10 +42,10 @@ class ChunkTerrain {
     }
 
     addChunkForVoxel(voxelX, voxelY, voxelZ) {
-        var cellId = this.vecToStr(
+        const cellId = this.vecToStr(
             ...this.computeChunkForVoxel(voxelX, voxelY, voxelZ)
         );
-        var cell = this.chunks[cellId];
+        let cell = this.chunks[cellId];
         if (!cell) {
             cell = new Uint32Array(
                 this.chunkSize * this.chunkSize * this.chunkSize
@@ -56,27 +56,27 @@ class ChunkTerrain {
     }
 
     getChunkForVoxel(voxelX, voxelY, voxelZ) {
-        var cellId = this.vecToStr(
+        const cellId = this.vecToStr(
             ...this.computeChunkForVoxel(voxelX, voxelY, voxelZ)
         );
         return this.chunks[cellId];
     }
 
     setVoxel(voxelX, voxelY, voxelZ, value) {
-        var cell = this.getChunkForVoxel(voxelX, voxelY, voxelZ);
+        let cell = this.getChunkForVoxel(voxelX, voxelY, voxelZ);
         if (!cell) {
             cell = this.addChunkForVoxel(voxelX, voxelY, voxelZ);
         }
-        var voff = this.computeVoxelOffset(voxelX, voxelY, voxelZ);
+        const voff = this.computeVoxelOffset(voxelX, voxelY, voxelZ);
         cell[voff] = value;
     }
 
     getVoxel(voxelX, voxelY, voxelZ) {
-        var cell = this.getChunkForVoxel(voxelX, voxelY, voxelZ);
+        const cell = this.getChunkForVoxel(voxelX, voxelY, voxelZ);
         if (!cell) {
             return 0;
         }
-        var voff = this.computeVoxelOffset(voxelX, voxelY, voxelZ);
+        const voff = this.computeVoxelOffset(voxelX, voxelY, voxelZ);
         return cell[voff];
     }
 
@@ -85,8 +85,8 @@ class ChunkTerrain {
     }
 
     getBlock(blockX, blockY, blockZ) {
-        var stateId = this.getVoxel(blockX, blockY, blockZ);
-        var def = this.blocksDef[stateId];
+        const stateId = this.getVoxel(blockX, blockY, blockZ);
+        const def = this.blocksDef[stateId];
         if (def !== void 0) {
             return {
                 name: def[0],

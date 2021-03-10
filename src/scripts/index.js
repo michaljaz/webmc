@@ -74,7 +74,7 @@ class Game {
             if (this.dimBg[dim] == undefined) {
                 dim = "minecraft:overworld";
             }
-            var bg = this.dimBg[dim];
+            const bg = this.dimBg[dim];
             this.scene.background = new Color(...bg);
             this.distanceBasedFog.color.x = bg[0];
             this.distanceBasedFog.color.y = bg[1];
@@ -120,7 +120,7 @@ class Game {
         });
         this.socket.on("move", (pos) => {
             this.playerPos = [pos.x - 0.5, pos.y, pos.z - 0.5];
-            var to = {
+            const to = {
                 x: pos.x - 0.5,
                 y: pos.y + this.headHeight,
                 z: pos.z - 0.5,
@@ -177,8 +177,8 @@ class Game {
     }
 
     render() {
-        var width = window.innerWidth;
-        var height = window.innerHeight;
+        const width = window.innerWidth;
+        const height = window.innerHeight;
         if (this.canvas.width !== width || this.canvas.height !== height) {
             this.canvas.width = width;
             this.canvas.height = height;

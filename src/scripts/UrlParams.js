@@ -1,7 +1,7 @@
 import swal from "sweetalert";
 
-var UrlParams = function (game, cb) {
-    var nameList = [
+const UrlParams = function (game, cb) {
+    const nameList = [
         "Time",
         "Past",
         "Future",
@@ -175,7 +175,7 @@ var UrlParams = function (game, cb) {
         "Vortex",
         "Paradox",
     ];
-    var finalName = "";
+    let finalName = "";
     finalName = nameList[Math.floor(Math.random() * nameList.length)];
     finalName += nameList[Math.floor(Math.random() * nameList.length)];
 
@@ -183,7 +183,7 @@ var UrlParams = function (game, cb) {
     game.server = new URL(document.location).searchParams.get("server");
     game.serverPort = new URL(document.location).searchParams.get("port");
     game.premium = new URL(document.location).searchParams.get("premium");
-    var reload = false;
+    let reload = false;
     if (game.nick === "" || game.nick === null) {
         reload = true;
         game.nick = finalName;

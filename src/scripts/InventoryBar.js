@@ -29,7 +29,7 @@ class InventoryBar {
     }
 
     setHp(points) {
-        var lista = {};
+        const lista = {};
         for (let i = 1; i <= 10; i++) {
             lista[i - 1] = "empty";
             $(".hp")
@@ -58,8 +58,8 @@ class InventoryBar {
     }
 
     setFood(points) {
-        var lista = {};
-        for (var i = 1; i <= 10; i++) {
+        const lista = {};
+        for (let i = 1; i <= 10; i++) {
             lista[10 - i] = "empty";
             $(".food")
                 .eq(10 - i)
@@ -102,7 +102,7 @@ class InventoryBar {
     }
 
     updateInv(inv) {
-        for (var i = 36; i <= 44; i++) {
+        for (let i = 36; i <= 44; i++) {
             if (inv[i] !== null) {
                 $(".inv_box")
                     .eq(i - 36)
@@ -122,9 +122,9 @@ class InventoryBar {
     }
 
     updateItems() {
-        var list = $(".item");
-        for (var i = 0; i < list.length; i++) {
-            var url;
+        const list = $(".item");
+        for (let i = 0; i < list.length; i++) {
+            let url;
             if ($(list[i]).attr("data-texture") === "") {
                 url = "";
             } else {

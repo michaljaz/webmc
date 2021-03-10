@@ -38,7 +38,7 @@ async function Setup(game) {
         game.distanceBasedFog = new DistanceBasedFog(game);
         UrlParams(game, (password) => {
             console.warn(gpuInfo());
-            var prefix;
+            let prefix;
             if (document.location.protocol === "https:") {
                 prefix = "wss";
             } else {
@@ -57,7 +57,7 @@ async function Setup(game) {
             game.chat = new Chat(game);
             game.inv_bar = new InventoryBar(game);
             game.distanceBasedFog.addShaderToMaterial(game.world.material);
-            var gui = new dat.GUI();
+            const gui = new dat.GUI();
             game.params = {
                 chunkdist: 3,
             };
@@ -66,7 +66,7 @@ async function Setup(game) {
             gui.add(game.world.material, "wireframe")
                 .name("Wireframe")
                 .listen();
-            var chunkDist = gui
+            const chunkDist = gui
                 .add(game.params, "chunkdist", 0, 10, 1)
                 .name("Render distance")
                 .listen();
@@ -76,7 +76,7 @@ async function Setup(game) {
                 console.log(val);
             });
             game.playerImpulse = function () {
-                var to = {
+                const to = {
                     x: game.playerPos[0],
                     y: game.playerPos[1] + game.headHeight,
                     z: game.playerPos[2],

@@ -14,17 +14,17 @@ class AssetLoader {
 
     async load(assets) {
         return new Promise((resolve) => {
-            var textureLoader = new TextureLoader();
-            var fbxl = new FBXLoader();
-            var assetsNumber = Object.keys(assets).length;
-            var assetsLoaded = 0;
+            const textureLoader = new TextureLoader();
+            const fbxl = new FBXLoader();
+            const assetsNumber = Object.keys(assets).length;
+            let assetsLoaded = 0;
 
             for (const assetName in assets) {
                 // eslint-disable-next-line no-prototype-builtins
                 if (!assets.hasOwnProperty(assetName)) continue;
 
                 let asset = assets[assetName];
-
+                const img = new Image();
                 switch (asset.type) {
                     case "texture":
                         textureLoader.load(asset.path, (texture) => {
@@ -45,7 +45,6 @@ class AssetLoader {
                         });
                         break;
                     case "image":
-                        var img = new Image();
                         img.onload = () => {
                             this.assets.set(assetName, img);
                             assetsLoaded++;

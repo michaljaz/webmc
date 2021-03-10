@@ -1,6 +1,6 @@
 import TWEEN from "@tweenjs/tween.js";
 import { MathUtils } from "three";
-var modulo = function (a, b) {
+const modulo = function (a, b) {
     return ((+a % (b = +b)) + b) % b;
 };
 class EventHandler {
@@ -20,7 +20,7 @@ class EventHandler {
         this.setState("menu");
         document.exitPointerLock =
             document.exitPointerLock || document.mozExitPointerLock;
-        var focus = 0;
+        let focus = 0;
         this.game.inv_bar.setFocus(focus);
         $(window).on("wheel", (e) => {
             if (this.gameState === "gameLock") {
@@ -35,7 +35,7 @@ class EventHandler {
         });
         $(document).on("keydown", (z) => {
             this.keys[z.code] = true;
-            for (var i = 1; i < 10; i++) {
+            for (let i = 1; i < 10; i++) {
                 if (z.code === `Digit${i}` && this.gameState === "gameLock") {
                     this.game.inv_bar.setFocus(i - 1);
                     focus = i - 1;
@@ -96,11 +96,11 @@ class EventHandler {
                 this.gameState === "gameLock"
             ) {
                 this.game.socket.emit("move", this.controls[z.code], true);
+                const to = {
+                    fov: this.game.fov.sprint,
+                };
                 switch (this.controls[z.code]) {
                     case "sprint":
-                        var to = {
-                            fov: this.game.fov.sprint,
-                        };
                         new TWEEN.Tween(this.game.camera)
                             .to(to, 200)
                             .easing(TWEEN.Easing.Quadratic.Out)
@@ -121,11 +121,11 @@ class EventHandler {
             delete this.keys[z.code];
             if (this.controls[z.code] !== undefined) {
                 this.game.socket.emit("move", this.controls[z.code], false);
+                const to = {
+                    fov: this.game.fov.normal,
+                };
                 switch (this.controls[z.code]) {
                     case "sprint":
-                        var to = {
-                            fov: this.game.fov.normal,
-                        };
                         new TWEEN.Tween(this.game.camera)
                             .to(to, 200)
                             .easing(TWEEN.Easing.Quadratic.Out)
@@ -150,7 +150,7 @@ class EventHandler {
                 this.game.socket.emit("move", this.controls[el], false);
             });
         };
-        var lockChangeAlert = () => {
+        const lockChangeAlert = () => {
             if (
                 document.pointerLockElement === this.game.canvas ||
                 document.mozPointerLockElement === this.game.canvas

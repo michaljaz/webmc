@@ -38,8 +38,8 @@ class Entities {
     }
 
     update(entities) {
-        var offset = [-0.5, 16, -0.5];
-        var num_mobs = 0;
+        const offset = [-0.5, 16, -0.5];
+        let num_mobs = 0;
         this.mobMesh.count = entities.mobs.length;
         num_mobs = 0;
         for (let i in entities.mobs) {
@@ -52,7 +52,7 @@ class Entities {
             this.mobMesh.setMatrixAt(num_mobs++, this.dummy.matrix);
         }
         this.mobMesh.instanceMatrix.needsUpdate = true;
-        var num_players = 0;
+        let num_players = 0;
         for (let i in entities.players) {
             if (entities.players[i][0] !== this.game.nick) {
                 num_players++;
