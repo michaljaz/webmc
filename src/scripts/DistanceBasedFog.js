@@ -34,23 +34,10 @@ class DistanceBasedFog {
             shader.fragmentShader = shader.fragmentShader.replace(
                 "gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
                 [
-                    "float dist=length(u_viewPos-vViewPosition);",
-                    "float fogAmount = smoothstep(u_farnear.x, u_farnear.y, dist);",
-                    "gl_FragColor = vec4( outgoingLight, diffuseColor.a );",
-                    "gl_FragColor = mix(gl_FragColor,u_fogColor,max(0.1,fogAmount));",
-                ].join("\n")
-            );
-            shader.vertexShader = [
-                "uniform float time;",
-                "uniform mat4 u_worldView;",
-                "attribute vec4 a_position;",
-                shader.vertexShader,
-            ].join("\n");
-            shader.vertexShader = shader.vertexShader.replace(
-                "#include <fog_vertex>",
-                [
-                    "vec4 vViewPosition4 = modelViewMatrix * vec4(position, 1);",
-                    "vViewPosition = vViewPosition4.xyz;",
+                    "float dist = length(u_viewPos - vViewPosition);",
+                    "float fogFactor = smoothstep(u_farnear.x, u_farnear.y, dist);",
+                    "gl_FragColor = vec4(outgoingLight, diffuseColor.a );",
+                    "gl_FragColor = mix(gl_FragColor, u_fogColor, max(0.1, fogFactor));",
                 ].join("\n")
             );
         };

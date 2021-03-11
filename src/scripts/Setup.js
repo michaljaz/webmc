@@ -57,6 +57,8 @@ async function Setup(game) {
             game.chat = new Chat(game);
             game.inv_bar = new InventoryBar(game);
             game.distanceBasedFog.addShaderToMaterial(game.world.material);
+            game.distanceBasedFog.addShaderToMaterial(game.ent.mobMaterial);
+            game.distanceBasedFog.addShaderToMaterial(game.ent.playerMaterial);
             const gui = new dat.GUI();
             game.params = {
                 chunkdist: 3,
