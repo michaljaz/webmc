@@ -44,14 +44,14 @@ server.listen(port, function () {
 });
 
 const botByNick = new Map();
-
+const serverByName = new Map();
 wss.on("connection", (socket, req) => {
     const query = new URLSearchParams(req.url.substr(2, req.url.length));
     const emit = (type, ...data) => {
         socket.send(encode([type, ...data]));
     };
 
-    if (botByNick.get(query.get("nick")) !== undefined) {
+    if (botByNick.get([query.get("nick"),query.get("server")]) !== undefined) {
         emit("alreadyPlaying");
         return;
     }
@@ -65,7 +65,7 @@ wss.on("connection", (socket, req) => {
         password:
             query.get("premium") === "true" ? query.get("password") : undefined,
     });
-    botByNick.set(query.get("nick"), bot);
+    botByNick.set([query.get("nick"),query.get("server")], bot);
     bot._client.on("map_chunk", function (packet) {
         const cell = new Chunk();
         cell.load(packet.chunkData, packet.bitMap, true, true);
@@ -223,7 +223,7 @@ wss.on("connection", (socket, req) => {
             try {
                 clearInterval(interval);
                 console.log(`[\x1b[31m-\x1b[0m] ${query.get("nick")}`);
-                botByNick.delete(query.get("nick"));
+                botByNick.delete([query.get("nick"),query.get("server")]);
                 bot.end();
             } catch (error) {}
         });
