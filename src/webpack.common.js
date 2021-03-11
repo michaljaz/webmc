@@ -5,11 +5,11 @@ const webpack = require("webpack");
 const LodashModuleReplacementPlugin = require("lodash-webpack-plugin");
 
 module.exports = {
-    entry: [
-        `${__dirname}/scripts/index.js`,
-        `${__dirname}/styles/style.scss`,
-        "bootstrap",
-    ],
+    entry: {
+        main: `${__dirname}/scripts/index.js`,
+        bootstrap: [`${__dirname}/styles/style.scss`, "bootstrap"],
+        mineflayer: `${__dirname}/mineflayer/mineflayer.js`,
+    },
     output: {
         path: `${__dirname}/dist`,
         filename: "[contenthash].js",
@@ -64,6 +64,7 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
+            mineflayer: "mineflayer",
         }),
         new HtmlWebpackPlugin({
             filename: "index.html",
