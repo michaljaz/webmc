@@ -8,7 +8,6 @@ module.exports = {
     entry: {
         main: `${__dirname}/scripts/index.js`,
         bootstrap: [`${__dirname}/styles/style.scss`, "bootstrap"],
-        mineflayer: `${__dirname}/mineflayer/mineflayer.js`,
     },
     output: {
         path: `${__dirname}/dist`,
@@ -64,7 +63,6 @@ module.exports = {
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery",
-            mineflayer: "mineflayer",
         }),
         new HtmlWebpackPlugin({
             filename: "index.html",
