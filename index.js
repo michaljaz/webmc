@@ -44,7 +44,6 @@ server.listen(port, function () {
 });
 
 const botByNick = new Map();
-const serverByName = new Map();
 wss.on("connection", (socket, req) => {
     const query = new URLSearchParams(req.url.substr(2, req.url.length));
     const emit = (type, ...data) => {
