@@ -2,16 +2,16 @@ import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight } from "three";
 import TWEEN from "@tweenjs/tween.js";
 import Stats from "stats-js";
 import * as dat from "dat.gui";
-import { DistanceBasedFog } from "./DistanceBasedFog.js";
+import { DistanceBasedFog } from "./rendering/DistanceBasedFog.js";
 import { UrlParams } from "./UrlParams.js";
-import { gpuInfo } from "./gpuInfo.js";
-import { World } from "./World/World.js";
-import { InventoryBar } from "./InventoryBar.js";
-import { Chat } from "./Chat.js";
-import { Entities } from "./Entities.js";
-import { PlayerInInventory } from "./PlayerInInventory.js";
-import { BlockBreak } from "./BlockBreak.js";
-import { BlockPlace } from "./BlockPlace.js";
+import { gpuInfo } from "./additional/gpuInfo.js";
+import { World } from "./world/World.js";
+import { InventoryBar } from "./gui/InventoryBar.js";
+import { Chat } from "./gui/Chat.js";
+import { Entities } from "./rendering/Entities.js";
+import { PlayerInInventory } from "./gui/PlayerInInventory.js";
+import { BlockBreak } from "./rendering/BlockBreak.js";
+import { BlockPlace } from "./rendering/BlockPlace.js";
 import { EventHandler } from "./EventHandler.js";
 import { Socket } from "./Socket.js";
 
@@ -36,7 +36,8 @@ async function Setup(game) {
         game.stats.showPanel(0);
         document.body.appendChild(game.stats.dom);
         game.distanceBasedFog = new DistanceBasedFog(game);
-        UrlParams(game, (password) => {
+        UrlParams(game).then((password) => {
+            $(".loadingText").text(`Connecting to ${game.server}...`);
             console.warn(gpuInfo());
             let prefix;
             if (document.location.protocol === "https:") {

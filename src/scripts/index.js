@@ -4,7 +4,7 @@ import swal from "sweetalert";
 import { AssetLoader } from "./AssetLoader.js";
 import { Setup } from "./Setup.js";
 
-console.log(window.mineflayer)
+console.log(window.mineflayer);
 
 class Game {
     constructor() {
@@ -36,6 +36,7 @@ class Game {
         };
         this.headHeight = 17;
         this.gamemode = null;
+        this.mouse = false;
     }
 
     async init() {
@@ -53,7 +54,6 @@ class Game {
         });
         this.socket.on("connect", () => {
             console.log("Connected to server!");
-            $(".loadingText").text(`Connecting to ${this.server}`);
             console.log(`User nick: ${this.nick}`);
             console.log(`Server ip: ${this.server}:${this.serverPort}`);
             this.socket.emit("initClient", {
@@ -145,24 +145,6 @@ class Game {
         this.socket.on("digTime", (time) => {
             console.warn("SERVER-START");
             this.bb.startDigging(time);
-        });
-
-        this.mouse = false;
-        $(document).on("mousedown", (e) => {
-            if (e.which === 1) {
-                this.mouse = true;
-                if (this.eh.gameState === "gameLock") {
-                    this.bb.digRequest();
-                }
-            } else if (e.which === 3) {
-                this.bp.placeBlock();
-            }
-        });
-        $(document).on("mouseup", (e) => {
-            if (e.which === 1) {
-                this.mouse = false;
-                return this.bb.stopDigging();
-            }
         });
         return this.animate();
     }

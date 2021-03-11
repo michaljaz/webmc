@@ -142,6 +142,22 @@ class EventHandler {
                 }
             }
         });
+        $(document).on("mousedown", (e) => {
+            if (e.which === 1) {
+                this.game.mouse = true;
+                if (this.game.eh.gameState === "gameLock") {
+                    this.game.bb.digRequest();
+                }
+            } else if (e.which === 3) {
+                this.game.bp.placeBlock();
+            }
+        });
+        $(document).on("mouseup", (e) => {
+            if (e.which === 1) {
+                this.game.mouse = false;
+                return this.game.bb.stopDigging();
+            }
+        });
         $(".gameOn").on("click", () => {
             this.setState("game");
         });
