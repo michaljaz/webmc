@@ -37,7 +37,7 @@ async function Setup(game) {
         game.stats.showPanel(0);
         document.body.appendChild(game.stats.dom);
         game.distanceBasedFog = new DistanceBasedFog(game);
-        new proxy();
+        game.proxy = new proxy();
         UrlParams(game).then((password) => {
             $(".loadingText").text(`Connecting to ${game.server}...`);
             console.warn(gpuInfo());
