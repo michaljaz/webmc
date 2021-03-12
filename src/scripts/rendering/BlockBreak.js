@@ -102,7 +102,7 @@ class BlockBreak {
     }
 
     digRequest() {
-        console.log("REQUESTING DIGGING...");
+        // console.log("REQUESTING DIGGING...");
         const pos = this.game.world.getRayBlock().posBreak;
         if (pos !== void 0) {
             this.game.socket.emit("dig", pos);
@@ -127,13 +127,11 @@ class BlockBreak {
         }
     }
 
-    stopDigging(callback) {
+    stopDigging() {
         this.done = true;
         this.isDigging = false;
-        console.log("Digging Stopped!");
-        this.game.socket.emit("stopDigging", function (xd) {
-            return callback(xd);
-        });
+        // console.log("Digging Stopped!");
+        this.game.socket.emit("stopDigging");
         this.setState(0);
         clearInterval(this.int);
     }

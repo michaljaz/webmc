@@ -40,29 +40,14 @@ class Game {
     async init() {
         await this.al.init();
         await Setup(this);
-        this.socket.on("alreadyPlaying", () => {
-            swal({
-                title: "Player already is in server",
-                text: "Try later...",
-                icon: "error",
-                button: "Rejoin",
-            }).then(function () {
-                document.location.reload();
-            });
-        });
-        this.socket.on("connect", () => {
-            console.log("Connected to server!");
-            console.log(`User nick: ${this.nick}`);
-            console.log(`Server ip: ${this.server}:${this.serverPort}`);
-            this.socket.emit("initClient", {
-                nick: this.nick,
-            });
+        this.socket.on("login", () => {
+            $(".loadingText").text(`Wait. Loading terrain...`);
         });
         this.socket.on("blockUpdate", (block) => {
             this.world.setBlock(block[0], block[1] + 16, block[2], block[3]);
         });
         this.socket.on("spawn", (yaw, pitch) => {
-            console.log("Player joined the game!");
+            console.log("Player spawned");
             $(".initLoading").css("display", "none");
             this.camera.rotation.y = yaw;
             this.camera.rotation.x = pitch;
@@ -135,13 +120,8 @@ class Game {
         });
         this.socket.on("diggingCompleted", () => {
             this.bb.done = true;
-            console.warn("SERVER-DONE");
-        });
-        this.socket.on("diggingAborted", () => {
-            console.warn("SERVER-ABORT");
         });
         this.socket.on("digTime", (time) => {
-            console.warn("SERVER-START");
             this.bb.startDigging(time);
         });
         return this.animate();

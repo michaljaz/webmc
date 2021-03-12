@@ -13,9 +13,7 @@ import { PlayerInInventory } from "./gui/PlayerInInventory.js";
 import { BlockBreak } from "./rendering/BlockBreak.js";
 import { BlockPlace } from "./rendering/BlockPlace.js";
 import { EventHandler } from "./EventHandler.js";
-import { Socket } from "./Socket.js";
-import proxy from "./proxy/proxy.worker.js";
-
+import { Socket } from "./proxy/Socket.js";
 async function Setup(game) {
     return new Promise((resolve) => {
         game.canvas = document.querySelector("#c");
@@ -37,21 +35,11 @@ async function Setup(game) {
         game.stats.showPanel(0);
         document.body.appendChild(game.stats.dom);
         game.distanceBasedFog = new DistanceBasedFog(game);
-        game.proxy = new proxy();
         UrlParams(game).then((password) => {
+            game.password = password;
             $(".loadingText").text(`Connecting to ${game.server}...`);
             console.warn(gpuInfo());
-            let prefix;
-            if (document.location.protocol === "https:") {
-                prefix = "wss";
-            } else {
-                prefix = "ws";
-            }
-            game.socket = new Socket(
-                game,
-                `${prefix}://${document.location.host}?nick=${game.nick}&server=${game.server}&port=${game.serverPort}&password=${password}&premium=${game.premium}`
-            );
-
+            game.socket = new Socket(game);
             game.pii = new PlayerInInventory(game);
             game.bb = new BlockBreak(game);
             game.bp = new BlockPlace(game);
@@ -91,11 +79,8 @@ async function Setup(game) {
                     .easing(TWEEN.Easing.Quadratic.Out)
                     .start();
             };
-
-            game.socket.ws.onopen = () => {
-                game.eh = new EventHandler(game);
-                resolve();
-            };
+            game.eh = new EventHandler(game);
+            resolve();
         });
     });
 }
