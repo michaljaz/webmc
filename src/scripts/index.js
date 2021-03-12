@@ -4,8 +4,6 @@ import swal from "sweetalert";
 import { AssetLoader } from "./AssetLoader.js";
 import { Setup } from "./Setup.js";
 
-console.log(window.mineflayer);
-
 class Game {
     constructor() {
         this.production = PRODUCTION;

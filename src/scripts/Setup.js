@@ -14,6 +14,7 @@ import { BlockBreak } from "./rendering/BlockBreak.js";
 import { BlockPlace } from "./rendering/BlockPlace.js";
 import { EventHandler } from "./EventHandler.js";
 import { Socket } from "./Socket.js";
+import proxy from "./proxy/proxy.worker.js";
 
 async function Setup(game) {
     return new Promise((resolve) => {
@@ -36,6 +37,7 @@ async function Setup(game) {
         game.stats.showPanel(0);
         document.body.appendChild(game.stats.dom);
         game.distanceBasedFog = new DistanceBasedFog(game);
+        new proxy();
         UrlParams(game).then((password) => {
             $(".loadingText").text(`Connecting to ${game.server}...`);
             console.warn(gpuInfo());
