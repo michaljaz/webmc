@@ -8,14 +8,9 @@
         "build": "cd src && webpack --config webpack.prod.js",
         "prebuild": "node lib/prebuild.js",
         "clean": "rimraf src/dist/*",
-        "lint": "eslint index.js lib/ src/webpack* src/scripts/",
-        "lint:fix": "eslint --fix index.js lib/ src/webpack* src/scripts/",
+        "lint": "standard",
+        "lint:fix": "standard --fix",
         "postinstall": "node lib/postinstall.js"
-    },
-    "husky": {
-        "hooks": {
-            "pre-commit": "npm run lint:fix"
-        }
     },
     "license": "MIT",
     "repository": {
@@ -66,14 +61,10 @@
     "devDependencies": {
         "copy-webpack-plugin": "^6.3.1",
         "css-loader": "^5.0.1",
-        "eslint": "^7.20.0",
-        "eslint-config-prettier": "^7.2.0",
-        "eslint-plugin-prettier": "^3.3.1",
         "file-loader": "^6.2.0",
-        "husky": "^1.0.0-rc.13",
         "node-sass": "^5.0.0",
-        "prettier": "^2.2.1",
         "sass-loader": "^10.1.1",
+        "standard": "^16.0.3",
         "style-loader": "^2.0.0",
         "webpack": "^5.9.0",
         "webpack-cli": "^4.2.0"
