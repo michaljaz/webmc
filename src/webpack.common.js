@@ -1,4 +1,3 @@
-const WebpackBar = require('webpackbar')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const path = require('path')
@@ -67,7 +66,6 @@ module.exports = {
       favicon: path.join(__dirname, 'assets/images/favicon.png')
     }),
     new LodashModuleReplacementPlugin(),
-    new WebpackBar(),
     new CopyPlugin({
       patterns: [
         {
