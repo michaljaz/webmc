@@ -4,11 +4,10 @@ import swal from 'sweetalert'
 import { AssetLoader } from './AssetLoader.js'
 import { Setup } from './Setup.js'
 import $ from 'jquery'
-const PRODUCTION = window.PRODUCTION
 
 class Game {
   constructor () {
-    this.production = PRODUCTION
+    this.production = window.PRODUCTION
     if (this.production) {
       console.log('Running in production mode')
     } else {

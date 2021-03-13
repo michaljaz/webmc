@@ -7,7 +7,7 @@ module.exports = merge.merge(common, {
   mode: 'development',
   plugins: [
     new webpack.DefinePlugin({
-      PRODUCTION: JSON.stringify(false)
+      'window.PRODUCTION': JSON.stringify(false)
     })
   ]
 })
