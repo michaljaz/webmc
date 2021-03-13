@@ -52,6 +52,7 @@ async function Setup (game) {
       game.distanceBasedFog.addShaderToMaterial(game.world.material)
       game.distanceBasedFog.addShaderToMaterial(game.ent.mobMaterial)
       game.distanceBasedFog.addShaderToMaterial(game.ent.playerMaterial)
+      game.distanceBasedFog.addShaderToMaterial(game.ent.objectMaterial)
       const gui = new dat.GUI()
       game.params = {
         chunkdist: 3

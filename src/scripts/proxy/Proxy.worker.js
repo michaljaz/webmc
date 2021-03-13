@@ -99,7 +99,8 @@ addEventListener('message', function (e) {
         }
         const entities = {
           mobs: [],
-          players: []
+          players: [],
+          objects: []
         }
         for (const k in bot.entities) {
           const v = bot.entities[k]
@@ -109,10 +110,15 @@ addEventListener('message', function (e) {
               v.position.y,
               v.position.z
             ])
-          }
-          if (v.type === 'player') {
+          } else if (v.type === 'player') {
             entities.players.push([
               v.username,
+              v.position.x,
+              v.position.y,
+              v.position.z
+            ])
+          } else if (v.type === 'object') {
+            entities.objects.push([
               v.position.x,
               v.position.y,
               v.position.z
@@ -120,7 +126,7 @@ addEventListener('message', function (e) {
           }
         }
         emit('entities', entities)
-      }, 100)
+      }, 10)
       break
     case 'move':
       state = data[0]
