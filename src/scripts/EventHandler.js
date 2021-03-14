@@ -15,8 +15,7 @@ class EventHandler {
       KeyA: 'left',
       Space: 'jump',
       ShiftLeft: 'sneak',
-      KeyR: 'sprint',
-      KeyQ: 'drop'
+      KeyR: 'sprint'
     }
     this.keys = {}
     this.gameState = null
