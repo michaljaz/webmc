@@ -69,6 +69,9 @@ addEventListener('message', function (e) {
 
         emit('msg', convert.toHtml(message))
       })
+      bot.on('death', () => {
+        emit('death')
+      })
       bot.on('experience', function () {
         emit('xp', bot.experience)
       })

@@ -41,9 +41,6 @@ class Game {
   async init () {
     await this.al.init()
     await Setup(this)
-    this.socket.on('login', () => {
-      $('.loadingText').text('Wait. Loading terrain...')
-    })
     this.socket.on('blockUpdate', (block) => {
       this.world.setBlock(block[0], block[1] + 16, block[2], block[3])
     })
@@ -66,6 +63,8 @@ class Game {
       this.distanceBasedFog.color.y = bg[1]
       this.distanceBasedFog.color.z = bg[2]
       this.distanceBasedFog.color.w = 1
+      $('.initLoading').css('display', 'block')
+      $('.loadingText').html('Loading terrain...')
     })
     this.socket.on('mapChunk', (sections, x, z) => {
       this.world.computeSections(sections, x, z)
