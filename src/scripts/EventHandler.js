@@ -15,7 +15,8 @@ class EventHandler {
       KeyA: 'left',
       Space: 'jump',
       ShiftLeft: 'sneak',
-      KeyR: 'sprint'
+      KeyR: 'sprint',
+      KeyQ: 'drop'
     }
     this.keys = {}
     this.gameState = null
@@ -42,6 +43,9 @@ class EventHandler {
           this.game.inv_bar.setFocus(i - 1)
           focus = i - 1
         }
+      }
+      if (z.code === 'KeyQ') {
+        this.game.socket.emit('drop')
       }
       if (z.code === 'Escape' && this.gameState === 'inventory') {
         this.setState('menu')

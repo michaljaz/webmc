@@ -142,6 +142,9 @@ addEventListener('message', function (e) {
     case 'rotate':
       bot.look(data[0][0], data[0][1])
       break
+    case 'drop':
+      bot.tossStack(bot.heldItem)
+      break
     case 'dig':
       block = bot.blockAt(vec3(data[0][0], data[0][1] - 16, data[0][2]))
       if (block !== null) {
