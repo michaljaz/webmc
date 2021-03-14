@@ -129,10 +129,12 @@ class Game {
   }
 
   animate () {
-    if (this.stats !== null) {
+    if (this.stats) {
       this.stats.begin()
       this.render()
       this.stats.end()
+    } else {
+      this.render()
     }
     window.requestAnimationFrame(() => {
       this.animate()
@@ -159,7 +161,9 @@ class Game {
     })
     this.world.updateChunksAroundPlayer(this.params.chunkdist)
     TWEEN.update()
-    this.drawcalls.update(this.renderer.info.render.calls, 100)
+    if (!this.production) {
+      this.drawcalls.update(this.renderer.info.render.calls, 100)
+    }
     if (this.eh.gameState === 'inventory') {
       this.pii.render()
     }

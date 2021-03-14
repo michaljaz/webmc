@@ -30,12 +30,14 @@ async function Setup (game) {
     game.camera.rotation.order = 'YXZ'
     game.camera.position.set(26, 26, 26)
     game.scene.add(new AmbientLight(0xdddddd))
-    game.stats = new Stats()
-    game.drawcalls = game.stats.addPanel(
-      new Stats.Panel('calls', '#ff8', '#221')
-    )
-    game.stats.showPanel(0)
-    document.body.appendChild(game.stats.dom)
+    if (!game.production) {
+      game.stats = new Stats()
+      game.drawcalls = game.stats.addPanel(
+        new Stats.Panel('calls', '#ff8', '#221')
+      )
+      game.stats.showPanel(0)
+      document.body.appendChild(game.stats.dom)
+    }
     game.distanceBasedFog = new DistanceBasedFog(game)
     UrlParams(game).then((password) => {
       game.password = password
