@@ -1,4 +1,4 @@
-import TWEEN from '@tweenjs/tween.js'
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import { MathUtils } from 'three'
 import $ from 'jquery'
 const modulo = function (a, b) {

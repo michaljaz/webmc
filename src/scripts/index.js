@@ -1,5 +1,5 @@
 import { Color } from 'three'
-import TWEEN from '@tweenjs/tween.js'
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import swal from 'sweetalert'
 import { AssetLoader } from './AssetLoader.js'
 import { Setup } from './Setup.js'

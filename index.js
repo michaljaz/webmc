@@ -1,4 +1,3 @@
-const opn = require('open')
 const express = require('express')
 const app = express()
 const helmet = require('helmet')
@@ -28,6 +27,5 @@ if (mode === 'production') {
   console.log('Incorrect mode!')
 }
 app.listen(port, function () {
-  opn(`http://localhost:${port}`)
   return console.log(`Server is running on \x1b[34m*:${port}\x1b[0m`)
 })
