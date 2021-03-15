@@ -5,7 +5,7 @@
 
 ## About
 
-**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to node.js server and then to real minecraft server, so you can play minecraft in the browser.
+**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy that translates websocket to TCP and then to real minecraft server, so you can play minecraft in the browser.
 
 ## Instructions
 
