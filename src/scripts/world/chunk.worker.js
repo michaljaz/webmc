@@ -7,7 +7,7 @@ import vec3 from 'vec3'
 self.requestAnimationFrame = raf
 let terrain = null
 class TerrainManager {
-  constructor(data) {
+  constructor (data) {
     this.chunkTerrain = new ChunkTerrain({
       blocksDef: data.blocksDef
     })
@@ -32,14 +32,14 @@ class TerrainManager {
     this.loop()
   }
 
-  distance(chunkId) {
+  distance (chunkId) {
     const data = this.chunkTerrain.strToVec(chunkId)
     const chunk = vec3(...data)
     const chunkP = vec3(...this.playerChunk)
     return chunkP.distanceTo(chunk)
   }
 
-  setVoxel(data) {
+  setVoxel (data) {
     this.chunkTerrain.setVoxel(...data)
     const chunkId = this.chunkTerrain.vecToStr(
       ...terrain.chunkTerrain.computeChunkForVoxel(
@@ -62,7 +62,7 @@ class TerrainManager {
     }
   }
 
-  setChunk(data) {
+  setChunk (data) {
     this.chunkTerrain.setChunk(data[0], data[1], data[2], data[3])
     const chunkId = terrain.chunkTerrain.vecToStr(
       data[0],
@@ -81,7 +81,7 @@ class TerrainManager {
     }
   }
 
-  genNearestChunk() {
+  genNearestChunk () {
     let nearestChunkId = ''
     let nearestDistance = -1
     let isNearest = false
@@ -111,7 +111,7 @@ class TerrainManager {
     }
   }
 
-  removeChunks() {
+  removeChunks () {
     for (const chunkId in this.generatedChunks) {
       const dist = this.distance(chunkId)
       if (dist > this.renderRadius) {
@@ -125,7 +125,7 @@ class TerrainManager {
     }
   }
 
-  loop() {
+  loop () {
     this.removeChunks()
     this.genNearestChunk()
     self.requestAnimationFrame(() => {
@@ -133,7 +133,7 @@ class TerrainManager {
     })
   }
 
-  updateChunksAroundPlayer(data) {
+  updateChunksAroundPlayer (data) {
     this.playerChunk = data[0]
     this.renderRadius = data[1]
   }

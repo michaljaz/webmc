@@ -6,7 +6,7 @@ import { Setup } from './Setup.js'
 import $ from 'jquery'
 
 class Game {
-  constructor() {
+  constructor () {
     this.production = window.PRODUCTION
     if (this.production) {
       console.log('Running in production mode')
@@ -38,7 +38,7 @@ class Game {
     this.mouse = false
   }
 
-  async init() {
+  async init () {
     await this.al.init()
     await Setup(this)
     this.socket.on('blockUpdate', (block) => {
@@ -127,7 +127,7 @@ class Game {
     return this.animate()
   }
 
-  animate() {
+  animate () {
     if (this.stats) {
       this.stats.begin()
       this.render()
@@ -140,7 +140,7 @@ class Game {
     })
   }
 
-  render() {
+  render () {
     const width = window.innerWidth
     const height = window.innerHeight
     if (this.canvas.width !== width || this.canvas.height !== height) {
