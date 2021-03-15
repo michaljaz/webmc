@@ -1,10 +1,11 @@
 /* eslint-env worker */
 import { ChunkTerrain } from './ChunkTerrain.js'
 import { ChunkMesher } from './ChunkMesher.js'
+import raf from 'raf'
 import vec3 from 'vec3'
 
+self.requestAnimationFrame = raf
 let terrain = null
-
 class TerrainManager {
   constructor (data) {
     this.chunkTerrain = new ChunkTerrain({
@@ -88,7 +89,7 @@ class TerrainManager {
       const dist = this.distance(chunkId)
       if (
         (nearestDistance === -1 || nearestDistance > dist) &&
-                dist <= this.renderRadius
+        dist <= this.renderRadius
       ) {
         isNearest = true
         nearestDistance = dist
@@ -143,6 +144,8 @@ addEventListener('message', function (e) {
   const data = e.data.data
   switch (type) {
     case 'init':
+      // FIXME: This is a hack to avoid reinstantiating terrain because `init` seems to be called twice
+      if (terrain) return
       terrain = new TerrainManager(data)
       break
     case 'setVoxel':

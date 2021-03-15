@@ -41,6 +41,7 @@
         "net-browserify": "michaljaz/net-browserify",
         "popper.js": "^1.16.1",
         "prismarine-block": "^1.8.0",
+        "raf": "^3.4.1",
         "rimraf": "^3.0.2",
         "sweetalert": "^2.1.2",
         "three": "^0.125.0",

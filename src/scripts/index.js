@@ -91,9 +91,9 @@ class Game {
       swal({
         title: "You've been kicked!",
         text:
-                    reason.extra !== undefined
-                      ? reason.extra[0].text
-                      : reason.text,
+          reason.extra !== undefined
+            ? reason.extra[0].text
+            : reason.text,
         icon: 'error',
         button: 'Rejoin'
       }).then(function () {
