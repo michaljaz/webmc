@@ -34,5 +34,9 @@
 	"itemsMapping":{
 		"path":"/assets/items/items-Mapping.json",
 		"type":"text"
+	},
+	"nameList":{
+		"path":"/assets/nameList.txt",
+		"type":"text"
 	}
 }
