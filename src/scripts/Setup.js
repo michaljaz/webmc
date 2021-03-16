@@ -14,6 +14,7 @@ import { BlockBreak } from './rendering/BlockBreak.js'
 import { BlockPlace } from './rendering/BlockPlace.js'
 import { EventHandler } from './EventHandler.js'
 import { Socket } from './proxy/Socket.js'
+import { TabList } from './gui/TabList.js'
 import $ from 'jquery'
 
 async function Setup (game) {
@@ -51,6 +52,7 @@ async function Setup (game) {
       game.ent = new Entities(game)
       game.chat = new Chat(game)
       game.inv_bar = new InventoryBar(game)
+      game.tl = new TabList(game)
       game.distanceBasedFog.addShaderToMaterial(game.world.material)
       game.distanceBasedFog.addShaderToMaterial(game.ent.mobMaterial)
       game.distanceBasedFog.addShaderToMaterial(game.ent.playerMaterial)

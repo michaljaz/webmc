@@ -50,6 +50,9 @@ class Game {
       this.camera.rotation.y = yaw
       this.camera.rotation.x = pitch
     })
+    this.socket.on('players', (players) => {
+      this.tl.update(players)
+    })
     this.socket.on('dimension', (dim) => {
       this.dimension = dim
       console.log(`Player dimension has been changed: ${dim}`)

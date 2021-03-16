@@ -43,6 +43,10 @@ class EventHandler {
           focus = i - 1
         }
       }
+      if (z.code === 'Tab' && this.gameState === 'gameLock') {
+        $('.tab_list').show()
+        z.preventDefault()
+      }
       if (z.code === 'KeyQ') {
         this.game.socket.emit('drop')
       }
@@ -124,6 +128,9 @@ class EventHandler {
     })
     $(document).on('keyup', (z) => {
       delete this.keys[z.code]
+      if (z.code === 'Tab') {
+        $('.tab_list').hide()
+      }
       if (this.controls[z.code] !== undefined) {
         this.game.socket.emit('move', this.controls[z.code], false)
         const to = {

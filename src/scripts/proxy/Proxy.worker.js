@@ -93,6 +93,7 @@ addEventListener('message', function (e) {
         emit('game', bot.game)
       })
       setInterval(function () {
+        emit('players', bot.players)
         if (bot.inventory !== undefined) {
           const invNew = JSON.stringify(bot.inventory.slots)
           if (inv !== invNew) {
