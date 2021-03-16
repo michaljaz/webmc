@@ -1,7 +1,7 @@
 import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight } from 'three'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import Stats from 'three/examples/jsm/libs/stats.module.js'
-import * as dat from 'dat.gui'
+import * as dat from 'three/examples/jsm/libs/dat.gui.module.js'
 import { DistanceBasedFog } from './rendering/DistanceBasedFog.js'
 import { UrlParams } from './UrlParams.js'
 import { gpuInfo } from './additional/gpuInfo.js'
