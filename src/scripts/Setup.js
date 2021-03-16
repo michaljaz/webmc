@@ -67,7 +67,7 @@ async function Setup (game) {
         .name('Wireframe')
         .listen()
       const chunkDist = gui
-        .add(game.params, 'chunkdist', 0, 10, 1)
+        .add(game.params, 'chunkdist', 2, 10, 1)
         .name('Render distance')
         .listen()
       chunkDist.onChange(function (val) {

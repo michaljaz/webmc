@@ -43,9 +43,11 @@ class EventHandler {
           focus = i - 1
         }
       }
-      if (z.code === 'Tab' && this.gameState === 'gameLock') {
-        $('.tab_list').show()
+      if (z.code === 'Tab') {
         z.preventDefault()
+        if (this.gameState === 'gameLock') {
+          $('.tab_list').show()
+        }
       }
       if (z.code === 'KeyQ') {
         this.game.socket.emit('drop')
