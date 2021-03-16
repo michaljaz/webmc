@@ -28,6 +28,7 @@
         "node": "14.x"
     },
     "dependencies": {
+        "@misioxd/net-browserify": "^1.0.0",
         "ansi-to-html": "^0.6.14",
         "bootstrap": "^4.6.0",
         "canvas": "^2.6.1",
@@ -41,7 +42,6 @@
         "jquery": "^3.5.1",
         "lodash-webpack-plugin": "^0.11.6",
         "minecraft-data": "^2.79.0",
-        "net-browserify": "michaljaz/net-browserify",
         "popper.js": "^1.16.1",
         "prismarine-block": "^1.8.0",
         "raf": "^3.4.1",
