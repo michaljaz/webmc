@@ -9,7 +9,6 @@ import { ChunkManager } from './ChunkManager.js'
 const World = class World {
   constructor (game) {
     this.game = game
-    this.cellMesh = {}
     this.blocksDef = this.game.al.get('blocksDef')
     this.models = {}
     this.chunkTerrain = new ChunkTerrain({
@@ -46,9 +45,9 @@ const World = class World {
   }
 
   updateRenderOrder (cell) {
-    for (const i in this.cellMesh) {
-      const x = vec3(this.chunkTerrain.strToVec(i))
-      this.cellMesh[i].renderOrder = -vec3(...cell).distanceTo(x)
+    for (const [k,v] of this.chunkManager.cellMesh) {
+      const x = vec3(this.chunkTerrain.strToVec(k))
+      v.renderOrder=-vec3(...cell).distanceTo(x)
     }
   }
 
