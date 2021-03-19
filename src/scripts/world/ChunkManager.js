@@ -38,6 +38,7 @@ class ChunkManager {
 
   removeChunk (cellId) {
     if (this.chunks.get(cellId) !== undefined) {
+      this.chunks.delete(cellId)
       this.cellMesh.get(cellId).geometry.dispose()
       this.game.scene.remove(this.cellMesh.get(cellId))
       this.cellMesh.delete(cellId)
