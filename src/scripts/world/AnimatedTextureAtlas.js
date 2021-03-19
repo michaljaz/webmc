@@ -1,4 +1,4 @@
-import { MeshStandardMaterial, TextureLoader, NearestFilter } from 'three'
+import { MeshStandardMaterial, TextureLoader, NearestFilter, NearestMipmapLinearFilter } from 'three'
 
 class TextureAtlasCreator {
   constructor (options) {
@@ -23,8 +23,9 @@ class TextureAtlasCreator {
     }
     const canvasx = document.createElement('canvas')
     const ctx = canvasx.getContext('2d')
-    canvasx.width = this.willSize * 16
-    canvasx.height = this.willSize * 16
+    canvasx.width = this.willSize * (16 + 32)
+    canvasx.height = this.willSize * (16 + 32)
+    // console.log(this.willSize * (16 + 32))
     let toxelX = 1
     let toxelY = 1
     for (const i in this.textureMapping) {
@@ -40,17 +41,26 @@ class TextureAtlasCreator {
           const texmap = this.textureMapping[
                         `${xd.pref}@${lol.col}@${lol.row}`
           ]
+
           ctx.drawImage(
             this.textureX,
             (texmap.x - 1) * 16,
             (texmap.y - 1) * 16,
             16,
             16,
-            (toxelX - 1) * 16,
-            (toxelY - 1) * 16,
+            16 + (toxelX - 1) * (16 + 32),
+            16 + (toxelY - 1) * (16 + 32),
             16,
             16
           )
+          const b = ctx.getImageData(16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32), 16, 16)
+          for (let j = 16; j > 0; j--) {
+            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) - j)
+            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) - j, 16 + (toxelY - 1) * (16 + 32))
+            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) + j, 16 + (toxelY - 1) * (16 + 32))
+            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) + j)
+          }
+          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32))
           toxelX++
           if (toxelX > this.willSize) {
             toxelX = 1
@@ -64,11 +74,19 @@ class TextureAtlasCreator {
           (this.textureMapping[i].y - 1) * 16,
           16,
           16,
-          (toxelX - 1) * 16,
-          (toxelY - 1) * 16,
+          16 + (toxelX - 1) * (16 + 32),
+          16 + (toxelY - 1) * (16 + 32),
           16,
           16
         )
+        const b = ctx.getImageData(16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32), 16, 16)
+        for (let j = 16; j > 0; j--) {
+          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) - j)
+          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) - j, 16 + (toxelY - 1) * (16 + 32))
+          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) + j, 16 + (toxelY - 1) * (16 + 32))
+          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) + j)
+        }
+        ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32))
         toxelX++
         if (toxelX > this.willSize) {
           toxelX = 1
@@ -76,6 +94,7 @@ class TextureAtlasCreator {
         }
       }
     }
+    // console.log(canvasx.toDataURL())
     return canvasx
   }
 
@@ -131,7 +150,7 @@ class AnimatedTextureAtlas {
       const t = this.atlasCreator.gen(i).toDataURL()
       const tekstura = new TextureLoader().load(t)
       tekstura.magFilter = NearestFilter
-      tekstura.minFilter = NearestFilter
+      tekstura.minFilter = NearestMipmapLinearFilter
       savedTextures.push(tekstura)
     }
     let tickq = 0

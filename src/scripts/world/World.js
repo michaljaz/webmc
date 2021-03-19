@@ -45,9 +45,9 @@ const World = class World {
   }
 
   updateRenderOrder (cell) {
-    for (const [k,v] of this.chunkManager.cellMesh) {
+    for (const [k, v] of this.chunkManager.cellMesh) {
       const x = vec3(this.chunkTerrain.strToVec(k))
-      v.renderOrder=-vec3(...cell).distanceTo(x)
+      v.renderOrder = -vec3(...cell).distanceTo(x)
     }
   }
 

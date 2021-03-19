@@ -376,10 +376,12 @@ class ChunkMesher {
     let { x: toxX, y: toxY } = this.blocksMapping[name]
     toxX -= 1
     toxY -= 1
-    const x1 = this.q * toxX
-    const y1 = 1 - this.q * toxY - this.q
-    const x2 = this.q * toxX + this.q
-    const y2 = 1 - this.q * toxY
+    const b = 16 / 1296
+    const q = 48 / 1296
+    const x1 = q * toxX + b
+    const y1 = 1 - q * toxY - q + b
+    const x2 = x1 + q - 2 * b
+    const y2 = y1 + q - 2 * b
     return [
       [x1, y1],
       [x1, y2],
@@ -433,10 +435,12 @@ class ChunkMesher {
     }
     toxX -= 1
     toxY -= 1
-    const x1 = this.q * toxX
-    const y1 = 1 - this.q * toxY - this.q
-    const x2 = this.q * toxX + this.q
-    const y2 = 1 - this.q * toxY
+    const b = 16 / 1296
+    const q = 48 / 1296
+    const x1 = q * toxX + b
+    const y1 = 1 - q * toxY - q + b
+    const x2 = x1 + q - 2 * b
+    const y2 = y1 + q - 2 * b
     return [
       [x1, y1],
       [x1, y2],
