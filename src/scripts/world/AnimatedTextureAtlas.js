@@ -12,90 +12,67 @@ class TextureAtlasCreator {
     const multi = {}
     for (const i in this.textureMapping) {
       if (i.includes('@')) {
-        const xd = this.decodeName(i)
-        if (multi[xd.pref] === undefined) {
-          multi[xd.pref] = xd
+        const block = this.decodeName(i)
+        if (multi[block.pref] === undefined) {
+          multi[block.pref] = block
         } else {
-          multi[xd.pref].x = Math.max(multi[xd.pref].x, xd.x)
-          multi[xd.pref].y = Math.max(multi[xd.pref].y, xd.y)
+          multi[block.pref].x = Math.max(multi[block.pref].x, block.x)
+          multi[block.pref].y = Math.max(multi[block.pref].y, block.y)
         }
       }
     }
-    const canvasx = document.createElement('canvas')
-    const ctx = canvasx.getContext('2d')
-    canvasx.width = this.willSize * (16 + 32)
-    canvasx.height = this.willSize * (16 + 32)
-    // console.log(this.willSize * (16 + 32))
-    let toxelX = 1
-    let toxelY = 1
+    const canvas = document.createElement('canvas')
+    const ctx = canvas.getContext('2d')
+    const size = this.willSize * (16 + 32)
+    canvas.width = size
+    canvas.height = size
+    const toxelCoord = { x: 1, y: 1 }
     for (const i in this.textureMapping) {
       if (i.includes('@')) {
-        const xd = this.decodeName(i)
-        if (multi[xd.pref].loaded === undefined) {
-          multi[xd.pref].loaded = true
-          const lol = this.getToxelForTick(
+        const block = this.decodeName(i)
+        if (multi[block.pref].loaded === undefined) {
+          multi[block.pref].loaded = true
+          const toxel = this.getToxelForTick(
             tick,
-            multi[xd.pref].x + 1,
-            multi[xd.pref].y + 1
+            multi[block.pref].x + 1,
+            multi[block.pref].y + 1
           )
-          const texmap = this.textureMapping[
-                        `${xd.pref}@${lol.col}@${lol.row}`
-          ]
-
-          ctx.drawImage(
-            this.textureX,
-            (texmap.x - 1) * 16,
-            (texmap.y - 1) * 16,
-            16,
-            16,
-            16 + (toxelX - 1) * (16 + 32),
-            16 + (toxelY - 1) * (16 + 32),
-            16,
-            16
-          )
-          const b = ctx.getImageData(16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32), 16, 16)
-          for (let j = 16; j > 0; j--) {
-            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) - j)
-            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) - j, 16 + (toxelY - 1) * (16 + 32))
-            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) + j, 16 + (toxelY - 1) * (16 + 32))
-            ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) + j)
-          }
-          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32))
-          toxelX++
-          if (toxelX > this.willSize) {
-            toxelX = 1
-            toxelY++
-          }
+          const texmap = this.textureMapping[`${block.pref}@${toxel.col}@${toxel.row}`]
+          this.addToxel(ctx, texmap, toxelCoord)
         }
       } else {
-        ctx.drawImage(
-          this.textureX,
-          (this.textureMapping[i].x - 1) * 16,
-          (this.textureMapping[i].y - 1) * 16,
-          16,
-          16,
-          16 + (toxelX - 1) * (16 + 32),
-          16 + (toxelY - 1) * (16 + 32),
-          16,
-          16
-        )
-        const b = ctx.getImageData(16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32), 16, 16)
-        for (let j = 16; j > 0; j--) {
-          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) - j)
-          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) - j, 16 + (toxelY - 1) * (16 + 32))
-          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32) + j, 16 + (toxelY - 1) * (16 + 32))
-          ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32) + j)
-        }
-        ctx.putImageData(b, 16 + (toxelX - 1) * (16 + 32), 16 + (toxelY - 1) * (16 + 32))
-        toxelX++
-        if (toxelX > this.willSize) {
-          toxelX = 1
-          toxelY++
-        }
+        this.addToxel(ctx, this.textureMapping[i], toxelCoord)
       }
     }
-    // console.log(canvasx.toDataURL())
-    return canvasx
+    // console.log(canvas.toDataURL())
+    return canvas
+  }
+
+  addToxel (ctx, coord, toxelCoord) {
+    ctx.drawImage(
+      this.textureX,
+      (coord.x - 1) * 16,
+      (coord.y - 1) * 16,
+      16,
+      16,
+      16 + (toxelCoord.x - 1) * (16 + 32),
+      16 + (toxelCoord.y - 1) * (16 + 32),
+      16,
+      16
+    )
+    const b = ctx.getImageData(16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32), 16, 16)
+    for (let j = 16; j > 0; j--) {
+      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32) - j)
+      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32) - j, 16 + (toxelCoord.y - 1) * (16 + 32))
+      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32) + j, 16 + (toxelCoord.y - 1) * (16 + 32))
+      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32) + j)
+    }
+    ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32))
+    toxelCoord.x++
+    if (toxelCoord.x > this.willSize) {
+      toxelCoord.x = 1
+      toxelCoord.y++
+    }
   }
 
   decodeName (i) {
@@ -122,11 +99,11 @@ class TextureAtlasCreator {
   getToxelForTick (tick, w, h) {
     tick = (tick % (w * h)) + 1
     // option1
-    let col = (tick - 1) % w
-    let row = Math.ceil(tick / w) - 1
+    // let col = (tick - 1) % w
+    // let row = Math.ceil(tick / w) - 1
     // option2
-    col = Math.ceil(tick / h) - 1
-    row = (tick - 1) % h
+    const col = Math.ceil(tick / h) - 1
+    const row = (tick - 1) % h
     return { row, col }
   }
 }
@@ -147,19 +124,18 @@ class AnimatedTextureAtlas {
     })
     const savedTextures = []
     for (let i = 0; i < 10; i++) {
-      const t = this.atlasCreator.gen(i).toDataURL()
+      const c = this.atlasCreator.gen(i)
+      const t = c.toDataURL()
       const tekstura = new TextureLoader().load(t)
       tekstura.magFilter = NearestFilter
       tekstura.minFilter = NearestMipmapLinearFilter
       savedTextures.push(tekstura)
     }
     let tickq = 0
-    setInterval(() => {
-      tickq++
-      const tekst = savedTextures[tickq % 9]
-      this.material.map = tekst
-      this.material.map.needsUpdate = true
-    }, 100)
+    tickq++
+    const tekst = savedTextures[tickq % 9]
+    this.material.map = tekst
+    this.material.map.needsUpdate = true
   }
 }
 
