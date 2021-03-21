@@ -76,10 +76,7 @@ const ChunkDecoder = class ChunkDecoder {
         for (let x = 0; x < 16; x++) {
           for (let y = 0; y < 16; y++) {
             for (let z = 0; z < 16; z++) {
-              cell[this.cvo(x, y, z)] =
-                                palette[
-                                  data.get(this.getBlockIndex({ x, y, z }))
-                                ]
+              cell[this.cvo(x, y, z)] = palette[data.get(this.getBlockIndex({ x, y, z }))]
             }
           }
         }

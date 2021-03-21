@@ -1,5 +1,5 @@
 /* eslint-env worker */
-import vec3 from 'vec3'
+import { Vector3 } from 'three'
 import Convert from 'ansi-to-html'
 const convert = new Convert()
 
@@ -26,9 +26,11 @@ addEventListener('message', function (e) {
       })
       bot.heldItem = null
       bot.on('chunkColumnLoad', (p) => {
+        const chunk = bot.world.getColumn(p.x / 16, p.z / 16)
         emit(
           'mapChunk',
-          bot.world.getColumn(p.x / 16, p.z / 16).sections,
+          chunk.sections,
+          chunk.biomes,
           p.x / 16,
           p.z / 16
         )
@@ -152,7 +154,7 @@ addEventListener('message', function (e) {
       }
       break
     case 'dig':
-      block = bot.blockAt(vec3(data[0][0], data[0][1] - 16, data[0][2]))
+      block = bot.blockAt(new Vector3(data[0][0], data[0][1] - 16, data[0][2]))
       if (block !== null) {
         const digTime = bot.digTime(block)
         if (bot.targetDigBlock !== null) {
@@ -188,10 +190,10 @@ addEventListener('message', function (e) {
       }
       break
     case 'blockPlace':
-      block = bot.blockAt(vec3(...data[0]))
+      block = bot.blockAt(new Vector3(...data[0]))
       if (bot.heldItem !== undefined && bot.heldItem !== null) {
         // console.log(heldItem);
-        bot.placeBlock(block, vec3(...data[1]))
+        bot.placeBlock(block, new Vector3(...data[1]))
       }
       break
   }

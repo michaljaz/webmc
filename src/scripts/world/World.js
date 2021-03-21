@@ -2,22 +2,19 @@ import { Vector3 } from 'three'
 import { ChunkTerrain } from './ChunkTerrain.js'
 import { AnimatedTextureAtlas } from './AnimatedTextureAtlas.js'
 import { SectionComputer } from './SectionComputer.js'
-import vec3 from 'vec3'
-import ChunkWorker from './chunk.worker.js'
 import { ChunkManager } from './ChunkManager.js'
+import ChunkWorker from './chunk.worker.js'
 
-const World = class World {
+class World {
   constructor (game) {
     this.game = game
     this.blocksDef = this.game.al.get('blocksDef')
-    this.models = {}
     this.chunkTerrain = new ChunkTerrain({
       blocksDef: this.blocksDef
     })
     this.ATA = new AnimatedTextureAtlas(this.game)
     this.material = this.ATA.material
     this.cellUpdateTime = null
-    this.renderTime = 100
     this.lastPlayerChunk = null
     this.blocksUpdate = false
 
@@ -42,13 +39,6 @@ const World = class World {
         blocksDef: this.blocksDef
       }
     })
-  }
-
-  updateRenderOrder (cell) {
-    for (const [k, v] of this.chunkManager.cellMesh) {
-      const x = vec3(this.chunkTerrain.strToVec(k))
-      v.renderOrder = -vec3(...cell).distanceTo(x)
-    }
   }
 
   setChunk (chunkX, chunkY, chunkZ, buffer) {
@@ -84,9 +74,7 @@ const World = class World {
   }
 
   getRayBlock () {
-    const start = new Vector3().setFromMatrixPosition(
-      this.game.camera.matrixWorld
-    )
+    const start = new Vector3().setFromMatrixPosition(this.game.camera.matrixWorld)
     const end = new Vector3().set(0, 0, 1).unproject(this.game.camera)
     const intersection = this.chunkTerrain.intersectsRay(start, end)
     if (intersection) {
@@ -117,10 +105,9 @@ const World = class World {
       })
     } else if (this.lastPlayerChunk !== JSON.stringify(cell)) {
       if (
-        this.cellUpdateTime !== null &&
-                window.performance.now() - this.cellUpdateTime > this.renderTime
+        this.cellUpdateTime !== null && window.performance.now() - this.cellUpdateTime > 100
       ) {
-        this.updateRenderOrder(cell)
+        this.chunkManager.updateRenderOrder(cell)
         this.lastPlayerChunk = JSON.stringify(cell)
         this.chunkWorker.postMessage({
           type: 'updateChunksAroundPlayer',
@@ -130,9 +117,8 @@ const World = class World {
     }
   }
 
-  computeSections (sections, x, z) {
+  computeSections (sections, biomes, x, z) {
     const result = SectionComputer({ sections, x, z })
-    // console.log(result);
     const results = []
     for (const i in result) {
       const j = result[i]

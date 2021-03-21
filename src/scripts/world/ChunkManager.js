@@ -1,15 +1,12 @@
-import { BufferGeometry, BufferAttribute, Mesh } from 'three'
+import { BufferGeometry, BufferAttribute, Mesh, Vector3 } from 'three'
 
 class ChunkManager {
   constructor (game) {
     this.game = game
-    this.chunks = new Map()
     this.cellMesh = new Map()
   }
 
   addChunk (cellId, vert) {
-    this.chunks.set(cellId, vert)
-
     const geometry = new BufferGeometry()
     geometry.setAttribute('position', new BufferAttribute(new Float32Array(vert.positions), 3))
     geometry.setAttribute('normal', new BufferAttribute(new Float32Array(vert.normals), 3))
@@ -29,7 +26,7 @@ class ChunkManager {
       this.cellMesh.set(cellId, newMesh)
       this.game.scene.add(newMesh)
       if (this.game.world.lastPlayerChunk !== null) {
-        this.game.world.updateRenderOrder(JSON.parse(this.game.world.lastPlayerChunk))
+        this.updateRenderOrder(JSON.parse(this.game.world.lastPlayerChunk))
       }
     } else {
       this.cellMesh.get(cellId).geometry = geometry
@@ -37,12 +34,18 @@ class ChunkManager {
   }
 
   removeChunk (cellId) {
-    if (this.chunks.get(cellId) !== undefined) {
-      this.chunks.delete(cellId)
+    if (this.cellMesh.get(cellId) !== undefined) {
       this.cellMesh.get(cellId).geometry.dispose()
       this.game.scene.remove(this.cellMesh.get(cellId))
       this.cellMesh.delete(cellId)
       this.game.renderer.renderLists.dispose()
+    }
+  }
+
+  updateRenderOrder (cell) {
+    for (const [k, v] of this.cellMesh) {
+      const x = new Vector3(this.game.world.chunkTerrain.strToVec(k))
+      v.renderOrder = -new Vector3(...cell).distanceTo(x)
     }
   }
 
@@ -54,7 +57,6 @@ class ChunkManager {
       }
     }
     this.cellMesh.clear()
-    this.chunks.clear()
   }
 }
 export { ChunkManager }

@@ -69,8 +69,8 @@ class Game {
       $('.initLoading').css('display', 'block')
       $('.loadingText').html('Loading terrain...')
     })
-    this.socket.on('mapChunk', (sections, x, z) => {
-      this.world.computeSections(sections, x, z)
+    this.socket.on('mapChunk', (sections, biomes, x, z) => {
+      this.world.computeSections(sections, biomes, x, z)
     })
     this.socket.on('game', (gameData) => {
       this.inv_bar.updateGamemode(gameData.gameMode)
