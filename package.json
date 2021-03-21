@@ -47,6 +47,7 @@
         "rimraf": "^3.0.2",
         "sweetalert": "^2.1.2",
         "three": "^0.125.0",
+        "vec3": "^0.1.7",
         "webpack-dev-server": "^3.11.1",
         "webpack-merge": "^5.7.3",
         "worker-loader": "^3.0.7"

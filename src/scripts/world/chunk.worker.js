@@ -2,7 +2,7 @@
 import { ChunkTerrain } from './ChunkTerrain.js'
 import { ChunkMesher } from './ChunkMesher.js'
 import raf from 'raf'
-import { Vector3 } from 'three'
+import vec3 from 'vec3'
 
 self.requestAnimationFrame = raf
 let terrain = null
@@ -34,8 +34,8 @@ class TerrainManager {
 
   distance (chunkId) {
     const data = this.chunkTerrain.strToVec(chunkId)
-    const chunk = new Vector3(...data)
-    const chunkP = new Vector3(...this.playerChunk)
+    const chunk = vec3(...data)
+    const chunkP = vec3(...this.playerChunk)
     return chunkP.distanceTo(chunk)
   }
 

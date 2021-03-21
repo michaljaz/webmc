@@ -1,4 +1,5 @@
-import { BufferGeometry, BufferAttribute, Mesh, Vector3 } from 'three'
+import { BufferGeometry, BufferAttribute, Mesh } from 'three'
+import vec3 from 'vec3'
 
 class ChunkManager {
   constructor (game) {
@@ -44,8 +45,8 @@ class ChunkManager {
 
   updateRenderOrder (cell) {
     for (const [k, v] of this.cellMesh) {
-      const x = new Vector3(this.game.world.chunkTerrain.strToVec(k))
-      v.renderOrder = -new Vector3(...cell).distanceTo(x)
+      const x = vec3(this.game.world.chunkTerrain.strToVec(k))
+      v.renderOrder = -vec3(...cell).distanceTo(x)
     }
   }
 
