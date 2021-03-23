@@ -45,7 +45,7 @@ class ChunkMesher {
     let xd, toxX, toxY
     if (
       this.blocksTex[block.name] !== undefined ||
-            this.blocksTex[String(block.stateId)] !== undefined
+        this.blocksTex[String(block.stateId)] !== undefined
     ) {
       if (this.blocksTex[String(block.stateId)] !== undefined) {
         xd = this.blocksTex[String(block.stateId)]
@@ -56,10 +56,7 @@ class ChunkMesher {
         toxX = this.blocksMapping[xd.all].x
         toxY = this.blocksMapping[xd.all].y
       } else if (xd.side !== undefined) {
-        const mapka = {
-          py: 'top',
-          ny: 'bottom'
-        }
+        const mapka = { py: 'top', ny: 'bottom' }
         if (mapka[type] !== undefined) {
           toxX = this.blocksMapping[xd[mapka[type]]].x
           toxY = this.blocksMapping[xd[mapka[type]]].y
@@ -92,107 +89,40 @@ class ChunkMesher {
     const y1 = 1 - q * toxY - q + b
     const x2 = x1 + q - 2 * b
     const y2 = y1 + q - 2 * b
-    return [
-      [x1, y1],
-      [x1, y2],
-      [x2, y1],
-      [x2, y2]
-    ]
+    return [x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]
   }
 
   genBlockFace (type, block, pos) {
-    let uv = this.getUvForFace(block, type)
-    uv = [
-      ...uv[0],
-      ...uv[2],
-      ...uv[1],
-      ...uv[1],
-      ...uv[2],
-      ...uv[3]
-    ]
+    const uv = this.getUvForFace(block, type)
     const norm = []
     for (let i = 0; i < 6; i++) {
       norm.push(...this.neighbours[type])
     }
-    switch (type) {
-      case 'pz':
-        return {
-          pos: [
-            -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]
-          ],
-          norm,
-          uv
-        }
-      case 'nx':
-        return {
-          pos: [
-            0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]
-          ],
-          norm,
-          uv
-        }
-      case 'nz':
-        return {
-          pos: [
-            0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]
-          ],
-          norm,
-          uv
-        }
-      case 'px':
-        return {
-          pos: [
-            -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]
-          ],
-          norm,
-          uv
-        }
-      case 'py':
-        return {
-          pos: [
-            0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]
-          ],
-          norm,
-          uv
-        }
-      case 'ny':
-        return {
-          pos: [
-            0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
-            -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2]
-          ],
-          norm,
-          uv
-        }
+    const ps = (num) => {
+      const pt = [
+        [-0.5, -0.5, 0.5],
+        [0.5, -0.5, 0.5],
+        [-0.5, 0.5, 0.5],
+        [0.5, 0.5, 0.5],
+        [0.5, -0.5, -0.5],
+        [0.5, 0.5, -0.5],
+        [-0.5, -0.5, -0.5],
+        [-0.5, 0.5, -0.5]
+      ]
+      return [pt[num][0] + pos[0], pt[num][1] + pos[1], pt[num][2] + pos[2]]
+    }
+    const px = ({
+      pz: [0, 1, 2, 3],
+      nx: [1, 4, 3, 5],
+      nz: [4, 6, 5, 7],
+      px: [6, 0, 7, 2],
+      py: [5, 7, 3, 2],
+      ny: [1, 0, 4, 6]
+    })[type]
+    return {
+      pos: [...ps(px[0]), ...ps(px[1]), ...ps(px[2]), ...ps(px[2]), ...ps(px[1]), ...ps(px[3])],
+      norm,
+      uv
     }
   }
 
@@ -224,131 +154,64 @@ class ChunkMesher {
         }
       }
     }
-    let col1 = this.aoColor(0)
-    let col2 = this.aoColor(0)
-    let col3 = this.aoColor(0)
-    let col4 = this.aoColor(0)
-    if (type === 'py') {
-      col1 = this.aoColor(
-        loaded['1:1:-1'] + loaded['0:1:-1'] + loaded['1:1:0']
-      )
-      col2 = this.aoColor(
-        loaded['1:1:1'] + loaded['0:1:1'] + loaded['1:1:0']
-      )
-      col3 = this.aoColor(
-        loaded['-1:1:-1'] + loaded['0:1:-1'] + loaded['-1:1:0']
-      )
-      col4 = this.aoColor(
-        loaded['-1:1:1'] + loaded['0:1:1'] + loaded['-1:1:0']
-      )
-    }
-    if (type === 'ny') {
-      col2 = this.aoColor(
-        loaded['1:-1:-1'] + loaded['0:-1:-1'] + loaded['1:-1:0']
-      )
-      col1 = this.aoColor(
-        loaded['1:-1:1'] + loaded['0:-1:1'] + loaded['1:-1:0']
-      )
-      col4 = this.aoColor(
-        loaded['-1:-1:-1'] + loaded['0:-1:-1'] + loaded['-1:-1:0']
-      )
-      col3 = this.aoColor(
-        loaded['-1:-1:1'] + loaded['0:-1:1'] + loaded['-1:-1:0']
-      )
-    }
-    if (type === 'px') {
-      col1 = this.aoColor(
-        loaded['-1:-1:0'] + loaded['-1:-1:-1'] + loaded['-1:0:-1']
-      )
-      col2 = this.aoColor(
-        loaded['-1:1:0'] + loaded['-1:1:-1'] + loaded['-1:0:-1']
-      )
-      col3 = this.aoColor(
-        loaded['-1:-1:0'] + loaded['-1:-1:1'] + loaded['-1:0:1']
-      )
-      col4 = this.aoColor(
-        loaded['-1:1:0'] + loaded['-1:1:1'] + loaded['-1:0:1']
-      )
-    }
-    if (type === 'nx') {
-      col3 = this.aoColor(
-        loaded['1:-1:0'] + loaded['1:-1:-1'] + loaded['1:0:-1']
-      )
-      col4 = this.aoColor(
-        loaded['1:1:0'] + loaded['1:1:-1'] + loaded['1:0:-1']
-      )
-      col1 = this.aoColor(
-        loaded['1:-1:0'] + loaded['1:-1:1'] + loaded['1:0:1']
-      )
-      col2 = this.aoColor(
-        loaded['1:1:0'] + loaded['1:1:1'] + loaded['1:0:1']
-      )
-    }
-    if (type === 'pz') {
-      col1 = this.aoColor(
-        loaded['0:-1:1'] + loaded['-1:-1:1'] + loaded['-1:0:1']
-      )
-      col2 = this.aoColor(
-        loaded['0:1:1'] + loaded['-1:1:1'] + loaded['-1:0:1']
-      )
-      col3 = this.aoColor(
-        loaded['0:-1:1'] + loaded['1:-1:1'] + loaded['1:0:1']
-      )
-      col4 = this.aoColor(
-        loaded['0:1:1'] + loaded['1:1:1'] + loaded['1:0:1']
-      )
-    }
-    if (type === 'nz') {
-      col3 = this.aoColor(
-        loaded['0:-1:-1'] + loaded['-1:-1:-1'] + loaded['-1:0:-1']
-      )
-      col4 = this.aoColor(
-        loaded['0:1:-1'] + loaded['-1:1:-1'] + loaded['-1:0:-1']
-      )
-      col1 = this.aoColor(
-        loaded['0:-1:-1'] + loaded['1:-1:-1'] + loaded['1:0:-1']
-      )
-      col2 = this.aoColor(
-        loaded['0:1:-1'] + loaded['1:1:-1'] + loaded['1:0:-1']
-      )
-    }
+    const col = ({
+      py: [
+        this.aoColor(loaded['1:1:-1'] + loaded['0:1:-1'] + loaded['1:1:0']),
+        this.aoColor(loaded['1:1:1'] + loaded['0:1:1'] + loaded['1:1:0']),
+        this.aoColor(loaded['-1:1:-1'] + loaded['0:1:-1'] + loaded['-1:1:0']),
+        this.aoColor(loaded['-1:1:1'] + loaded['0:1:1'] + loaded['-1:1:0'])
+      ],
+      ny: [
+        this.aoColor(loaded['1:-1:-1'] + loaded['0:-1:-1'] + loaded['1:-1:0']),
+        this.aoColor(loaded['1:-1:1'] + loaded['0:-1:1'] + loaded['1:-1:0']),
+        this.aoColor(loaded['-1:-1:1'] + loaded['0:-1:1'] + loaded['-1:-1:0']),
+        this.aoColor(loaded['-1:-1:-1'] + loaded['0:-1:-1'] + loaded['-1:-1:0'])
+      ],
+      px: [
+        this.aoColor(loaded['-1:-1:0'] + loaded['-1:-1:-1'] + loaded['-1:0:-1']),
+        this.aoColor(loaded['-1:1:0'] + loaded['-1:1:-1'] + loaded['-1:0:-1']),
+        this.aoColor(loaded['-1:-1:0'] + loaded['-1:-1:1'] + loaded['-1:0:1']),
+        this.aoColor(loaded['-1:1:0'] + loaded['-1:1:1'] + loaded['-1:0:1'])
+      ],
+      nx: [
+        this.aoColor(loaded['1:-1:0'] + loaded['1:-1:1'] + loaded['1:0:1']),
+        this.aoColor(loaded['1:1:0'] + loaded['1:1:1'] + loaded['1:0:1']),
+        this.aoColor(loaded['1:-1:0'] + loaded['1:-1:-1'] + loaded['1:0:-1']),
+        this.aoColor(loaded['1:1:0'] + loaded['1:1:-1'] + loaded['1:0:-1'])
+      ],
+      pz: [
+        this.aoColor(loaded['0:-1:1'] + loaded['-1:-1:1'] + loaded['-1:0:1']),
+        this.aoColor(loaded['0:1:1'] + loaded['-1:1:1'] + loaded['-1:0:1']),
+        this.aoColor(loaded['0:-1:1'] + loaded['1:-1:1'] + loaded['1:0:1']),
+        this.aoColor(loaded['0:1:1'] + loaded['1:1:1'] + loaded['1:0:1'])
+      ],
+      nz: [
+        this.aoColor(loaded['0:-1:-1'] + loaded['1:-1:-1'] + loaded['1:0:-1']),
+        this.aoColor(loaded['0:1:-1'] + loaded['1:1:-1'] + loaded['1:0:-1']),
+        this.aoColor(loaded['0:-1:-1'] + loaded['-1:-1:-1'] + loaded['-1:0:-1']),
+        this.aoColor(loaded['0:1:-1'] + loaded['-1:1:-1'] + loaded['-1:0:-1'])
+      ]
+    })[type]
     const ile = 4
     if (block.name === 'water') {
-      col1[0] /= ile
-      col1[1] /= ile
-      col2[0] /= ile
-      col2[1] /= ile
-      col3[0] /= ile
-      col3[1] /= ile
-      col4[0] /= ile
-      col4[1] /= ile
-    } else if (block.name === 'grass_block' && type === 'py') {
-      col1[0] /= ile
-      col1[2] /= ile
-      col2[0] /= ile
-      col2[2] /= ile
-      col3[0] /= ile
-      col3[2] /= ile
-      col4[0] /= ile
-      col4[2] /= ile
-    } else if (block.name.includes('leaves')) {
-      col1[0] /= ile
-      col1[2] /= ile
-      col2[0] /= ile
-      col2[2] /= ile
-      col3[0] /= ile
-      col3[2] /= ile
-      col4[0] /= ile
-      col4[2] /= ile
+      for (let i = 0; i < 4; i++) {
+        col[i][0] /= ile
+        col[i][1] /= ile
+      }
+    } else if ((block.name === 'grass_block' && type === 'py') || block.name.includes('leaves')) {
+      for (let i = 0; i < 4; i++) {
+        col[i][0] /= ile
+        col[i][2] /= ile
+      }
     }
 
     faceVertex.color = [
-      ...col1,
-      ...col3,
-      ...col2,
-      ...col2,
-      ...col3,
-      ...col4
+      ...col[0],
+      ...col[2],
+      ...col[1],
+      ...col[1],
+      ...col[2],
+      ...col[3]
     ]
   }
 
@@ -407,16 +270,9 @@ class ChunkMesher {
           if (mainBlock.boundingBox === 'block') {
             for (const side in neighbours) {
               const nBlock = neighbours[side]
-              if (mainBlock.transparent) {
-                if (nBlock.boundingBox !== 'block') {
-                  this.addFace(tVertexBuffer, VertexBuffer, side, pos)
-                }
-              } else {
-                if (
-                  nBlock.boundingBox !== 'block' || nBlock.transparent
-                ) {
-                  this.addFace(tVertexBuffer, VertexBuffer, side, pos)
-                }
+              if ((mainBlock.transparent && nBlock.boundingBox !== 'block') ||
+                (nBlock.boundingBox !== 'block' || nBlock.transparent)) {
+                this.addFace(tVertexBuffer, VertexBuffer, side, pos)
               }
             }
           } else if (this.customRender[mainBlock.name]) {
