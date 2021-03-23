@@ -59,7 +59,7 @@ async function Setup (game) {
       game.distanceBasedFog.addShaderToMaterial(game.ent.objectMaterial)
       const gui = new dat.GUI()
       game.params = {
-        chunkdist: 3
+        chunkdist: 4
       }
       game.distanceBasedFog.farnear.x = (game.params.chunkdist - 2) * 16
       game.distanceBasedFog.farnear.y = (game.params.chunkdist - 1) * 16
