@@ -98,19 +98,6 @@ class ChunkMesher {
     for (let i = 0; i < 6; i++) {
       norm.push(...this.neighbours[type])
     }
-    const ps = (num) => {
-      const pt = [
-        [-0.5, -0.5, 0.5],
-        [0.5, -0.5, 0.5],
-        [-0.5, 0.5, 0.5],
-        [0.5, 0.5, 0.5],
-        [0.5, -0.5, -0.5],
-        [0.5, 0.5, -0.5],
-        [-0.5, -0.5, -0.5],
-        [-0.5, 0.5, -0.5]
-      ]
-      return [pt[num][0] + pos[0], pt[num][1] + pos[1], pt[num][2] + pos[2]]
-    }
     const px = ({
       pz: [0, 1, 2, 3],
       nx: [1, 4, 3, 5],
@@ -119,8 +106,23 @@ class ChunkMesher {
       py: [5, 7, 3, 2],
       ny: [1, 0, 4, 6]
     })[type]
+    const ids = [0, 1, 2, 2, 1, 3]
+    const posx = []
+    const pt = [
+      [-0.5, -0.5, 0.5],
+      [0.5, -0.5, 0.5],
+      [-0.5, 0.5, 0.5],
+      [0.5, 0.5, 0.5],
+      [0.5, -0.5, -0.5],
+      [0.5, 0.5, -0.5],
+      [-0.5, -0.5, -0.5],
+      [-0.5, 0.5, -0.5]
+    ]
+    for (let i = 0; i < ids.length; i++) {
+      posx.push(pt[px[ids[i]]][0] + pos[0], pt[px[ids[i]]][1] + pos[1], pt[px[ids[i]]][2] + pos[2])
+    }
     return {
-      pos: [...ps(px[0]), ...ps(px[1]), ...ps(px[2]), ...ps(px[2]), ...ps(px[1]), ...ps(px[3])],
+      pos: posx,
       norm,
       uv
     }
