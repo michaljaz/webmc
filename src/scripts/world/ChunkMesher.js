@@ -101,8 +101,19 @@ class ChunkMesher {
   }
 
   genBlockFace (type, block, pos) {
-    const uv = this.getUvForFace(block, type)
-    // prettier-ignore
+    let uv = this.getUvForFace(block, type)
+    uv = [
+      ...uv[0],
+      ...uv[2],
+      ...uv[1],
+      ...uv[1],
+      ...uv[2],
+      ...uv[3]
+    ]
+    const norm = []
+    for (let i = 0; i < 6; i++) {
+      norm.push(...this.neighbours[type])
+    }
     switch (type) {
       case 'pz':
         return {
@@ -114,22 +125,8 @@ class ChunkMesher {
             0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
             0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]
           ],
-          norm: [
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1,
-            0, 0, 1
-          ],
-          uv: [
-            ...uv[0],
-            ...uv[2],
-            ...uv[1],
-            ...uv[1],
-            ...uv[2],
-            ...uv[3]
-          ]
+          norm,
+          uv
         }
       case 'nx':
         return {
@@ -141,22 +138,8 @@ class ChunkMesher {
             0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
             0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]
           ],
-          norm: [
-            1, 0, 0,
-            1, 0, 0,
-            1, 0, 0,
-            1, 0, 0,
-            1, 0, 0,
-            1, 0, 0
-          ],
-          uv: [
-            ...uv[0],
-            ...uv[2],
-            ...uv[1],
-            ...uv[1],
-            ...uv[2],
-            ...uv[3]
-          ]
+          norm,
+          uv
         }
       case 'nz':
         return {
@@ -168,22 +151,8 @@ class ChunkMesher {
             -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2],
             -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2]
           ],
-          norm: [
-            0, 0, -1,
-            0, 0, -1,
-            0, 0, -1,
-            0, 0, -1,
-            0, 0, -1,
-            0, 0, -1
-          ],
-          uv: [
-            ...uv[0],
-            ...uv[2],
-            ...uv[1],
-            ...uv[1],
-            ...uv[2],
-            ...uv[3]
-          ]
+          norm,
+          uv
         }
       case 'px':
         return {
@@ -195,22 +164,8 @@ class ChunkMesher {
             -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
             -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]
           ],
-          norm: [
-            -1, 0, 0,
-            -1, 0, 0,
-            -1, 0, 0,
-            -1, 0, 0,
-            -1, 0, 0,
-            -1, 0, 0
-          ],
-          uv: [
-            ...uv[0],
-            ...uv[2],
-            ...uv[1],
-            ...uv[1],
-            ...uv[2],
-            ...uv[3]
-          ]
+          norm,
+          uv
         }
       case 'py':
         return {
@@ -222,22 +177,8 @@ class ChunkMesher {
             -0.5 + pos[0], 0.5 + pos[1], -0.5 + pos[2],
             -0.5 + pos[0], 0.5 + pos[1], 0.5 + pos[2]
           ],
-          norm: [
-            0, 1, 0,
-            0, 1, 0,
-            0, 1, 0,
-            0, 1, 0,
-            0, 1, 0,
-            0, 1, 0
-          ],
-          uv: [
-            ...uv[0],
-            ...uv[2],
-            ...uv[1],
-            ...uv[1],
-            ...uv[2],
-            ...uv[3]
-          ]
+          norm,
+          uv
         }
       case 'ny':
         return {
@@ -249,22 +190,8 @@ class ChunkMesher {
             -0.5 + pos[0], -0.5 + pos[1], 0.5 + pos[2],
             -0.5 + pos[0], -0.5 + pos[1], -0.5 + pos[2]
           ],
-          norm: [
-            0, -1, 0,
-            0, -1, 0,
-            0, -1, 0,
-            0, -1, 0,
-            0, -1, 0,
-            0, -1, 0
-          ],
-          uv: [
-            ...uv[0],
-            ...uv[2],
-            ...uv[1],
-            ...uv[1],
-            ...uv[2],
-            ...uv[3]
-          ]
+          norm,
+          uv
         }
     }
   }
@@ -486,8 +413,7 @@ class ChunkMesher {
                 }
               } else {
                 if (
-                  nBlock.boundingBox !== 'block' ||
-                                    nBlock.transparent
+                  nBlock.boundingBox !== 'block' || nBlock.transparent
                 ) {
                   this.addFace(tVertexBuffer, VertexBuffer, side, pos)
                 }
