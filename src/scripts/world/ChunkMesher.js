@@ -272,8 +272,11 @@ class ChunkMesher {
           if (mainBlock.boundingBox === 'block') {
             for (const side in neighbours) {
               const nBlock = neighbours[side]
-              if ((mainBlock.transparent && nBlock.boundingBox !== 'block') ||
-                (nBlock.boundingBox !== 'block' || nBlock.transparent)) {
+              if (mainBlock.transparent) {
+                if (nBlock.boundingBox !== 'block') {
+                  this.addFace(tVertexBuffer, VertexBuffer, side, pos)
+                }
+              } else if (nBlock.boundingBox !== 'block' || nBlock.transparent) {
                 this.addFace(tVertexBuffer, VertexBuffer, side, pos)
               }
             }
