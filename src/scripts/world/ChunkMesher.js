@@ -164,8 +164,8 @@ class ChunkMesher {
         this.aoColor(loaded['-1:1:1'] + loaded['0:1:1'] + loaded['-1:1:0'])
       ],
       ny: [
-        this.aoColor(loaded['1:-1:-1'] + loaded['0:-1:-1'] + loaded['1:-1:0']),
         this.aoColor(loaded['1:-1:1'] + loaded['0:-1:1'] + loaded['1:-1:0']),
+        this.aoColor(loaded['1:-1:-1'] + loaded['0:-1:-1'] + loaded['1:-1:0']),
         this.aoColor(loaded['-1:-1:1'] + loaded['0:-1:1'] + loaded['-1:-1:0']),
         this.aoColor(loaded['-1:-1:-1'] + loaded['0:-1:-1'] + loaded['-1:-1:0'])
       ],

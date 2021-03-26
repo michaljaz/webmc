@@ -5,22 +5,14 @@
 
 ## About
 
-**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy that translates websocket to TCP and then to real minecraft server, so you can play minecraft in the browser.
-
-## Install locally
-
-```bash
-#Clone repo
-git clone https://github.com/michaljaz/web-minecraft
-cd web-minecraft
-#Install node modules
-npm i
-
-```
+**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy that translates Websocket connection to TCP and then to real minecraft server, so you can play minecraft in the browser.
 
 ## Setup
 
 ```bash
+#Install node modules
+npm i
+
 #Building app bundle
 npm run build
 
