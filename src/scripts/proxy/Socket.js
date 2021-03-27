@@ -5,9 +5,11 @@ class Socket {
     this.game = game
     this.worker = new Proxy()
     this.handlers = new Map()
+    const hostname = this.game.proxy.hostname === 'local' ? document.location.hostname : this.game.proxy.hostname
+    const port = this.game.proxy.port === 'local' ? document.location.port : this.game.proxy.port
     this.emit('init', {
-      hostname: document.location.hostname,
-      port: document.location.port,
+      hostname: hostname,
+      port: port,
       nick: this.game.nick,
       server: this.game.server,
       serverPort: this.game.serverPort,
