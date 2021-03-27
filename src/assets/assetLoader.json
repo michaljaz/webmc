@@ -1,42 +1,42 @@
 {
 	"blocksMapping":{
-		"path":"/assets/blocks/blocksSnap-Mapping.json",
+		"path":"assets/blocks/blocksSnap-Mapping.json",
 		"type":"text"
 	},
 	"blocksAtlasFull":{
-		"path":"/assets/blocks/blocks-Atlas.png",
+		"path":"assets/blocks/blocks-Atlas.png",
 		"type":"image"
 	},
 	"blocksMappingFull":{
-		"path":"/assets/blocks/blocks-Mapping.json",
+		"path":"assets/blocks/blocks-Mapping.json",
 		"type":"text"
 	},
 	"blocksTex":{
-		"path":"/assets/blocks.json",
+		"path":"assets/blocks.json",
 		"type":"text"
 	},
 	"player":{
-		"path":"/assets/models/player.fbx",
+		"path":"assets/models/player.fbx",
 		"type":"fbx"
 	},
 	"playerTex":{
-		"path":"/assets/models/player.png",
+		"path":"assets/models/player.png",
 		"type":"texture"
 	},
 	"blocksAtlasSnap":{
-		"path":"/assets/blocks/blocksSnap-Atlas.png",
+		"path":"assets/blocks/blocksSnap-Atlas.png",
 		"type":"texture"
 	},
 	"blocksDef":{
-		"path":"/assets/blocks/blocksDef.json",
+		"path":"assets/blocks/blocksDef.json",
 		"type":"text"
 	},
 	"itemsMapping":{
-		"path":"/assets/items/items-Mapping.json",
+		"path":"assets/items/items-Mapping.json",
 		"type":"text"
 	},
 	"nameList":{
-		"path":"/assets/nameList.txt",
+		"path":"assets/nameList.txt",
 		"type":"text"
 	}
 }
