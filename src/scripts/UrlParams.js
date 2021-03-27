@@ -39,7 +39,8 @@ function UrlParams (game) {
     }
     if (game.proxy.port === '' || game.proxy.port === null) {
       reload = true
-      game.proxy.port = game.production ? '80' : 'local'
+
+      game.proxy.port = game.production ? (document.location.protocol === 'https:' ? '443' : '80') : 'local'
     }
     if (reload) {
       document.location.href = `?server=${game.server}&port=${game.serverPort}&nick=${game.nick}&premium=${game.premium}&proxyHost=${game.proxy.hostname}&proxyPort=${game.proxy.port}`
