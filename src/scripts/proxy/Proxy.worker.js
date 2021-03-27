@@ -4,7 +4,7 @@ import Convert from 'ansi-to-html'
 const convert = new Convert()
 
 global.window = self
-global.importScripts('../assets/mineflayer.js')
+global.importScripts('assets/mineflayer.js')
 let bot = null
 
 const emit = (type, ...params) => {
