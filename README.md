@@ -5,8 +5,8 @@
 [![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/michaljaz/web-minecraft)
 ## About
 
-**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy that translates Websocket connection to TCP and then to real minecraft server, so you can play minecraft in the browser. <br>
-Live demo with no installation: https://web-minecraft.herokuapp.com/.
+**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy that translates Websocket connection to TCP and then to real minecraft server (https://github.com/michaljaz/web-minecraft-proxy), so you can play minecraft in the browser. <br>
+Live demo with no installation: https://michaljaz.github.io/web-minecraft.
 
 ## Setup
 
