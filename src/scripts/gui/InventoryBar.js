@@ -130,7 +130,7 @@ class InventoryBar {
       if ($(list[i]).attr('data-texture') === '') {
         url = ''
       } else {
-        url = '/assets/items/items-Atlas.png'
+        url = 'assets/items/items-Atlas.png'
         const tex = 43
         const items = this.game.al.get('itemsMapping')
         $(list[i]).css('background-repeat', 'no-repeat')
