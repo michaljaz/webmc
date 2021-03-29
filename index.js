@@ -5,27 +5,16 @@ const compression = require('compression')
 const port = process.env.PORT || 8080
 const netApi = require('@misioxd/net-browserify')
 const path = require('path')
+const webpack = require('webpack')
+const middleware = require('webpack-dev-middleware')
+const devconfig = require('./src/webpack.dev.js')
+const compiler = webpack(devconfig)
 
-app.use(
-  helmet({
-    contentSecurityPolicy: false
-  })
-)
-app.use(netApi({ allowOrigin: '*' }))
+app.use(helmet({ contentSecurityPolicy: false }))
 app.use(compression())
+app.use(netApi({ allowOrigin: '*' }))
+app.use(middleware(compiler))
 
-const mode = process.argv[2]
-if (mode === 'production') {
-  app.use(express.static(path.join(__dirname, 'src/dist')))
-} else if (mode === 'development') {
-  const webpack = require('webpack')
-  const middleware = require('webpack-dev-middleware')
-  const devconfig = require('./src/webpack.dev.js')
-  const compiler = webpack(devconfig)
-  app.use(middleware(compiler))
-} else {
-  console.log('Incorrect mode!')
-}
 app.listen(port, function () {
   return console.log(`Server is running on \x1b[34m*:${port}\x1b[0m`)
 })

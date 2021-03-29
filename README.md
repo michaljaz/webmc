@@ -5,27 +5,24 @@
 [![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/michaljaz/web-minecraft)
 ## About
 
-**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy that translates Websocket connection to TCP and then to real minecraft server (https://github.com/michaljaz/web-minecraft-proxy), so you can play minecraft in the browser. <br>
+**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy(https://github.com/michaljaz/web-minecraft-proxy) that translates Websocket connection to TCP and then to real minecraft server, so you can play minecraft in the browser. Web-minecraft now only supports minecraft 1.16.5.
+
+## Demo
 Live demo with no installation: https://michaljaz.github.io/web-minecraft.
 
-## Setup
+## Development setup
 
 ```bash
-#Install node modules
-npm i
 
-#Building app bundle
-npm run build
-
-#Start node server and serve bundle files
+npm install
 npm start
-
 ```
+This will start express and webpack in development mode: whenever you save a file, the build will be redone (it takes 2s), and you can refresh the page to get the new result.
 
-</details>
+Connect to http://localhost:8080 in your browser. Also specify correct server(1.16.5) ip in url param.
+
 
 ## Screenshots
-
-[<img src="https://i.ibb.co/bPh99MV/hypixel.png" alt="screen6" width="100%">](https://i.ibb.co/bPh99MV/hypixel.png)
-[<img src="https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png" alt="screen6" width="100%">](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png)
-[<img src="https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png" alt="screen6" width="100%">](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png)
+![hypixel](https://i.ibb.co/bPh99MV/hypixel.png "hypixel")
+![nether](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png "nether")
+![end](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png "end")
