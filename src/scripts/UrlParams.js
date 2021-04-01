@@ -8,10 +8,7 @@ function UrlParams (game) {
     game.server = new URL(document.location).searchParams.get('server')
     game.serverPort = new URL(document.location).searchParams.get('port')
     game.premium = new URL(document.location).searchParams.get('premium')
-    game.proxy = {
-      hostname: new URL(document.location).searchParams.get('proxyHost'),
-      port: new URL(document.location).searchParams.get('proxyPort')
-    }
+    game.proxy = new URL(document.location).searchParams.get('proxy')
     let reload = false
     if (game.nick === '' || game.nick === null) {
       reload = true
@@ -33,17 +30,20 @@ function UrlParams (game) {
       reload = true
       game.premium = 'false'
     }
-    if (game.proxy.hostname === '' || game.proxy.hostname === null) {
+    if (game.proxy === '' || game.proxy === null) {
       reload = true
-      game.proxy.hostname = game.production ? 'web-minecraft-proxy.herokuapp.com' : 'local'
-    }
-    if (game.proxy.port === '' || game.proxy.port === null) {
-      reload = true
-
-      game.proxy.port = game.production ? (document.location.protocol === 'https:' ? '443' : '80') : 'local'
+      if (game.production) {
+        if (document.location.protocol === 'https:') {
+          game.proxy = 'wss:web-minecraft-proxy.herokuapp.com:443'
+        } else {
+          game.proxy = 'ws:web-minecraft-proxy.herokuapp.com:80'
+        }
+      } else {
+        game.proxy = 'local'
+      }
     }
     if (reload) {
-      document.location.href = `?server=${game.server}&port=${game.serverPort}&nick=${game.nick}&premium=${game.premium}&proxyHost=${game.proxy.hostname}&proxyPort=${game.proxy.port}`
+      document.location.href = `?server=${game.server}&port=${game.serverPort}&nick=${game.nick}&premium=${game.premium}&proxy=${game.proxy}`
     } else {
       if (game.premium === 'true') {
         swal({
