@@ -16,13 +16,14 @@ class Socket {
       hostname = pars[1]
       port = pars[2]
     }
+    const server = this.game.server.split(':')
     this.emit('init', {
       connection,
       hostname,
       port,
       nick: this.game.nick,
-      server: this.game.server,
-      serverPort: this.game.serverPort,
+      server: server[0],
+      serverPort: server[1],
       password: this.game.password
     })
     this.worker.onmessage = (msg) => {
