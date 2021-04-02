@@ -38,5 +38,9 @@
 	"nameList":{
 		"path":"assets/nameList.txt",
 		"type":"text"
+	},
+	"config":{
+		"path":"assets/config.json",
+		"type":"text"
 	}
 }

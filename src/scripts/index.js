@@ -13,10 +13,6 @@ class Game {
     } else {
       console.log('Running in development mode')
     }
-    this.servers = {
-      production: '185.228.139.97:25564',
-      development: 'localhost:25565'
-    }
     this.fov = {
       normal: 70,
       sprint: 80

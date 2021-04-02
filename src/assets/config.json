@@ -1,0 +1,6 @@
+{
+	"minecraftProduction": "185.228.139.97:25564",
+	"minecraftDevelopment":"localhost:25565",
+	"proxyHTTPS": "wss:web-minecraft-proxy.herokuapp.com:443",
+	"proxyHTTP": "ws:web-minecraft-proxy.herokuapp.com:80"
+}

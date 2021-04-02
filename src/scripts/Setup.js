@@ -40,6 +40,10 @@ async function Setup (game) {
       document.body.appendChild(game.stats.dom)
     }
     game.distanceBasedFog = new DistanceBasedFog(game)
+    game.servers = {
+      production: game.al.get('config').minecraftProduction,
+      development: game.al.get('config').minecraftDevelopment
+    }
     UrlParams(game).then((password) => {
       game.password = password
       $('.loadingText').text(`Connecting to ${game.server}...`)

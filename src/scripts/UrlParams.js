@@ -25,9 +25,9 @@ function UrlParams (game) {
       reload = true
       if (game.production) {
         if (document.location.protocol === 'https:') {
-          game.proxy = 'wss:web-minecraft-proxy.herokuapp.com:443'
+          game.proxy = game.al.get('config').proxyHTTPS
         } else {
-          game.proxy = 'ws:web-minecraft-proxy.herokuapp.com:80'
+          game.proxy = game.al.get('config').proxyHTTP
         }
       } else {
         game.proxy = 'local'
