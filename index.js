@@ -4,7 +4,6 @@ const helmet = require('helmet')
 const compression = require('compression')
 const port = process.env.PORT || 8080
 const netApi = require('@misioxd/net-browserify')
-const path = require('path')
 const webpack = require('webpack')
 const middleware = require('webpack-dev-middleware')
 const devconfig = require('./src/webpack.dev.js')
