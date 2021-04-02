@@ -42,5 +42,9 @@
 	"config":{
 		"path":"assets/config.json",
 		"type":"text"
+	},
+	"models":{
+		"path":"assets/blocks/models.json",
+		"type":"text"
 	}
 }
