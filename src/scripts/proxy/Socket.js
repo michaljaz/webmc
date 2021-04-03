@@ -16,7 +16,10 @@ class Socket {
       hostname = pars[1]
       port = pars[2]
     }
-    const server = this.game.server.split(':')
+    let server = this.game.server.split(':')
+    if (server.length === 1) {
+      server = [server[0], null]
+    }
     this.emit('init', {
       connection,
       hostname,
