@@ -3,7 +3,6 @@ import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import swal from 'sweetalert'
 import { AssetLoader } from './AssetLoader.js'
 import { Setup } from './Setup.js'
-import $ from 'jquery'
 
 class Game {
   constructor () {
@@ -36,13 +35,13 @@ class Game {
 
   async init () {
     await this.al.init()
-    await Setup(this)
+    Setup(this)
     this.socket.on('blockUpdate', (block) => {
       this.world.setBlock(block[0], block[1] + 16, block[2], block[3])
     })
     this.socket.on('spawn', (yaw, pitch) => {
       console.log('Player spawned')
-      $('.initLoading').css('display', 'none')
+      this.ls.hide()
       this.camera.rotation.y = yaw
       this.camera.rotation.x = pitch
     })
@@ -62,8 +61,8 @@ class Game {
       this.distanceBasedFog.color.y = bg[1]
       this.distanceBasedFog.color.z = bg[2]
       this.distanceBasedFog.color.w = 1
-      $('.initLoading').css('display', 'block')
-      $('.loadingText').html('Loading terrain...')
+
+      this.ls.show('Loading terrain...')
     })
     this.socket.on('mapChunk', (sections, biomes, x, z) => {
       this.world.computeSections(sections, biomes, x, z)
@@ -127,13 +126,9 @@ class Game {
   }
 
   animate () {
-    if (this.stats) {
-      this.stats.begin()
-      this.render()
-      this.stats.end()
-    } else {
-      this.render()
-    }
+    this.stats.begin()
+    this.render()
+    this.stats.end()
     window.requestAnimationFrame(() => {
       this.animate()
     })
@@ -158,6 +153,8 @@ class Game {
       }
     })
     this.world.updateChunksAroundPlayer(this.params.chunkdist)
+    this.inv_bar.updateItems()
+    this.distanceBasedFog.update()
     TWEEN.update()
     if (!this.production) {
       this.drawcalls.update(this.renderer.info.render.calls, 100)
@@ -165,8 +162,6 @@ class Game {
     if (this.eh.gameState === 'inventory') {
       this.pii.render()
     }
-    this.inv_bar.updateItems()
-    this.distanceBasedFog.update()
     this.renderer.render(this.scene, this.camera)
   }
 }

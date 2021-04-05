@@ -42,11 +42,7 @@ class BlockBreak {
       const toxX = 6 + state
       const toxY = 8
       const q = 1 / 27
-      for (
-        let i = 0;
-        i <= this.cursor.geometry.attributes.uv.array.length;
-        i++
-      ) {
+      for (let i = 0; i <= this.cursor.geometry.attributes.uv.array.length; i++) {
         if (this.uv[i] === undefined) {
           if (i % 2 === 0) {
             if (this.cursor.geometry.attributes.uv.array[i] === 0) {
@@ -66,16 +62,13 @@ class BlockBreak {
           if (this.uv[i] === 0) {
             this.cursor.geometry.attributes.uv.array[i] = q * toxX
           } else {
-            this.cursor.geometry.attributes.uv.array[i] =
-                            q * toxX + q
+            this.cursor.geometry.attributes.uv.array[i] = q * toxX + q
           }
         } else {
           if (this.uv[i] === 0) {
-            this.cursor.geometry.attributes.uv.array[i] =
-                            1 - q * toxY - q
+            this.cursor.geometry.attributes.uv.array[i] = 1 - q * toxY - q
           } else {
-            this.cursor.geometry.attributes.uv.array[i] =
-                            1 - q * toxY
+            this.cursor.geometry.attributes.uv.array[i] = 1 - q * toxY
           }
         }
       }

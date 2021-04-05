@@ -42,6 +42,12 @@ class DistanceBasedFog {
       )
     }
   }
+
+  addShaderToMaterials (materials) {
+    for (let i = 0; i < materials.length; i++) {
+      this.addShaderToMaterial(materials[i])
+    }
+  }
 }
 
 export { DistanceBasedFog }

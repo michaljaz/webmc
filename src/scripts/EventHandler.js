@@ -35,6 +35,17 @@ class EventHandler {
         this.game.inv_bar.setFocus(focus)
       }
     })
+    const playerUpdateHeight = () => {
+      const to = {
+        x: this.game.playerPos[0],
+        y: this.game.playerPos[1] + this.game.headHeight,
+        z: this.game.playerPos[2]
+      }
+      new TWEEN.Tween(this.game.camera.position)
+        .to(to, 100)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .start()
+    }
     $(document).on('keydown', (z) => {
       this.keys[z.code] = true
       for (let i = 1; i < 10; i++) {
@@ -123,7 +134,7 @@ class EventHandler {
 
           case 'sneak':
             this.game.headHeight = 16.7
-            this.game.playerImpulse()
+            playerUpdateHeight()
             break
         }
       }
@@ -151,7 +162,7 @@ class EventHandler {
 
           case 'sneak':
             this.game.headHeight = 17
-            this.game.playerImpulse()
+            playerUpdateHeight()
             break
         }
       }

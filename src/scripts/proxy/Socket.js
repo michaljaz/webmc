@@ -26,8 +26,7 @@ class Socket {
       port,
       nick: this.game.nick,
       server: server[0],
-      serverPort: server[1],
-      password: this.game.password
+      serverPort: server[1]
     })
     this.worker.onmessage = (msg) => {
       const type = msg.data.type
