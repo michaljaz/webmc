@@ -126,9 +126,14 @@ class Game {
   }
 
   animate () {
-    this.stats.begin()
-    this.render()
-    this.stats.end()
+    try {
+      this.stats.begin()
+      this.render()
+      this.stats.end()
+    } catch (e) {
+      this.render()
+    }
+
     window.requestAnimationFrame(() => {
       this.animate()
     })
