@@ -43,8 +43,12 @@
 		"path":"assets/config.json",
 		"type":"text"
 	},
-	"models":{
+	"blocksModels":{
 		"path":"assets/blocks/models.json",
+		"type":"text"
+	},
+	"blocksStates":{
+		"path":"assets/blocks/blockStates.json",
 		"type":"text"
 	}
 }
