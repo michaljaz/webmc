@@ -128,7 +128,7 @@ class TerrainManager {
   loop () {
     this.removeChunks()
     this.genNearestChunk()
-    requestAnimationFrame(() => {
+    self.requestAnimationFrame(() => {
       this.loop()
     })
   }
