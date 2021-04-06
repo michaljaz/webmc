@@ -272,11 +272,7 @@ class ChunkMesher {
           if (mainBlock.boundingBox === 'block') {
             for (const side in neighbours) {
               const nBlock = neighbours[side]
-              if (mainBlock.transparent) {
-                if (nBlock.boundingBox !== 'block') {
-                  this.addFace(tVertexBuffer, VertexBuffer, side, pos)
-                }
-              } else if (nBlock.boundingBox !== 'block' || nBlock.transparent) {
+              if ((mainBlock.transparent && nBlock.boundingBox !== 'block') || (nBlock.boundingBox !== 'block' || nBlock.transparent)) {
                 this.addFace(tVertexBuffer, VertexBuffer, side, pos)
               }
             }
@@ -290,11 +286,14 @@ class ChunkMesher {
         }
       }
     }
-
-    VertexBuffer.positions.push(...tVertexBuffer.positions)
-    VertexBuffer.normals.push(...tVertexBuffer.normals)
-    VertexBuffer.uvs.push(...tVertexBuffer.uvs)
-    VertexBuffer.colors.push(...tVertexBuffer.colors)
+    for (let i = 0; i < tVertexBuffer.positions.length; i++) {
+      VertexBuffer.positions.push(tVertexBuffer.positions[i])
+      VertexBuffer.normals.push(tVertexBuffer.normals[i])
+      VertexBuffer.colors.push(tVertexBuffer.colors[i])
+    }
+    for (let i = 0; i < tVertexBuffer.uvs.length; i++) {
+      VertexBuffer.uvs.push(tVertexBuffer.uvs[i])
+    }
     return VertexBuffer
   }
 }
