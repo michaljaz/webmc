@@ -1,4 +1,10 @@
-import { MeshStandardMaterial, TextureLoader, NearestFilter, NearestMipmapLinearFilter } from 'three'
+import {
+  MeshStandardMaterial,
+  TextureLoader,
+  NearestFilter,
+  NearestMipmapLinearFilter,
+  CanvasTexture
+} from 'three'
 
 class TextureAtlasCreator {
   constructor (options) {
@@ -12,67 +18,71 @@ class TextureAtlasCreator {
     const multi = {}
     for (const i in this.textureMapping) {
       if (i.includes('@')) {
-        const block = this.decodeName(i)
-        if (multi[block.pref] === undefined) {
-          multi[block.pref] = block
+        const xd = this.decodeName(i)
+        if (multi[xd.pref] === undefined) {
+          multi[xd.pref] = xd
         } else {
-          multi[block.pref].x = Math.max(multi[block.pref].x, block.x)
-          multi[block.pref].y = Math.max(multi[block.pref].y, block.y)
+          multi[xd.pref].x = Math.max(multi[xd.pref].x, xd.x)
+          multi[xd.pref].y = Math.max(multi[xd.pref].y, xd.y)
         }
       }
     }
-    const canvas = document.createElement('canvas')
-    const ctx = canvas.getContext('2d')
-    const size = this.willSize * (16 + 32)
-    canvas.width = size
-    canvas.height = size
-    const toxelCoord = { x: 1, y: 1 }
+    const canvasx = document.createElement('canvas')
+    const ctx = canvasx.getContext('2d')
+    canvasx.width = this.willSize * 16
+    canvasx.height = this.willSize * 16
+    let toxelX = 1
+    let toxelY = 1
     for (const i in this.textureMapping) {
       if (i.includes('@')) {
-        const block = this.decodeName(i)
-        if (multi[block.pref].loaded === undefined) {
-          multi[block.pref].loaded = true
-          const toxel = this.getToxelForTick(
+        const xd = this.decodeName(i)
+        if (multi[xd.pref].loaded === undefined) {
+          multi[xd.pref].loaded = true
+          const lol = this.getToxelForTick(
             tick,
-            multi[block.pref].x + 1,
-            multi[block.pref].y + 1
+            multi[xd.pref].x + 1,
+            multi[xd.pref].y + 1
           )
-          const texmap = this.textureMapping[`${block.pref}@${toxel.col}@${toxel.row}`]
-          this.addToxel(ctx, texmap, toxelCoord)
+          const texmap = this.textureMapping[
+                        `${xd.pref}@${lol.col}@${lol.row}`
+          ]
+          ctx.drawImage(
+            this.textureX,
+            (texmap.x - 1) * 16,
+            (texmap.y - 1) * 16,
+            16,
+            16,
+            (toxelX - 1) * 16,
+            (toxelY - 1) * 16,
+            16,
+            16
+          )
+          toxelX++
+          if (toxelX > this.willSize) {
+            toxelX = 1
+            toxelY++
+          }
         }
       } else {
-        this.addToxel(ctx, this.textureMapping[i], toxelCoord)
+        ctx.drawImage(
+          this.textureX,
+          (this.textureMapping[i].x - 1) * 16,
+          (this.textureMapping[i].y - 1) * 16,
+          16,
+          16,
+          (toxelX - 1) * 16,
+          (toxelY - 1) * 16,
+          16,
+          16
+        )
+        toxelX++
+        if (toxelX > this.willSize) {
+          toxelX = 1
+          toxelY++
+        }
       }
     }
-    // console.log(canvas.toDataURL())
-    return canvas
-  }
-
-  addToxel (ctx, coord, toxelCoord) {
-    ctx.drawImage(
-      this.textureX,
-      (coord.x - 1) * 16,
-      (coord.y - 1) * 16,
-      16,
-      16,
-      16 + (toxelCoord.x - 1) * (16 + 32),
-      16 + (toxelCoord.y - 1) * (16 + 32),
-      16,
-      16
-    )
-    const b = ctx.getImageData(16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32), 16, 16)
-    for (let j = 16; j > 0; j--) {
-      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32) - j)
-      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32) - j, 16 + (toxelCoord.y - 1) * (16 + 32))
-      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32) + j, 16 + (toxelCoord.y - 1) * (16 + 32))
-      ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32) + j)
-    }
-    ctx.putImageData(b, 16 + (toxelCoord.x - 1) * (16 + 32), 16 + (toxelCoord.y - 1) * (16 + 32))
-    toxelCoord.x++
-    if (toxelCoord.x > this.willSize) {
-      toxelCoord.x = 1
-      toxelCoord.y++
-    }
+    return canvasx
   }
 
   decodeName (i) {
@@ -99,11 +109,11 @@ class TextureAtlasCreator {
   getToxelForTick (tick, w, h) {
     tick = (tick % (w * h)) + 1
     // option1
-    // let col = (tick - 1) % w
-    // let row = Math.ceil(tick / w) - 1
+    let col = (tick - 1) % w
+    let row = Math.ceil(tick / w) - 1
     // option2
-    const col = Math.ceil(tick / h) - 1
-    const row = (tick - 1) % h
+    col = Math.ceil(tick / h) - 1
+    row = (tick - 1) % h
     return { row, col }
   }
 }
@@ -111,31 +121,25 @@ class TextureAtlasCreator {
 class AnimatedTextureAtlas {
   constructor (game) {
     this.game = game
-    this.material = new MeshStandardMaterial({
-      side: 0,
-      map: null,
-      vertexColors: true,
-      transparent: true,
-      alphaTest: 0.1
-    })
+
     this.atlasCreator = new TextureAtlasCreator({
       textureX: this.game.al.get('blocksAtlasFull'),
       textureMapping: this.game.al.get('blocksMappingFull')
     })
-    const savedTextures = []
-    for (let i = 0; i < 10; i++) {
-      const c = this.atlasCreator.gen(i)
-      const t = c.toDataURL()
-      const tekstura = new TextureLoader().load(t)
-      tekstura.magFilter = NearestFilter
-      tekstura.minFilter = NearestMipmapLinearFilter
-      savedTextures.push(tekstura)
-    }
-    let tickq = 0
-    tickq++
-    const tekst = savedTextures[tickq % 9]
-    this.material.map = tekst
-    this.material.map.needsUpdate = true
+    const canvas = this.atlasCreator.gen(0)
+    const texture = new CanvasTexture(canvas)
+    texture.magFilter = NearestFilter
+    texture.minFilter = NearestMipmapLinearFilter
+
+    this.material = new MeshStandardMaterial({
+      side: 0,
+      map: texture,
+      vertexColors: true,
+      transparent: true,
+      alphaTest: 0.1
+    })
+
+    console.log(this.material)
   }
 }
 
