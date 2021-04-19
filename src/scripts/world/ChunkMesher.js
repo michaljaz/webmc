@@ -39,7 +39,7 @@ class ChunkMesher {
     ]
   }
 
-  getUvForFace (block, type) {
+  getUvForFace (block, type, opt) {
     let xd, toxX, toxY
     if (
       this.blocksTex[block.name] !== undefined ||
@@ -85,11 +85,21 @@ class ChunkMesher {
     const y1 = 1 - this.q * toxY - this.q
     const x2 = this.q * toxX + this.q
     const y2 = 1 - this.q * toxY
-    return [x1, y1, x2, y1, x1, y2, x1, y2, x2, y1, x2, y2]
+    const uv = [
+      [x1, y1],
+      [x1, y2],
+      [x2, y1],
+      [x2, y2]
+    ]
+    if (opt) {
+      return [...uv[0], ...uv[1], ...uv[2], ...uv[2], ...uv[1], ...uv[3]]
+    } else {
+      return [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+    }
   }
 
-  genBlockFace (type, block, pos) {
-    const uv = this.getUvForFace(block, type)
+  genBlockFace (type, block, pos, opt) {
+    const uv = this.getUvForFace(block, type, opt)
     const norm = []
     for (let i = 0; i < 6; i++) {
       norm.push(...this.neighbours[type])
@@ -102,7 +112,13 @@ class ChunkMesher {
       py: [5, 7, 3, 2],
       ny: [1, 0, 4, 6]
     })[type]
-    const ids = [0, 1, 2, 2, 1, 3]
+    let ids
+    if (opt) {
+      ids = [1, 3, 0, 0, 3, 2]
+    } else {
+      ids = [0, 1, 2, 2, 1, 3]
+    }
+
     const posx = []
     const pt = [
       [-0.5, -0.5, 0.5],
@@ -126,8 +142,31 @@ class ChunkMesher {
 
   addFace (tVertexBuffer, VertexBuffer, type, pos) {
     const block = this.chunkTerrain.getBlock(...pos)
-    const faceVertex = this.genBlockFace(type, block, pos)
-    this.ambientOcclusion(block, pos, faceVertex, type)
+
+    const col = this.ambientOcclusion(block, pos, type)
+    let faceVertex
+    if (col[0] + col[3] >= col[1] + col[2]) {
+      faceVertex = this.genBlockFace(type, block, pos, true)
+      faceVertex.color = [
+        ...col[2],
+        ...col[3],
+        ...col[0],
+        ...col[0],
+        ...col[3],
+        ...col[1]
+      ]
+    } else {
+      faceVertex = this.genBlockFace(type, block, pos, false)
+      faceVertex.color = [
+        ...col[0],
+        ...col[2],
+        ...col[1],
+        ...col[1],
+        ...col[2],
+        ...col[3]
+      ]
+    }
+
     this.push(
       tVertexBuffer,
       VertexBuffer,
@@ -136,7 +175,7 @@ class ChunkMesher {
     )
   }
 
-  ambientOcclusion (block, pos, faceVertex, type) {
+  ambientOcclusion (block, pos, type) {
     const loaded = {}
     for (let x = -1; x <= 1; x++) {
       for (let y = -1; y <= 1; y++) {
@@ -202,15 +241,7 @@ class ChunkMesher {
         col[i][2] /= ile
       }
     }
-
-    faceVertex.color = [
-      ...col[0],
-      ...col[2],
-      ...col[1],
-      ...col[1],
-      ...col[2],
-      ...col[3]
-    ]
+    return col
   }
 
   push (tVertexBuffer, VertexBuffer, faceVertex, transparent) {

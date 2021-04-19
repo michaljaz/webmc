@@ -138,8 +138,6 @@ class AnimatedTextureAtlas {
       transparent: true,
       alphaTest: 0.1
     })
-
-    console.log(this.material)
   }
 }
 

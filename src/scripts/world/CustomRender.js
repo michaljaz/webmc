@@ -99,7 +99,15 @@ const CustomRender = {
 
             break
         }
-        this.ambientOcclusion(block, pos, faceVertex, side)
+        const col = this.ambientOcclusion(block, pos, side)
+        faceVertex.color = [
+          ...col[0],
+          ...col[2],
+          ...col[1],
+          ...col[1],
+          ...col[2],
+          ...col[3]
+        ]
         this.push(
           tVertexBuffer,
           VertexBuffer,
@@ -337,7 +345,16 @@ const CustomRender = {
 
             break
         }
-        this.ambientOcclusion(block, pos, faceVertex, side)
+        this.ambientOcclusion(block, pos, side)
+        const col = this.ambientOcclusion(block, pos, side)
+        faceVertex.color = [
+          ...col[0],
+          ...col[2],
+          ...col[1],
+          ...col[1],
+          ...col[2],
+          ...col[3]
+        ]
         this.push(
           tVertexBuffer,
           VertexBuffer,
