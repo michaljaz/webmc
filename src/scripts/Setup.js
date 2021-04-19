@@ -74,7 +74,9 @@ function Setup (game) {
     .add(game.params, 'chunkdist', 2, 10, 1)
     .name('Render distance')
     .onChange(function (val) {
-      game.distanceBasedFog.updateDistance(val)
+      if (game.distanceBasedFog.visible) {
+        game.distanceBasedFog.updateDistance(val)
+      }
     })
     .listen()
   gui
