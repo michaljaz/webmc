@@ -6,6 +6,12 @@ class DistanceBasedFog {
     this.view = new Vector3()
     this.farnear = new Vector2()
     this.color = new Vector4()
+    this.visible = true
+  }
+
+  updateDistance (val) {
+    this.farnear.x = (val - 2) * 16
+    this.farnear.y = (val - 1) * 16
   }
 
   update () {

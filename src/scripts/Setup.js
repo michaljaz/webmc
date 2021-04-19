@@ -65,16 +65,27 @@ function Setup (game) {
   game.params = {
     chunkdist: 4
   }
-  game.distanceBasedFog.farnear.x = (game.params.chunkdist - 2) * 16
-  game.distanceBasedFog.farnear.y = (game.params.chunkdist - 1) * 16
-  gui.add(game.world.material, 'wireframe').name('Wireframe').listen()
+  game.distanceBasedFog.updateDistance(game.params.chunkdist)
+  gui
+    .add(game.world.material, 'wireframe')
+    .name('Wireframe')
+    .listen()
   gui
     .add(game.params, 'chunkdist', 2, 10, 1)
     .name('Render distance')
     .onChange(function (val) {
-      game.distanceBasedFog.farnear.x = (val - 2) * 16
-      game.distanceBasedFog.farnear.y = (val - 1) * 16
-      console.log(val)
+      game.distanceBasedFog.updateDistance(val)
+    })
+    .listen()
+  gui
+    .add(game.distanceBasedFog, 'visible')
+    .name('Enable fog')
+    .onChange(function (val) {
+      if (val) {
+        game.distanceBasedFog.updateDistance(game.params.chunkdist)
+      } else {
+        game.distanceBasedFog.updateDistance(1000)
+      }
     })
     .listen()
   game.eh = new EventHandler(game)
