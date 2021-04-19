@@ -259,15 +259,13 @@ class ChunkMesher {
   }
 
   aoColor (type) {
-    if (type === 0) {
-      return [0.9, 0.9, 0.9]
-    } else if (type === 1) {
-      return [0.7, 0.7, 0.7]
-    } else if (type === 2) {
-      return [0.5, 0.5, 0.5]
-    } else {
-      return [0.3, 0.3, 0.3]
-    }
+  	const num = ({
+  		0: 0.7,
+  		1: 0.5,
+  		2: 0.3,
+  		3: 0.1
+  	})[type]
+    return [num, num, num]
   }
 
   genChunkGeo (cellX, cellY, cellZ) {
