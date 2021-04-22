@@ -6,9 +6,6 @@ class ChunkManager {
   constructor (game) {
     this.game = game
     this.cellMesh = new Map()
-    setInterval(() => {
-      TWEEN.update()
-    })
   }
 
   addChunk (cellId, vert) {
@@ -30,13 +27,13 @@ class ChunkManager {
       }
       this.cellMesh.set(cellId, newMesh)
       this.game.scene.add(newMesh)
-      newMesh.position.y = -256
+      newMesh.position.y = -32
 
       const to = {
         y: 0
       }
       new TWEEN.Tween(newMesh.position)
-        .to(to, 2000)
+        .to(to, 1000)
         .easing(TWEEN.Easing.Quadratic.Out)
         .onComplete(() => {
           newMesh.matrixAutoUpdate = true
@@ -75,6 +72,10 @@ class ChunkManager {
       }
     }
     this.cellMesh.clear()
+  }
+
+  update () {
+    TWEEN.update()
   }
 }
 export { ChunkManager }

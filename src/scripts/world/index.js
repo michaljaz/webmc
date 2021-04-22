@@ -91,6 +91,7 @@ class World {
   }
 
   updateChunksAroundPlayer (radius) {
+    this.chunkManager.update()
     const pos = this.game.camera.position
     const cell = this.chunkTerrain.computeChunkForVoxel(
       Math.floor(pos.x + 0.5),
