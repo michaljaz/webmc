@@ -1,10 +1,14 @@
 import { BufferGeometry, BufferAttribute, Mesh } from 'three'
+import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import vec3 from 'vec3'
 
 class ChunkManager {
   constructor (game) {
     this.game = game
     this.cellMesh = new Map()
+    setInterval(() => {
+      TWEEN.update()
+    })
   }
 
   addChunk (cellId, vert) {
@@ -13,12 +17,12 @@ class ChunkManager {
     geometry.setAttribute('normal', new BufferAttribute(new Float32Array(vert.normals), 3))
     geometry.setAttribute('uv', new BufferAttribute(new Float32Array(vert.uvs), 2))
     geometry.setAttribute('color', new BufferAttribute(new Float32Array(vert.colors), 3))
-    geometry.matrixAutoUpdate = false
+    geometry.matrixAutoUpdate = true
 
     const mesh = this.cellMesh.get(cellId)
     if (mesh === undefined) {
       const newMesh = new Mesh(geometry, this.game.world.material)
-      newMesh.matrixAutoUpdate = false
+      newMesh.matrixAutoUpdate = true
       newMesh.frustumCulled = false
       newMesh.onAfterRender = () => {
         newMesh.frustumCulled = true
@@ -26,6 +30,19 @@ class ChunkManager {
       }
       this.cellMesh.set(cellId, newMesh)
       this.game.scene.add(newMesh)
+      newMesh.position.y = -256
+
+      const to = {
+        y: 0
+      }
+      new TWEEN.Tween(newMesh.position)
+        .to(to, 2000)
+        .easing(TWEEN.Easing.Quadratic.Out)
+        .onComplete(() => {
+          newMesh.matrixAutoUpdate = true
+          newMesh.geometry.matrixAutoUpdate = true
+        })
+        .start()
       if (this.game.world.lastPlayerChunk !== null) {
         this.updateRenderOrder(JSON.parse(this.game.world.lastPlayerChunk))
       }
