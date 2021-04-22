@@ -6,6 +6,7 @@ class ChunkManager {
   constructor (game) {
     this.game = game
     this.cellMesh = new Map()
+    this.smooth = false
   }
 
   addChunk (cellId, vert) {
@@ -27,19 +28,20 @@ class ChunkManager {
       }
       this.cellMesh.set(cellId, newMesh)
       this.game.scene.add(newMesh)
-      newMesh.position.y = -32
-
-      const to = {
-        y: 0
+      if (this.smooth) {
+        newMesh.position.y = -32
+        const to = {
+          y: 0
+        }
+        new TWEEN.Tween(newMesh.position)
+          .to(to, 1000)
+          .easing(TWEEN.Easing.Quadratic.Out)
+          .onComplete(() => {
+            newMesh.matrixAutoUpdate = true
+            newMesh.geometry.matrixAutoUpdate = true
+          })
+          .start()
       }
-      new TWEEN.Tween(newMesh.position)
-        .to(to, 1000)
-        .easing(TWEEN.Easing.Quadratic.Out)
-        .onComplete(() => {
-          newMesh.matrixAutoUpdate = true
-          newMesh.geometry.matrixAutoUpdate = true
-        })
-        .start()
       if (this.game.world.lastPlayerChunk !== null) {
         this.updateRenderOrder(JSON.parse(this.game.world.lastPlayerChunk))
       }
@@ -75,7 +77,9 @@ class ChunkManager {
   }
 
   update () {
-    TWEEN.update()
+    if (this.smooth) {
+      TWEEN.update()
+    }
   }
 }
 export { ChunkManager }

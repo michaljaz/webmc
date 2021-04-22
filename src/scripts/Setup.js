@@ -90,6 +90,10 @@ function Setup (game) {
       }
     })
     .listen()
+  gui
+    .add(game.world.chunkManager, 'smooth')
+    .name('Smooth chunks')
+    .listen()
   game.eh = new EventHandler(game)
 }
 
