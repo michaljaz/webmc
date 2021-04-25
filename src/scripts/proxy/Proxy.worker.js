@@ -1,6 +1,7 @@
 /* eslint-env worker */
 import vec3 from 'vec3'
 import Convert from 'ansi-to-html'
+import { antiXSS } from './../additional/tools.js'
 const convert = new Convert()
 
 global.window = self
@@ -60,16 +61,7 @@ addEventListener('message', function (e) {
         emit('kicked', reason)
       })
       bot.on('message', function (msg) {
-        let message = msg.toAnsi()
-
-        const replacements = [
-          [/&/g, '&amp;'],
-          [/</g, '&lt;'],
-          [/>/g, '&gt;'],
-          [/"/g, '&quot;']
-        ]
-        for (const replacement of replacements) { message = message.replace(replacement[0], replacement[1]) }
-
+        const message = antiXSS(msg.toAnsi())
         emit('msg', convert.toHtml(message))
       })
       bot.on('death', () => {

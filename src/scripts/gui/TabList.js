@@ -1,5 +1,5 @@
 import $ from 'jquery'
-
+import { antiXSS } from './../additional/tools.js'
 class TabList {
   constructor (game) {
     this.game = game
@@ -10,7 +10,7 @@ class TabList {
     let newHTML = ''
     if (players !== undefined && JSON.stringify(players) !== '{}') {
       for (const i in players) {
-        newHTML += `<div class="tab_player clearfix"><span class="float-left">${i}</span><span class="float-right">${players[i].ping}ms</span></div>`
+        newHTML += `<div class="tab_player clearfix"><span class="float-left">${antiXSS(i)}</span><span class="float-right">${players[i].ping}ms</span></div>`
       }
       if (newHTML !== this.lastHTML) {
         this.lastHTML = newHTML
