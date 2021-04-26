@@ -94,7 +94,7 @@ class ChunkMesher {
     if (opt) {
       return [...uv[0], ...uv[1], ...uv[2], ...uv[2], ...uv[1], ...uv[3]]
     } else {
-      return [...uv[0], ...uv[2], ...uv[1], ...uv[1], ...uv[2], ...uv[3]]
+      return [...uv[2], ...uv[0], ...uv[3], ...uv[3], ...uv[0], ...uv[1]]
     }
   }
 
