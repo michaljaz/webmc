@@ -1,19 +1,11 @@
-const express = require('express')
-const app = express()
+const { app } = require('./lib/server.js')
 const helmet = require('helmet')
-const compression = require('compression')
-const port = process.env.PORT || 8080
-const netApi = require('@misioxd/net-browserify')
-const webpack = require('webpack')
 const middleware = require('webpack-dev-middleware')
 const devconfig = require('./src/webpack.dev.js')
+const compression = require('compression')
+const webpack = require('webpack')
 const compiler = webpack(devconfig)
 
-app.use(helmet({ contentSecurityPolicy: false }))
 app.use(compression())
-app.use(netApi({ allowOrigin: '*' }))
+app.use(helmet({ contentSecurityPolicy: false }))
 app.use(middleware(compiler))
-
-app.listen(port, function () {
-  return console.log(`Server is running on \x1b[34m*:${port}\x1b[0m`)
-})

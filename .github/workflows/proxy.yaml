@@ -1,0 +1,16 @@
+name: Proxy server setup
+on:
+  push:
+    branches:
+      - master
+jobs:
+  proxy-server-setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎️
+        uses: actions/checkout@v2.3.1
+
+      - name: Install and Run proxy 🔧
+        run: |
+          npm install
+          npm run proxy
