@@ -67,16 +67,21 @@ function Setup (game) {
   }
   game.distanceBasedFog.updateDistance(game.params.chunkdist)
   gui
-    .add(game.world.material, 'wireframe')
-    .name('Wireframe')
-    .listen()
-  gui
     .add(game.params, 'chunkdist', 2, 10, 1)
     .name('Render distance')
     .onChange(function (val) {
       if (game.distanceBasedFog.visible) {
         game.distanceBasedFog.updateDistance(val)
       }
+    })
+    .listen()
+  gui
+    .add(game.fov, 'normal', 30, 110, 1)
+    .name('FOV')
+    .onChange(function (val) {
+      game.fov.sprint = game.fov.normal + 10
+      game.camera.fov = game.fov.normal
+      game.camera.updateProjectionMatrix()
     })
     .listen()
   gui
@@ -93,6 +98,10 @@ function Setup (game) {
   gui
     .add(game.world.chunkManager, 'smooth')
     .name('Smooth chunks')
+    .listen()
+  gui
+    .add(game.world.material, 'wireframe')
+    .name('Wireframe')
     .listen()
   game.eh = new EventHandler(game)
 }
