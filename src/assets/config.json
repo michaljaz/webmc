@@ -1,6 +1,5 @@
 {
 	"minecraftProduction": "185.228.139.97:25564",
 	"minecraftDevelopment":"185.228.139.97:25564",
-	"proxyHTTPS": "wss:web-minecraft-proxy.herokuapp.com:443",
-	"proxyHTTP": "ws:web-minecraft-proxy.herokuapp.com:80"
+	"proxy": "web-minecraft-proxy.herokuapp.com:443"
 }

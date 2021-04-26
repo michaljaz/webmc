@@ -5,23 +5,24 @@ class Socket {
     this.game = game
     this.worker = new Proxy()
     this.handlers = new Map()
-    let connection, hostname, port
+    let hostname, port, pars
     if (this.game.proxy === 'local') {
-      connection = document.location.protocol === 'https:' ? 'wss' : 'ws'
       hostname = document.location.hostname
       port = document.location.port
+    } else if (this.game.proxy === 'production') {
+      pars = game.al.get('config').proxy.split(':')
+      hostname = pars[0]
+      port = pars[1]
     } else {
-      const pars = this.game.proxy.split(':')
-      connection = pars[0]
-      hostname = pars[1]
-      port = pars[2]
+      pars = this.game.proxy.split(':')
+      hostname = pars[0]
+      port = pars[1]
     }
     let server = this.game.server.split(':')
     if (server.length === 1) {
       server = [server[0], null]
     }
     this.emit('init', {
-      connection,
       hostname,
       port,
       nick: this.game.nick,

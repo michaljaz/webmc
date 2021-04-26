@@ -21,7 +21,7 @@ addEventListener('message', function (e) {
     case 'init':
       data = data[0]
       console.log(data)
-      bot = self.mineflayer(data.connection, data.hostname, data.port, {
+      bot = self.mineflayer(null, data.hostname, data.port, {
         host: data.server,
         port: data.serverPort,
         username: data.nick

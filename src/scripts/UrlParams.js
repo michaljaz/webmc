@@ -16,14 +16,13 @@ function UrlParams (game) {
   if (game.proxy === '' || game.proxy === null) {
     reload = true
     if (game.production) {
-      if (document.location.protocol === 'https:') {
-        game.proxy = game.al.get('config').proxyHTTPS
-      } else {
-        game.proxy = game.al.get('config').proxyHTTP
-      }
+      game.proxy = 'production'
     } else {
       game.proxy = 'local'
     }
+  }
+  if (document.location.protocol !== 'https:' && game.proxy === 'production') {
+    console.error('Web-minecraft in production mode needs https!')
   }
   if (reload) {
     document.location.href = `?server=${game.server}&nick=${game.nick}&proxy=${game.proxy}`
