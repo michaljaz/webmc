@@ -1,8 +1,6 @@
 name: Proxy server setup
 on:
   push:
-    branches:
-      - master
     schedule:
       - cron: '12 */5 * * *'
 jobs:
