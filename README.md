@@ -1,8 +1,8 @@
 # web-minecraft
 
-[![Join the chat at https://gitter.im/web-minecraft/community](https://badges.gitter.im/web-minecraft/community.svg)](https://gitter.im/web-minecraft/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/h6DQzDx2G7)
 [![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/michaljaz/web-minecraft)
+[![Build and Deploy](https://github.com/michaljaz/web-minecraft/actions/workflows/github-pages.yaml/badge.svg)](https://github.com/michaljaz/web-minecraft/actions/workflows/github-pages.yaml)
 ## About
 
 **Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to proxy(https://github.com/michaljaz/web-minecraft-proxy) that translates Websocket connection to TCP and then to real minecraft server, so you can play minecraft in the browser. Web-minecraft now only supports minecraft 1.16.5.
