@@ -1,5 +1,5 @@
 {
 	"minecraftProduction": "185.228.139.97:25564",
 	"minecraftDevelopment":"185.228.139.97:25564",
-	"proxy": "web-minecraft-proxy.herokuapp.com:443"
+	"proxy": "web-minecraft-proxy.ejemplo.me:443"
 }

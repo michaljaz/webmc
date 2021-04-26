@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - master
+    schedule:
+      - cron: '12 */5 * * *'
 jobs:
   proxy-server-setup:
     runs-on: ubuntu-latest
