@@ -5,7 +5,7 @@
 [![Build and Deploy](https://github.com/michaljaz/web-minecraft/actions/workflows/github-pages.yaml/badge.svg)](https://github.com/michaljaz/web-minecraft/actions/workflows/github-pages.yaml)
 ## About
 
-**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to [proxy](https://github.com/michaljaz/web-minecraft-proxy) that translates Websocket connection to TCP and then to real minecraft server, so you can play minecraft in the browser. Web-minecraft now only supports minecraft 1.16.5.
+**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to websocket proxy and then to real minecraft server, so you can play minecraft in the browser.
 
 ## Demo
 Live demo with no installation: https://minecraft.js.org.
@@ -19,7 +19,7 @@ npm start
 ```
 This will start express and webpack in development mode: whenever you save a file, the build will be redone (it takes 2s), and you can refresh the page to get the new result.
 
-Connect to http://localhost:8080 in your browser. Also specify correct server(1.16.5) ip in url param.
+Connect to http://localhost:8080 in your browser. Also specify correct server ip in url param.
 
 
 ## Screenshots
