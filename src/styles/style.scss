@@ -131,7 +131,7 @@ body {
 
 .chat {
     position: fixed;
-    bottom: 100px;
+    bottom: 120px;
     left: 0px;
     width: 60%;
     overflow-x: hidden;
@@ -141,7 +141,8 @@ body {
     color: white;
     text-shadow: 1px 1px 0 #000, -1px -1px 0 #000, 1px -1px 0 #000,
         -1px 1px 0 #000, 1px 1px 0 #000;
-    height: 45%;
+    max-height: 45%;
+    height:auto;
     font-weight: bold;
     font-size: 20px;
 }
