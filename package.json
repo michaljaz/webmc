@@ -10,7 +10,7 @@
         "lint": "standard",
         "lint:fix": "standard --fix",
         "postinstall": "node lib/postinstall.js",
-        "proxy": "node lib/proxy.js"
+        "proxy": "node lib/server.js"
     },
     "license": "MIT",
     "repository": {
