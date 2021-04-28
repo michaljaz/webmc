@@ -1,5 +1,5 @@
 {
 	"minecraftProduction": "185.228.139.97:25564",
 	"minecraftDevelopment":"185.228.139.97:25564",
-	"proxy": "web-minecraft-proxy.ejemplo.me:443"
+	"proxy": "54d056d050e4.ngrok.io:443"
 }
