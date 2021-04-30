@@ -43,6 +43,9 @@ addEventListener('message', function (e) {
       bot.on('heldItemChanged', function (item) {
         bot.heldItem = item
       })
+      bot.on('time', function () {
+        emit('time', bot.time.timeOfDay)
+      })
       bot.on('login', function () {
         emit('login')
         emit('dimension', bot.game.dimension)

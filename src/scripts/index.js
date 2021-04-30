@@ -22,7 +22,8 @@ class Game {
     this.flying = false
     this.playerPos = [0, 0, 0]
     this.dimBg = {
-      'minecraft:overworld': [165 / 255, 192 / 255, 254 / 255],
+      'minecraft:overworld/day': [165 / 255, 192 / 255, 254 / 255],
+      'minecraft:overworld/night': [12 / 255, 20 / 255, 69 / 255],
       'minecraft:the_end': [1 / 255, 20 / 255, 51 / 255],
       'minecraft:the_nether': [133 / 255, 40 / 255, 15 / 255],
       'minecraft:end': [1 / 255, 20 / 255, 51 / 255],
@@ -53,7 +54,7 @@ class Game {
       console.log(`Player dimension has been changed: ${dim}`)
       this.world.resetWorld()
       if (this.dimBg[dim] === undefined) {
-        dim = 'minecraft:overworld'
+        dim = 'minecraft:overworld/day'
       }
       const bg = this.dimBg[dim]
       this.scene.background = new Color(...bg)
@@ -72,6 +73,16 @@ class Game {
     })
     this.socket.on('hp', (points) => {
       this.inv_bar.setHp(points)
+    })
+    this.socket.on('time', (time) => {
+      dim = this.dimension
+      if(dim === 'minecraft:overworld/day' || dim === 'minecraft:overworld/night') {
+        if (time >= 13000) {
+          this.scene.background = new Color(...this.dimBg('minecraft:overworld/night'))
+        } else {
+          this.scene.background = new Color(...this.dimBg('minecraft:overworld/day'))
+        }
+      }
     })
     this.socket.on('inventory', (inv) => {
       this.inv_bar.updateInv(inv)
