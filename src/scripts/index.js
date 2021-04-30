@@ -78,8 +78,10 @@ class Game {
       dim = this.dimension
       if(dim === 'minecraft:overworld/day' || dim === 'minecraft:overworld/night') {
         if (time >= 13000) {
+          if (this.scene.background = new Color(...this.dimBg('minecraft:overworld/night'))) return
           this.scene.background = new Color(...this.dimBg('minecraft:overworld/night'))
         } else {
+          if (this.scene.background = new Color(...this.dimBg('minecraft:overworld/day'))) return
           this.scene.background = new Color(...this.dimBg('minecraft:overworld/day'))
         }
       }
