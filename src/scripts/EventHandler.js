@@ -61,7 +61,9 @@ class EventHandler {
         }
       }
       if (z.code === 'KeyQ') {
-        this.game.socket.emit('drop')
+        if (this.gameState !== 'chat' && this.gameState !== 'menu') {
+          this.game.socket.emit('drop')
+        }
       }
       if (z.code === 'Escape' && this.gameState === 'inventory') {
         this.setState('menu')
