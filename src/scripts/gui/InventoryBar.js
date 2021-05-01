@@ -100,6 +100,7 @@ class InventoryBar {
 
   setFocus (num) {
     $('.inv_cursor').css('left', `calc(50vw - 278px + 60*${num}px)`)
+    this.inventory.heldBar = num
     this.game.socket.emit('invc', num)
   }
 
