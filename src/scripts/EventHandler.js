@@ -177,6 +177,10 @@ class EventHandler {
           this.game.bb.digRequest()
         }
       } else if (e.which === 3) {
+        this.game.socket.emit('returnHeldItem')
+        this.game.socket.on('heldItem', (heldItem) => {
+          
+        })
         this.game.bp.placeBlock()
       }
     })

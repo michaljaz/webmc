@@ -165,6 +165,8 @@ addEventListener('message', function (e) {
     case 'stopDigging':
       bot.stopDigging()
       break
+    case 'returnHeldItem':
+      emit('heldItem', bot.heldItem)
     case 'fly':
       if (data[0]) {
         bot.creative.startFlying()
