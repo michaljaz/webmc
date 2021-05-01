@@ -65,8 +65,12 @@ class EventHandler {
           this.game.socket.emit('drop')
         }
       }
-      if (z.code === 'Escape' && this.gameState === 'inventory') {
-        this.setState('menu')
+      if (z.code === 'Escape') {
+        if (this.gameState === 'inventory' || this.gameState === 'chat' || this.gameState === 'menu') {
+          this.setState('game')
+        } else {
+          this.setState('menu')
+        }
       }
       if (z.code === 'ArrowUp' && this.gameState === 'chat') {
         this.game.chat.chatGoBack()
@@ -107,9 +111,6 @@ class EventHandler {
         } else {
           this.setState('menu')
         }
-      }
-      if (z.code === 'Escape' && this.gameState === 'chat') {
-        this.setState('menu')
       }
       if (z.code === 'KeyF') {
         this.game.flying = !this.game.flying
