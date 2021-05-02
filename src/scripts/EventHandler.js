@@ -65,12 +65,8 @@ class EventHandler {
           this.game.socket.emit('drop')
         }
       }
-      if (z.code === 'Escape') {
-        if (this.gameState === 'inventory' || this.gameState === 'chat' || this.gameState === 'menu') {
-          this.setState('game')
-        } else {
-          this.setState('menu')
-        }
+      if (z.code === 'Escape' && this.gameState === 'chat' || this.gameState === 'inventory') {
+        this.setState('menu')
       }
       if (z.code === 'ArrowUp' && this.gameState === 'chat') {
         this.game.chat.chatGoBack()
@@ -177,10 +173,6 @@ class EventHandler {
           this.game.bb.digRequest()
         }
       } else if (e.which === 3) {
-        this.game.socket.emit('returnHeldItem')
-        this.game.socket.on('heldItem', (heldItem) => {
-          
-        })
         this.game.bp.placeBlock()
       }
     })
