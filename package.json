@@ -1,5 +1,5 @@
 {
-    "name": "web-minecraft",
+    "name": "webmc",
     "version": "1.0.0",
     "description": "Minecraft client written in Javascript",
     "scripts": {
@@ -15,7 +15,7 @@
     "license": "MIT",
     "repository": {
         "type": "git",
-        "url": "git://github.com/michaljaz/web-minecraft.git"
+        "url": "git://github.com/michaljaz/webmc.git"
     },
     "keywords": [
         "minecraft",

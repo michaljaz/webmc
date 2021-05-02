@@ -1,11 +1,11 @@
-# web-minecraft
+# WebMc
 
 [![Discord](https://img.shields.io/badge/chat-on%20discord-brightgreen.svg)](https://discord.gg/h6DQzDx2G7)
 [![Try it on gitpod](https://img.shields.io/badge/try-on%20gitpod-brightgreen.svg)](https://gitpod.io/#https://github.com/michaljaz/web-minecraft)
 [![Build and Deploy](https://github.com/michaljaz/web-minecraft/actions/workflows/github-pages.yaml/badge.svg)](https://github.com/michaljaz/web-minecraft/actions/workflows/github-pages.yaml)
 ## About
 
-**Web-minecraft is minecraft client written in Javascript.** From web browser this client connects to websocket proxy and then to real minecraft server, so you can play minecraft in the browser.
+**WebMc is minecraft client written in Javascript.** From web browser this client connects to websocket proxy and then to real minecraft server, so you can play minecraft in the browser.
 
 ## Demo
 Live demo with no installation: https://minecraft.js.org.
