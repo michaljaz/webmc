@@ -1,5 +1,5 @@
 {
-	"minecraftProduction": "185.228.139.97:25564",
-	"minecraftDevelopment":"185.228.139.97:25564",
-	"proxy": "54d056d050e4.ngrok.io:443"
+	"minecraftProduction": "95.111.249.143:10000",
+	"minecraftDevelopment":"95.111.249.143:10000",
+	"proxy": "8080-lime-buzzard-774fpdpb.ws-eu04.gitpod.io:443"
 }
