@@ -2,10 +2,10 @@
 import vec3 from 'vec3'
 import Convert from 'ansi-to-html'
 import { antiXSS } from './../additional/tools.js'
+import { mineflayer } from './mineflayer.js'
 const convert = new Convert()
 
 global.window = self
-global.importScripts('assets/mineflayer.js')
 let bot = null
 
 const emit = (type, ...params) => {
@@ -21,7 +21,7 @@ addEventListener('message', function (e) {
     case 'init':
       data = data[0]
       console.log(data)
-      bot = self.mineflayer(null, data.hostname, data.port, {
+      bot = mineflayer(null, data.hostname, data.port, {
         host: data.server,
         port: data.serverPort,
         username: data.nick
