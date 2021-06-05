@@ -86,7 +86,7 @@ class TerrainManager {
     let nearestDistance = -1
     let isNearest = false
     for (const chunkId in this.chunkNeedsUpdate) {
-      const pos = chunkTerrain.strToVec(chunkId)
+      const pos = this.chunkTerrain.strToVec(chunkId)
       const dist = this.distance(chunkId)
       if (
         (nearestDistance === -1 || nearestDistance > dist) &&

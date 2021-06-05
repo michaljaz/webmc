@@ -123,24 +123,26 @@ class Game {
       this.bb.startDigging(time)
     })
     setInterval(() => {
-      const frustum = new Frustum()
-      const cameraViewProjectionMatrix = new Matrix4()
+      if (this.params.frustumtest) {
+        const frustum = new Frustum()
+        const cameraViewProjectionMatrix = new Matrix4()
 
-      this.camera.updateMatrixWorld()
-      this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert()
-      cameraViewProjectionMatrix.multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse)
-      frustum.setFromProjectionMatrix(cameraViewProjectionMatrix)
+        this.camera.updateMatrixWorld()
+        this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert()
+        cameraViewProjectionMatrix.multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse)
+        frustum.setFromProjectionMatrix(cameraViewProjectionMatrix)
 
-      this.scene.traverse((node) => {
-        if (node instanceof Mesh) {
-          if (frustum.intersectsObject(node)) {
-            node.visible = true
-          } else {
-            node.visible = false
+        this.scene.traverse((node) => {
+          if (node instanceof Mesh) {
+            if (frustum.intersectsObject(node)) {
+              node.visible = true
+            } else {
+              node.visible = false
+            }
           }
-        }
-      })
-    }, 1000)
+        })
+      }
+    }, 2000)
     return this.animate()
   }
 

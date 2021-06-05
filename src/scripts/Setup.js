@@ -63,7 +63,8 @@ function Setup (game) {
   ])
   const gui = new dat.GUI()
   game.params = {
-    chunkdist: 4
+    chunkdist: 4,
+    frustumtest: false
   }
   game.distanceBasedFog.updateDistance(game.params.chunkdist)
   gui
@@ -102,6 +103,10 @@ function Setup (game) {
   gui
     .add(game.world.material, 'wireframe')
     .name('Wireframe')
+    .listen()
+  gui
+    .add(game.params, 'frustumtest')
+    .name('Frustum test')
     .listen()
   game.eh = new EventHandler(game)
 }
