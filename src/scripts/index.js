@@ -1,4 +1,4 @@
-import { Color } from 'three'
+import { Color, Mesh, Matrix4, Frustum } from 'three'
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js'
 import swal from 'sweetalert'
 import { AssetLoader } from './AssetLoader.js'
@@ -13,7 +13,7 @@ class Game {
       console.log('Running in development mode')
     }
     this.fov = {
-      normal: 60,
+      normal: 70,
       sprint: 80
     }
     this.al = new AssetLoader()
@@ -122,6 +122,25 @@ class Game {
     this.socket.on('digTime', (time) => {
       this.bb.startDigging(time)
     })
+    setInterval(() => {
+      const frustum = new Frustum()
+      const cameraViewProjectionMatrix = new Matrix4()
+
+      this.camera.updateMatrixWorld()
+      this.camera.matrixWorldInverse.copy(this.camera.matrixWorld).invert()
+      cameraViewProjectionMatrix.multiplyMatrices(this.camera.projectionMatrix, this.camera.matrixWorldInverse)
+      frustum.setFromProjectionMatrix(cameraViewProjectionMatrix)
+
+      this.scene.traverse((node) => {
+        if (node instanceof Mesh) {
+          if (frustum.intersectsObject(node)) {
+            node.visible = true
+          } else {
+            node.visible = false
+          }
+        }
+      })
+    }, 1000)
     return this.animate()
   }
 
@@ -167,6 +186,7 @@ class Game {
     if (this.eh.gameState === 'inventory') {
       this.pii.render()
     }
+
     this.renderer.render(this.scene, this.camera)
   }
 }

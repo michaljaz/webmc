@@ -1,6 +1,6 @@
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js'
-import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight } from 'three'
+import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight, Mesh, BoxGeometry, MeshBasicMaterial } from 'three'
 import { DistanceBasedFog } from './rendering/DistanceBasedFog.js'
 import { UrlParams } from './UrlParams.js'
 import { gpuInfo } from './additional/gpuInfo.js'

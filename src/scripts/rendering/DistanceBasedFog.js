@@ -43,7 +43,7 @@ class DistanceBasedFog {
           'float dist = length(u_viewPos - vViewPosition);',
           'float fogFactor = smoothstep(u_farnear.x, u_farnear.y, dist);',
           'gl_FragColor = vec4(outgoingLight, diffuseColor.a );',
-          'gl_FragColor = mix(gl_FragColor, u_fogColor, max(0.05, fogFactor));'
+          'gl_FragColor = mix(gl_FragColor, u_fogColor, fogFactor);'
         ].join('\n')
       )
     }

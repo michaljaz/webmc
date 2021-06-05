@@ -5,9 +5,6 @@ const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 const webpack = require('webpack')
 
 const config1 = {
-  optimization: {
-    runtimeChunk: 'single'
-  },
   entry: {
     main: path.join(__dirname, 'scripts/index.js'),
     bootstrap: [path.join(__dirname, 'styles/style.scss'), 'bootstrap']
