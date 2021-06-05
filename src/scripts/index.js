@@ -13,7 +13,7 @@ class Game {
       console.log('Running in development mode')
     }
     this.fov = {
-      normal: 70,
+      normal: 60,
       sprint: 80
     }
     this.al = new AssetLoader()

@@ -17,7 +17,7 @@ Live demo with no installation: https://minecraft.js.org.
 npm install
 npm start
 ```
-This will start express and webpack in development mode: whenever you save a file, the build will be redone (it takes 2s), and you can refresh the page to get the new result.
+This will start express and webpack in development mode: whenever you save a file, the build will be redone (it takes 3s), and you can refresh the page to get the new result.
 
 Connect to http://localhost:8080 in your browser. Also specify correct server ip in url param.
 

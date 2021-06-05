@@ -2,8 +2,9 @@
 import vec3 from 'vec3'
 import Convert from 'ansi-to-html'
 import { antiXSS } from './../additional/tools.js'
-import { mineflayer } from './mineflayer.js'
 const convert = new Convert()
+importScripts('./mineflayer.js')
+mineflayer = mineflayer.default
 
 global.window = self
 let bot = null

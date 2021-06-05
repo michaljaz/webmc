@@ -4,7 +4,10 @@ const path = require('path')
 const LodashModuleReplacementPlugin = require('lodash-webpack-plugin')
 const webpack = require('webpack')
 
-module.exports = {
+const config1 = {
+  optimization: {
+    runtimeChunk: 'single'
+  },
   entry: {
     main: path.join(__dirname, 'scripts/index.js'),
     bootstrap: [path.join(__dirname, 'styles/style.scss'), 'bootstrap']
@@ -17,32 +20,6 @@ module.exports = {
     hints: false,
     maxEntrypointSize: 1.5e6,
     maxAssetSize: 1.5e6
-  },
-  resolve: {
-    alias: {
-      'minecraft-protocol': path.resolve(__dirname, '../node_modules/minecraft-protocol/src/index.js'),
-      express: false,
-      net: path.resolve(__dirname, 'vendor/browser.js'),
-      fs: 'memfs'
-    },
-    fallback: {
-      zlib: require.resolve('browserify-zlib'),
-      stream: require.resolve('stream-browserify'),
-      buffer: require.resolve('buffer/'),
-      events: require.resolve('events/'),
-      assert: require.resolve('assert/'),
-      crypto: require.resolve('crypto-browserify'),
-      path: require.resolve('path-browserify'),
-      constants: require.resolve('constants-browserify'),
-      os: require.resolve('os-browserify/browser'),
-      http: require.resolve('http-browserify'),
-      https: require.resolve('https-browserify'),
-      timers: require.resolve('timers-browserify'),
-      // fs: require.resolve("fs-memory/singleton"),
-      child_process: false,
-      perf_hooks: path.resolve(__dirname, 'vendor/perf_hooks_replacement.js'),
-      dns: path.resolve(__dirname, 'vendor/dns.js')
-    }
   },
   module: {
     rules: [
@@ -86,18 +63,11 @@ module.exports = {
     ]
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      process: path.join(__dirname, '/vendor/process.js')
-    }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: path.join(__dirname, '/html/index.html'),
       inject: 'head',
       favicon: path.join(__dirname, 'assets/images/favicon.png')
-    }),
-
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer']
     }),
     new LodashModuleReplacementPlugin(),
     new CopyPlugin({
@@ -110,3 +80,52 @@ module.exports = {
     })
   ]
 }
+
+const config2 = {
+  entry: path.join(__dirname, 'scripts/mineflayer.js'),
+  output: {
+    library: 'mineflayer',
+    path: path.join(__dirname, 'dist'),
+    filename: 'mineflayer.js'
+  },
+  performance: {
+    hints: false,
+    maxEntrypointSize: 1.5e6,
+    maxAssetSize: 1.5e6
+  },
+  resolve: {
+    alias: {
+      'minecraft-protocol': path.resolve(__dirname, '../node_modules/minecraft-protocol/src/index.js'),
+      express: false,
+      net: path.resolve(__dirname, 'vendor/browser.js'),
+      fs: 'memfs'
+    },
+    fallback: {
+      zlib: require.resolve('browserify-zlib'),
+      stream: require.resolve('stream-browserify'),
+      buffer: require.resolve('buffer/'),
+      events: require.resolve('events/'),
+      assert: require.resolve('assert/'),
+      crypto: require.resolve('crypto-browserify'),
+      path: require.resolve('path-browserify'),
+      constants: require.resolve('constants-browserify'),
+      os: require.resolve('os-browserify/browser'),
+      http: require.resolve('http-browserify'),
+      https: require.resolve('https-browserify'),
+      timers: require.resolve('timers-browserify'),
+      child_process: false,
+      perf_hooks: path.resolve(__dirname, 'vendor/perf_hooks_replacement.js'),
+      dns: path.resolve(__dirname, 'vendor/dns.js'),
+      process: path.join(__dirname, 'vendor/process.js')
+    }
+  },
+  plugins: [
+    new webpack.ProvidePlugin({
+      process: 'process',
+      Buffer: ['buffer', 'Buffer']
+    }),
+    new LodashModuleReplacementPlugin()
+  ]
+}
+
+module.exports = [config1, config2]

@@ -1,12 +1,17 @@
 const merge = require('webpack-merge')
-const common = require('./webpack.common.js')
+const [config1, config2] = require('./webpack.common.js')
 const webpack = require('webpack')
 
-module.exports = merge.merge(common, {
-  mode: 'production',
-  plugins: [
-    new webpack.DefinePlugin({
-      'window.PRODUCTION': JSON.stringify(true)
-    })
-  ]
-})
+module.exports = [
+  merge.merge(config1, {
+    mode: 'production',
+    plugins: [
+      new webpack.DefinePlugin({
+        'window.PRODUCTION': JSON.stringify(true)
+      })
+    ]
+  }),
+  merge.merge(config2, {
+    mode: 'production'
+  })
+]
