@@ -13,9 +13,9 @@ Live demo with no installation: https://minecraft.js.org.
 
 ## Developing on webmc
 
-[webmc developer's guide](https://github.com/michaljaz/webmc/docs/DEVELOPMENT.md)
+[webmc developer's guide](https://github.com/michaljaz/webmc/blob/master/docs/DEVELOPMENT.md)
 
 ## Screenshots
-![hypixel](https://i.ibb.co/bPh99MV/hypixel.png "hypixel")
-![nether](https://i.ibb.co/jzZVrT2/Screenshot-from-2021-01-27-21-13-37.png "nether")
-![end](https://i.ibb.co/tKmnJ8D/Screenshot-from-2021-01-27-21-16-12.png "end")
+![hypixel](https://github.com/michaljaz/webmc/blob/master/.github/hypixel.png "hypixel")
+![nether](https://github.com/michaljaz/webmc/blob/master/.github/nether.png "nether")
+![end](https://github.com/michaljaz/webmc/blob/master/.github/end.png "end")
