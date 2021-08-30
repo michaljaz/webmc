@@ -1,5 +1,13 @@
 # Developer's guide to webmc
 
+## Installation
+
+```bash
+
+npm install
+```
+Install required depencies.
+
 ## Development
 
 ```bash
