@@ -192,33 +192,17 @@ class EventHandler {
       })
     }
     const lockChangeAlert = () => {
-      if (
-        document.pointerLockElement === this.game.canvas ||
-                document.mozPointerLockElement === this.game.canvas
-      ) {
+      if (document.pointerLockElement === this.game.canvas || document.mozPointerLockElement === this.game.canvas) {
         if (this.gameState === 'game') {
           this.setState('gameLock')
         }
-      } else if (
-        this.gameState === 'gameLock' &&
-                this.gameState !== 'inventory'
-      ) {
+      } else if (this.gameState === 'gameLock' && this.gameState !== 'inventory') {
         this.setState('menu')
       }
     }
     document.addEventListener('pointerlockchange', lockChangeAlert, false)
-    document.addEventListener(
-      'mozpointerlockchange',
-      lockChangeAlert,
-      false
-    )
-    document.addEventListener(
-      'mousemove',
-      (e) => {
-        return this.updatePosition(e)
-      },
-      false
-    )
+    document.addEventListener('mozpointerlockchange', lockChangeAlert, false)
+    document.addEventListener('mousemove', (e) => { return this.updatePosition(e) }, false)
   }
 
   updatePosition (e) {

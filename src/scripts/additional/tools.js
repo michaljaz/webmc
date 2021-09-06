@@ -6,7 +6,7 @@ const antiXSS = (str) => {
     [/"/g, '&quot;']
   ]
   for (const replacement of replacements) {
-  	str = str.replace(replacement[0], replacement[1])
+    str = str.replace(replacement[0], replacement[1])
   }
   return str
 }

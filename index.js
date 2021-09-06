@@ -2,7 +2,6 @@ const { app } = require('./lib/server.js')
 const helmet = require('helmet')
 const middleware = require('webpack-dev-middleware')
 const config = require('./src/webpack.dev.js')
-const path = require('path')
 const compression = require('compression')
 const webpack = require('webpack')
 

@@ -1,6 +1,5 @@
 import {
   MeshStandardMaterial,
-  TextureLoader,
   NearestFilter,
   NearestMipmapLinearFilter,
   CanvasTexture

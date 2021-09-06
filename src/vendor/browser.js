@@ -1,12 +1,12 @@
+/* global WebSocket,Blob,FileReader */
 const stream = require('stream')
 const util = require('util')
-const timers = require('timers')
 const http = require('http')
 
 const debug = util.debuglog('net')
 
 const proxy = {
-  protocol: (window.location.protocol == 'https:') ? 'wss' : 'ws',
+  protocol: (window.location.protocol === 'https:') ? 'wss' : 'ws',
   hostname: window.location.hostname,
   port: window.location.port,
   path: '/api/vm/net'
@@ -55,14 +55,14 @@ exports.connect = exports.createConnection = function (/* options, connectListen
 function toNumber (x) { return (x = Number(x)) >= 0 ? x : false }
 
 function isPipeName (s) {
-  return util.isString(s) && toNumber(s) === false
+  return typeof s === 'string' && toNumber(s) === false
 }
 
 // Returns an array [options] or [options, cb]
 // It is the same as the argument of Socket.prototype.connect().
 function normalizeConnectArgs (args) {
   let options = {}
-  if (util.isObject(args[0])) {
+  if (typeof args[0] === 'object') {
     // connect(options, [cb])
     options = args[0]
   } else if (isPipeName(args[0])) {
@@ -71,12 +71,12 @@ function normalizeConnectArgs (args) {
   } else {
     // connect(port, [host], [cb])
     options.port = args[0]
-    if (util.isString(args[1])) {
+    if (typeof args[1] === 'string') {
       options.host = args[1]
     }
   }
   const cb = args[args.length - 1]
-  return util.isFunction(cb) ? [options, cb] : [options]
+  return typeof cb === 'function' ? [options, cb] : [options]
 }
 exports._normalizeConnectArgs = normalizeConnectArgs
 
@@ -86,8 +86,9 @@ function Socket (options) {
   this._connecting = false
   this._host = null
 
-  if (util.isNumber(options)) { options = { fd: options } } // Legacy interface.
-  else if (util.isUndefined(options)) { options = {} }
+  if (typeof options === 'number') {
+    options = { fd: options }
+  } else if (typeof options === 'undefined') { options = {} }
 
   stream.Duplex.call(this, options)
 
@@ -98,7 +99,7 @@ function Socket (options) {
   this._writableState.decodeStrings = false
 
   // default to *not* allowing half open sockets
-  this.allowHalfOpen = options && options.allowHalfOpen || false
+  this.allowHalfOpen = (options && options.allowHalfOpen) || false
 }
 util.inherits(Socket, stream.Duplex)
 
@@ -235,9 +236,9 @@ Socket.prototype._write = function (data, encoding, cb) {
   this._pendingData = null
   this._pendingEncoding = ''
 
-  if (encoding == 'binary' && typeof data === 'string') { // TODO: maybe apply this for all string inputs?
+  if (encoding === 'binary' && typeof data === 'string') { // TODO: maybe apply this for all string inputs?
     // Setting encoding is very important for binary data - otherwise the data gets modified
-    data = new Buffer(data, encoding)
+    data = Buffer.alloc(data, encoding)
   }
 
   // Send the data
@@ -251,14 +252,14 @@ Socket.prototype._write = function (data, encoding, cb) {
 }
 
 Socket.prototype.write = function (chunk, encoding, cb) {
-  if (!util.isString(chunk) && !util.isBuffer(chunk)) { throw new TypeError('invalid data') }
+  if (typeof chunk !== 'string' && !Buffer.isBuffer(chunk)) { throw new TypeError('invalid data') }
   return stream.Duplex.prototype.write.apply(this, arguments)
 }
 
 Socket.prototype.connect = function (options, cb) {
   const self = this
 
-  if (!util.isObject(options)) {
+  if (typeof options !== 'object') {
     // Old API:
     // connect(port, [host], [cb])
     // connect(path, [cb]);
@@ -374,14 +375,14 @@ Socket.prototype._handleWebsocket = function () {
     }
 
     if (typeof contents === 'string') {
-      const buffer = new Buffer(contents)
+      const buffer = Buffer.alloc(contents)
       gotBuffer(buffer)
     } else if (window.Blob && contents instanceof Blob) {
       const fileReader = new FileReader()
       fileReader.addEventListener('load', function (e) {
         const buf = fileReader.result
         const arr = new Uint8Array(buf)
-        gotBuffer(new Buffer(arr))
+        gotBuffer(Buffer.from(arr))
       })
       fileReader.readAsArrayBuffer(contents)
     } else {
@@ -389,7 +390,7 @@ Socket.prototype._handleWebsocket = function () {
     }
   })
   this._ws.addEventListener('close', function () {
-    if (self.readyState == 'open') {
+    if (self.readyState === 'open') {
       // console.log('TCP closed');
       self.destroy()
     }

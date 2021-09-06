@@ -4,7 +4,6 @@ import Convert from 'ansi-to-html'
 import { antiXSS } from './../additional/tools.js'
 const convert = new Convert()
 importScripts('./mineflayer.js')
-mineflayer = mineflayer.default
 
 global.window = self
 let bot = null
@@ -22,7 +21,7 @@ addEventListener('message', function (e) {
     case 'init':
       data = data[0]
       console.log(data)
-      bot = mineflayer(null, data.hostname, data.port, {
+      bot = self.mineflayer.default(null, data.hostname, data.port, {
         host: data.server,
         port: data.serverPort,
         username: data.nick
