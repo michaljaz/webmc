@@ -2,6 +2,7 @@
 const stream = require('stream')
 const util = require('util')
 const http = require('http')
+const timers = require('timers')
 
 const debug = util.debuglog('net')
 
