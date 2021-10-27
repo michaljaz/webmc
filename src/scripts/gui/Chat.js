@@ -7,6 +7,7 @@ class Chat {
     this.listen()
     this.history = ['']
     this.histState = 0
+		this.fadeTimeout=10000
   }
 
   chatGoBack () {
@@ -54,7 +55,35 @@ class Chat {
     elem.innerHTML = message + '<br>'
     this.chatDiv.append(elem)
     this.scrollToBottom(this.chatDiv)
+		setTimeout(()=>{
+			if(this.game.eh.gameState=="chat"){
+				elem.hidd=true;
+			}else{
+				$(elem).fadeOut(1000,()=>{
+					elem.hidd=true;
+					this.scrollToBottom(this.chatDiv)
+				})
+			}
+
+		},this.fadeTimeout)
   }
+
+	show (){
+		const children=[].slice.call(this.chatDiv.children)
+		for(var i=0;i<children.length;i++){
+			$(children[i]).show()
+		}
+		this.scrollToBottom(this.chatDiv)
+	}
+
+	hide (){
+		const children=[].slice.call(this.chatDiv.children)
+		for(var i=0;i<children.length;i++){
+			if(children[i].hidd){
+				$(children[i]).hide()
+			}
+		}
+	}
 
   command (com) {
     if (com !== '') {
