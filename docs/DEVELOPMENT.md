@@ -30,7 +30,7 @@ After calling this, it will build app bundle with minified code (in ```/src/dist
 
 Then you have to host built files on some simple http server like [http-server](https://www.npmjs.com/package/http-server).
 
-You can also setup your own proxy server. All you have to do is to run  ```npm run proxy``` on server and change some configs in ```/src/assets/config.json```.
+You can also setup your own proxy server. First of all install only production depencies by running ```npm install --only=production```. Then, all you have to do is to run  ```npm run proxy``` on server and change some configs in ```/src/assets/config.json```.
 
 ## Download production files
 

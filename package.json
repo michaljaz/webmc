@@ -28,6 +28,13 @@
 		"node": "14.x"
 	},
 	"dependencies": {
+		"express-ws": "^4.0.0",
+		"express": "^4.17.1",
+		"cors": "^2.8.5",
+		"crypto": "^1.0.1",
+		"body-parser": "^1.19.0"
+	},
+	"devDependencies": {
 		"ansi-to-html": "^0.6.14",
 		"assert": "^2.0.0",
 		"bootstrap": "^4.6.0",
@@ -72,12 +79,5 @@
 		"worker-loader": "^3.0.7",
 		"decompress": "^4.2.1",
 		"decompress-tarxz": "^3.0.0"
-	},
-	"devDependencies": {
-		"express": "^4.17.1",
-		"express-ws": "^4.0.0",
-		"cors": "^2.8.5",
-		"crypto": "^1.0.1",
-		"body-parser": "^1.19.0"
 	}
 }
