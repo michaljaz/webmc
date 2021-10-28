@@ -54,7 +54,27 @@ function Setup (game) {
   game.inv_bar = new InventoryBar(game)
   game.tl = new TabList(game)
   game.ls = new LoadingScreen(game)
-  game.ls.show(`Connecting to ${game.server}...`)
+  game.ls.show(`Waiting for proxy...`)
+	let hostname, port, pars
+	if (game.proxy === 'local') {
+		hostname = document.location.hostname
+		port = document.location.port
+	} else if (game.proxy === 'production') {
+		pars = game.al.get('config').proxy.split(':')
+		hostname = pars[0]
+		port = pars[1]
+	} else {
+		pars = game.proxy.split(':')
+		hostname = pars[0]
+		port = pars[1]
+	}
+	fetch(`${document.location.protocol}//${hostname}:${port}/proxyCheck`)
+	  .then(response => response.text())
+	  .then(data => {
+			if(data=="OK"){
+				game.ls.show(`Connecting to ${game.server}...`)
+			}
+		});
   game.distanceBasedFog.addShaderToMaterials([
     game.world.material,
     game.ent.mobMaterial,
