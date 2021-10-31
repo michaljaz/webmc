@@ -73,6 +73,26 @@ function Setup (game) {
 	  .then(data => {
 			if(data=="OK"){
 				game.ls.show(`Connecting to ${game.server}...`)
+
+				//PLAYER UUID
+				fetch(`${document.location.protocol}//${hostname}:${port}/getId?nick=${game.nick}`)
+				  .then(response => response.text())
+				  .then(id => {
+						if(id!=="ERR"){
+							console.log(`UUID: ${id}`)
+							//SKIN
+							fetch(`${document.location.protocol}//${hostname}:${port}/getSkin?id=${id}`)
+							  .then(response => response.json())
+							  .then(data => {
+									// console.log(data)
+									const nd=JSON.parse(atob(data.properties[0].value))
+									// console.log(nd)
+									console.log(`SKIN: ${nd.textures.SKIN.url}`)
+								});
+						}else{
+							console.log("UUID not found!")
+						}
+					});
 			}
 		});
   game.distanceBasedFog.addShaderToMaterials([
