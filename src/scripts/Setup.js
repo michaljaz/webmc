@@ -1,6 +1,6 @@
 import Stats from 'three/examples/jsm/libs/stats.module.js'
 import * as dat from 'three/examples/jsm/libs/dat.gui.module.js'
-import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight } from 'three'
+import { WebGLRenderer, Scene, PerspectiveCamera, AmbientLight, TextureLoader } from 'three'
 import { DistanceBasedFog } from './rendering/DistanceBasedFog.js'
 import { UrlParams } from './UrlParams.js'
 import { gpuInfo } from './additional/gpuInfo.js'
@@ -45,7 +45,7 @@ function Setup (game) {
   UrlParams(game)
   console.warn(gpuInfo())
   game.socket = new Socket(game)
-  game.pii = new PlayerInInventory(game)
+	game.pii = new PlayerInInventory(game)
   game.bb = new BlockBreak(game)
   game.bp = new BlockPlace(game)
   game.world = new World(game)
@@ -81,20 +81,20 @@ function Setup (game) {
 						if(id!=="ERR"){
 							console.log(`UUID: ${id}`)
 							//SKIN
-							fetch(`${document.location.protocol}//${hostname}:${port}/getSkin?id=${id}`)
-							  .then(response => response.json())
-							  .then(data => {
-									// console.log(data)
-									const nd=JSON.parse(atob(data.properties[0].value))
-									// console.log(nd)
-									console.log(`SKIN: ${nd.textures.SKIN.url}`)
-								});
+							game.skinUrl=`${document.location.protocol}//${hostname}:${port}/getSkin?id=${id}`
+							console.log(game.skinUrl)
+							new TextureLoader().load(game.skinUrl, (texture) => {
+								game.pii.setup(texture)
+							})
+
 						}else{
 							console.log("UUID not found!")
+							game.pii.setup(game.al.get('playerTex'))
 						}
 					});
 			}
 		});
+
   game.distanceBasedFog.addShaderToMaterials([
     game.world.material,
     game.ent.mobMaterial,

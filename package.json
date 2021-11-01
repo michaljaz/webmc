@@ -28,6 +28,7 @@
 		"node": "14.x"
 	},
 	"dependencies": {
+		"atob": "^2.1.2",
 		"axios": "^0.24.0",
 		"body-parser": "^1.19.0",
 		"cors": "^2.8.5",

@@ -19,10 +19,12 @@ class PlayerInInventory {
     this.scene.background = new Color('black')
     const light = new AmbientLight(0xffffff)
     this.scene.add(light)
-    const player = this.game.al.get('player')
-    const playerTex = this.game.al.get('playerTex')
-    playerTex.magFilter = NearestFilter
-    player.children[0].material.map = playerTex
+  }
+
+	setup (texture) {
+		const player = this.game.al.get('player')
+    texture.magFilter = NearestFilter
+    player.children[0].material.map = texture
     this.scene.add(player)
     this.camera = new PerspectiveCamera(70, 140 / 204, 0.1, 1000)
     this.camera.rotation.order = 'YXZ'
@@ -50,7 +52,7 @@ class PlayerInInventory {
                     wychX * top)
       }
     })
-  }
+	}
 
   render () {
     return this.renderer.render(this.scene, this.camera)
