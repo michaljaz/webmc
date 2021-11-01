@@ -12,18 +12,16 @@
 		"postinstall": "node lib/postinstall.js",
 		"proxy": "node lib/server.js"
 	},
+	"standard": {
+		"ignore": [
+			"/src/vendor"
+		]
+	},
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/michaljaz/webmc.git"
 	},
-	"keywords": [
-		"minecraft",
-		"game",
-		"browser",
-		"web",
-		"client"
-	],
 	"engines": {
 		"node": "14.x"
 	},
@@ -42,12 +40,13 @@
 		"bootstrap": "^4.6.0",
 		"browserify-zlib": "^0.2.0",
 		"canvas": "^2.8.0",
-		"child_process": "^1.0.2",
 		"compression": "^1.7.4",
 		"constants-browserify": "^1.0.0",
 		"copy-webpack-plugin": "^6.3.1",
 		"crypto-browserify": "^3.12.0",
 		"css-loader": "^5.0.1",
+		"decompress": "^4.2.1",
+		"decompress-tarxz": "^3.0.0",
 		"eslint": "^7.22.0",
 		"file-loader": "^6.2.0",
 		"helmet": "^4.4.1",
@@ -78,8 +77,6 @@
 		"webpack-cli": "^4.2.0",
 		"webpack-dev-server": "^3.11.1",
 		"webpack-merge": "^5.7.3",
-		"worker-loader": "^3.0.7",
-		"decompress": "^4.2.1",
-		"decompress-tarxz": "^3.0.0"
+		"worker-loader": "^3.0.7"
 	}
 }

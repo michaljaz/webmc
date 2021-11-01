@@ -236,7 +236,7 @@ class EventHandler {
     $('.chat').addClass('blur')
     $('.com_i').blur()
     $('.com').hide()
-		this.game.chat.hide()
+    this.game.chat.hide()
     return $('.inv_window').hide()
   }
 
@@ -258,7 +258,7 @@ class EventHandler {
         break
       case 'chat':
         if (this.gameState === 'gameLock') {
-					this.game.chat.show()
+          this.game.chat.show()
           $('.chat').addClass('focus')
           $('.chat').removeClass('blur')
           $('.gameMenu').hide()

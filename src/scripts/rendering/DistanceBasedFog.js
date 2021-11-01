@@ -10,7 +10,7 @@ class DistanceBasedFog {
   }
 
   updateDistance (val) {
-    this.farnear.x = (Math.sqrt(val-1.5)) * 16
+    this.farnear.x = (Math.sqrt(val - 1.5)) * 16
     this.farnear.y = (val - 1) * 16
   }
 

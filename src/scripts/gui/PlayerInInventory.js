@@ -21,8 +21,8 @@ class PlayerInInventory {
     this.scene.add(light)
   }
 
-	setup (texture) {
-		const player = this.game.al.get('player')
+  setup (texture) {
+    const player = this.game.al.get('player')
     texture.magFilter = NearestFilter
     player.children[0].material.map = texture
     this.scene.add(player)
@@ -52,7 +52,7 @@ class PlayerInInventory {
                     wychX * top)
       }
     })
-	}
+  }
 
   render () {
     return this.renderer.render(this.scene, this.camera)

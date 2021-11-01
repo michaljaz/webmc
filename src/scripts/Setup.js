@@ -45,7 +45,7 @@ function Setup (game) {
   UrlParams(game)
   console.warn(gpuInfo())
   game.socket = new Socket(game)
-	game.pii = new PlayerInInventory(game)
+  game.pii = new PlayerInInventory(game)
   game.bb = new BlockBreak(game)
   game.bp = new BlockPlace(game)
   game.world = new World(game)
@@ -54,46 +54,45 @@ function Setup (game) {
   game.inv_bar = new InventoryBar(game)
   game.tl = new TabList(game)
   game.ls = new LoadingScreen(game)
-  game.ls.show(`Waiting for proxy...`)
-	let hostname, port, pars
-	if (game.proxy === 'local') {
-		hostname = document.location.hostname
-		port = document.location.port
-	} else if (game.proxy === 'production') {
-		pars = game.al.get('config').proxy.split(':')
-		hostname = pars[0]
-		port = pars[1]
-	} else {
-		pars = game.proxy.split(':')
-		hostname = pars[0]
-		port = pars[1]
-	}
-	fetch(`${document.location.protocol}//${hostname}:${port}/proxyCheck`)
-	  .then(response => response.text())
-	  .then(data => {
-			if(data=="OK"){
-				game.ls.show(`Connecting to ${game.server}...`)
+  game.ls.show('Waiting for proxy...')
+  let hostname, port, pars
+  if (game.proxy === 'local') {
+    hostname = document.location.hostname
+    port = document.location.port
+  } else if (game.proxy === 'production') {
+    pars = game.al.get('config').proxy.split(':')
+    hostname = pars[0]
+    port = pars[1]
+  } else {
+    pars = game.proxy.split(':')
+    hostname = pars[0]
+    port = pars[1]
+  }
+  window.fetch(`${document.location.protocol}//${hostname}:${port}/proxyCheck`)
+    .then(response => response.text())
+    .then(data => {
+      if (data === 'OK') {
+        game.ls.show(`Connecting to ${game.server}...`)
 
-				//PLAYER UUID
-				fetch(`${document.location.protocol}//${hostname}:${port}/getId?nick=${game.nick}`)
-				  .then(response => response.text())
-				  .then(id => {
-						if(id!=="ERR"){
-							console.log(`UUID: ${id}`)
-							//SKIN
-							game.skinUrl=`${document.location.protocol}//${hostname}:${port}/getSkin?id=${id}`
-							console.log(game.skinUrl)
-							new TextureLoader().load(game.skinUrl, (texture) => {
-								game.pii.setup(texture)
-							})
-
-						}else{
-							console.log("UUID not found!")
-							game.pii.setup(game.al.get('playerTex'))
-						}
-					});
-			}
-		});
+        // PLAYER UUID
+        window.fetch(`${document.location.protocol}//${hostname}:${port}/getId?nick=${game.nick}`)
+          .then(response => response.text())
+          .then(id => {
+            if (id !== 'ERR') {
+              console.log(`UUID: ${id}`)
+              // SKIN
+              game.skinUrl = `${document.location.protocol}//${hostname}:${port}/getSkin?id=${id}`
+              console.log(game.skinUrl)
+              new TextureLoader().load(game.skinUrl, (texture) => {
+                game.pii.setup(texture)
+              })
+            } else {
+              console.log('UUID not found!')
+              game.pii.setup(game.al.get('playerTex'))
+            }
+          })
+      }
+    })
 
   game.distanceBasedFog.addShaderToMaterials([
     game.world.material,
