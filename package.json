@@ -58,7 +58,7 @@
 		"memfs": "^3.2.2",
 		"minecraft-data": "^2.79.0",
 		"mineflayer": "^3.6.0",
-		"node-sass": "^5.0.0",
+		"node-sass": "^7.0.1",
 		"os-browserify": "^0.3.0",
 		"path-browserify": "^1.0.1",
 		"popper.js": "^1.16.1",
