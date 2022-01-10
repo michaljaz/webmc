@@ -59,3 +59,22 @@ If you want to just download webmc production files [click here](https://github.
 ## If you can't build project with default configuration
 
 Here are the instructions on how to do it correctly [click here](https://github.com/michaljaz/webmc/blob/master/.github/workflows/github-pages.yaml).
+
+## Creating a Docker container
+
+First install Docker.  I won't get into this here, there are millions of resources online to assist you with that.  First thing you have to build the image.  The docker file is included with the project.
+
+```bash
+ git clone https://github.com/michaljaz/webmc.git && cd webmc
+```
+Next build the Docker image
+
+```bash 
+ docker build . -t michaljaz/webmc
+```
+After the docker image has been built, you can then run the docker image with the following
+
+```bash 
+ docker run -p 8080:8080 -d michaljaz/webmc
+ ```
+Now open your browser to http://localhost:8080
