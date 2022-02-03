@@ -50,7 +50,7 @@ Here are webmc proxy options in ?proxy=[string] url param:
 
 ## Own proxy server
 
-You can also setup your own proxy server. It is just translates Websocket connection to TCP connection. You don't need to install all the depencies, just the ones you need. First of all install only production depencies by running ```npm install --only=production```. Then, all you have to do is to run  ```npm run proxy``` on server and change some configs in ```/src/assets/config.json```. Sometimes it is also useful to swap the "proxy" script with "start" in package.json (your app will run proxy by default).
+You can also setup your own proxy server. It is just translates Websocket connection to TCP connection. All you have to do is to run  ```npm run proxy``` on server and change some configs in ```/src/assets/config.json```. Sometimes it is also useful to swap the "proxy" script with "start" in package.json (your app will run proxy by default).
 
 ## Download production files
 
@@ -69,12 +69,12 @@ First install Docker.  I won't get into this here, there are millions of resourc
 ```
 Next build the Docker image
 
-```bash 
+```bash
  docker build . -t michaljaz/webmc
 ```
 After the docker image has been built, you can then run the docker image with the following
 
-```bash 
+```bash
  docker run -p 8080:8080 -d michaljaz/webmc
  ```
 Now open your browser to http://localhost:8080
