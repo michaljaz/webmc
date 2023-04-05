@@ -21,4 +21,4 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: src/dist 
           force_orphan: true
-          cname: minecraft.js.org
+          cname: webmc.js.org
