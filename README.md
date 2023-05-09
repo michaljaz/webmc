@@ -9,7 +9,7 @@
 **Webmc is minecraft client written in Javascript.** From web browser this client connects to websocket proxy and then to real minecraft server, so you can play minecraft in the browser.
 
 ## Demo
-Live demo with no installation: https://minecraft.js.org.
+Live demo with no installation: https://webmc.js.org.
 
 
 ## Developing on webmc
